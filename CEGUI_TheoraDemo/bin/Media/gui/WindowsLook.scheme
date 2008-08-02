@@ -1,6 +1,0 @@
-<?xml version="1.0" ?>
-<GUIScheme Name="WindowsLook">
-	<Imageset Name="WindowsLook" Filename="WindowsLook.imageset" />
-	<Font Name="Tahoma-12" Filename="tahoma-12.font" />
-	<WindowSet Filename="CEGUIWindowsLook" />
-</GUIScheme>

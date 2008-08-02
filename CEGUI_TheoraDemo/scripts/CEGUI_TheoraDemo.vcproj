@@ -77,7 +77,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib"
-				OutputFile="../Bin/Release/GuiTesting.exe"
+				OutputFile="../Bin/Release/CEGUI_TheoraDemo.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\TheoraVideo\bin\release;..\..\..\..\ogrenew\ogremain\lib\release;..\..\..\..\ogrenew\Dependencies\lib\release;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\lib"
@@ -171,11 +171,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib CEGUIBase_d.lib OgreMain_d.lib OgreGUIRenderer_d.lib Plugin_TheoraVideoSystem.lib"
-				OutputFile="../bin/Debug/GuiTesting.exe"
+				AdditionalDependencies="CEGUIBase_d.lib OgreMain_d.lib OIS_d.lib OgreGUIRenderer_d.lib Plugin_TheoraVideoSystem.lib"
+				OutputFile="../bin/Debug/CEGUI_TheoraDemo.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\TheoraVideo\bin\debug;..\..\..\..\ogrenew\ogremain\lib\debug;..\..\..\..\ogrenew\Dependencies\lib\Debug;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\lib"
+				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\debug;..\..\..\..\ogrenew\ogremain\lib\debug;..\..\..\..\ogrenew\Dependencies\lib\Debug;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../obj/GuiTesting.pdb"
 				SubSystem="2"
@@ -220,10 +220,6 @@
 				RelativePath="..\src\MovieLogic.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\src\SoundManager.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Includes"
@@ -237,15 +233,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\MainModule.h"
-				>
-			</File>
-			<File
 				RelativePath="..\include\MovieLogic.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\SoundManager.h"
 				>
 			</File>
 		</Filter>
