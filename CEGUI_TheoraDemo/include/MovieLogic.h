@@ -2,7 +2,7 @@
 #define _MovieLogic_Header_
 
 #include "OgreString.h"
-#include "SoundManager.h"
+
 #include "TheoraVideoController.h"
 #include "TheoraMovieClip.h"
 
@@ -74,8 +74,6 @@ namespace Ogre
 		CEGUI::Texture *mText;
 
 		//Needed audio stuff
-		SoundManager* mSoundSystem;
-		TheoraAudioDriver* mAudio;
 
 		String mCurrentMoviePlaying;
 		bool mPaused;

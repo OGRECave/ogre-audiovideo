@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\TheoraVideo\include;..\include;..\..\..\..\ogrenew\OgreMain\include;..\..\theora\include;&quot;..\..\ptypes-1.8.3\include&quot;;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\include;..\..\..\..\ogrenew\Dependencies\include"
+				AdditionalIncludeDirectories="..\..\TheoraVideoPlugin\include;..\include;..\..\theora\include;&quot;..\..\ptypes-1.8.3\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

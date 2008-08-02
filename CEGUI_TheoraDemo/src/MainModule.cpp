@@ -35,6 +35,7 @@ LGPL like the rest of the engine.
 #include "OgreCEGUIResourceProvider.h"
 
 #include "ExampleApplication.h"
+#include "MovieLogic.h"
 
 //----------------------------------------------------------------//
 CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
@@ -54,13 +55,15 @@ class GuiFrameListener : public ExampleFrameListener, public OIS::KeyListener, p
 private:
     CEGUI::Renderer* mGUIRenderer;
     bool mShutdownRequested;
+	MovieLogic* mMovieLogic;
 
 public:
     // NB using buffered input, this is the only change
-    GuiFrameListener(RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
+	GuiFrameListener(RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer,MovieLogic* movielogic)
         : ExampleFrameListener(win, cam, true, true, true), 
           mGUIRenderer(renderer),
-          mShutdownRequested(false)
+          mShutdownRequested(false),
+		  mMovieLogic(movielogic)
     {
 		mMouse->setEventCallback(this);
 		mKeyboard->setEventCallback(this);
@@ -74,6 +77,7 @@ public:
 
     bool frameEnded(const FrameEvent& evt)
     {
+		mMovieLogic->update();
         if (mShutdownRequested)
             return false;
         else
@@ -124,8 +128,11 @@ private:
     CEGUI::OgreCEGUIRenderer* mGUIRenderer;
     CEGUI::System* mGUISystem;
     CEGUI::Window* mEditorGuiSheet;
+	
+	MovieLogic* mMovieControl;
 
 public:
+
     GuiApplication()
       : mGUIRenderer(0),
         mGUISystem(0),
@@ -174,10 +181,13 @@ protected:
 
         CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
 
-        //Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+        Entity* model = mSceneMgr->createEntity("model", "cube.mesh");
 
-        //SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-        //headNode->attachObject(ogreHead);
+		
+
+        SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+        node->attachObject(model);
+		node->scale(3,3,3);
 
         // load scheme and set up defaults
         CEGUI::SchemeManager::getSingleton().loadScheme(
@@ -189,15 +199,20 @@ protected:
         CEGUI::Window* sheet = 
             CEGUI::WindowManager::getSingleton().loadWindowLayout(
                 (CEGUI::utf8*)"ogregui.layout"); 
-        mGUISystem->setGUISheet(sheet);
+       // mGUISystem->setGUISheet(sheet);
 
        // setupEventHandlers();
+
+		mMovieControl = new MovieLogic( mGUIRenderer );
+		mMovieControl->initialise();
+		mMovieControl->playMovie("../Media/oggs/cateia.ogg");
+		model->setMaterialName("Example/TheoraVideoPlayer/Play");
     }
 
     // Create new frame listener
     void createFrameListener(void)
     {
-        mFrameListener= new GuiFrameListener(mWindow, mCamera, mGUIRenderer);
+        mFrameListener= new GuiFrameListener(mWindow, mCamera, mGUIRenderer,mMovieControl);
         mRoot->addFrameListener(mFrameListener);
     }
 
