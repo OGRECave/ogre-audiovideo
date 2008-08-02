@@ -1,0 +1,4 @@
+LIBRARY Plugin_TheoraVideoSystem.dll
+EXPORTS	
+	dllStartPlugin
+	dllStopPlugin

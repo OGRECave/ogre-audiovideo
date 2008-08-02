@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GUILayout>
+<Window Type="DefaultWindow" Name="root_wnd" >
+<Property Name="UnifiedAreaRect" Value="{{0.000000,0.000000},{0.000000,0.000000},{1.000000,0.000000},{1.000000,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+<Window Type="WindowsLook/FrameWindow" Name="Controls" >
+<Property Name="CaptionColour" Value="00FFFFFF" />
+<Property Name="CloseButtonEnabled" Value="False" />
+<Property Name="DragMovingEnabled" Value="False" />
+<Property Name="EWSizingCursorImage" Value="set:WindowsLook image:MouseEsWeCursor" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NESWSizingCursorImage" Value="set:WindowsLook image:MouseNeSwCursor" />
+<Property Name="NSSizingCursorImage" Value="set:WindowsLook image:MouseNoSoCursor" />
+<Property Name="NWSESizingCursorImage" Value="set:WindowsLook image:MouseNwSeCursor" />
+<Property Name="SizingEnabled" Value="False" />
+<Property Name="TitlebarEnabled" Value="False" />
+<Property Name="TitlebarFont" Value="Tahoma-12" />
+<Property Name="UnifiedAreaRect" Value="{{0.001563,0.000000},{0.009583,0.000000},{0.310938,0.000000},{0.312502,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+<Window Type="WindowsLook/Button" Name="Play" >
+<Property Name="DisabledTextColour" Value="FF888888" />
+<Property Name="HoverTextColour" Value="FF000000" />
+<Property Name="InheritsAlpha" Value="False" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NormalTextColour" Value="FF000000" />
+<Property Name="PushedTextColour" Value="FF000000" />
+<Property Name="Text" Value="Play" />
+<Property Name="UnifiedAreaRect" Value="{{0.055767,0.000000},{0.122552,0.000000},{0.342332,0.000000},{0.309448,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/Button" Name="Stop" >
+<Property Name="DisabledTextColour" Value="FF888888" />
+<Property Name="HoverTextColour" Value="FF000000" />
+<Property Name="InheritsAlpha" Value="False" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NormalTextColour" Value="FF000000" />
+<Property Name="PushedTextColour" Value="FF000000" />
+<Property Name="Text" Value="Stop" />
+<Property Name="UnifiedAreaRect" Value="{{0.052842,0.000000},{0.319359,0.000000},{0.359610,0.000000},{0.492462,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/Button" Name="Pause" >
+<Property Name="DisabledTextColour" Value="FF888888" />
+<Property Name="HoverTextColour" Value="FF000000" />
+<Property Name="InheritsAlpha" Value="False" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NormalTextColour" Value="FF000000" />
+<Property Name="PushedTextColour" Value="FF000000" />
+<Property Name="Text" Value="Pause" />
+<Property Name="UnifiedAreaRect" Value="{{0.048614,0.000000},{0.504544,0.000000},{0.355382,0.000000},{0.684545,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/Button" Name="Resume" >
+<Property Name="DisabledTextColour" Value="FF888888" />
+<Property Name="HoverTextColour" Value="FF000000" />
+<Property Name="InheritsAlpha" Value="False" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NormalTextColour" Value="FF000000" />
+<Property Name="PushedTextColour" Value="FF000000" />
+<Property Name="Text" Value="Resume" />
+<Property Name="UnifiedAreaRect" Value="{{0.048636,0.000000},{0.712781,0.000000},{0.370555,0.000000},{0.906575,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/Listbox" Name="PlayList" >
+<Property Name="InheritsAlpha" Value="False" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="UnifiedAreaRect" Value="{{0.390659,0.000000},{0.050513,0.000000},{0.962630,0.000000},{0.946706,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+</Window>
+<Window Type="WindowsLook/FrameWindow" Name="PlayWindow" >
+<Property Name="CaptionColour" Value="00FFFFFF" />
+<Property Name="CloseButtonEnabled" Value="False" />
+<Property Name="EWSizingCursorImage" Value="set:WindowsLook image:MouseEsWeCursor" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NESWSizingCursorImage" Value="set:WindowsLook image:MouseNeSwCursor" />
+<Property Name="NSSizingCursorImage" Value="set:WindowsLook image:MouseNoSoCursor" />
+<Property Name="NWSESizingCursorImage" Value="set:WindowsLook image:MouseNwSeCursor" />
+<Property Name="Text" Value="http://www.wreckedgames.com brings video! to OGRE ;)" />
+<Property Name="TitlebarEnabled" Value="True" />
+<Property Name="TitlebarFont" Value="Tahoma-12" />
+<Property Name="UnifiedAreaRect" Value="{{0.311563,0.000000},{0.017500,0.000000},{0.994366,0.000000},{0.759174,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+<Window Type="WindowsLook/ProgressBar" Name="TimePosition" >
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="UnifiedAreaRect" Value="{{0.019687,0.000000},{0.929167,0.000000},{0.982188,0.000000},{0.954167,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/HorizontalScrollbar" Name="TimeSeek" >
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="UnifiedAreaRect" Value="{{0.018125,0.000000},{0.962502,0.000000},{0.980625,0.000000},{0.987501,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+</Window>
+<Window Type="WindowsLook/FrameWindow" Name="Stats" >
+<Property Name="CaptionColour" Value="00FFFFFF" />
+<Property Name="CloseButtonEnabled" Value="False" />
+<Property Name="DragMovingEnabled" Value="False" />
+<Property Name="EWSizingCursorImage" Value="set:WindowsLook image:MouseEsWeCursor" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NESWSizingCursorImage" Value="set:WindowsLook image:MouseNeSwCursor" />
+<Property Name="NSSizingCursorImage" Value="set:WindowsLook image:MouseNoSoCursor" />
+<Property Name="NWSESizingCursorImage" Value="set:WindowsLook image:MouseNwSeCursor" />
+<Property Name="SizingEnabled" Value="False" />
+<Property Name="Text" Value="Stat Window" />
+<Property Name="TitlebarEnabled" Value="False" />
+<Property Name="TitlebarFont" Value="Tahoma-12" />
+<Property Name="UnifiedAreaRect" Value="{{0.002188,0.000000},{0.317918,0.000000},{0.310001,0.000000},{0.495002,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+<Window Type="WindowsLook/StaticText" Name="vTime" >
+<Property Name="BackgroundColours" Value="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" />
+<Property Name="BackgroundImage" Value="set:WindowsLook image:Background" />
+<Property Name="BottomFrameImage" Value="set:WindowsLook image:StaticFrameBottom" />
+<Property Name="BottomLeftFrameImage" Value="set:WindowsLook image:StaticFrameBottomLeft" />
+<Property Name="BottomRightFrameImage" Value="set:WindowsLook image:StaticFrameBottomRight" />
+<Property Name="LeftFrameImage" Value="set:WindowsLook image:StaticFrameLeft" />
+<Property Name="RightFrameImage" Value="set:WindowsLook image:StaticFrameRight" />
+<Property Name="Text" Value="VT:" />
+<Property Name="TextColours" Value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
+<Property Name="TopFrameImage" Value="set:WindowsLook image:StaticFrameTop" />
+<Property Name="TopLeftFrameImage" Value="set:WindowsLook image:StaticFrameTopLeft" />
+<Property Name="TopRightFrameImage" Value="set:WindowsLook image:StaticFrameTopRight" />
+<Property Name="UnifiedAreaRect" Value="{{0.087194,0.000000},{0.070842,0.000000},{0.896806,0.000000},{0.238217,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/StaticText" Name="aTime" >
+<Property Name="BackgroundColours" Value="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" />
+<Property Name="BackgroundImage" Value="set:WindowsLook image:Background" />
+<Property Name="BottomFrameImage" Value="set:WindowsLook image:StaticFrameBottom" />
+<Property Name="BottomLeftFrameImage" Value="set:WindowsLook image:StaticFrameBottomLeft" />
+<Property Name="BottomRightFrameImage" Value="set:WindowsLook image:StaticFrameBottomRight" />
+<Property Name="LeftFrameImage" Value="set:WindowsLook image:StaticFrameLeft" />
+<Property Name="RightFrameImage" Value="set:WindowsLook image:StaticFrameRight" />
+<Property Name="Text" Value="AT:" />
+<Property Name="TextColours" Value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
+<Property Name="TopFrameImage" Value="set:WindowsLook image:StaticFrameTop" />
+<Property Name="TopLeftFrameImage" Value="set:WindowsLook image:StaticFrameTopLeft" />
+<Property Name="TopRightFrameImage" Value="set:WindowsLook image:StaticFrameTopRight" />
+<Property Name="UnifiedAreaRect" Value="{{0.088068,0.000000},{0.284735,0.000000},{0.890370,0.000000},{0.444308,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/StaticText" Name="Dropped" >
+<Property Name="BackgroundColours" Value="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" />
+<Property Name="BackgroundImage" Value="set:WindowsLook image:Background" />
+<Property Name="BottomFrameImage" Value="set:WindowsLook image:StaticFrameBottom" />
+<Property Name="BottomLeftFrameImage" Value="set:WindowsLook image:StaticFrameBottomLeft" />
+<Property Name="BottomRightFrameImage" Value="set:WindowsLook image:StaticFrameBottomRight" />
+<Property Name="LeftFrameImage" Value="set:WindowsLook image:StaticFrameLeft" />
+<Property Name="RightFrameImage" Value="set:WindowsLook image:StaticFrameRight" />
+<Property Name="Text" Value="DF:" />
+<Property Name="TextColours" Value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
+<Property Name="TopFrameImage" Value="set:WindowsLook image:StaticFrameTop" />
+<Property Name="TopLeftFrameImage" Value="set:WindowsLook image:StaticFrameTopLeft" />
+<Property Name="TopRightFrameImage" Value="set:WindowsLook image:StaticFrameTopRight" />
+<Property Name="UnifiedAreaRect" Value="{{0.086754,0.000000},{0.747393,0.000000},{0.893743,0.000000},{0.900279,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/StaticText" Name="Current" >
+<Property Name="BackgroundColours" Value="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" />
+<Property Name="BackgroundImage" Value="set:WindowsLook image:Background" />
+<Property Name="BottomFrameImage" Value="set:WindowsLook image:StaticFrameBottom" />
+<Property Name="BottomLeftFrameImage" Value="set:WindowsLook image:StaticFrameBottomLeft" />
+<Property Name="BottomRightFrameImage" Value="set:WindowsLook image:StaticFrameBottomRight" />
+<Property Name="LeftFrameImage" Value="set:WindowsLook image:StaticFrameLeft" />
+<Property Name="RightFrameImage" Value="set:WindowsLook image:StaticFrameRight" />
+<Property Name="Text" Value="CF:" />
+<Property Name="TextColours" Value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
+<Property Name="TopFrameImage" Value="set:WindowsLook image:StaticFrameTop" />
+<Property Name="TopLeftFrameImage" Value="set:WindowsLook image:StaticFrameTopLeft" />
+<Property Name="TopRightFrameImage" Value="set:WindowsLook image:StaticFrameTopRight" />
+<Property Name="UnifiedAreaRect" Value="{{0.087691,0.000000},{0.494808,0.000000},{0.893804,0.000000},{0.662705,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+</Window>
+<Window Type="WindowsLook/FrameWindow" Name="Misc" >
+<Property Name="EWSizingCursorImage" Value="set:WindowsLook image:MouseEsWeCursor" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NESWSizingCursorImage" Value="set:WindowsLook image:MouseNeSwCursor" />
+<Property Name="NSSizingCursorImage" Value="set:WindowsLook image:MouseNoSoCursor" />
+<Property Name="NWSESizingCursorImage" Value="set:WindowsLook image:MouseNwSeCursor" />
+<Property Name="Text" Value="Misc. Settings" />
+<Property Name="TitlebarEnabled" Value="True" />
+<Property Name="TitlebarFont" Value="Tahoma-12" />
+<Property Name="UnifiedAreaRect" Value="{{0.004687,0.000000},{0.500000,0.000000},{0.310938,0.000000},{0.760416,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+<Window Type="WindowsLook/Listbox" Name="AudioPlugins" >
+<Property Name="DistributeCapturedInputs" Value="True" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="UnifiedAreaRect" Value="{{0.031633,0.000000},{0.240043,0.000000},{0.970408,0.000000},{0.544011,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/Button" Name="Activate" >
+<Property Name="DisabledTextColour" Value="FF888888" />
+<Property Name="HoverTextColour" Value="FF000000" />
+<Property Name="MouseCursorImage" Value="set:WindowsLook image:MouseArrow" />
+<Property Name="NormalTextColour" Value="FF000000" />
+<Property Name="PushedTextColour" Value="FF000000" />
+<Property Name="Text" Value="Act." />
+<Property Name="UnifiedAreaRect" Value="{{0.680612,0.000000},{0.541338,0.000000},{0.956123,0.000000},{0.736220,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+<Window Type="WindowsLook/StaticText" Name="APS" >
+<Property Name="BackgroundColours" Value="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" />
+<Property Name="BackgroundImage" Value="set:WindowsLook image:Background" />
+<Property Name="BottomFrameImage" Value="set:WindowsLook image:StaticFrameBottom" />
+<Property Name="BottomLeftFrameImage" Value="set:WindowsLook image:StaticFrameBottomLeft" />
+<Property Name="BottomRightFrameImage" Value="set:WindowsLook image:StaticFrameBottomRight" />
+<Property Name="LeftFrameImage" Value="set:WindowsLook image:StaticFrameLeft" />
+<Property Name="RightFrameImage" Value="set:WindowsLook image:StaticFrameRight" />
+<Property Name="Text" Value="No Plugin" />
+<Property Name="TextColours" Value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
+<Property Name="TopFrameImage" Value="set:WindowsLook image:StaticFrameTop" />
+<Property Name="TopLeftFrameImage" Value="set:WindowsLook image:StaticFrameTopLeft" />
+<Property Name="TopRightFrameImage" Value="set:WindowsLook image:StaticFrameTopRight" />
+<Property Name="UnifiedAreaRect" Value="{{0.038776,0.000000},{0.540945,0.000000},{0.645918,0.000000},{0.720079,0.000000}}" />
+<Property Name="UnifiedMaxSize" Value="{{1.000000,0.000000},{1.000000,0.000000}}" />
+</Window>
+</Window>
+</Window>
+</GUILayout>

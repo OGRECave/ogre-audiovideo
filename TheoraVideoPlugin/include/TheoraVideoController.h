@@ -1,0 +1,160 @@
+/*
+-----------------------------------------------------------------------------
+This source file is part of the TheoraVideoSystem ExternalTextureSource PlugIn 
+for OGRE (Object-oriented Graphics Rendering Engine)
+For the latest info, see www.wreckedgames.com or www.ogre3d.org
+*****************************************************************************
+				This PlugIn uses the following resources:
+
+Ogre - see above
+Ogg / Vorbis / Theora www.xiph.org
+C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
+
+*****************************************************************************
+Copyright © 2000-2004 pjcast@yahoo.com
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License (LGPL) as published by the 
+Free Software Foundation; either version 2 of the License, or (at your option) 
+any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+***************************************************************************/
+
+#ifndef _TheoraVideoTextureController_H
+#define _TheoraVideoTextureController_H
+
+#include "OgreString.h"
+#include "OgreExternalTextureSource.h"
+#include "TheoraPlayerPreReqs.h"
+#include "TheoraExport.h"
+
+namespace Ogre
+{
+	/**
+		Handles "ogg_video" external texture sources from material serializer.
+		It is recomended that you also use this class when creating
+		textures in code, but it is not required.
+	*/
+	class _OgreTheoraExport TheoraVideoController : public ExternalTextureSource
+	{
+	public:
+		TheoraVideoController();
+		~TheoraVideoController();
+
+		/**
+			@remarks
+				Creates a texture into an already defined material
+				All setting should have been set before calling this.
+				Mainly, movie name and play mode. Refer to base 
+				class ( ExternalTextureSource ) for details
+			@param sMaterialName
+				Material you are attaching a movie to.
+		*/
+		void createDefinedTexture( const String& sMaterialName,
+			const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+		
+		/**
+			@remarks
+				Destroys Video Texture. Currently does not destroy material/texture
+			@param sMaterialName
+				Material Name you are looking to remove movie form
+		*/
+		void destroyAdvancedTexture( const String& sMaterialName,
+			const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+		
+		/**
+			@remarks 
+				Returns the clip that is holding the Video Material
+			@param sMovieName
+				Search using movie file name
+		*/
+		TheoraMovieClip* getMovieNameClip( String sMovieName );
+
+		/**
+			@remarks 
+				Returns the clip that is holding the Video Material
+			@param sMovieName
+				Search using material name
+		*/
+		TheoraMovieClip* getMaterialNameClip( String sMaterialName );
+		
+		/**
+			@remarks
+				This function is called to init this plugin - do not call directly
+		*/
+		bool initialise();
+		
+		/**
+			@remarks
+				Called to shut down this plugIn - called from manager class
+		*/
+		void shutDown();
+
+
+		/**
+			@remarks
+				Called to set the Texture FX mode on the next generated texture
+		*/
+		void setRenderFx( TextureSpecialRenderFX rfx ) { tempTextureFX = rfx; }
+
+		/**
+			@remarks
+				Called to set if seeking is enabled on the next generated video
+		*/
+		void setSeekEnabled( bool bEnabled ) { mSeekEnabled = bEnabled; }
+		
+		void setAutoAudioUpdate( bool autoUpdateAudio ) {mAutoUpdate = autoUpdateAudio;}
+        
+		/**
+			@remarks
+				Hook for texture scripts to set texture FX mode
+		*/
+		class CmdRenderFx : public ParamCommand
+        {
+        public:
+			String doGet(const void* target) const;
+            void doSet(void* target, const String& val);
+			void setThis( TheoraVideoController* p ) { pThis = p; }
+		private:
+			TheoraVideoController* pThis;
+        };
+		/**
+			@remarks
+				Hook for texture scripts to set seeking enabled
+		*/
+		class CmdSeekingEnabled : public ParamCommand
+        {
+        public:
+			String doGet(const void* target) const;
+            void doSet(void* target, const String& val);
+			void setThis( TheoraVideoController* p ) { pThis = p; }
+		private:
+			TheoraVideoController* pThis;
+        };
+
+	protected:
+		static CmdRenderFx msCmdRenderFx;
+		static CmdSeekingEnabled msCmdSeekingEnabled;
+
+		TextureSpecialRenderFX tempTextureFX;
+		bool mSeekEnabled;
+		bool mAutoUpdate;
+
+		typedef std::vector< TheoraMovieClip* > mtClips;
+		//! A list of movie clips
+		mtClips mMoviesList;
+		
+		//! A flag indicating whether init has been called 
+		bool mbInit;
+	};
+}
+#endif
+

@@ -1,0 +1,28 @@
+#
+#
+#  C++ Portable Types Library (PTypes)
+#  Version 1.8.3  Released 25-Aug-2003
+#
+#  Copyright (c) 2001, 2002, 2003 Hovik Melikyan
+#
+#  http://www.melikyan.com/ptypes/
+#  http://ptypes.sourceforge.net/
+#
+#
+#
+# Makefile for MacOS X (Darwin), called from ../Makefile
+#
+
+CXX = c++
+
+OS_CXXOPTS=-Wno-long-double -fno-common
+OS_CXXOPTS_ST=-Wno-long-double -fno-common
+
+SOEXT = dylib
+
+LIBTOOL = libtool -dynamic -lcc_dynamic -lc -lstdc++
+
+SOSTRIP = test
+
+include Makefile.common
+
