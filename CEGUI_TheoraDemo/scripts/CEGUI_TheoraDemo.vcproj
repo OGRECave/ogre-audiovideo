@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\TheoraVideo\include;..\include;..\..\..\..\ogrenew\OgreMain\include;..\..\theora\include;&quot;..\..\ptypes-1.8.3\include&quot;;..\..\..\..\ogrenew\OgreMain\include;..\..\theora\include;&quot;..\..\ptypes-1.8.3\include&quot;;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\include;..\..\..\..\ogrenew\Dependencies\include"
+				AdditionalIncludeDirectories="..\..\TheoraVideoPlugin\include;..\include;..\..\theora\include;&quot;..\..\ptypes-1.8.3\include&quot;"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -76,11 +76,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib"
+				AdditionalDependencies="OIS.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib"
 				OutputFile="../Bin/Release/CEGUI_TheoraDemo.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\TheoraVideo\bin\release;..\..\..\..\ogrenew\ogremain\lib\release;..\..\..\..\ogrenew\Dependencies\lib\release;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\lib"
+				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\release;..\..\..\..\ogrenew\ogremain\lib\release;..\..\..\..\ogrenew\Dependencies\lib\release;..\..\..\..\ogrenew\Samples\Common\CEGUIRenderer\lib"
 				ProgramDatabaseFile=".\../obj/Release/GuiTesting.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

@@ -205,7 +205,7 @@ protected:
 
 		mMovieControl = new MovieLogic( mGUIRenderer );
 		mMovieControl->initialise();
-		mMovieControl->playMovie("../Media/oggs/cateia.ogg");
+		mMovieControl->playMovie("../Media/oggs/rambo2.ogg");
 		model->setMaterialName("Example/TheoraVideoPlayer/Play");
     }
 
