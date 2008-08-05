@@ -1,3 +1,131 @@
+Index: win32/VS2005/dump_video/dump_video.vcproj
+===================================================================
+--- win32/VS2005/dump_video/dump_video.vcproj	(revision 15151)
++++ win32/VS2005/dump_video/dump_video.vcproj	(working copy)
+@@ -1,11 +1,12 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="dump_video"
+ 	ProjectGUID="{1A8CA99D-B6C7-48CB-B263-6CECDADF5FBF}"
+ 	RootNamespace="dump_video"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -66,6 +67,8 @@
+ 				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;;&quot;..\$(ConfigurationName)&quot;"
+ 				GenerateDebugInformation="true"
+ 				SubSystem="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -87,9 +90,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -144,6 +144,8 @@
+ 				SubSystem="1"
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -165,9 +167,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -175,7 +174,6 @@
+ 	<References>
+ 		<ProjectReference
+ 			ReferencedProjectIdentifier="{653F3841-3F26-49B9-AFCF-091DB4B67031}"
+-			RelativePathToProject=".\libtheora\libtheora.vcproj"
+ 		/>
+ 	</References>
+ 	<Files>
+Index: win32/VS2005/encoder_example/encoder_example.vcproj
+===================================================================
+--- win32/VS2005/encoder_example/encoder_example.vcproj	(revision 15151)
++++ win32/VS2005/encoder_example/encoder_example.vcproj	(working copy)
+@@ -1,11 +1,12 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="encoder_example"
+ 	ProjectGUID="{AD710263-EBFA-4388-BAA9-AD73C32AFF26}"
+ 	RootNamespace="encoder_example"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -66,6 +67,8 @@
+ 				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;;&quot;..\..\..\..\libvorbis\win32\VS2005\$(ConfigurationName)&quot;;&quot;..\$(ConfigurationName)&quot;"
+ 				GenerateDebugInformation="true"
+ 				SubSystem="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -87,9 +90,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -148,6 +148,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -169,9 +171,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -179,7 +178,6 @@
+ 	<References>
+ 		<ProjectReference
+ 			ReferencedProjectIdentifier="{653F3841-3F26-49B9-AFCF-091DB4B67031}"
+-			RelativePathToProject=".\libtheora\libtheora.vcproj"
+ 		/>
+ 	</References>
+ 	<Files>
 Index: win32/VS2005/libtheora/libtheora.vcproj
 ===================================================================
 --- win32/VS2005/libtheora/libtheora.vcproj	(revision 15151)
@@ -16,96 +144,28 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  	>
  	<Platforms>
  		<Platform
-@@ -70,6 +71,8 @@
- 				GenerateDebugInformation="true"
- 				ProgramDatabaseFile="$(OutDir)/libtheora.pdb"
- 				SubSystem="2"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -92,9 +95,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -162,6 +162,8 @@
- 				OptimizeReferences="2"
- 				EnableCOMDATFolding="2"
- 				OptimizeForWindows98="1"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -184,9 +186,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -255,6 +254,8 @@
- 				OptimizeReferences="2"
- 				EnableCOMDATFolding="2"
- 				OptimizeForWindows98="1"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -277,9 +278,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -287,7 +285,7 @@
- 			Name="Release_SSE2|Win32"
+@@ -19,7 +20,7 @@
+ 			Name="Debug|Win32"
  			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
  			IntermediateDirectory="$(ConfigurationName)"
 -			ConfigurationType="2"
 +			ConfigurationType="4"
  			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
  			CharacterSet="2"
- 			WholeProgramOptimization="1"
-@@ -313,7 +311,7 @@
- 				InlineFunctionExpansion="2"
- 				EnableIntrinsicFunctions="true"
- 				FavorSizeOrSpeed="1"
--				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include;"
-+				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include"
- 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBTHEORA_EXPORTS;USE_ASM"
- 				StringPooling="true"
- 				ExceptionHandling="0"
-@@ -337,27 +335,12 @@
+ 			>
+@@ -61,25 +62,12 @@
  				Name="VCPreLinkEventTool"
  			/>
  			<Tool
 -				Name="VCLinkerTool"
 -				AdditionalDependencies="libogg.lib"
 -				OutputFile="$(OutDir)/libtheora.dll"
--				LinkIncremental="1"
--				AdditionalLibraryDirectories="..\..\..\..\libogg\win32\VS2005\release;"
+-				LinkIncremental="2"
+-				AdditionalLibraryDirectories="..\..\..\..\libogg\win32\VS2005\debug;"
 -				ModuleDefinitionFile="..\..\libtheora.def"
--				GenerateDebugInformation="false"
+-				GenerateDebugInformation="true"
+-				ProgramDatabaseFile="$(OutDir)/libtheora.pdb"
 -				SubSystem="2"
--				OptimizeReferences="2"
--				EnableCOMDATFolding="2"
--				OptimizeForWindows98="1"
 -				ImportLibrary="$(OutDir)/libtheora.lib"
 -				TargetMachine="1"
 +				Name="VCLibrarianTool"
@@ -120,7 +180,7 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  				Name="VCXDCMakeTool"
  			/>
  			<Tool
-@@ -367,12 +350,6 @@
+@@ -89,12 +77,6 @@
  				Name="VCFxCopTool"
  			/>
  			<Tool
@@ -133,95 +193,8 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  				Name="VCPostBuildEventTool"
  			/>
  		</Configuration>
-Index: win32/VS2005/theora.sln
-===================================================================
---- win32/VS2005/theora.sln	(revision 15151)
-+++ win32/VS2005/theora.sln	(working copy)
-@@ -1,5 +1,5 @@
--Microsoft Visual Studio Solution File, Format Version 9.00
--# Visual Studio 2005
-+Microsoft Visual Studio Solution File, Format Version 10.00
-+# Visual C++ Express 2008
- Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtheora", "libtheora\libtheora.vcproj", "{653F3841-3F26-49B9-AFCF-091DB4B67031}"
- EndProject
- Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dump_video", "dump_video\dump_video.vcproj", "{1A8CA99D-B6C7-48CB-B263-6CECDADF5FBF}"
-Index: win32/VS2005/libtheora/libtheora.vcproj
-===================================================================
---- win32/VS2005/libtheora/libtheora.vcproj	(revision 15151)
-+++ win32/VS2005/libtheora/libtheora.vcproj	(working copy)
-@@ -1,11 +1,12 @@
- <?xml version="1.0" encoding="Windows-1252"?>
- <VisualStudioProject
- 	ProjectType="Visual C++"
--	Version="8,00"
-+	Version="9,00"
- 	Name="libtheora"
- 	ProjectGUID="{653F3841-3F26-49B9-AFCF-091DB4B67031}"
- 	RootNamespace="libtheora"
- 	Keyword="Win32Proj"
-+	TargetFrameworkVersion="131072"
- 	>
- 	<Platforms>
- 		<Platform
-@@ -70,6 +71,8 @@
- 				GenerateDebugInformation="true"
- 				ProgramDatabaseFile="$(OutDir)/libtheora.pdb"
- 				SubSystem="2"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -92,9 +95,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -162,6 +162,8 @@
- 				OptimizeReferences="2"
- 				EnableCOMDATFolding="2"
- 				OptimizeForWindows98="1"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -184,9 +186,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -255,6 +254,8 @@
- 				OptimizeReferences="2"
- 				EnableCOMDATFolding="2"
- 				OptimizeForWindows98="1"
-+				RandomizedBaseAddress="1"
-+				DataExecutionPrevention="0"
- 				ImportLibrary="$(OutDir)/libtheora.lib"
- 				TargetMachine="1"
- 			/>
-@@ -277,9 +278,6 @@
- 				Name="VCAppVerifierTool"
- 			/>
- 			<Tool
--				Name="VCWebDeploymentTool"
--			/>
--			<Tool
- 				Name="VCPostBuildEventTool"
- 			/>
- 		</Configuration>
-@@ -287,7 +285,7 @@
- 			Name="Release_SSE2|Win32"
+@@ -102,7 +84,7 @@
+ 			Name="Release|Win32"
  			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
  			IntermediateDirectory="$(ConfigurationName)"
 -			ConfigurationType="2"
@@ -229,16 +202,7 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
  			CharacterSet="2"
  			WholeProgramOptimization="1"
-@@ -313,7 +311,7 @@
- 				InlineFunctionExpansion="2"
- 				EnableIntrinsicFunctions="true"
- 				FavorSizeOrSpeed="1"
--				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include;"
-+				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include"
- 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBTHEORA_EXPORTS;USE_ASM"
- 				StringPooling="true"
- 				ExceptionHandling="0"
-@@ -337,27 +335,12 @@
+@@ -151,27 +133,12 @@
  				Name="VCPreLinkEventTool"
  			/>
  			<Tool
@@ -267,7 +231,118 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  				Name="VCXDCMakeTool"
  			/>
  			<Tool
-@@ -367,12 +350,6 @@
+@@ -181,12 +148,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -194,7 +155,7 @@
+ 			Name="Release_SSE|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			WholeProgramOptimization="1"
+@@ -244,27 +205,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libtheora.dll"
+-				LinkIncremental="1"
+-				AdditionalLibraryDirectories="..\..\..\..\libogg\win32\VS2005\release;"
+-				ModuleDefinitionFile="..\..\libtheora.def"
+-				GenerateDebugInformation="false"
+-				SubSystem="2"
+-				OptimizeReferences="2"
+-				EnableCOMDATFolding="2"
+-				OptimizeForWindows98="1"
+-				ImportLibrary="$(OutDir)/libtheora.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -274,12 +220,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -287,7 +227,7 @@
+ 			Name="Release_SSE2|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			WholeProgramOptimization="1"
+@@ -313,7 +253,7 @@
+ 				InlineFunctionExpansion="2"
+ 				EnableIntrinsicFunctions="true"
+ 				FavorSizeOrSpeed="1"
+-				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include;"
++				AdditionalIncludeDirectories="..\..\..\include;..\..\..\lib;..\..\..\lib\enc;..\..\..\..\libogg\include"
+ 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBTHEORA_EXPORTS;USE_ASM"
+ 				StringPooling="true"
+ 				ExceptionHandling="0"
+@@ -337,27 +277,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libtheora.dll"
+-				LinkIncremental="1"
+-				AdditionalLibraryDirectories="..\..\..\..\libogg\win32\VS2005\release;"
+-				ModuleDefinitionFile="..\..\libtheora.def"
+-				GenerateDebugInformation="false"
+-				SubSystem="2"
+-				OptimizeReferences="2"
+-				EnableCOMDATFolding="2"
+-				OptimizeForWindows98="1"
+-				ImportLibrary="$(OutDir)/libtheora.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -367,12 +292,6 @@
  				Name="VCFxCopTool"
  			/>
  			<Tool

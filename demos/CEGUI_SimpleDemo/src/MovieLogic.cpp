@@ -240,30 +240,15 @@ namespace Ogre
 	void MovieLogic::displayedFrame( float vTime, float aTime,
 			unsigned int frameNumber, unsigned int framesDropped )
 	{
-		printf("dropped: %d\n",framesDropped);
-		std::cout << vTime << "," << aTime << "," << frameNumber << "," << framesDropped << "\n";
-		if( maxTime > 0 )
-		{
-			float barTime = vTime / maxTime;
-			mSlider->setProgress( barTime );
-			
-			//Do not adjust scroll bar position while the user is sliding it
-			if( !sliding )
-				mScroller->setScrollPosition( barTime );
-		}
-
-		//Adjust stats window too
-		static CEGUI::String v = "VT: ";
-		static CEGUI::String a = "AT: ";
-		static CEGUI::String c = "CF: ";
-		static CEGUI::String d = "DF: ";
-		
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
-		CEGUI::Window* info = Mgr.getWindow("info");
+		CEGUI::Window* info = Mgr.getWindow("cFrame");
+		std::stringstream s1; s1 << "Frame Number: " << frameNumber;
+		std::stringstream s2; s2 << "Frames dropped: " << framesDropped;
+		std::stringstream s3; s3 << "Video time: " << vTime;
 
-		char s[100];
-		sprintf(s,"%i %i",frameNumber,framesDropped);
-		info->setText(s);
+		Mgr.getWindow("cFrame")->setText(s1.str());
+		Mgr.getWindow("droppedFrames")->setText(s2.str());
+		Mgr.getWindow("vTime")->setText(s3.str());
 	}
 
 } //end Ogre

@@ -1,0 +1,498 @@
+Index: win32/VS2005/libvorbis/libvorbis.vcproj
+===================================================================
+--- win32/VS2005/libvorbis/libvorbis.vcproj	(revision 15152)
++++ win32/VS2005/libvorbis/libvorbis.vcproj	(working copy)
+@@ -1,11 +1,12 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="libvorbis"
+ 	ProjectGUID="{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+ 	RootNamespace="libvorbis"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -19,7 +20,7 @@
+ 			Name="Debug|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			>
+@@ -62,25 +63,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libvorbis.dll"
+-				LinkIncremental="2"
+-				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;"
+-				ModuleDefinitionFile="..\..\vorbis.def"
+-				GenerateDebugInformation="true"
+-				ProgramDatabaseFile="$(OutDir)/libvorbis.pdb"
+-				SubSystem="2"
+-				ImportLibrary="$(OutDir)/libvorbis.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -90,12 +78,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -103,7 +85,7 @@
+ 			Name="Release|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			WholeProgramOptimization="1"
+@@ -152,27 +134,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libvorbis.dll"
+-				LinkIncremental="1"
+-				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;"
+-				ModuleDefinitionFile="..\..\vorbis.def"
+-				GenerateDebugInformation="false"
+-				SubSystem="2"
+-				OptimizeReferences="2"
+-				EnableCOMDATFolding="2"
+-				OptimizeForWindows98="1"
+-				ImportLibrary="$(OutDir)/libvorbis.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -182,12 +149,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -195,7 +156,7 @@
+ 			Name="Release_SSE|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			WholeProgramOptimization="1"
+@@ -245,27 +206,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libvorbis.dll"
+-				LinkIncremental="1"
+-				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;"
+-				ModuleDefinitionFile="..\..\vorbis.def"
+-				GenerateDebugInformation="false"
+-				SubSystem="2"
+-				OptimizeReferences="2"
+-				EnableCOMDATFolding="2"
+-				OptimizeForWindows98="1"
+-				ImportLibrary="$(OutDir)/libvorbis.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -275,12 +221,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -288,7 +228,7 @@
+ 			Name="Release_SSE2|Win32"
+ 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+ 			IntermediateDirectory="$(ConfigurationName)"
+-			ConfigurationType="2"
++			ConfigurationType="4"
+ 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+ 			CharacterSet="2"
+ 			WholeProgramOptimization="1"
+@@ -338,27 +278,12 @@
+ 				Name="VCPreLinkEventTool"
+ 			/>
+ 			<Tool
+-				Name="VCLinkerTool"
+-				AdditionalDependencies="libogg.lib"
+-				OutputFile="$(OutDir)/libvorbis.dll"
+-				LinkIncremental="1"
+-				AdditionalLibraryDirectories="&quot;..\..\..\..\libogg\win32\VS2005\$(ConfigurationName)&quot;"
+-				ModuleDefinitionFile="..\..\vorbis.def"
+-				GenerateDebugInformation="false"
+-				SubSystem="2"
+-				OptimizeReferences="2"
+-				EnableCOMDATFolding="2"
+-				OptimizeForWindows98="1"
+-				ImportLibrary="$(OutDir)/libvorbis.lib"
+-				TargetMachine="1"
++				Name="VCLibrarianTool"
+ 			/>
+ 			<Tool
+ 				Name="VCALinkTool"
+ 			/>
+ 			<Tool
+-				Name="VCManifestTool"
+-			/>
+-			<Tool
+ 				Name="VCXDCMakeTool"
+ 			/>
+ 			<Tool
+@@ -368,12 +293,6 @@
+ 				Name="VCFxCopTool"
+ 			/>
+ 			<Tool
+-				Name="VCAppVerifierTool"
+-			/>
+-			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+Index: win32/VS2005/libvorbisfile/libvorbisfile.vcproj
+===================================================================
+--- win32/VS2005/libvorbisfile/libvorbisfile.vcproj	(revision 15152)
++++ win32/VS2005/libvorbisfile/libvorbisfile.vcproj	(working copy)
+@@ -1,11 +1,12 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="libvorbisfile"
+ 	ProjectGUID="{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
+ 	RootNamespace="libvorbisfile"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -70,6 +71,8 @@
+ 				GenerateDebugInformation="true"
+ 				ProgramDatabaseFile="$(OutDir)/libvorbisfile.pdb"
+ 				SubSystem="2"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				ImportLibrary="$(OutDir)/libvorbisfile.lib"
+ 				TargetMachine="1"
+ 			/>
+@@ -92,9 +95,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -151,6 +151,8 @@
+ 				SubSystem="2"
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				ImportLibrary="$(OutDir)/libvorbisfile.lib"
+ 				TargetMachine="1"
+ 			/>
+@@ -173,9 +175,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -183,7 +182,6 @@
+ 	<References>
+ 		<ProjectReference
+ 			ReferencedProjectIdentifier="{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+-			RelativePathToProject=".\libvorbis\libvorbis.vcproj"
+ 		/>
+ 	</References>
+ 	<Files>
+Index: win32/VS2005/vorbis.sln
+===================================================================
+--- win32/VS2005/vorbis.sln	(revision 15152)
++++ win32/VS2005/vorbis.sln	(working copy)
+@@ -1,5 +1,5 @@
+-Microsoft Visual Studio Solution File, Format Version 9.00
+-# Visual Studio 2005
++Microsoft Visual Studio Solution File, Format Version 10.00
++# Visual C++ Express 2008
+ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbis", "libvorbis\libvorbis.vcproj", "{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+ EndProject
+ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvorbisfile", "libvorbisfile\libvorbisfile.vcproj", "{CEBDE98B-A6AA-46E6-BC79-FAAF823DB9EC}"
+Index: win32/VS2005/vorbisdec/vorbisdec.vcproj
+===================================================================
+--- win32/VS2005/vorbisdec/vorbisdec.vcproj	(revision 15152)
++++ win32/VS2005/vorbisdec/vorbisdec.vcproj	(working copy)
+@@ -1,10 +1,11 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="vorbisdec"
+ 	ProjectGUID="{5833EEA1-1068-431F-A6E5-316E7DC5D90A}"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -69,6 +70,8 @@
+ 				GenerateDebugInformation="true"
+ 				ProgramDatabaseFile="$(OutDir)/vorbisdec.pdb"
+ 				SubSystem="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -90,9 +93,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -158,6 +158,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -179,9 +181,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -248,6 +247,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -269,9 +270,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -338,6 +336,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -359,9 +359,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -369,7 +366,6 @@
+ 	<References>
+ 		<ProjectReference
+ 			ReferencedProjectIdentifier="{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+-			RelativePathToProject=".\libvorbis\libvorbis.vcproj"
+ 		/>
+ 	</References>
+ 	<Files>
+Index: win32/VS2005/vorbisenc/vorbisenc.vcproj
+===================================================================
+--- win32/VS2005/vorbisenc/vorbisenc.vcproj	(revision 15152)
++++ win32/VS2005/vorbisenc/vorbisenc.vcproj	(working copy)
+@@ -1,10 +1,11 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="8,00"
++	Version="9,00"
+ 	Name="vorbisenc"
+ 	ProjectGUID="{E48B6A8B-F7FE-4DA8-8248-E64DBAC4F56C}"
+ 	Keyword="Win32Proj"
++	TargetFrameworkVersion="131072"
+ 	>
+ 	<Platforms>
+ 		<Platform
+@@ -70,6 +71,8 @@
+ 				GenerateDebugInformation="true"
+ 				ProgramDatabaseFile="$(OutDir)/vorbisenc.pdb"
+ 				SubSystem="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -91,9 +94,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -159,6 +159,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -180,9 +182,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -249,6 +248,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -270,9 +271,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -339,6 +337,8 @@
+ 				OptimizeReferences="2"
+ 				EnableCOMDATFolding="2"
+ 				OptimizeForWindows98="1"
++				RandomizedBaseAddress="1"
++				DataExecutionPrevention="0"
+ 				TargetMachine="1"
+ 			/>
+ 			<Tool
+@@ -360,9 +360,6 @@
+ 				Name="VCAppVerifierTool"
+ 			/>
+ 			<Tool
+-				Name="VCWebDeploymentTool"
+-			/>
+-			<Tool
+ 				Name="VCPostBuildEventTool"
+ 			/>
+ 		</Configuration>
+@@ -370,7 +367,6 @@
+ 	<References>
+ 		<ProjectReference
+ 			ReferencedProjectIdentifier="{3A214E06-B95E-4D61-A291-1F8DF2EC10FD}"
+-			RelativePathToProject=".\libvorbis\libvorbis.vcproj"
+ 		/>
+ 	</References>
+ 	<Files>

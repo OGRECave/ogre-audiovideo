@@ -188,6 +188,7 @@ protected:
         SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
         node->attachObject(model);
 		node->scale(3,3,3);
+		node->setPosition(45,0,0);
 
         // load scheme and set up defaults
         CEGUI::SchemeManager::getSingleton().loadScheme(

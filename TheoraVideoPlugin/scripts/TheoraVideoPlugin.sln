@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheoraVideoPlugin", "Theora
 		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E} = {8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEGUI_TheoraDemo", "..\..\CEGUI_TheoraDemo\scripts\CEGUI_TheoraDemo.vcproj", "{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEGUI_SimpleDemo", "..\..\demos\CEGUI_SimpleDemo\scripts\CEGUI_TheoraDemo.vcproj", "{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
