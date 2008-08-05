@@ -240,6 +240,8 @@ namespace Ogre
 	void MovieLogic::displayedFrame( float vTime, float aTime,
 			unsigned int frameNumber, unsigned int framesDropped )
 	{
+		printf("dropped: %d\n",framesDropped);
+		std::cout << vTime << "," << aTime << "," << frameNumber << "," << framesDropped << "\n";
 		if( maxTime > 0 )
 		{
 			float barTime = vTime / maxTime;
@@ -257,17 +259,13 @@ namespace Ogre
 		static CEGUI::String d = "DF: ";
 		
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
-		return;
-		CEGUI::Window* gvTime = Mgr.getWindow("vTime");
-		CEGUI::Window* gaTime = Mgr.getWindow("aTime");
-		CEGUI::Window* gdropped = Mgr.getWindow("Dropped");
-		CEGUI::Window* gcurrent = Mgr.getWindow("Current");
+		CEGUI::Window* info = Mgr.getWindow("info");
 
-		gvTime->setText(v + StringConverter::toString(vTime));
-		gaTime->setText(a + StringConverter::toString(aTime));
-		gcurrent->setText(c + StringConverter::toString(frameNumber));
-		gdropped->setText(d + StringConverter::toString(framesDropped));
+		char s[100];
+		sprintf(s,"%i %i",frameNumber,framesDropped);
+		info->setText(s);
 	}
 
 } //end Ogre
+
 

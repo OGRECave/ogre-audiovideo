@@ -50,6 +50,7 @@ CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
     }
 }
 
+
 class GuiFrameListener : public ExampleFrameListener, public OIS::KeyListener, public OIS::MouseListener
 {
 private:
@@ -132,7 +133,6 @@ private:
 	MovieLogic* mMovieControl;
 
 public:
-
     GuiApplication()
       : mGUIRenderer(0),
         mGUISystem(0),
@@ -199,14 +199,17 @@ protected:
         CEGUI::Window* sheet = 
             CEGUI::WindowManager::getSingleton().loadWindowLayout(
                 (CEGUI::utf8*)"ogregui.layout"); 
-       // mGUISystem->setGUISheet(sheet);
+        mGUISystem->setGUISheet(sheet);
 
        // setupEventHandlers();
 
+
+		// INIT THEORA PLUGIN
 		mMovieControl = new MovieLogic( mGUIRenderer );
 		mMovieControl->initialise();
-		mMovieControl->playMovie("../Media/oggs/rambo2.ogg");
+		mMovieControl->playMovie("../Media/oggs/clip.ogg");
 		model->setMaterialName("Example/TheoraVideoPlayer/Play");
+		//mMovieListener
     }
 
     // Create new frame listener
@@ -258,4 +261,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 

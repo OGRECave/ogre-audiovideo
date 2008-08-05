@@ -15,3 +15,15 @@ material Examples/CloudySky
 		}
 	}
 }
+
+material Example/TheoraVideoPlayer/Play
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			
+		}
+	}
+}
