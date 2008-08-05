@@ -104,12 +104,26 @@ namespace Ogre
 				The current frame that was blitted
 			@param
 				Amount of frames that have been discarded to keep sync
-		*/		
-		virtual void displayedFrame( float vTime, 
-									 float aTime,
-									 unsigned int frameNumber,
-									 unsigned int framesDropped) {};
+		*/
+
+		struct FrameInfo
+		{
+			float mVideoTime,
+				  mAudioTime,
+				  mDecodeTime,
+				  mYUVConvertTime,
+				  mBlitTime,
+				  mAvgDecodeTime,
+				  mAvgYUVConvertTime,
+				  mAvgBlitTime;
+			int   mCurrentFrame,
+				  mNumFramesDropped;
+		};
+		virtual void displayedFrame(FrameInfo info) {};
 	};
+
+
+
 
 	/** 
 		Class that holds an Ogg Theora Movie clip
@@ -290,6 +304,9 @@ namespace Ogre
 
 		int m_FrameNum;
 		int m_FramesDropped;
+		float mSumDecoded, mSumYUVConverted,mSumBlited;
+		float mDecodedTime, mYUVConvertTime, mBlitTime;
+		int mNumFramesEvaluated;
 
 		unsigned int m_lastFrameTime;
 

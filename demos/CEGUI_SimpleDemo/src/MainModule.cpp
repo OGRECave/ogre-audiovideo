@@ -57,6 +57,7 @@ private:
     CEGUI::Renderer* mGUIRenderer;
     bool mShutdownRequested;
 	MovieLogic* mMovieLogic;
+	bool init;
 
 public:
     // NB using buffered input, this is the only change
@@ -64,7 +65,8 @@ public:
         : ExampleFrameListener(win, cam, true, true, true), 
           mGUIRenderer(renderer),
           mShutdownRequested(false),
-		  mMovieLogic(movielogic)
+		  mMovieLogic(movielogic),
+		  init(false)
     {
 		mMouse->setEventCallback(this);
 		mKeyboard->setEventCallback(this);
@@ -78,6 +80,12 @@ public:
 
     bool frameEnded(const FrameEvent& evt)
     {
+		if (!init)
+		{
+			mMovieLogic->initialise();
+			mMovieLogic->playMovie("../Media/oggs/clip.ogg");
+			init=true;
+		}
 		mMovieLogic->update();
         if (mShutdownRequested)
             return false;
@@ -166,12 +174,10 @@ protected:
     // Just override the mandatory create scene method
     void createScene(void)
     {
-
-        // Set ambient light
-        mSceneMgr->setAmbientLight(ColourValue(0.5, 0.5, 0.5));
+		mCamera->getViewport()->setBackgroundColour(ColourValue(0.3,0.3,0.3));
 
         // Create a skydome
-        mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+        //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
         // setup GUI system
         mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
@@ -181,14 +187,39 @@ protected:
 
         CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
 
-        Entity* model = mSceneMgr->createEntity("model", "cube.mesh");
 
+		// create one quad, to minimize rendering time inpact on benchmarking
+        ManualObject* model = mSceneMgr->createManualObject("quad");
+		model->begin("Example/TheoraVideoPlayer/Play");
+
+		model->position( 1,-1,0);
+		model->textureCoord(1,1);
+
+		model->position( 1,1,0);
+		model->textureCoord(1,0);
+
+		model->position(-0.5,1,0);
+		model->textureCoord(0,0);
+
+		model->position(-0.5,1,0);
+		model->textureCoord(0,0);
+
+		model->position( 1,-1,0);
+		model->textureCoord(1,1);
+
+		model->position(-0.5,-1,0);
+		model->textureCoord(0,1);
+
+		model->end();
+
+		model->setUseIdentityProjection(true);
+		model->setUseIdentityView(true);
 		
 
         SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
         node->attachObject(model);
-		node->scale(3,3,3);
-		node->setPosition(45,0,0);
+		//node->scale(3,3,3);
+		//node->setPosition(45,0,0);
 
         // load scheme and set up defaults
         CEGUI::SchemeManager::getSingleton().loadScheme(
@@ -207,10 +238,7 @@ protected:
 
 		// INIT THEORA PLUGIN
 		mMovieControl = new MovieLogic( mGUIRenderer );
-		mMovieControl->initialise();
-		mMovieControl->playMovie("../Media/oggs/clip.ogg");
-		model->setMaterialName("Example/TheoraVideoPlayer/Play");
-		//mMovieListener
+
     }
 
     // Create new frame listener

@@ -63,7 +63,11 @@ namespace Ogre
 		m_VideoFrameReady(false),
 		videobuf_time(0.0f),
 		audiobuf_granulepos(0),
-		m_Timer(0)
+		m_Timer(0),
+		mSumDecoded(0),
+		mSumYUVConverted(0),
+		mSumBlited(0),
+		mNumFramesEvaluated(0)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &m_oggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -351,9 +355,14 @@ namespace Ogre
 	{
 		if( m_VideoFrameReady )
 		{
+			int time=GetTickCount();
 			yuv_buffer yuv;
 			theora_decode_YUVout( &m_theoraState, &yuv);
+			mDecodedTime+=GetTickCount()-time; // add buffer dumping to decoding time
+			
 			m_videoInterface.renderToTexture( &yuv );
+			mYUVConvertTime=m_videoInterface.mYUVConvertTime;
+			mBlitTime=m_videoInterface.mBlitTime;
 			//m_videoInterface.randomizeTexture();
 			
 			m_VideoFrameReady = false;
@@ -371,8 +380,22 @@ namespace Ogre
 				audTime = m_audioInterface->getAudioStreamTime() / 1000.0f;
 			}
 
-			if( m_Dispatcher )
-				m_Dispatcher->displayedFrame( videobuf_time, audTime, m_FrameNum, m_FramesDropped );
+			if(m_Dispatcher)
+			{
+				TheoraMovieMessage::FrameInfo info;
+				info.mAudioTime=0.0f; info.mVideoTime=videobuf_time; info.mCurrentFrame=m_FrameNum;
+				info.mDecodeTime=mDecodedTime;  info.mYUVConvertTime=mYUVConvertTime;  info.mBlitTime=mBlitTime;
+				
+				mNumFramesEvaluated++;
+				mSumDecoded+=mDecodedTime;  mSumYUVConverted+=mYUVConvertTime;  mSumBlited+=mBlitTime;
+				info.mAvgDecodeTime=mSumDecoded/mNumFramesEvaluated;
+				info.mAvgYUVConvertTime=mSumYUVConverted/mNumFramesEvaluated;
+				info.mAvgBlitTime=mSumBlited/mNumFramesEvaluated;
+
+				info.mNumFramesDropped=m_FramesDropped;
+				m_Dispatcher->displayedFrame(info);
+			}
+			mDecodedTime=mBlitTime=mYUVConvertTime=0.0f; // reset
 		}
 
 		//If user requested that we update audio buffers
@@ -550,15 +573,18 @@ namespace Ogre
 	void TheoraMovieClip::decodeTheora()
 	{
 		ogg_packet opTheora;
-
+		long time=GetTickCount();
 		for(;;)
 		{
+
 			//get one video packet...
 			if( ogg_stream_packetout( &m_theoraStreamState, &opTheora) > 0 )
 			{
-      			theora_decode_packetin( &m_theoraState, &opTheora );
-				videobuf_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
 
+      			theora_decode_packetin( &m_theoraState, &opTheora );
+				mDecodedTime=GetTickCount()-time;
+				videobuf_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
+				
 				//update the frame counter
 				m_FrameNum++;
 

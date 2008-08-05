@@ -22,6 +22,8 @@ material Example/TheoraVideoPlayer/Play
 	{
 		pass
 		{
+			cull_software none
+			cull_hardware none
 			lighting off
 			
 		}

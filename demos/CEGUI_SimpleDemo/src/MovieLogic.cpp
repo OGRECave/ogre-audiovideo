@@ -237,18 +237,28 @@ namespace Ogre
 	}
 	
 	//-------------------------------------------------------------------------//
-	void MovieLogic::displayedFrame( float vTime, float aTime,
-			unsigned int frameNumber, unsigned int framesDropped )
+	void MovieLogic::displayedFrame(TheoraMovieMessage::FrameInfo info)
 	{
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
-		CEGUI::Window* info = Mgr.getWindow("cFrame");
-		std::stringstream s1; s1 << "Frame Number: " << frameNumber;
-		std::stringstream s2; s2 << "Frames dropped: " << framesDropped;
-		std::stringstream s3; s3 << "Video time: " << vTime;
+
+		std::stringstream s1; s1 << "Frame Number: " << info.mCurrentFrame;
+		std::stringstream s2; s2 << "Frames dropped: " << info.mNumFramesDropped;
+		std::stringstream s3; s3 << "Video time: " << info.mVideoTime;
+		std::stringstream s4; s4 << "Decoding time (ms): " << (int) info.mAvgDecodeTime << "/" << info.mDecodeTime;
+		std::stringstream s5; s5 << "YUV--RGB time (ms): " << (int) info.mAvgYUVConvertTime << "/" << info.mYUVConvertTime;
+		std::stringstream s6; s6 << "TexBlit time (ms): "  << (int) info.mAvgBlitTime << "/" << info.mBlitTime;
+		float time=(info.mAvgDecodeTime+info.mAvgYUVConvertTime+info.mAvgBlitTime);
+		std::stringstream s7; s7 << "Time per frame (ms): "  << (int) time;
+		std::stringstream s8; s8 << "Max FPS (ms): "  << (int) (1000.0f/time);
 
 		Mgr.getWindow("cFrame")->setText(s1.str());
 		Mgr.getWindow("droppedFrames")->setText(s2.str());
 		Mgr.getWindow("vTime")->setText(s3.str());
+		Mgr.getWindow("decodeTime")->setText(s4.str());
+		Mgr.getWindow("yuvTime")->setText(s5.str());
+		Mgr.getWindow("blitTime")->setText(s6.str());
+		Mgr.getWindow("allTime")->setText(s7.str());
+		Mgr.getWindow("fps")->setText(s8.str());
 	}
 
 } //end Ogre

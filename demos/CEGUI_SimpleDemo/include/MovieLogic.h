@@ -49,7 +49,7 @@ namespace Ogre
 		//Called when something happens (eg end of stream)
 		int messageEvent( PLUGIN_theora_message m );
 		//A frame was displayed.. Some debug stats
-		void displayedFrame( float vTime, float aTime, unsigned int frameNumber, unsigned int framesDropped);
+		void displayedFrame(TheoraMovieMessage::FrameInfo info);
 		//The movie length was discovered.. seeking is enabled
 		void discoveredMovieTime( float discoveredTime );
 

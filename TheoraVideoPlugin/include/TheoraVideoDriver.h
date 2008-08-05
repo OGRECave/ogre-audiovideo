@@ -117,6 +117,11 @@ namespace Ogre
 		static unsigned int GVTable[ 256 ];
 		static unsigned int RVTable[ 256 ];
 
+
+		//! time it took to convert  YUV-RGB of the last frame (milliseconds)
+		unsigned int mYUVConvertTime,
+		//! time it took to blit pixels to a texture of the last frame (milliseconds)
+		             mBlitTime;
 	protected:
 		/** 
 			@remarks
