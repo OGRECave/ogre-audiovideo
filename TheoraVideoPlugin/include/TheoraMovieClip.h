@@ -123,6 +123,19 @@ namespace Ogre
 	};
 
 
+//******************************************************************************//
+	class TheoraFrame
+	{
+	public:
+		TheoraFrame(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb=true);
+		~TheoraFrame();
+		double mTimeToDisplay;
+
+		unsigned char* mPixelBuffer;
+	};
+//******************************************************************************//
+
+
 
 
 	/** 
@@ -268,6 +281,7 @@ namespace Ogre
 		*/
 		float getMovieTime();
 
+
 		void initVorbisTheoraLayer( );
 		void parseVorbisTheoraHeaders( bool useAudio );
 		void activateVorbisTheoraCodecs( bool useAudio );
@@ -279,6 +293,11 @@ namespace Ogre
 		volatile bool mDoSeek;
 		volatile float mSeekTime;
 		TheoraSeekUtility *m_Seeker;
+
+		// decoded yuv frames are stored here
+		pt::mutex mFrameMutex;
+		std::queue<TheoraFrame*> mFrames;
+		bool mFramesReady;
 
 		//Mux/Demux Structs
 		ogg_sync_state   m_oggSyncState;		//sync and verify incoming physical bitstream

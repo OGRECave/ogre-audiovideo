@@ -98,7 +98,7 @@ namespace Ogre
 			@param
 				YUV Buffer
 		*/
-		void renderToTexture( yuv_buffer *buffer );
+		void renderToTexture( unsigned char* buffer );
 
 		unsigned int getWidth() { return m_Width; }
 		unsigned int getHeight() { return m_Height; }
@@ -117,6 +117,7 @@ namespace Ogre
 		static unsigned int GVTable[ 256 ];
 		static unsigned int RVTable[ 256 ];
 
+		
 
 		//! time it took to convert  YUV-RGB of the last frame (milliseconds)
 		unsigned int mYUVConvertTime,
@@ -163,6 +164,8 @@ namespace Ogre
 		TextureSpecialRenderFX mRenderModeFx;
 	};
 
+
+	void yuvToRGB(yuv_buffer yuv,unsigned char* out);
 } //end namespace
 
 #endif //_TheoraOgreVideoDriverHeader_

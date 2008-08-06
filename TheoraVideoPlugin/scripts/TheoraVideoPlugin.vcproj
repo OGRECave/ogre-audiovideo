@@ -301,7 +301,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\bin\release\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
+				CommandLine="copy ..\bin\release_sse2\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -397,7 +397,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\bin\release\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
+				CommandLine="copy ..\bin\release_sse\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

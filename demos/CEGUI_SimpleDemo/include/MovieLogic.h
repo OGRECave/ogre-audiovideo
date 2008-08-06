@@ -30,7 +30,6 @@ namespace Ogre
 		void initialise();
 
 		void populateListBox( CEGUI::Listbox *listBox );
-		CEGUI::Texture * getTexture() { return mText; }
 		const String& getTextureName() { return mCurrentMoviePlaying; }
 		unsigned int getWidth();
 		unsigned int getHeight();
@@ -72,7 +71,6 @@ namespace Ogre
 		TheoraMovieClip* mClip;
 
 		CEGUI::OgreCEGUIRenderer* mGUIRenderer;
-		CEGUI::Texture *mText;
 
 		//Needed audio stuff
 

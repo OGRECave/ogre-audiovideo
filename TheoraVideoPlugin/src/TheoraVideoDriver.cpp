@@ -110,7 +110,7 @@ namespace Ogre
 
 		unsigned int newTextureSize = width * height;
 		PixelFormat pFormat;
-		
+
 		switch( renderMode ) {
 			case render_normal: 
 				m_BytesPerPixel = 3;
@@ -124,6 +124,8 @@ namespace Ogre
 				pFormat = PF_B8G8R8A8;
 				break;
 		}
+
+
 
 		//Create our member bitmap memory		
 		m_RGBBitmap = new unsigned char[ newTextureSize ];
@@ -187,10 +189,11 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::renderToTexture( yuv_buffer *buffer )
+	void TheoraVideoDriver::renderToTexture( unsigned char* buffer )
 	{
 		//Dispatch to appropriate optimized renderer
 		unsigned int time=GetTickCount();
+		/*
 		switch( mRenderModeFx ) {
 			case render_normal:
 			case render_to_PF_B8G8R8A8:
@@ -200,11 +203,15 @@ namespace Ogre
 				decodeYtoTexture( buffer );
 				break;
 		}
+		*/
 		mYUVConvertTime=GetTickCount()-time;
 		//Blit bitmap to texture XXX - todo - replace with lock/unlock
 		Box b( 0,0,0,m_Width,m_Height,1);
 		time=GetTickCount();
-		mTexture->getBuffer()->blitFromMemory( m_Image.getPixelBox(), b );
+		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+		memcpy(texData,buffer,m_Width*m_Height*4);
+		mTexture->getBuffer()->unlock();
+		//mTexture->getBuffer()->blitFromMemory( m_Image.getPixelBox(), b );
 		mBlitTime=GetTickCount()-time;
 	}
 
@@ -269,7 +276,7 @@ namespace Ogre
 	{
 		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
 		//convenient pointers
-		unsigned char *dstBitmap = m_RGBBitmap;
+/*
 		unsigned char *dstBitmapOffset = m_RGBBitmap + (m_BytesPerPixel * m_Width);
 
 		unsigned char *ySrc = (unsigned char*)yuv->y,
@@ -373,6 +380,7 @@ namespace Ogre
 			uSrc			+= yuv->uv_stride;
 			vSrc			+= yuv->uv_stride;
 		} //end for y
+*/
 	}
 
 	//----------------------------------------------------------------------//
@@ -395,6 +403,28 @@ namespace Ogre
 			GVTable[i] = (unsigned int)((0.813 * scale + 0.5) * temp);
 			
 			BUTable[i] = (unsigned int)((2.018 * scale + 0.5) * temp);		//Calc B component
+		}
+	}
+
+
+	void yuvToRGB(yuv_buffer yuv,unsigned char* out)
+	{
+		int x,y;
+
+		unsigned char* ySrc=yuv.y;
+		unsigned char* ySrc2=yuv.y;
+
+		for (y=0;y<yuv.y_height;y++)
+		{
+			ySrc=ySrc2;
+			for (x=0;x<yuv.y_width;x++)
+			{
+				out[0]=out[1]=out[2]=*ySrc;
+				out[3]=255;
+				out+=4;
+				ySrc++;
+			}
+			ySrc2+=yuv.y_stride;
 		}
 	}
 } //end Namespace

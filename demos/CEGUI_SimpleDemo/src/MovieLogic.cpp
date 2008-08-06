@@ -26,7 +26,6 @@ namespace Ogre
 		mScroller = 0;
 		maxTime = 0.0f;
 		mClip = 0;
-		mText = 0;
 		mPaused = true;
 	}
 
@@ -119,7 +118,6 @@ namespace Ogre
 
 		maxTime = 0.0f;
 		mClip = 0;
-		mText = 0;
 		mPaused = true;
 	}
 
@@ -193,7 +191,6 @@ namespace Ogre
 
 		//Movie name is the texture name
 		mCurrentMoviePlaying = mClip->getMovieName();
-		mText = mGUIRenderer->createTexture( mClip->getVideoDriver()->getTexture() );
 
 		//mSlider->setProgress( 0.0f );
 		//mScroller->setScrollPosition( 0.0f );

@@ -42,6 +42,20 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
+	TheoraFrame::TheoraFrame(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb)
+	{
+		mTimeToDisplay=timeToDisplay;
+		mPixelBuffer=new unsigned char[yuv.y_height*yuv.y_width*4];
+		yuvToRGB(yuv,mPixelBuffer);
+	}
+	TheoraFrame::~TheoraFrame()
+	{
+		delete mPixelBuffer;
+	}
+
+	
+
+
 	//--------------------------------------------------------------------//
 	TheoraMovieClip::TheoraMovieClip() : 
 		pt::thread( false ), 
@@ -69,7 +83,8 @@ namespace Ogre
 		mSumBlited(0),
 		mNumFramesEvaluated(0),
 		mYUVConvertTime(0),
-		mBlitTime(0)
+		mBlitTime(0),
+		mFramesReady(false)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &m_oggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -355,14 +370,26 @@ namespace Ogre
 	//--------------------------------------------------------------------//	
 	void TheoraMovieClip::blitFrameCheck()
 	{
-		if( m_VideoFrameReady )
+		if( mFramesReady )
 		{
 			int time=GetTickCount();
-			yuv_buffer yuv;
-			theora_decode_YUVout( &m_theoraState, &yuv);
-			mDecodedTime+=GetTickCount()-time; // add buffer dumping to decoding time
+			mFrameMutex.lock();
+				
+				TheoraFrame* frame=mFrames.front();
+				if (frame->mTimeToDisplay > getMovieTime())
+				{
+					mFrameMutex.unlock();
+					return; // wait until it's time
+				}
+				mFrames.pop();
+				if (mFrames.size() == 0) mFramesReady=false;
+			mFrameMutex.unlock();
 			
-			m_videoInterface.renderToTexture( &yuv );
+
+			m_videoInterface.renderToTexture( frame->mPixelBuffer );
+			
+			delete frame;
+
 			mYUVConvertTime=m_videoInterface.mYUVConvertTime;
 			mBlitTime=m_videoInterface.mBlitTime;
 			
@@ -393,7 +420,10 @@ namespace Ogre
 				info.mAvgYUVConvertTime=mSumYUVConverted/mNumFramesEvaluated;
 				info.mAvgBlitTime=mSumBlited/mNumFramesEvaluated;
 
-				info.mNumFramesDropped=m_FramesDropped;
+				// Temp
+				info.mCurrentFrame=mFrames.size();
+
+				//info.mNumFramesDropped=m_FramesDropped;
 				m_Dispatcher->displayedFrame(info);
 			}
 			mDecodedTime=0.0f; // reset, but keep the yuv and blit times to their old values, because of frame dropping
@@ -456,9 +486,34 @@ namespace Ogre
 			if( m_audioInterface && m_vorbis_streams )
 				decodeVorbis();
 
-			if( !m_VideoFrameReady && m_theora_streams )
+			if(!m_VideoFrameReady && m_theora_streams)
+			{
 				decodeTheora();
+			}
 
+			if (m_VideoFrameReady)
+			{
+				int time=GetTickCount();
+				yuv_buffer yuv;
+
+				if (mFrames.size() > 15)
+				{
+					pt::psleep(10);
+					continue;
+				}
+				
+				theora_decode_YUVout( &m_theoraState, &yuv);
+				double frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
+				TheoraFrame* frame=new TheoraFrame(yuv,frame_time);
+
+				mDecodedTime+=GetTickCount()-time; // add buffer dumping to decoding time
+				mFrameMutex.lock();
+				if (mFrames.size() == 0) mFramesReady=true;
+				mFrames.push(frame);
+				mFrameMutex.unlock();
+				m_VideoFrameReady=false;
+				continue;
+			}
 			//Buffer data into Ogg Pages
 			if( bytesRead > 0 )
 			{
@@ -484,12 +539,14 @@ namespace Ogre
 			}
 
 			//XXX: hmmm :?
+			/*
 			if( m_VideoFrameReady )	{
 				int ticks = 1000.0f * ( videobuf_time - getMovieTime() );
 				if(ticks > 0)
 					pt::psleep(ticks);
 					//relax(ticks);
 			}
+			*/
 		} //while m_ThreadRunning
 	}
 
@@ -574,14 +631,14 @@ namespace Ogre
 	void TheoraMovieClip::decodeTheora()
 	{
 		ogg_packet opTheora;
-		long time;
+		long time=GetTickCount();
 		for(;;)
 		{
 
 			//get one video packet...
 			if( ogg_stream_packetout( &m_theoraStreamState, &opTheora) > 0 )
 			{
-				time=GetTickCount();
+				
       			theora_decode_packetin( &m_theoraState, &opTheora );
 				mDecodedTime=GetTickCount()-time;
 				videobuf_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
@@ -594,25 +651,31 @@ namespace Ogre
 				//ones and keep looping, since theora at this stage
 				//needs to decode all frames
 				
-				//gran time & our time is in seconds
-				float nowTime = getMovieTime();
-				float delay = videobuf_time - nowTime;
-					
-				if( delay >= 0.0f )
+				//if there are no frames in queue, first let's see if the frame we just decoded
+				//should even be displayed
+				if (mFrames.size() == 0)
 				{
-					//got a good frame, within time window
+					float nowTime = getMovieTime();
+					float delay = videobuf_time - nowTime;
+						
+					if (delay >= 0.0f)
+					{
+						//got a good frame, within time window
+						m_VideoFrameReady = true;
+						break;
+					}
+					else //frame is dropped
+					{
+						m_VideoFrameReady = true;
+						break;
+						time=GetTickCount();
+						m_FramesDropped++;
+					}
+				}
+				else
+				{
 					m_VideoFrameReady = true;
 					break;
-				}
-				else if( nowTime - m_lastFrameTime >= 1.0f)
-				{
-					//display at least one frame per second, regardless
-					m_VideoFrameReady = true;
-					break;
-				}
-				else //frame is dropped
-				{
-					m_FramesDropped++;
 				}
 			}
 			else
