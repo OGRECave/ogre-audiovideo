@@ -67,7 +67,9 @@ namespace Ogre
 		mSumDecoded(0),
 		mSumYUVConverted(0),
 		mSumBlited(0),
-		mNumFramesEvaluated(0)
+		mNumFramesEvaluated(0),
+		mYUVConvertTime(0),
+		mBlitTime(0)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &m_oggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -363,7 +365,6 @@ namespace Ogre
 			m_videoInterface.renderToTexture( &yuv );
 			mYUVConvertTime=m_videoInterface.mYUVConvertTime;
 			mBlitTime=m_videoInterface.mBlitTime;
-			//m_videoInterface.randomizeTexture();
 			
 			m_VideoFrameReady = false;
 			m_lastFrameTime = getMovieTime();
@@ -395,7 +396,7 @@ namespace Ogre
 				info.mNumFramesDropped=m_FramesDropped;
 				m_Dispatcher->displayedFrame(info);
 			}
-			mDecodedTime=mBlitTime=mYUVConvertTime=0.0f; // reset
+			mDecodedTime=0.0f; // reset, but keep the yuv and blit times to their old values, because of frame dropping
 		}
 
 		//If user requested that we update audio buffers
@@ -573,14 +574,14 @@ namespace Ogre
 	void TheoraMovieClip::decodeTheora()
 	{
 		ogg_packet opTheora;
-		long time=GetTickCount();
+		long time;
 		for(;;)
 		{
 
 			//get one video packet...
 			if( ogg_stream_packetout( &m_theoraStreamState, &opTheora) > 0 )
 			{
-
+				time=GetTickCount();
       			theora_decode_packetin( &m_theoraState, &opTheora );
 				mDecodedTime=GetTickCount()-time;
 				videobuf_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
@@ -603,7 +604,7 @@ namespace Ogre
 					m_VideoFrameReady = true;
 					break;
 				}
-				else if( nowTime - m_lastFrameTime >= 1.0f )
+				else if( nowTime - m_lastFrameTime >= 1.0f)
 				{
 					//display at least one frame per second, regardless
 					m_VideoFrameReady = true;

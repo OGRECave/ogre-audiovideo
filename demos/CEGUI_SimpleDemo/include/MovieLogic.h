@@ -1,6 +1,7 @@
 #ifndef _MovieLogic_Header_
 #define _MovieLogic_Header_
 
+#include "Ogre.h"
 #include "OgreString.h"
 
 #include "TheoraVideoController.h"
@@ -76,6 +77,7 @@ namespace Ogre
 		//Needed audio stuff
 
 		String mCurrentMoviePlaying;
+		Ogre::Timer mTimer;
 		bool mPaused;
 	};
 }
