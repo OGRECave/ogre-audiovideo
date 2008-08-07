@@ -78,6 +78,8 @@ public:
         mShutdownRequested = true;
     }
 
+	int mLastFrameTicks;
+
 	bool frameStarted(const FrameEvent& evt)
     {
 		if (!init)
@@ -86,7 +88,21 @@ public:
 			mMovieLogic->playMovie("../Media/oggs/clip.ogg");
 			init=true;
 		}
+		int time,diff;
+		/* framerate restricting code
+		while (true)
+		{
+			mMovieLogic->update();
+			time=GetTickCount();
+			diff=1000.0f/50.0f-(time-mLastFrameTicks);
+			if (diff <= 0) break;
+			if (diff > 10) diff=10;
+			Sleep(diff);
+		}
+		*/
 		mMovieLogic->update();
+		mLastFrameTicks=time;
+
         if (mShutdownRequested)
             return false;
         else

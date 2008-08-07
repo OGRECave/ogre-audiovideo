@@ -1,11 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PTypes_Lib", "..\..\ptypes-1.8.3\win32\PTypes_Lib.vcproj", "{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheoraVideoPlugin", "TheoraVideoPlugin.vcproj", "{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E} = {8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CEGUI_TheoraDemo", "..\..\demos\CEGUI_SimpleDemo\scripts\CEGUI_TheoraDemo.vcproj", "{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
 EndProject
@@ -17,14 +12,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Debug|Win32.Build.0 = Debug|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release_SSE|Win32.ActiveCfg = Release|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release_SSE|Win32.Build.0 = Release|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release_SSE2|Win32.ActiveCfg = Release|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release_SSE2|Win32.Build.0 = Release|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release|Win32.ActiveCfg = Release|Win32
-		{8D0E0535-B27C-42D9-83AA-9A0FDBB53C1E}.Release|Win32.Build.0 = Release|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Debug|Win32.Build.0 = Debug|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Release_SSE|Win32.ActiveCfg = Release_SSE|Win32

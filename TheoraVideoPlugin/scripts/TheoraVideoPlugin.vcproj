@@ -27,7 +27,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="mkdir ..\..\ptypes-1.8.3\include\ptypes,&#x0D;&#x0A;copy ..\..\ptypes-1.8.3\include\*.h ..\..\ptypes-1.8.3\include\ptypes&#x0D;&#x0A;"
+				CommandLine=""
+				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -49,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\libogg\include;..\..\..\libvorbis\include;..\..\..\libtheora\include;..\include\;&quot;..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\libogg\include;..\..\..\libvorbis\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -81,7 +82,7 @@
 				OutputFile="..\bin\debug/Plugin_TheoraVideoSystem.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../ptypes-1.8.3/Win32/debug&quot;;../../../libtheora\win32\VS2005\Debug;../../../libogg\win32\VS2005\Debug;../../../libvorbis\win32\VS2005\Debug"
+				AdditionalLibraryDirectories="&quot;../../../ptypes/Win32/debug&quot;;../../../libtheora\win32\VS2005\Debug;../../../libogg\win32\VS2005\Debug;../../../libvorbis\win32\VS2005\Debug"
 				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\bin\Debug/Plugin_TheoraVideoSystem.pdb"
@@ -124,7 +125,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="mkdir ..\..\ptypes-1.8.3\include\ptypes,&#x0D;&#x0A;copy ..\..\ptypes-1.8.3\include\*.h ..\..\ptypes-1.8.3\include\ptypes&#x0D;&#x0A;"
+				CommandLine=""
+				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -146,7 +148,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;&quot;..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -178,7 +180,7 @@
 				OutputFile="..\bin\release/Plugin_TheoraVideoSystem.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../ptypes-1.8.3/Win32/release&quot;;../../../libtheora\win32\VS2005\Release;../../../libogg\win32\VS2005\Release;../../../libvorbis\win32\VS2005\Release"
+				AdditionalLibraryDirectories="&quot;../../../ptypes/Win32/release&quot;;../../../libtheora\win32\VS2005\Release;../../../libogg\win32\VS2005\Release;../../../libvorbis\win32\VS2005\Release"
 				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
 				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
 				RandomizedBaseAddress="1"
@@ -220,7 +222,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="mkdir ..\..\ptypes-1.8.3\include\ptypes,&#x0D;&#x0A;copy ..\..\ptypes-1.8.3\include\*.h ..\..\ptypes-1.8.3\include\ptypes&#x0D;&#x0A;"
+				CommandLine=""
+				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -242,7 +245,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;&quot;..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -252,7 +255,7 @@
 				AssemblerListingLocation=".\..\obj\Release/"
 				ObjectFile=".\..\obj\Release/"
 				ProgramDataBaseFileName=".\..\obj\Release/"
-				WarningLevel="3"
+				WarningLevel="1"
 				SuppressStartupBanner="true"
 				CompileAs="0"
 			/>
@@ -274,7 +277,7 @@
 				OutputFile="..\bin\Release_SSE2/Plugin_TheoraVideoSystem.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../ptypes-1.8.3/Win32/release&quot;;../../../libtheora\win32\VS2005\Release_SSE2;../../../libogg\win32\VS2005\Release_SSE2;../../../libvorbis\win32\VS2005\Release_SSE2"
+				AdditionalLibraryDirectories="../../../ptypes/Win32/release;../../../libtheora\win32\VS2005\Release_SSE2;../../../libogg\win32\VS2005\Release_SSE2;../../../libvorbis\win32\VS2005\Release_SSE2"
 				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
 				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
 				RandomizedBaseAddress="1"
@@ -316,7 +319,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="mkdir ..\..\ptypes-1.8.3\include\ptypes,&#x0D;&#x0A;copy ..\..\ptypes-1.8.3\include\*.h ..\..\ptypes-1.8.3\include\ptypes&#x0D;&#x0A;"
+				CommandLine=""
+				ExcludedFromBuild="true"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -338,7 +342,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;&quot;..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -370,7 +374,7 @@
 				OutputFile="..\bin\Release_SSE/Plugin_TheoraVideoSystem.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;../../ptypes-1.8.3/Win32/release&quot;;../../../libtheora\win32\VS2005\Release_SSE;../../../libogg\win32\VS2005\Release_SSE;../../../libvorbis\win32\VS2005\Release_SSE"
+				AdditionalLibraryDirectories="../../../ptypes/Win32/release;../../../libtheora\win32\VS2005\Release_SSE;../../../libogg\win32\VS2005\Release_SSE;../../../libvorbis\win32\VS2005\Release_SSE"
 				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
 				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
 				RandomizedBaseAddress="1"

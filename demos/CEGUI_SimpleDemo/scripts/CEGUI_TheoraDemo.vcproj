@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;&quot;..\..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;..\..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
