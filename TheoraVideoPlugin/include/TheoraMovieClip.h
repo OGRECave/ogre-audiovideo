@@ -124,6 +124,8 @@ namespace Ogre
 
 
 //******************************************************************************//
+	class TheoraMovieClip; // prototype because it is used in TheoraFrame
+
 	class TheoraFrame
 	{
 	public:
@@ -135,7 +137,7 @@ namespace Ogre
 			@param h
 				height of the frame in pixels
 		*/
-		TheoraFrame(int w,int h);
+		TheoraFrame(TheoraMovieClip* parent,int w,int h);
 		~TheoraFrame();
 		/**
 			@remarks
@@ -151,6 +153,7 @@ namespace Ogre
 
 		double mTimeToDisplay;
 		bool mInUse;
+		TheoraMovieClip* mParent;
 
 		unsigned char* mPixelBuffer;
 	};

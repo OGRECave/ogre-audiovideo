@@ -136,9 +136,16 @@ namespace Ogre
 		
 		// Now setup texture -- only use 0 mipaps, anything else results
 		//in problems under d3d
-		mTexture = TextureManager::getSingleton().loadImage( sTextureName, sGroupName, m_Image, TEX_TYPE_2D, 0, 1.0f );
+		mTexture = TextureManager::getSingleton().createManual(sTextureName,sGroupName,TEX_TYPE_2D,
+			m_Width,m_Height,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+
+		PixelFormat pf=mTexture->getFormat();
+
+		//mTexture = TextureManager::getSingleton().loadImage( sTextureName, sGroupName, m_Image, TEX_TYPE_2D, 0, 1.0f );
 		
 		// Grab Our material, then find the Texture Unit
+
+
 		MaterialPtr material = MaterialManager::getSingleton().getByName( sMaterialName );
 		TextureUnitState* t = material->getTechnique(m_Tec)->getPass(m_Pass)->getTextureUnitState(m_Unit);
 
@@ -272,12 +279,49 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::decodeYUVtoTexture( yuv_buffer *yuv )
+	void TheoraVideoDriver::decodeYUVtoTexture( yuv_buffer *yuv, unsigned char* xrgb_out )
 	{
-		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
-		//convenient pointers
+		//Convert 4:2:0 YUV YCrCb to an X8R8G8B8 Bitmap
 /*
-		unsigned char *dstBitmapOffset = m_RGBBitmap + (m_BytesPerPixel * m_Width);
+		unsigned char *y=yuv->y, *yLineEnd=yuv->y+yuv->y_width,*yStrideEnd=yuv->y+yuv->y_stride;
+		unsigned char *u=yuv->u;
+		unsigned char *v=yuv->v, cy,cu,cv;
+		int h=0,x_inc=0,y_inc=0;
+
+		while (h < yuv->y_height)
+		{
+			while (y < yLineEnd)
+			{
+				//R = Y + 1.140V
+				//G = Y - 0.395U - 0.581V
+				//B = Y + 2.032U
+				cy=*y; cu=*u; cv=*v;
+
+				xrgb_out[0]=cy+2.032*cu;
+				xrgb_out[1]=cy-0.395f*cu - 0.581f*cv;
+				xrgb_out[2]=cy+1.14f*cv;
+				xrgb_out[3]=255;
+				xrgb_out+=4;
+				y++;
+				x_inc=!x_inc;
+				if (x_inc == 0) { u++; v++; }
+			}
+			y=yStrideEnd;			yStrideEnd+=yuv->y_stride;			yLineEnd=y+yuv->y_width;
+			
+			y_inc=!y_inc;
+			u-=yuv->uv_width; v-=yuv->uv_width;
+			if (y_inc == 0) { u+=yuv->uv_stride; v+=yuv->uv_stride; }
+
+
+			h++;
+		}
+*/
+		//convenient pointers
+
+		m_BytesPerPixel=4; // temp hack
+
+		unsigned char *dstBitmap=xrgb_out;
+		unsigned char *dstBitmapOffset = xrgb_out + (m_BytesPerPixel * m_Width);
 
 		unsigned char *ySrc = (unsigned char*)yuv->y,
 					  *uSrc = (unsigned char*)yuv->u,
@@ -334,9 +378,9 @@ namespace Ogre
 				b = (rgbY + bU ) >> 13;
 				
 				//Clip to RGB values (255 0)
-				CLIP_RGB_COLOR( r, dstBitmap[0] );
+				CLIP_RGB_COLOR( r, dstBitmap[2] );
 				CLIP_RGB_COLOR( g, dstBitmap[1] );
-				CLIP_RGB_COLOR( b, dstBitmap[2] );
+				CLIP_RGB_COLOR( b, dstBitmap[0] );
 				
 				//And repeat for other pixels (note, y is unique for each
 				//pixel, while uv are not)
@@ -344,27 +388,27 @@ namespace Ogre
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmap[m_BytesPerPixel] );
+				CLIP_RGB_COLOR( r, dstBitmap[m_BytesPerPixel+2] );
 				CLIP_RGB_COLOR( g, dstBitmap[m_BytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmap[m_BytesPerPixel+2] );
+				CLIP_RGB_COLOR( b, dstBitmap[m_BytesPerPixel+0] );
 				++ySrc;
 
 				rgbY = YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[0] );
+				CLIP_RGB_COLOR( r, dstBitmapOffset[2] );
 				CLIP_RGB_COLOR( g, dstBitmapOffset[1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[2] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[0] );
 				++ySrc2;
 				
 				rgbY = YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[m_BytesPerPixel] );
+				CLIP_RGB_COLOR( r, dstBitmapOffset[m_BytesPerPixel+2] );
 				CLIP_RGB_COLOR( g, dstBitmapOffset[m_BytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[m_BytesPerPixel+2] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[m_BytesPerPixel+0] );
 				++ySrc2;
 
 				//Advance inner loop offsets
@@ -380,7 +424,7 @@ namespace Ogre
 			uSrc			+= yuv->uv_stride;
 			vSrc			+= yuv->uv_stride;
 		} //end for y
-*/
+
 	}
 
 	//----------------------------------------------------------------------//

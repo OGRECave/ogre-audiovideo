@@ -123,15 +123,17 @@ namespace Ogre
 		unsigned int mYUVConvertTime,
 		//! time it took to blit pixels to a texture of the last frame (milliseconds)
 		             mBlitTime;
-	protected:
+
 		/** 
 			@remarks
 				Takes a yuv_buffer (4:2:0 YCrBr) and decodes it to our 
 				24Bit RGB texture
 			@param
 				YUV Buffer
+			@param
+				pointer to XRGB buffer to write data to
 		*/
-		void decodeYUVtoTexture( yuv_buffer *yuv );
+		void decodeYUVtoTexture( yuv_buffer *yuv, unsigned char* xrgb_out );
 
 		/** 
 			@remarks
@@ -141,7 +143,7 @@ namespace Ogre
 				YUV Buffer
 		*/
 		void decodeYtoTexture( yuv_buffer *yuv );
-
+	protected:
 		//! The image class we use
 		Image m_Image;
 		//! Pointer to the Ogre Texture

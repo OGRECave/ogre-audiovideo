@@ -42,10 +42,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	TheoraFrame::TheoraFrame(int w,int h)
+	TheoraFrame::TheoraFrame(TheoraMovieClip* parent,int w,int h)
 	{
 		mPixelBuffer=new unsigned char[w*h*4];
 		mInUse=false;
+		mParent=parent;
 	}
 	TheoraFrame::~TheoraFrame()
 	{
@@ -55,9 +56,13 @@ namespace Ogre
 	void TheoraFrame::copyYUV(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb)
 	{
 		mTimeToDisplay=timeToDisplay;
-		yuvToRGB(yuv,mPixelBuffer);
+		mParent->getVideoDriver()->decodeYUVtoTexture(&yuv,mPixelBuffer);
+		//yuvToRGB(yuv,mPixelBuffer);
 		mInUse=true;
 	}
+
+
+
 
 
 	//--------------------------------------------------------------------//
@@ -180,7 +185,7 @@ namespace Ogre
 
 		for (int i=0;i<num;i++)
 		{
-			frame=new TheoraFrame(m_videoInterface.getWidth(),m_videoInterface.getHeight());
+			frame=new TheoraFrame(this,m_videoInterface.getWidth(),m_videoInterface.getHeight());
 			mFrameRepository.push_back(frame);
 		}
 	}
