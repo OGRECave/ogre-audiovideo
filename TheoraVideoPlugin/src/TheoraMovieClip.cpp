@@ -42,18 +42,22 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	TheoraFrame::TheoraFrame(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb)
+	TheoraFrame::TheoraFrame(int w,int h)
 	{
-		mTimeToDisplay=timeToDisplay;
-		mPixelBuffer=new unsigned char[yuv.y_height*yuv.y_width*4];
-		yuvToRGB(yuv,mPixelBuffer);
+		mPixelBuffer=new unsigned char[w*h*4];
+		mInUse=false;
 	}
 	TheoraFrame::~TheoraFrame()
 	{
 		delete mPixelBuffer;
 	}
 
-	
+	void TheoraFrame::copyYUV(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb)
+	{
+		mTimeToDisplay=timeToDisplay;
+		yuvToRGB(yuv,mPixelBuffer);
+		mInUse=true;
+	}
 
 
 	//--------------------------------------------------------------------//
@@ -161,6 +165,26 @@ namespace Ogre
 
 		changePlayMode( eMode );
 	}
+
+	//--------------------------------------------------------------------//
+	void TheoraMovieClip::setNumPrecachedFrames(int num)
+	{
+		TheoraFrame* frame;
+		// clear current frame repository (if any)
+		while (mFrameRepository.size())
+		{
+			frame=mFrameRepository.front();
+			delete frame;
+			mFrameRepository.pop_back();
+		}
+
+		for (int i=0;i<num;i++)
+		{
+			frame=new TheoraFrame(m_videoInterface.getWidth(),m_videoInterface.getHeight());
+			mFrameRepository.push_back(frame);
+		}
+	}
+
 
 	//--------------------------------------------------------------------//
 	void TheoraMovieClip::load( const String& filename,
@@ -373,22 +397,39 @@ namespace Ogre
 		if( mFramesReady )
 		{
 			int time=GetTickCount();
+			double nowTime=getMovieTime();
+			TheoraFrame* frame;
+			// we go through the list of available frames and try to find one suitable for presentation
+			// if a frame's time to display has ended, it will be dropped, which will hopefully happen
+			// rearely.
+			// if all frames are dropped, the last still get's displayed.
+
+			if (mTimeOfNextFrame > nowTime) return;
+
 			mFrameMutex.lock();
-				
-				TheoraFrame* frame=mFrames.front();
-				if (frame->mTimeToDisplay > getMovieTime())
-				{
-					mFrameMutex.unlock();
-					return; // wait until it's time
-				}
+			while (mFrames.size())
+			{
+				frame=mFrames.front();
+				//if (frame->mDisplayed && frame->mTimeToDisplay > nowTime) return;
+
 				mFrames.pop();
-				if (mFrames.size() == 0) mFramesReady=false;
+				if (frame->mTimeToDisplay < nowTime)
+				{
+					if (mFrames.size() > 0) frame->mInUse=false;
+					m_FramesDropped++;
+				}
+				else break;
+			}
+				
+			if (mFrames.size() == 0) mFramesReady=false;
 			mFrameMutex.unlock();
 			
 
 			m_videoInterface.renderToTexture( frame->mPixelBuffer );
 			
-			delete frame;
+			mTimeOfNextFrame=frame->mTimeToDisplay;
+			frame->mInUse=false;
+			
 
 			mYUVConvertTime=m_videoInterface.mYUVConvertTime;
 			mBlitTime=m_videoInterface.mBlitTime;
@@ -423,7 +464,7 @@ namespace Ogre
 				// Temp
 				info.mCurrentFrame=mFrames.size();
 
-				//info.mNumFramesDropped=m_FramesDropped;
+				info.mNumFramesDropped=m_FramesDropped;
 				m_Dispatcher->displayedFrame(info);
 			}
 			mDecodedTime=0.0f; // reset, but keep the yuv and blit times to their old values, because of frame dropping
@@ -453,6 +494,8 @@ namespace Ogre
 	{
 		m_ThreadRunning = true;
 		int bytesRead = 1;
+		TheoraFrame* frame;
+		std::list<TheoraFrame*>::iterator it;
 		
 		//Build seek map if seeking is enabled for this clip
 		if( m_Seeker ) {
@@ -460,6 +503,9 @@ namespace Ogre
 			if( m_Dispatcher )
 				m_Dispatcher->discoveredMovieTime( mMovieLength );
 		}
+
+		// init our frame repository
+		setNumPrecachedFrames(16);
 
 		while( m_ThreadRunning )
 		{
@@ -483,6 +529,18 @@ namespace Ogre
 				m_EndOfFile = false;
 			}
 
+			for (it=mFrameRepository.begin();it!=mFrameRepository.end();it++)
+			{
+				frame=*it;
+				if (!frame->mInUse) break;
+			}
+
+			if (it == mFrameRepository.end())
+			{
+				pt::psleep(10);
+				continue;
+			}
+
 			if( m_audioInterface && m_vorbis_streams )
 				decodeVorbis();
 
@@ -496,15 +554,11 @@ namespace Ogre
 				int time=GetTickCount();
 				yuv_buffer yuv;
 
-				if (mFrames.size() > 15)
-				{
-					pt::psleep(10);
-					continue;
-				}
+
 				
 				theora_decode_YUVout( &m_theoraState, &yuv);
 				double frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
-				TheoraFrame* frame=new TheoraFrame(yuv,frame_time);
+				frame->copyYUV(yuv,frame_time);
 
 				mDecodedTime+=GetTickCount()-time; // add buffer dumping to decoding time
 				mFrameMutex.lock();
@@ -632,6 +686,7 @@ namespace Ogre
 	{
 		ogg_packet opTheora;
 		long time=GetTickCount();
+		float nowTime,delay;
 		for(;;)
 		{
 
@@ -652,30 +707,20 @@ namespace Ogre
 				//needs to decode all frames
 				
 				//if there are no frames in queue, first let's see if the frame we just decoded
-				//should even be displayed
-				if (mFrames.size() == 0)
+				//should even be displayed. but, display at least one frame per second
+
+				nowTime = getMovieTime();
+				delay=videobuf_time - nowTime;
+				if (delay >= 0.0f || delay < -1.0f)
 				{
-					float nowTime = getMovieTime();
-					float delay = videobuf_time - nowTime;
-						
-					if (delay >= 0.0f)
-					{
-						//got a good frame, within time window
-						m_VideoFrameReady = true;
-						break;
-					}
-					else //frame is dropped
-					{
-						m_VideoFrameReady = true;
-						break;
-						time=GetTickCount();
-						m_FramesDropped++;
-					}
-				}
-				else
-				{
+					//got a good frame, within time window
 					m_VideoFrameReady = true;
 					break;
+				}
+				else //frame is dropped
+				{
+					time=GetTickCount();
+					m_FramesDropped++;
 				}
 			}
 			else
@@ -720,6 +765,7 @@ namespace Ogre
 				//Initialize timer variable first time up
 				m_Timer = new Timer();
 				m_Timer->reset();
+				mTimeOfNextFrame=-1.0f;
 				return 0.0f;
 			}
 		}

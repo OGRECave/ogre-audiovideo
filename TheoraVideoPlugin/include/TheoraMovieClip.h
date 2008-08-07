@@ -127,9 +127,30 @@ namespace Ogre
 	class TheoraFrame
 	{
 	public:
-		TheoraFrame(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb=true);
+		/**
+			@remarks
+				initializes a frame
+			@param w
+				width of the frame in pixels
+			@param h
+				height of the frame in pixels
+		*/
+		TheoraFrame(int w,int h);
 		~TheoraFrame();
+		/**
+			@remarks
+				copies theora YUV buffer to mPixelBuffer and performes either
+				YUV->RGB conversion or stores YUV directly into RGB (for shaders to convert later on)
+			@param yuv
+				theora's yuv_buffer structure
+			@param timeToDisplay
+				latest time this frame should be displayed
+			@param convert_to_rgb
+		*/
+		void copyYUV(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb=true);
+
 		double mTimeToDisplay;
+		bool mInUse;
 
 		unsigned char* mPixelBuffer;
 	};
@@ -272,6 +293,13 @@ namespace Ogre
 		//! Called during thread clean up - do not call directly!
 		void cleanup();
 
+		/**
+			@remarks
+				initialises N TheoraFrame objects to hold prerendered frames
+		*/
+		void setNumPrecachedFrames(int num);
+		int getNumPrecachedFrames() { return mFrameRepository.size(); }
+
 	protected:
 		/**
 			@remarks
@@ -294,8 +322,13 @@ namespace Ogre
 		volatile float mSeekTime;
 		TheoraSeekUtility *m_Seeker;
 
-		// decoded yuv frames are stored here
+		// time the video clip has to reach before it should display the next frame
+		double mTimeOfNextFrame;
+		// a list that holds our available frame buffers
+		std::list<TheoraFrame*> mFrameRepository;
+		// mutex that syncs the main thread and the frame extraction thread
 		pt::mutex mFrameMutex;
+		// queue containing rendered frames
 		std::queue<TheoraFrame*> mFrames;
 		bool mFramesReady;
 

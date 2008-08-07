@@ -78,7 +78,7 @@ public:
         mShutdownRequested = true;
     }
 
-    bool frameEnded(const FrameEvent& evt)
+	bool frameStarted(const FrameEvent& evt)
     {
 		if (!init)
 		{
@@ -90,7 +90,7 @@ public:
         if (mShutdownRequested)
             return false;
         else
-            return ExampleFrameListener::frameEnded(evt);
+            return ExampleFrameListener::frameStarted(evt);
     }
 	//----------------------------------------------------------------//
 	bool mouseMoved( const OIS::MouseEvent &arg )
