@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;&quot;..\..\..\ptypes-1.8.3\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;..\..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

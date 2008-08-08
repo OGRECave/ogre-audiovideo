@@ -101,7 +101,7 @@ public:
 		}
 		*/
 		mMovieLogic->update();
-		mLastFrameTicks=time;
+	//	mLastFrameTicks=time;
 
         if (mShutdownRequested)
             return false;

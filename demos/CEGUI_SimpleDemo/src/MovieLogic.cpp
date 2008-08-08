@@ -240,12 +240,13 @@ namespace Ogre
 			std::stringstream s1; s1 << "Frame Number: " << info.mCurrentFrame;
 			std::stringstream s2; s2 << "Frames dropped: " << info.mNumFramesDropped;
 			std::stringstream s3; s3 << "Video time: " << std::fixed << std::setprecision(1) << info.mVideoTime;
-			std::stringstream s4; s4 << "Decoding time (ms): " << std::fixed << std::setprecision(2) << info.mAvgDecodeTime << "/" << info.mDecodeTime;
-			std::stringstream s5; s5 << "YUV--RGB time (ms): " << std::fixed << std::setprecision(1) << info.mAvgYUVConvertTime << "/" << info.mYUVConvertTime;
-			std::stringstream s6; s6 << "TexBlit time (ms): " << std::fixed << std::setprecision(1)  << info.mAvgBlitTime << "/" << info.mBlitTime;
+			std::stringstream s4; s4 << "Decoding time (ms): " << std::fixed << std::setprecision(2) << info.mAvgDecodeTime;
+			std::stringstream s5; s5 << "YUV--RGB time (ms): " << std::fixed << std::setprecision(2) << info.mAvgYUVConvertTime;
+			std::stringstream s6; s6 << "TexBlit time (ms): " << std::fixed << std::setprecision(2)  << info.mAvgBlitTime;
 			float time=(info.mAvgDecodeTime+info.mAvgYUVConvertTime+info.mAvgBlitTime);
-			std::stringstream s7; s7 << "Time per frame (ms): " << std::fixed << std::setprecision(1)  << time;
+			std::stringstream s7; s7 << "Time per frame (ms): " << std::fixed << std::setprecision(2)  << time;
 			std::stringstream s8; s8 << "Max FPS (ms): " << std::fixed << std::setprecision(1) << (1000.0f/time);
+			std::stringstream s9; s9 << "Precached frames: " << info.mNumPrecachedFrames;
 
 			Mgr.getWindow("cFrame")->setText(s1.str());
 			Mgr.getWindow("droppedFrames")->setText(s2.str());
@@ -255,6 +256,7 @@ namespace Ogre
 			Mgr.getWindow("blitTime")->setText(s6.str());
 			Mgr.getWindow("allTime")->setText(s7.str());
 			Mgr.getWindow("fps")->setText(s8.str());
+			Mgr.getWindow("precached")->setText(s9.str());
 		}
 	}
 

@@ -66,9 +66,7 @@ namespace Ogre
 		m_RGBBitmap(0),
 		mTexture(0),
 		m_Width(0),
-		m_Height(0),
-		mYUVConvertTime(0),
-		mBlitTime(0)
+		m_Height(0)
 	{
 	}
 
@@ -196,30 +194,11 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::renderToTexture( unsigned char* buffer )
+	void TheoraVideoDriver::renderToTexture(unsigned char* buffer)
 	{
-		//Dispatch to appropriate optimized renderer
-		unsigned int time=GetTickCount();
-		/*
-		switch( mRenderModeFx ) {
-			case render_normal:
-			case render_to_PF_B8G8R8A8:
-				decodeYUVtoTexture( buffer );
-				break;
-			case render_to_alpha:
-				decodeYtoTexture( buffer );
-				break;
-		}
-		*/
-		mYUVConvertTime=GetTickCount()-time;
-		//Blit bitmap to texture XXX - todo - replace with lock/unlock
-		Box b( 0,0,0,m_Width,m_Height,1);
-		time=GetTickCount();
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
 		memcpy(texData,buffer,m_Width*m_Height*4);
 		mTexture->getBuffer()->unlock();
-		//mTexture->getBuffer()->blitFromMemory( m_Image.getPixelBox(), b );
-		mBlitTime=GetTickCount()-time;
 	}
 
 	//----------------------------------------------------------------------//

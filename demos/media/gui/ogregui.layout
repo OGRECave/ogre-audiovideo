@@ -43,6 +43,11 @@
                 <Property Name="UnifiedPosition" Value="{{0.0,0},{0.43,0}}" />
                 <Property Name="UnifiedSize" Value="{{1.0,0},{0.05,0}}" />
             </Window>
+
+            <Window Type="TaharezLook/StaticText" Name="precached">
+                <Property Name="UnifiedPosition" Value="{{0.0,0},{0.49,0}}" />
+                <Property Name="UnifiedSize" Value="{{1.0,0},{0.05,0}}" />
+            </Window>
     </Window>
 </Window>
 

@@ -110,14 +110,12 @@ namespace Ogre
 		{
 			float mVideoTime,
 				  mAudioTime,
-				  mDecodeTime,
-				  mYUVConvertTime,
-				  mBlitTime,
 				  mAvgDecodeTime,
 				  mAvgYUVConvertTime,
 				  mAvgBlitTime;
 			int   mCurrentFrame,
-				  mNumFramesDropped;
+				  mNumFramesDropped,
+				  mNumPrecachedFrames;
 		};
 		virtual void displayedFrame(FrameInfo info) {};
 	};
@@ -359,7 +357,7 @@ namespace Ogre
 
 		int m_FrameNum;
 		int m_FramesDropped;
-		float mSumDecoded, mSumYUVConverted,mSumBlited;
+		float mAvgDecodedTime, mAvgYUVConvertedTime,mSumBlited;
 		float mDecodedTime, mYUVConvertTime, mBlitTime;
 		int mNumFramesEvaluated;
 
