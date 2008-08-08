@@ -74,7 +74,7 @@ namespace Ogre
 		{
 			newMovie->createMovieClip( 
 				mInputFileName, sMaterialName, groupName, mTechniqueLevel,
-				mPassLevel, mStateLevel, bSound, mMode, tempTextureFX, mSeekEnabled,
+				mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled,
 				mAutoUpdate );
 
 			mMoviesList.push_back( newMovie );

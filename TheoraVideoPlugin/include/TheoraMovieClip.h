@@ -188,7 +188,6 @@ namespace Ogre
 			const String &sGroupName, int TechniqueLevel, int PassLevel, 
 			int TextureUnitStateLevel, bool HasSound = false, 
 			eTexturePlayMode eMode = TextureEffectPause,
-			TextureSpecialRenderFX renderMode = render_normal,
 			bool seekingEnabled = false,
 			bool autoUpdateAudio = false );
 
@@ -217,7 +216,7 @@ namespace Ogre
 			@returns
 				The audio driver or null
 		*/
-		TheoraAudioDriver* getAudioDriver() { return m_audioInterface; }
+		TheoraAudioDriver* getAudioDriver() { return mAudioInterface; }
 		
 		/**
 			@remarks
@@ -225,7 +224,7 @@ namespace Ogre
 			@returns
 				The video driver class
 		*/
-		TheoraVideoDriver* getVideoDriver() { return &m_videoInterface; }
+		TheoraVideoDriver* getVideoDriver() { return &mVideoInterface; }
 
 		/**
 			@remarks
@@ -233,7 +232,7 @@ namespace Ogre
 			@param m
 				The class to recieve messages
 		*/
-		void registerMessageHandler( TheoraMovieMessage* m ) {m_Dispatcher = m;}
+		void registerMessageHandler( TheoraMovieMessage* m ) {mMessageListener = m;}
 
 		/**
 			@remarks
@@ -321,7 +320,7 @@ namespace Ogre
 		float mMovieLength;
 		volatile bool mDoSeek;
 		volatile float mSeekTime;
-		TheoraSeekUtility *m_Seeker;
+		TheoraSeekUtility *mSeeker;
 
 		// time the video clip has to reach before it should display the next frame
 		double mTimeOfNextFrame;
@@ -334,57 +333,57 @@ namespace Ogre
 		bool mFramesReady;
 
 		//Mux/Demux Structs
-		ogg_sync_state   m_oggSyncState;		//sync and verify incoming physical bitstream
-		ogg_page         m_oggPage;				//one Ogg bitstream page
-		ogg_stream_state m_vorbisStreamState;	//take physical pages, weld into a logical
-		ogg_stream_state m_theoraStreamState;	//take physical pages, weld into a logical
+		ogg_sync_state   mOggSyncState;		//sync and verify incoming physical bitstream
+		ogg_page         mOggPage;				//one Ogg bitstream page
+		ogg_stream_state mVorbisStreamState;	//take physical pages, weld into a logical
+		ogg_stream_state mTheoraStreamState;	//take physical pages, weld into a logical
 		//Theora State
-		theora_info      m_theoraInfo;		//struct that stores all the static theora bitstream settings
-		theora_comment   m_theoraComment;
-		theora_state     m_theoraState;
+		theora_info      mTheoraInfo;		//struct that stores all the static theora bitstream settings
+		theora_comment   mTheoraComment;
+		theora_state     mTheoraState;
 		//Vorbis State
-		vorbis_info      m_vorbisInfo;		//struct that stores all the static theora bitstream settings
-		vorbis_dsp_state m_vorbisDSPState;	//central working state for the packet->PCM decoder
-		vorbis_block     m_vorbisBlock;		//local working space for packet->PCM decode
-		vorbis_comment   m_vorbisComment;
+		vorbis_info      mVorbisInfo;		//struct that stores all the static theora bitstream settings
+		vorbis_dsp_state mVorbisDSPState;	//central working state for the packet->PCM decoder
+		vorbis_block     mVorbisBlock;		//local working space for packet->PCM decode
+		vorbis_comment   mVorbisComment;
 
 		String mMovieName;
 		String mMaterialName;
 
-		Timer* m_Timer;
-		TheoraMovieMessage* m_Dispatcher;
+		Timer* mTimer;
+		TheoraMovieMessage* mMessageListener;
 		eTexturePlayMode mPlayMode;
 
-		int m_FrameNum;
-		int m_FramesDropped;
+		int mFrameNum;
+		int mNumDroppedFrames;
 		float mAvgDecodedTime, mAvgYUVConvertedTime,mSumBlited;
 		float mDecodedTime, mYUVConvertTime, mBlitTime;
 		int mNumFramesEvaluated;
 
-		unsigned int m_lastFrameTime;
+		unsigned int mLastFrameTime;
 
 		//! A class that handles the audio
-		TheoraAudioDriver *m_audioInterface;
+		TheoraAudioDriver *mAudioInterface;
 		//! A class that handles the video/textures
-		TheoraVideoDriver m_videoInterface;
+		TheoraVideoDriver mVideoInterface;
 
-		volatile bool m_ThreadRunning;
-		bool m_EndOfFile;
-		bool m_EndOfAudio;
-		bool m_EndOfVideo;
-		bool m_AudioStarted;
+		volatile bool mThreadRunning;
+		bool mEndOfFile;
+		bool mEndOfAudio;
+		bool mEndOfVideo;
+		bool mAudioStarted;
 
-		bool m_autoUpdate;
+		bool mAutoUpdate;
 
 		//Open File Stream
-		DataStreamPtr m_oggFile;
+		DataStreamPtr mOggFile;
 
-		int m_theora_streams, m_vorbis_streams;	// Keeps track of Theora and Vorbis Streams
+		int mTheoraStreams, mVorbisStreams;	// Keeps track of Theora and Vorbis Streams
 		int currentTicks;		//! ticks information to be used if the audio stream is not present
 
 		//single frame video buffering
-		bool m_VideoFrameReady;
-		float videobuf_time;
+		bool mVideoFrameReady;
+		float videobuf_time; // TODO: (kspes) hmm, why is this a member var?
 
 		ogg_int64_t audiobuf_granulepos; //time position of last sample
 	};

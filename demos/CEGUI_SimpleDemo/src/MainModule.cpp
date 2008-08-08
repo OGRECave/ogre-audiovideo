@@ -88,7 +88,7 @@ public:
 			mMovieLogic->playMovie("../Media/oggs/clip.ogg");
 			init=true;
 		}
-		int time,diff;
+		//int time,diff;
 		/* framerate restricting code
 		while (true)
 		{

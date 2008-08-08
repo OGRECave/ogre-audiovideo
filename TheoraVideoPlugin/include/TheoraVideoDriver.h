@@ -82,8 +82,7 @@ namespace Ogre
 									   const String &sGroupName,
 									   int TechniqueLevel, 
 									   int PassLevel, int TextureUnitStateLevel,
-									   int width, int height,
-									   TextureSpecialRenderFX renderMode = render_normal );
+									   int width, int height);
 		
 		/** 
 			@remarks
@@ -100,8 +99,8 @@ namespace Ogre
 		*/
 		void renderToTexture( unsigned char* buffer );
 
-		unsigned int getWidth() { return m_Width; }
-		unsigned int getHeight() { return m_Height; }
+		unsigned int getWidth() { return mWidth; }
+		unsigned int getHeight() { return mHeight; }
 
 		/** 
 			@remarks
@@ -126,41 +125,35 @@ namespace Ogre
 			@param
 				pointer to XRGB buffer to write data to
 		*/
-		void decodeYUVtoTexture( yuv_buffer *yuv, unsigned char* xrgb_out );
-
+		void decodeYUVtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out);
 		/** 
 			@remarks
 				Takes a yuv_buffer (4:2:0 YCrBr) and renders the Y component ONLY
 				to the alpha channel of this texture
 			@param
 				YUV Buffer
+			@param
+				pointer to XRGB buffer to write data to
 		*/
-		void decodeYtoTexture( yuv_buffer *yuv );
+		void decodeYtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out);
 	protected:
 		//! The image class we use
-		Image m_Image;
+		Image mImage;
 		//! Pointer to the Ogre Texture
 		TexturePtr mTexture;
-		//! Pointer to bitmap memory
-		unsigned char *m_RGBBitmap;
 
 		//! Width of the movie (possibly not the width of the texture)
-		unsigned int m_Width,
+		unsigned int mWidth,
 		//! Height of the movie (possibly not the hight of the texture)
-					 m_Height;
+					 mHeight;
 
-		unsigned char m_BytesPerPixel;
+		unsigned char mBytesPerPixel;
 
-		unsigned short m_Tec, m_Pass, m_Unit;
+		unsigned short mTec, mPass, mUnit;
 
 		String mTextureName;	//ALso the same as the file name given
 		String mMaterialName;
-
-		TextureSpecialRenderFX mRenderModeFx;
 	};
-
-
-	void yuvToRGB(yuv_buffer yuv,unsigned char* out);
 } //end namespace
 
 #endif //_TheoraOgreVideoDriverHeader_

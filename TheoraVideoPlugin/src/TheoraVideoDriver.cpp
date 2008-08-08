@@ -63,10 +63,9 @@ namespace Ogre
 	
 	//------------------------------------------------------------------//
 	TheoraVideoDriver::TheoraVideoDriver() :
-		m_RGBBitmap(0),
 		mTexture(0),
-		m_Width(0),
-		m_Height(0)
+		mWidth(0),
+		mHeight(0)
 	{
 	}
 
@@ -77,188 +76,80 @@ namespace Ogre
 		MaterialPtr material = MaterialManager::getSingleton().getByName( mMaterialName );
 		
 		if( !(material.isNull()) )
-			material->getTechnique(m_Tec)->getPass(m_Pass)->removeTextureUnitState( m_Unit );
+			material->getTechnique(mTec)->getPass(mPass)->removeTextureUnitState( mUnit );
 
 		//Remove Texture Resource
 		mTexture.setNull();
 		TextureManager::getSingleton().unload( mTextureName );
 		TextureManager::getSingleton().remove( mTextureName );
-				
-		delete [] m_RGBBitmap;
-		m_RGBBitmap = 0;
 	}
 		
 	//------------------------------------------------------------------//
 	void TheoraVideoDriver::attachVideoToTextureUnit( 
 		const String &sMaterialName, const String &sTextureName, 
 		const String &sGroupName, int TechniqueLevel, int PassLevel,
-		int TextureUnitStateLevel, int width, int height,
-		TextureSpecialRenderFX renderMode )
+		int TextureUnitStateLevel, int width, int height)
 	{
 		//Store local copies of sent info
-		m_Tec = TechniqueLevel;
-		m_Pass= PassLevel;
-		m_Unit= TextureUnitStateLevel;
+		mTec = TechniqueLevel;
+		mPass= PassLevel;
+		mUnit= TextureUnitStateLevel;
 		mTextureName = sTextureName;
 		mMaterialName= sMaterialName;
 
-		m_Width = width;
-		m_Height = height;
-		mRenderModeFx = renderMode;
+		mWidth = width;
+		mHeight = height;
 
-		unsigned int newTextureSize = width * height;
-		PixelFormat pFormat;
-
-		switch( renderMode ) {
-			case render_normal: 
-				m_BytesPerPixel = 3;
-				newTextureSize *=3;		//RGB Texture
-				pFormat = PF_B8G8R8;	//PF_R8G8B8;
-				break;
-			case render_to_alpha:		//PF_A8R8G8B8;//PF_A8;//Alpha only texture	
-			case render_to_PF_B8G8R8A8: //Normal render, but has an alpha cannel
-				m_BytesPerPixel = 4;
-				newTextureSize *=4;
-				pFormat = PF_B8G8R8A8;
-				break;
-		}
-
-
-
-		//Create our member bitmap memory		
-		m_RGBBitmap = new unsigned char[ newTextureSize ];
-		memset( m_RGBBitmap, 0, newTextureSize );
-
-		// Set image class to dynamic memory
-		m_Image.loadDynamicImage( m_RGBBitmap, m_Width, m_Height, pFormat );
-		
-		// Now setup texture -- only use 0 mipaps, anything else results
-		//in problems under d3d
+		// create texture
 		mTexture = TextureManager::getSingleton().createManual(sTextureName,sGroupName,TEX_TYPE_2D,
-			m_Width,m_Height,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+			mWidth,mHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+		// clear to black
+		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+		memset(texData,0,mWidth*mHeight*4);
+		mTexture->getBuffer()->unlock();
 
-		PixelFormat pf=mTexture->getFormat();
-
-		//mTexture = TextureManager::getSingleton().loadImage( sTextureName, sGroupName, m_Image, TEX_TYPE_2D, 0, 1.0f );
-		
 		// Grab Our material, then find the Texture Unit
-
-
 		MaterialPtr material = MaterialManager::getSingleton().getByName( sMaterialName );
-		TextureUnitState* t = material->getTechnique(m_Tec)->getPass(m_Pass)->getTextureUnitState(m_Unit);
+		TextureUnitState* t = material->getTechnique(mTec)->getPass(mPass)->getTextureUnitState(mUnit);
 
-		//Now, attach the texture to the material texture unit (single layer)
-		t->setTextureName( sTextureName, TEX_TYPE_2D);
+		//Now, attach the texture to the material texture unit (single layer) and setup properties
+		t->setTextureName(sTextureName,TEX_TYPE_2D);
 		t->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
-		t->setTextureAddressingMode( TextureUnitState::TAM_CLAMP );
-	/*	
-		//Perform texture scaling (: thanks to tuan kuranes :)
-		Real tempwidth = mTexture->getWidth (); 
-		Real tempheight = mTexture->getHeight (); 
-		Real widthratio = m_Width - tempwidth; 
-		Real heightratio = m_Height - tempheight;
-
-		if (widthratio)
-			tempwidth = (widthratio / tempwidth) / 2;
-		else
-			tempwidth = 0;
-
-		if (heightratio)
-			tempheight = (heightratio / tempheight) / 2;
-		else 
-			tempheight = 0;
-
-		t->setTextureScroll (tempwidth, tempheight);
-		t->setTextureScale ( ((Real) mTexture->getWidth())/m_Width, ((Real) mTexture->getHeight())/m_Height); 
-	*/
-	}
-	
-	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::randomizeTexture( )
-	{
-		//This creates a little fuzzy grey static video
-		unsigned char* temp = m_RGBBitmap;
-		int i;
-
-		for( unsigned int x = 0; x < m_Width; x++ )
-		{
-			for( unsigned int y = 0; y < m_Height; y++ )
-			{
-				i = 155 + (rand() % 100);
-				*temp++ = 255;//(unsigned char)i;
-				*temp++ = 255;//(unsigned char)i;
-				*temp++ = 255;//(unsigned char)i;
-				*temp++ = (unsigned char)i;
-			}
-		}
+		t->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
 	}
 
 	//----------------------------------------------------------------------//
 	void TheoraVideoDriver::renderToTexture(unsigned char* buffer)
 	{
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
-		memcpy(texData,buffer,m_Width*m_Height*4);
+		memcpy(texData,buffer,mWidth*mHeight*4);
 		mTexture->getBuffer()->unlock();
 	}
 
 	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::decodeYtoTexture( yuv_buffer *yuv )
+	void TheoraVideoDriver::decodeYtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out)
 	{
-		//Converts 4:2:0 YUV YCrCb to an Alpha Channel (PF_A8)
-		unsigned char *dstBitmap		= m_RGBBitmap,
-					  *dstBitmapOffset  = m_RGBBitmap + (m_Width * m_BytesPerPixel),
-					  *ySrc				= reinterpret_cast<unsigned char*>(yuv->y),
-					  *ySrc2			= ySrc + yuv->y_stride;
-		
-		//Calculate buffer offsets
-		unsigned int dstOff = m_Width * m_BytesPerPixel;
-		int yOff = yuv->y_stride - yuv->y_width;
-			
-		
-		//Check if upside down, if so, reverse buffers and offsets
-		if ( yuv->y_height < 0 )
+		int x,y;
+
+		unsigned char* ySrc=yuv->y;
+		unsigned char* ySrc2=yuv->y;
+
+		for (y=0;y<yuv->y_height;y++)
 		{
-			yuv->y_height = -yuv->y_height;
-			ySrc		 += (yuv->y_height - 1) * yuv->y_stride;
-						
-			ySrc2 = ySrc - yuv->y_stride;
-			yOff  = -yuv->y_width - ( yuv->y_stride * 2 );
-		}
-
-		//Cut width and height in half
-		//yuv->y_height = yuv->y_height >> 1;
-		//yuv->y_width = yuv->y_width >> 1;
-
-		char cAlpha;
-
-	//	randomizeTexture();
-	//	return;
-		//Loop does two rows at a time
-		for (int y = 0; y < yuv->y_height; ++y )
-		{
-			for (int x = 0; x < yuv->y_width; ++x) 
+			ySrc=ySrc2;
+			for (x=0;x<yuv->y_width;x++)
 			{
-				cAlpha = MAX( MIN((YTable[*ySrc] >> 13), 255), 0 );
-				++ySrc;
-				*dstBitmap++ = 255;
-				*dstBitmap++ = 255;
-				*dstBitmap++ = 255;
-				*dstBitmap++ = cAlpha;
-				
-//				dstBitmap += 8;
-//				dstBitmapOffset += 8;
-			} // end for x
-
-			//Advance destination pointers by offsets
-//			dstBitmap		+= dstOff;
-//			dstBitmapOffset += dstOff;
-			ySrc			+= yOff;
-//			ySrc2			+= yOff;
-		} //end for y
+				xrgb_out[0]=xrgb_out[1]=xrgb_out[2]=*ySrc;
+				xrgb_out[3]=255;
+				xrgb_out+=4;
+				ySrc++;
+			}
+			ySrc2+=yuv->y_stride;
+		}
 	}
 
 	//----------------------------------------------------------------------//
-	void TheoraVideoDriver::decodeYUVtoTexture( yuv_buffer *yuv, unsigned char* xrgb_out )
+	void TheoraVideoDriver::decodeYUVtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out)
 	{
 		//Convert 4:2:0 YUV YCrCb to an X8R8G8B8 Bitmap
 /*
@@ -297,10 +188,10 @@ namespace Ogre
 */
 		//convenient pointers
 
-		m_BytesPerPixel=4; // temp hack
+		mBytesPerPixel=4; // temp hack
 
 		unsigned char *dstBitmap=xrgb_out;
-		unsigned char *dstBitmapOffset = xrgb_out + (m_BytesPerPixel * m_Width);
+		unsigned char *dstBitmapOffset = xrgb_out + (mBytesPerPixel * mWidth);
 
 		unsigned char *ySrc = (unsigned char*)yuv->y,
 					  *uSrc = (unsigned char*)yuv->u,
@@ -308,7 +199,7 @@ namespace Ogre
 					  *ySrc2 = ySrc + yuv->y_stride;
 		
 		//Calculate buffer offsets
-		unsigned int dstOff = m_Width * m_BytesPerPixel;//( m_Width*6 ) - ( yuv->y_width*3 );
+		unsigned int dstOff = mWidth * mBytesPerPixel;//( mWidth*6 ) - ( yuv->y_width*3 );
 		int yOff = (yuv->y_stride * 2) - yuv->y_width;
 			
 		
@@ -367,9 +258,9 @@ namespace Ogre
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmap[m_BytesPerPixel+2] );
-				CLIP_RGB_COLOR( g, dstBitmap[m_BytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmap[m_BytesPerPixel+0] );
+				CLIP_RGB_COLOR( r, dstBitmap[mBytesPerPixel+2] );
+				CLIP_RGB_COLOR( g, dstBitmap[mBytesPerPixel+1] );
+				CLIP_RGB_COLOR( b, dstBitmap[mBytesPerPixel+0] );
 				++ySrc;
 
 				rgbY = YTable[*ySrc2];
@@ -385,14 +276,14 @@ namespace Ogre
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[m_BytesPerPixel+2] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[m_BytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[m_BytesPerPixel+0] );
+				CLIP_RGB_COLOR( r, dstBitmapOffset[mBytesPerPixel+2] );
+				CLIP_RGB_COLOR( g, dstBitmapOffset[mBytesPerPixel+1] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[mBytesPerPixel+0] );
 				++ySrc2;
 
 				//Advance inner loop offsets
-				dstBitmap += m_BytesPerPixel << 1;
-				dstBitmapOffset += m_BytesPerPixel << 1;
+				dstBitmap += mBytesPerPixel << 1;
+				dstBitmapOffset += mBytesPerPixel << 1;
 			} // end for x
 
 			//Advance destination pointers by offsets
@@ -426,28 +317,6 @@ namespace Ogre
 			GVTable[i] = (unsigned int)((0.813 * scale + 0.5) * temp);
 			
 			BUTable[i] = (unsigned int)((2.018 * scale + 0.5) * temp);		//Calc B component
-		}
-	}
-
-
-	void yuvToRGB(yuv_buffer yuv,unsigned char* out)
-	{
-		int x,y;
-
-		unsigned char* ySrc=yuv.y;
-		unsigned char* ySrc2=yuv.y;
-
-		for (y=0;y<yuv.y_height;y++)
-		{
-			ySrc=ySrc2;
-			for (x=0;x<yuv.y_width;x++)
-			{
-				out[0]=out[1]=out[2]=*ySrc;
-				out[3]=255;
-				out+=4;
-				ySrc++;
-			}
-			ySrc2+=yuv.y_stride;
 		}
 	}
 } //end Namespace
