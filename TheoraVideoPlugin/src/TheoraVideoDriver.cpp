@@ -11,7 +11,8 @@ Ogg / Vorbis / Theora www.xiph.org
 C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
 
 *****************************************************************************
-Copyright © 2000-2004 pjcast@yahoo.com
+Copyright © 2008 Kresimir Spes (kreso@cateia.com)
+          © 2000-2004 pjcast@yahoo.com
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 

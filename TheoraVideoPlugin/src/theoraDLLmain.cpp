@@ -47,25 +47,29 @@ namespace Ogre
 {
 	//Pointer Used to register with ExternalTextureSourceManager
 	ExternalTextureSource* theoraVideoPlugin;
+	TheoraVideoFrameListener* theoraFrameListener;
 
 	//Called from Ogre's dynload when loading plugins
 	extern "C" void dllStartPlugin( void )
 	{
 		// Create our new External Textue Source PlugIn
 		theoraVideoPlugin = new TheoraVideoController();
+		theoraFrameListener = new TheoraVideoFrameListener();
 
 		//Create YUV Lookup tables here
 		TheoraVideoDriver::createCoefTables();
 
 		// Register with Manger
 		ExternalTextureSourceManager::getSingleton().setExternalTextureSource( "ogg_video", theoraVideoPlugin );
+		Root::getSingleton().addFrameListener(theoraFrameListener);
 	}
 
 	//Called when unloading plugins
 	extern "C" void dllStopPlugin( void )
 	{
 		//Just delete the system :P
+		Root::getSingleton().removeFrameListener(theoraFrameListener);
 		delete theoraVideoPlugin;
+		delete theoraFrameListener;
 	}
 }
-

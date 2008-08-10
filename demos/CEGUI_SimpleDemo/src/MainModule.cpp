@@ -1,24 +1,3 @@
-/*
------------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
-
-Copyright (c) 2000-2006 Torus Knot Software Ltd
-Also see acknowledgements in Readme.html
-
-You may use this sample code for anything you like, it is not covered by the
-LGPL like the rest of the engine.
------------------------------------------------------------------------------
-*/
-
-/**
-    \file 
-        Gui.cpp
-    \brief
-        An example of CEGUI's features
-*/
-
 #include <CEGUI/CEGUIImageset.h>
 #include <CEGUI/CEGUISystem.h>
 #include <CEGUI/CEGUILogger.h>
@@ -50,14 +29,45 @@ CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
     }
 }
 
+class ClipListener : public TheoraMovieMessage
+{
+	int messageEvent( PLUGIN_theora_message m ) { return 0; }
+	void displayedFrame(TheoraMovieMessage::FrameInfo info)
+	{
+		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
+		
+		std::stringstream s1; s1 << "Frame Number: " << info.mCurrentFrame;
+		std::stringstream s2; s2 << "Frames dropped: " << info.mNumFramesDropped;
+		std::stringstream s3; s3 << "Video time: " << std::fixed << std::setprecision(1) << info.mVideoTime;
+		std::stringstream s4; s4 << "Decoding time (ms): " << std::fixed << std::setprecision(2) << info.mAvgDecodeTime;
+		std::stringstream s5; s5 << "YUV--RGB time (ms): " << std::fixed << std::setprecision(2) << info.mAvgYUVConvertTime;
+		std::stringstream s6; s6 << "TexBlit time (ms): " << std::fixed << std::setprecision(2)  << info.mAvgBlitTime;
+		float time=(info.mAvgDecodeTime+info.mAvgYUVConvertTime+info.mAvgBlitTime);
+		std::stringstream s7; s7 << "Time per frame (ms): " << std::fixed << std::setprecision(2)  << time;
+		std::stringstream s8; s8 << "Max FPS (ms): " << std::fixed << std::setprecision(1) << (1000.0f/time);
+		std::stringstream s9; s9 << "Precached frames: " << info.mNumPrecachedFrames;
 
-class GuiFrameListener : public ExampleFrameListener, public OIS::KeyListener, public OIS::MouseListener
+		Mgr.getWindow("cFrame")->setText(s1.str());
+		Mgr.getWindow("droppedFrames")->setText(s2.str());
+		Mgr.getWindow("vTime")->setText(s3.str());
+		Mgr.getWindow("decodeTime")->setText(s4.str());
+		Mgr.getWindow("yuvTime")->setText(s5.str());
+		Mgr.getWindow("blitTime")->setText(s6.str());
+		Mgr.getWindow("allTime")->setText(s7.str());
+		Mgr.getWindow("fps")->setText(s8.str());
+		Mgr.getWindow("precached")->setText(s9.str());
+	}
+};
+
+
+class GuiFrameListener : public OIS::KeyListener, public OIS::MouseListener, public ExampleFrameListener
 {
 private:
     CEGUI::Renderer* mGUIRenderer;
     bool mShutdownRequested;
 	MovieLogic* mMovieLogic;
 	bool init;
+	ClipListener mMovieListener;
 
 public:
     // NB using buffered input, this is the only change
@@ -66,7 +76,8 @@ public:
           mGUIRenderer(renderer),
           mShutdownRequested(false),
 		  mMovieLogic(movielogic),
-		  init(false)
+		  init(false),
+		  mMovieListener()
     {
 		mMouse->setEventCallback(this);
 		mKeyboard->setEventCallback(this);
@@ -85,23 +96,11 @@ public:
 		if (!init)
 		{
 			mMovieLogic->initialise();
-			mMovieLogic->playMovie("../Media/oggs/clip.ogg");
+			TheoraMovieClip* clip=mMovieLogic->mVideoControl->getMovieNameClip("clip.ogg");
+			clip->registerMessageHandler(&mMovieListener);
 			init=true;
 		}
-		//int time,diff;
-		/* framerate restricting code
-		while (true)
-		{
-			mMovieLogic->update();
-			time=GetTickCount();
-			diff=1000.0f/50.0f-(time-mLastFrameTicks);
-			if (diff <= 0) break;
-			if (diff > 10) diff=10;
-			Sleep(diff);
-		}
-		*/
 		mMovieLogic->update();
-	//	mLastFrameTicks=time;
 
         if (mShutdownRequested)
             return false;
@@ -306,5 +305,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 
 

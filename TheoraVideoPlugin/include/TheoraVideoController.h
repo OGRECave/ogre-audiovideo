@@ -11,7 +11,8 @@ Ogg / Vorbis / Theora www.xiph.org
 C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
 
 *****************************************************************************
-Copyright © 2000-2004 pjcast@yahoo.com
+Copyright © 2008 Kresimir Spes (kreso@cateia.com)
+          © 2000-2004 pjcast@yahoo.com
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -31,6 +32,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #ifndef _TheoraVideoTextureController_H
 #define _TheoraVideoTextureController_H
 
+#include "Ogre.h"
 #include "OgreString.h"
 #include "OgreExternalTextureSource.h"
 #include "TheoraPlayerPreReqs.h"
@@ -39,11 +41,21 @@ http://www.gnu.org/copyleft/lesser.txt.
 namespace Ogre
 {
 	/**
+		A frame listener used by the plugin, it just updates video clips so you don't have to :)
+	*/
+	class TheoraVideoFrameListener : public FrameListener
+	{
+	public:
+		bool frameStarted(const FrameEvent& evt);
+	};
+
+
+	/**
 		Handles "ogg_video" external texture sources from material serializer.
 		It is recomended that you also use this class when creating
 		textures in code, but it is not required.
 	*/
-	class _OgreTheoraExport TheoraVideoController : public ExternalTextureSource
+	class _OgreTheoraExport TheoraVideoController : public ExternalTextureSource, public FrameListener
 	{
 	public:
 		TheoraVideoController();
@@ -117,6 +129,7 @@ namespace Ogre
 			@remarks
 				Hook for texture scripts to set texture FX mode
 		*/
+
 		class CmdRenderFx : public ParamCommand
         {
         public:
@@ -140,6 +153,10 @@ namespace Ogre
 			TheoraVideoController* pThis;
         };
 
+		typedef std::vector< TheoraMovieClip* > mtClips;
+		//! A list of movie clips
+		mtClips mMoviesList;
+
 	protected:
 		static CmdRenderFx msCmdRenderFx;
 		static CmdSeekingEnabled msCmdSeekingEnabled;
@@ -147,10 +164,6 @@ namespace Ogre
 		TextureSpecialRenderFX tempTextureFX;
 		bool mSeekEnabled;
 		bool mAutoUpdate;
-
-		typedef std::vector< TheoraMovieClip* > mtClips;
-		//! A list of movie clips
-		mtClips mMoviesList;
 		
 		//! A flag indicating whether init has been called 
 		bool mbInit;

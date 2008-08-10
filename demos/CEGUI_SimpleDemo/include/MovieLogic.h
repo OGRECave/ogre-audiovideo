@@ -29,7 +29,6 @@ namespace Ogre
 		//This is seperated out from constructor so that exceptions can be thrown
 		void initialise();
 
-		void populateListBox( CEGUI::Listbox *listBox );
 		const String& getTextureName() { return mCurrentMoviePlaying; }
 		unsigned int getWidth();
 		unsigned int getHeight();
@@ -41,7 +40,6 @@ namespace Ogre
 		void stopMovie();
 		void pauseMovie( bool bPause = true );
 		void playMovie( const String& movieName );
-		void seek( float seconds );
 
 		void changeSoundSystem( const std::string& sndMgr );
 
@@ -62,7 +60,7 @@ namespace Ogre
 		
 		//Used by the main module to control the sliding bar
 		bool sliding;
-	private:
+
 		CEGUI::ProgressBar *mSlider;
 		CEGUI::Scrollbar *mScroller;
 

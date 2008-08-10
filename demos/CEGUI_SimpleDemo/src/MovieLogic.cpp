@@ -53,25 +53,6 @@ namespace Ogre
 			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
 				"Error grabbing Plugin_TheoraVideoSystem. Added in plugins.cfg file?",
 				"MovieLogic::initialise");
-/*
-		if( list.size() != 0 )
-		{
-			//Populate the CEGUI ComboBox
-			CEGUI::Listbox *listBox = static_cast<CEGUI::Listbox*>(CEGUI::WindowManager::
-				getSingletonPtr()->getWindow("AudioPlugins"));
-			for(std::vector<std::string>::iterator i = list.begin(); i != list.end(); ++i)
-			{
-				CEGUI::ListboxTextItem* li = new CEGUI::ListboxTextItem((*i));
-				li->setTextColours(CEGUI::ColourRect(CEGUI::colour(.5, 0, .3)));
-				li->setSelectionColours(CEGUI::ColourRect(CEGUI::colour(0.2, 0.7, 0.7)));
-				li->setSelectionBrushImage("WindowsLook", "TabButtonMiddleSelected" );
-				listBox->addItem(li);
-			}
-
-			//Set first in list as default one
-			CEGUI::WindowManager::getSingletonPtr()->getWindow("APS")->setText(list[0]);
-		}
-	*/
 	}
 
 
@@ -85,25 +66,6 @@ namespace Ogre
 	unsigned int MovieLogic::getHeight()
 	{
 		return mClip->getVideoDriver()->getHeight();
-	}
-
-	//-------------------------------------------------------------------------//
-	void MovieLogic::populateListBox( CEGUI::Listbox *listBox )
-	{
-		//Grab all .ogg resources
-		StringVectorPtr OGG_MovieList = ResourceGroupManager::getSingleton().
-            findResourceNames( "General", "*.ogg" );
-		std::vector< String >::iterator i;
-
-		//Add them to movie selection box
-		for( i = OGG_MovieList->begin(); i != OGG_MovieList->end(); ++i )
-		{
-			CEGUI::ListboxTextItem* li = new CEGUI::ListboxTextItem((*i));
-			li->setTextColours(CEGUI::ColourRect(CEGUI::colour(.5, 0, .3)));
-			li->setSelectionColours(CEGUI::ColourRect(CEGUI::colour(0.2, 0.7, 0.7)));
-			li->setSelectionBrushImage("WindowsLook", "TabButtonMiddleSelected" );
-			listBox->addItem(li);
-		}
 	}
 
 	//-------------------------------------------------------------------------//
@@ -139,16 +101,9 @@ namespace Ogre
 	}
 
 	//-------------------------------------------------------------------------//
-	void MovieLogic::seek( float seconds )
-	{
-		//Seconds is a percentage..so we multiply by the actual length to get the 
-		//seek time
-		if( mClip )	mClip->seekToTime( seconds * maxTime );
-	}
-
-	//-------------------------------------------------------------------------//
 	void MovieLogic::playMovie( const String& movieName )
 	{
+		return;
 		//Tear down current movie if any
 		stopMovie();
 		
@@ -261,5 +216,6 @@ namespace Ogre
 	}
 
 } //end Ogre
+
 
 
