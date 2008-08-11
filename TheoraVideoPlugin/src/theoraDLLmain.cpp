@@ -38,7 +38,7 @@ theoraDLLmain.cpp  -
 date                 : Jan 1 2004
 email                : pjcast@yahoo.com
 ***************************************************************************/
-#include "OgreExternalTextureSourceManager.h"
+#include "Ogre.h"
 #include "TheoraVideoController.h"
 
 #include "TheoraVideoDriver.h"

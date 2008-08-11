@@ -16,7 +16,7 @@ material Examples/CloudySky
 	}
 }
 
-material Example/TheoraVideoPlayer/Play
+material SimpleVideo
 {
 	technique
 	{

@@ -216,27 +216,15 @@
 				RelativePath="..\src\MainModule.cpp"
 				>
 			</File>
-			<File
-				RelativePath="..\src\MovieLogic.cpp"
-				>
-			</File>
 		</Filter>
-		<Filter
-			Name="Includes"
+		<File
+			RelativePath="..\..\include\ExampleApplication.h"
 			>
-			<File
-				RelativePath="..\include\ExampleApplication.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\ExampleFrameListener.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\MovieLogic.h"
-				>
-			</File>
-		</Filter>
+		</File>
+		<File
+			RelativePath="..\..\include\ExampleFrameListener.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

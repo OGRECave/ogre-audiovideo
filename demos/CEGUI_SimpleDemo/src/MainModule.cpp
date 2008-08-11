@@ -1,20 +1,10 @@
-#include <CEGUI/CEGUIImageset.h>
-#include <CEGUI/CEGUISystem.h>
-#include <CEGUI/CEGUILogger.h>
-#include <CEGUI/CEGUISchemeManager.h>
-#include <CEGUI/CEGUIWindowManager.h>
-#include <CEGUI/CEGUIWindow.h>
-#include <CEGUI/CEGUIPropertyHelper.h>
-#include <CEGUI/elements/CEGUICombobox.h>
-#include <CEGUI/elements/CEGUIListbox.h>
-#include <CEGUI/elements/CEGUIListboxTextItem.h>
-#include <CEGUI/elements/CEGUIPushButton.h>
-#include <CEGUI/elements/CEGUIScrollbar.h>
+#include "CEGUI/CEGUI.h"
 #include "OgreCEGUIRenderer.h"
 #include "OgreCEGUIResourceProvider.h"
 
 #include "ExampleApplication.h"
-#include "MovieLogic.h"
+#include "TheoraVideoController.h"
+#include "TheoraVideoClip.h"
 
 //----------------------------------------------------------------//
 CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
@@ -28,10 +18,14 @@ CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
 	default: return CEGUI::LeftButton;
     }
 }
-
+//----------------------------------------------------------------//
 class ClipListener : public TheoraVideoListener
 {
 	int messageEvent( PLUGIN_theora_message m ) { return 0; }
+
+	/**
+		grabs video info and displays it in cegui staticText objects
+	*/
 	void displayedFrame(TheoraVideoListener::FrameInfo info)
 	{
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
@@ -65,17 +59,15 @@ class GuiFrameListener : public OIS::KeyListener, public OIS::MouseListener, pub
 private:
     CEGUI::Renderer* mGUIRenderer;
     bool mShutdownRequested;
-	MovieLogic* mMovieLogic;
 	bool init;
 	ClipListener mMovieListener;
 
 public:
     // NB using buffered input, this is the only change
-	GuiFrameListener(RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer,MovieLogic* movielogic)
+	GuiFrameListener(RenderWindow* win, Camera* cam, CEGUI::Renderer* renderer)
         : ExampleFrameListener(win, cam, true, true, true), 
           mGUIRenderer(renderer),
           mShutdownRequested(false),
-		  mMovieLogic(movielogic),
 		  init(false),
 		  mMovieListener()
     {
@@ -95,12 +87,11 @@ public:
     {
 		if (!init)
 		{
-			mMovieLogic->initialise();
-			TheoraVideoClip* clip=mMovieLogic->mVideoControl->getMovieNameClip("clip.ogg");
+			TheoraVideoController* c = (TheoraVideoController*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
 			clip->registerMessageHandler(&mMovieListener);
 			init=true;
 		}
-		mMovieLogic->update();
 
         if (mShutdownRequested)
             return false;
@@ -152,9 +143,6 @@ private:
     CEGUI::OgreCEGUIRenderer* mGUIRenderer;
     CEGUI::System* mGUISystem;
     CEGUI::Window* mEditorGuiSheet;
-	
-	MovieLogic* mMovieControl;
-
 public:
     GuiApplication()
       : mGUIRenderer(0),
@@ -191,9 +179,6 @@ protected:
     {
 		mCamera->getViewport()->setBackgroundColour(ColourValue(0.3,0.3,0.3));
 
-        // Create a skydome
-        //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-
         // setup GUI system
         mGUIRenderer = new CEGUI::OgreCEGUIRenderer(mWindow, 
             Ogre::RENDER_QUEUE_OVERLAY, false, 3000, mSceneMgr);
@@ -205,7 +190,7 @@ protected:
 
 		// create one quad, to minimize rendering time inpact on benchmarking
         ManualObject* model = mSceneMgr->createManualObject("quad");
-		model->begin("Example/TheoraVideoPlayer/Play");
+		model->begin("SimpleVideo");
 
 		model->position( 1,-1,0);
 		model->textureCoord(1,1);
@@ -233,8 +218,8 @@ protected:
 
         SceneNode* node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
         node->attachObject(model);
-		//node->scale(3,3,3);
-		//node->setPosition(45,0,0);
+
+
 
         // load scheme and set up defaults
         CEGUI::SchemeManager::getSingleton().loadScheme(
@@ -245,21 +230,15 @@ protected:
 
         CEGUI::Window* sheet = 
             CEGUI::WindowManager::getSingleton().loadWindowLayout(
-                (CEGUI::utf8*)"ogregui.layout"); 
+                (CEGUI::utf8*)"SimpleDemo.layout"); 
         mGUISystem->setGUISheet(sheet);
-
-       // setupEventHandlers();
-
-
-		// INIT THEORA PLUGIN
-		mMovieControl = new MovieLogic( mGUIRenderer );
 
     }
 
     // Create new frame listener
     void createFrameListener(void)
     {
-        mFrameListener= new GuiFrameListener(mWindow, mCamera, mGUIRenderer,mMovieControl);
+        mFrameListener= new GuiFrameListener(mWindow, mCamera, mGUIRenderer);
         mRoot->addFrameListener(mFrameListener);
     }
 
@@ -305,6 +284,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-
-

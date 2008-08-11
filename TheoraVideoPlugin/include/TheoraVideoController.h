@@ -32,9 +32,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 #ifndef _TheoraVideoTextureController_H
 #define _TheoraVideoTextureController_H
 
-#include "Ogre.h"
 #include "OgreString.h"
 #include "OgreExternalTextureSource.h"
+#include "OgreExternalTextureSourceManager.h"
+#include "OgreFrameListener.h"
 #include "TheoraPlayerPreReqs.h"
 #include "TheoraExport.h"
 

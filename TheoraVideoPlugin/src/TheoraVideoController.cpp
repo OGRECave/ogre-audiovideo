@@ -34,10 +34,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreRoot.h"
 #include "OgreException.h"
 #include "OgreLogManager.h"
-#include "OgreExternalTextureSourceManager.h"
+
 
 namespace Ogre
 {
+
 	bool TheoraVideoFrameListener::frameStarted(const FrameEvent& evt)
 	{
 		TheoraVideoController* c = (TheoraVideoController*)
