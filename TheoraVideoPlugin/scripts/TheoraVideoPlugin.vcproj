@@ -417,15 +417,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\TheoraMovieClip.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\src\TheoraRingBuffer.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\TheoraSeekUtility.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\TheoraVideoClip.cpp"
 				>
 			</File>
 			<File
@@ -446,10 +446,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\TheoraMovieClip.h"
-				>
-			</File>
-			<File
 				RelativePath="..\include\TheoraPlayerPreReqs.h"
 				>
 			</File>
@@ -459,6 +455,10 @@
 			</File>
 			<File
 				RelativePath="..\include\TheoraSeekUtility.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TheoraVideoClip.h"
 				>
 			</File>
 			<File

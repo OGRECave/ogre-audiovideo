@@ -41,7 +41,8 @@ namespace Ogre
 	};
 
 	//Forward declare our classes
-	class TheoraMovieClip;
+	class TheoraVideoClip;
+	class TheoraVideoListener;
 	class TheoraAudioDriver;
 	class TheoraGenericAudio;
 	class TheoraVideoDriver;

@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;..\..\..\..\ptypes\include"
+				AdditionalIncludeDirectories="..\..\include\;..\..\..\TheoraVideoPlugin\include;..\include;..\..\..\..\libogg\include;..\..\..\..\libvorbis\include;..\..\..\..\libtheora\include;..\..\..\..\ptypes\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -80,7 +80,7 @@
 				OutputFile="../Bin/Release/CEGUI_TheoraDemo.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\TheoraVideoPlugin\bin\release"
+				AdditionalLibraryDirectories="..\..\..\TheoraVideoPlugin\bin\release_SSE2"
 				ProgramDatabaseFile=".\../obj/Release/GuiTesting.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

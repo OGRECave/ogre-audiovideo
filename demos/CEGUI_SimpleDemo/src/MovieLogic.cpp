@@ -118,7 +118,7 @@ namespace Ogre
 		mVideoControl->setSeekEnabled( false );
 		//This is mainly for OpenAL - but applies to other audio libs which
 		//use pooling instead of callbacks for updating...
-		//Let TheoraMovieClip update the audioclip.
+		//Let TheoraVideoClip update the audioclip.
 		mVideoControl->setAutoAudioUpdate( false );
 
 		// Grab Our material, then add a new texture unit
@@ -186,7 +186,7 @@ namespace Ogre
 	}
 	
 	//-------------------------------------------------------------------------//
-	void MovieLogic::displayedFrame(TheoraMovieMessage::FrameInfo info)
+	void MovieLogic::displayedFrame(TheoraVideoListener::FrameInfo info)
 	{
 		if (mTimer.getMilliseconds() < 5*60000)
 		{

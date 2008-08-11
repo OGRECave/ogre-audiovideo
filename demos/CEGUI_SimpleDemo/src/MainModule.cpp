@@ -29,10 +29,10 @@ CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
     }
 }
 
-class ClipListener : public TheoraMovieMessage
+class ClipListener : public TheoraVideoListener
 {
 	int messageEvent( PLUGIN_theora_message m ) { return 0; }
-	void displayedFrame(TheoraMovieMessage::FrameInfo info)
+	void displayedFrame(TheoraVideoListener::FrameInfo info)
 	{
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
 		
@@ -96,7 +96,7 @@ public:
 		if (!init)
 		{
 			mMovieLogic->initialise();
-			TheoraMovieClip* clip=mMovieLogic->mVideoControl->getMovieNameClip("clip.ogg");
+			TheoraVideoClip* clip=mMovieLogic->mVideoControl->getMovieNameClip("clip.ogg");
 			clip->registerMessageHandler(&mMovieListener);
 			init=true;
 		}

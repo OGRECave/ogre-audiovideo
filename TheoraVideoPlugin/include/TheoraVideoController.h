@@ -88,7 +88,7 @@ namespace Ogre
 			@param sMovieName
 				Search using movie file name
 		*/
-		TheoraMovieClip* getMovieNameClip( String sMovieName );
+		TheoraVideoClip* getMovieNameClip( String sMovieName );
 
 		/**
 			@remarks 
@@ -96,7 +96,7 @@ namespace Ogre
 			@param sMovieName
 				Search using material name
 		*/
-		TheoraMovieClip* getMaterialNameClip( String sMaterialName );
+		TheoraVideoClip* getMaterialNameClip( String sMaterialName );
 		
 		/**
 			@remarks
@@ -153,7 +153,7 @@ namespace Ogre
 			TheoraVideoController* pThis;
         };
 
-		typedef std::vector< TheoraMovieClip* > mtClips;
+		typedef std::vector< TheoraVideoClip* > mtClips;
 		//! A list of movie clips
 		mtClips mMoviesList;
 

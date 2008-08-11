@@ -35,7 +35,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreTimer.h"
 #include "OgreRoot.h"
 
-#include "TheoraMovieClip.h"
+#include "TheoraVideoClip.h"
 
 #include "TheoraAudioDriver.h"
 #include "TheoraVideoDriver.h"
@@ -43,7 +43,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	TheoraFrame::TheoraFrame(TheoraMovieClip* parent,int w,int h)
+	TheoraFrame::TheoraFrame(TheoraVideoClip* parent,int w,int h)
 	{
 		mPixelBuffer=new unsigned char[w*h*4];
 		mInUse=false;
@@ -67,7 +67,7 @@ namespace Ogre
 
 
 	//--------------------------------------------------------------------//
-	TheoraMovieClip::TheoraMovieClip() : 
+	TheoraVideoClip::TheoraVideoClip() : 
 		pt::thread( false ), 
 		mMessageListener(0),
 		mAudioStarted( false ),
@@ -112,7 +112,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	TheoraMovieClip::~TheoraMovieClip()
+	TheoraVideoClip::~TheoraVideoClip()
 	{
 		changePlayMode( TextureEffectPause );
 		if( mThreadRunning )
@@ -131,18 +131,18 @@ namespace Ogre
 	}
 	
 	//--------------------------------------------------------------------//	
-	void TheoraMovieClip::setAudioDriver( TheoraAudioDriver *pAud )
+	void TheoraVideoClip::setAudioDriver( TheoraAudioDriver *pAud )
 	{
 		if( !mThreadRunning )
 			mAudioInterface = pAud;
 		else
-			LogManager::getSingleton().logMessage("**** void TheoraMovieClip::set"
+			LogManager::getSingleton().logMessage("**** void TheoraVideoClip::set"
 				"AudioDriver( TheoraAudioDriver *pAud )> Tried to set sound \n"
 				"on already setup clip... Ignored...! ****");
 	}
 	
 	//--------------------------------------------------------------------//	
-	void TheoraMovieClip::createMovieClip( 
+	void TheoraVideoClip::createMovieClip( 
 		const String &sMovieName, const String &sMaterialName,
 		const String &sGroupName, int TechniqueLevel, int PassLevel,
 		int TextureUnitStateLevel, bool HasSound, eTexturePlayMode eMode,
@@ -171,7 +171,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::setNumPrecachedFrames(int num)
+	void TheoraVideoClip::setNumPrecachedFrames(int num)
 	{
 		TheoraFrame* frame;
 		// clear current frame repository (if any)
@@ -191,12 +191,12 @@ namespace Ogre
 
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::load( const String& filename,
+	void TheoraVideoClip::load( const String& filename,
 		const String& groupName, bool useAudio )
 	{
 		//ensure a file is not already open
 		if( !(mOggFile.isNull()) )
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "File name already loded! " + filename, "TheoraMovieClip::load" );
+            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "File name already loded! " + filename, "TheoraVideoClip::load" );
 	
 		mEndOfFile = false;
 		mOggFile = ResourceGroupManager::getSingleton().openResource( filename, groupName );
@@ -207,7 +207,7 @@ namespace Ogre
 	}
 	
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::initVorbisTheoraLayer( )
+	void TheoraVideoClip::initVorbisTheoraLayer( )
 	{
 		//start up Ogg stream synchronization layer
 		ogg_sync_init( &mOggSyncState );
@@ -220,7 +220,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::parseVorbisTheoraHeaders( bool useAudio )
+	void TheoraVideoClip::parseVorbisTheoraHeaders( bool useAudio )
 	{
 		ogg_packet tempOggPacket;
 		bool NotDone = true;
@@ -289,11 +289,11 @@ namespace Ogre
 			{
 				if( iSuccess < 0 ) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error parsing Theora stream headers.",
-						"TheoraMovieClip::parseVorbisTheoraHeaders" );
+						"TheoraVideoClip::parseVorbisTheoraHeaders" );
 
 				if( theora_decode_header(&mTheoraInfo, &mTheoraComment, &tempOggPacket) )
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "invalid stream",
-						"TheoraMovieClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::parseVorbisTheoraHeaders ");
 
 				mTheoraStreams++;			
 			} //end while looking for more theora headers
@@ -305,11 +305,11 @@ namespace Ogre
 			{
 				if(iSuccess < 0) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error parsing vorbis stream headers",
-						"TheoraMovieClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::parseVorbisTheoraHeaders ");
 
 				if(vorbis_synthesis_headerin( &mVorbisInfo, &mVorbisComment,&tempOggPacket)) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "invalid stream",
-						"TheoraMovieClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::parseVorbisTheoraHeaders ");
 
 				mVorbisStreams++;
 			} //end while looking for more vorbis headers
@@ -330,7 +330,7 @@ namespace Ogre
 
 				if( bytesRead == 0 )
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "End of file found prematurely",
-						"TheoraMovieClip::parseVorbisTheoraHeaders " );
+						"TheoraVideoClip::parseVorbisTheoraHeaders " );
 			}
 		} //end while looking for all headers
 
@@ -340,7 +340,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::activateVorbisTheoraCodecs( bool useAudio )
+	void TheoraVideoClip::activateVorbisTheoraCodecs( bool useAudio )
 	{
 		if( mTheoraStreams )
 			theora_decode_init( &mTheoraState, &mTheoraInfo );
@@ -353,7 +353,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::changePlayMode( eTexturePlayMode eMode )
+	void TheoraVideoClip::changePlayMode( eTexturePlayMode eMode )
 	{
 		//TextureEffectPause = 0,			//! Video starts out paused
 		//TextureEffectPlay_ASAP = 1,		//! Video starts playing as soon as posible
@@ -396,7 +396,7 @@ namespace Ogre
 	}
 	
 	//--------------------------------------------------------------------//	
-	void TheoraMovieClip::blitFrameCheck()
+	void TheoraVideoClip::blitFrameCheck()
 	{
 		if( mFramesReady )
 		{
@@ -455,7 +455,7 @@ namespace Ogre
 
 			if (mMessageListener)
 			{
-				TheoraMovieMessage::FrameInfo info;
+				TheoraVideoListener::FrameInfo info;
 				info.mAudioTime=0.0f; info.mVideoTime=videobuf_time; info.mCurrentFrame=mFrameNum;
 				
 				info.mAvgDecodeTime=mAvgDecodedTime;
@@ -477,17 +477,17 @@ namespace Ogre
 			if( mAudioInterface )
 			{
 				if( mEndOfAudio && mEndOfVideo )
-					mMessageListener->messageEvent( TheoraMovieMessage::TH_EndOfMovie );
+					mMessageListener->messageEvent( TheoraVideoListener::TH_EndOfMovie );
 			}
 			else if( mEndOfVideo )
 			{
-				mMessageListener->messageEvent( TheoraMovieMessage::TH_EndOfMovie );			
+				mMessageListener->messageEvent( TheoraVideoListener::TH_EndOfMovie );			
 			}
 		}
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::execute()
+	void TheoraVideoClip::execute()
 	{
 		mThreadRunning = true;
 		int bytesRead = 1;
@@ -606,7 +606,7 @@ namespace Ogre
 			{
 				//End of file, but movie is still playing
 				if( mMessageListener && mEndOfFile == false )
-					mMessageListener->messageEvent( TheoraMovieMessage::TH_OggStreamDone );
+					mMessageListener->messageEvent( TheoraVideoListener::TH_OggStreamDone );
 			
 				mEndOfFile = true;
 			}
@@ -624,7 +624,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::decodeVorbis()
+	void TheoraVideoClip::decodeVorbis()
 	{
 		int ret, maxBytesToWrite = 0;
 		float **pcm;
@@ -689,7 +689,7 @@ namespace Ogre
 					if( mEndOfFile )
 					{
 						if( mMessageListener && mEndOfAudio == false )
-							mMessageListener->messageEvent( TheoraMovieMessage::TH_VorbisStreamDone );
+							mMessageListener->messageEvent( TheoraVideoListener::TH_VorbisStreamDone );
 						
 						mEndOfAudio = true;
 					}
@@ -701,7 +701,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::decodeTheora()
+	void TheoraVideoClip::decodeTheora()
 	{
 		ogg_packet opTheora;
 		float nowTime,delay;
@@ -743,7 +743,7 @@ namespace Ogre
 				if( mEndOfFile )
 				{
 					if( mMessageListener && mEndOfVideo == false )
-						mMessageListener->messageEvent( TheoraMovieMessage::TH_TheoraStreamDone );
+						mMessageListener->messageEvent( TheoraVideoListener::TH_TheoraStreamDone );
 
 					mEndOfVideo = true;
 				}
@@ -756,12 +756,12 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::cleanup()
+	void TheoraVideoClip::cleanup()
 	{
 	}
 
 	//--------------------------------------------------------------------//
-	float TheoraMovieClip::getMovieTime() 
+	float TheoraVideoClip::getMovieTime() 
 	{
 		if ( mAudioInterface ) 
 		{
@@ -787,7 +787,7 @@ namespace Ogre
 	}
 
 	//--------------------------------------------------------------------//
-	void TheoraMovieClip::close()
+	void TheoraVideoClip::close()
 	{
 		mEndOfFile = false;
 		
@@ -823,7 +823,7 @@ namespace Ogre
 		ogg_sync_clear( &mOggSyncState );
 	}
 
-	void TheoraMovieClip::seekToTime( float seconds )
+	void TheoraVideoClip::seekToTime( float seconds )
 	{
 		//No point seeking to the end.. were already there
 		if( seconds >= mMovieLength || seconds < 0.0f )

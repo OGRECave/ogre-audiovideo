@@ -29,7 +29,7 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 ***************************************************************************/
 #include "TheoraVideoController.h"
-#include "TheoraMovieClip.h"
+#include "TheoraVideoClip.h"
 
 #include "OgreRoot.h"
 #include "OgreException.h"
@@ -77,14 +77,14 @@ namespace Ogre
 	void TheoraVideoController::createDefinedTexture( 
 		const String& sMaterialName, const String& groupName )
 	{
-		TheoraMovieClip* newMovie = 0;
+		TheoraVideoClip* newMovie = 0;
 		bool bSound = false;
 
 		//Give the possibility of sound... Later we really check for sound
 		if( mMode == TextureEffectPause )
 			bSound = true;
 
-		newMovie = new TheoraMovieClip();
+		newMovie = new TheoraVideoClip();
 		
 		try 
 		{
@@ -130,7 +130,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraMovieClip* TheoraVideoController::getMovieNameClip( String sMovieName )
+	TheoraVideoClip* TheoraVideoController::getMovieNameClip( String sMovieName )
 	{
 		//Search for an entry that has the searched for movie name
 		mtClips::iterator i;
@@ -147,7 +147,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraMovieClip* TheoraVideoController::getMaterialNameClip( String sMaterialName )
+	TheoraVideoClip* TheoraVideoController::getMaterialNameClip( String sMaterialName )
 	{
 		//Search for an entry that has the searched for material name
 		mtClips::iterator i;

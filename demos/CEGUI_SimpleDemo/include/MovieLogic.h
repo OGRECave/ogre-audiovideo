@@ -5,7 +5,7 @@
 #include "OgreString.h"
 
 #include "TheoraVideoController.h"
-#include "TheoraMovieClip.h"
+#include "TheoraVideoClip.h"
 
 namespace CEGUI
 {
@@ -18,7 +18,7 @@ namespace CEGUI
 
 namespace Ogre
 {
-	class MovieLogic : public TheoraMovieMessage
+	class MovieLogic : public TheoraVideoListener
 	{
 	private:
 		MovieLogic();
@@ -47,7 +47,7 @@ namespace Ogre
 		//Called when something happens (eg end of stream)
 		int messageEvent( PLUGIN_theora_message m );
 		//A frame was displayed.. Some debug stats
-		void displayedFrame(TheoraMovieMessage::FrameInfo info);
+		void displayedFrame(TheoraVideoListener::FrameInfo info);
 		//The movie length was discovered.. seeking is enabled
 		void discoveredMovieTime( float discoveredTime );
 
@@ -66,7 +66,7 @@ namespace Ogre
 
 		float maxTime;
 		TheoraVideoController *mVideoControl;
-		TheoraMovieClip* mClip;
+		TheoraVideoClip* mClip;
 
 		CEGUI::OgreCEGUIRenderer* mGUIRenderer;
 

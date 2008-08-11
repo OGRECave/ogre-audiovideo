@@ -58,11 +58,11 @@ namespace Ogre
 	/**
 		A messenger class for sending off messages relating to stream/movie events	
 	*/
-	class _OgreTheoraExport TheoraMovieMessage
+	class _OgreTheoraExport TheoraVideoListener
 	{
 	public:
-		TheoraMovieMessage() {}
-		virtual ~TheoraMovieMessage() {}
+		TheoraVideoListener() {}
+		virtual ~TheoraVideoListener() {}
 
 		enum PLUGIN_theora_message
 		{
@@ -123,8 +123,6 @@ namespace Ogre
 
 
 //******************************************************************************//
-	class TheoraMovieClip; // prototype because it is used in TheoraFrame
-
 	class TheoraFrame
 	{
 	public:
@@ -136,7 +134,7 @@ namespace Ogre
 			@param h
 				height of the frame in pixels
 		*/
-		TheoraFrame(TheoraMovieClip* parent,int w,int h);
+		TheoraFrame(TheoraVideoClip* parent,int w,int h);
 		~TheoraFrame();
 		/**
 			@remarks
@@ -152,7 +150,7 @@ namespace Ogre
 
 		double mTimeToDisplay;
 		bool mInUse;
-		TheoraMovieClip* mParent;
+		TheoraVideoClip* mParent;
 
 		unsigned char* mPixelBuffer;
 	};
@@ -164,11 +162,11 @@ namespace Ogre
 	/** 
 		Class that holds an Ogg Theora Movie clip
 	*/
-	class _OgreTheoraExport TheoraMovieClip : public pt::thread
+	class _OgreTheoraExport TheoraVideoClip : public pt::thread
 	{
 	public:
-		TheoraMovieClip();
-		~TheoraMovieClip();
+		TheoraVideoClip();
+		~TheoraVideoClip();
 
 		/**
 			@remarks
@@ -233,7 +231,7 @@ namespace Ogre
 			@param m
 				The class to recieve messages
 		*/
-		void registerMessageHandler( TheoraMovieMessage* m ) {mMessageListener = m;}
+		void registerMessageHandler( TheoraVideoListener* m ) {mMessageListener = m;}
 
 		/**
 			@remarks
@@ -352,7 +350,7 @@ namespace Ogre
 		String mMaterialName;
 
 		Timer* mTimer;
-		TheoraMovieMessage* mMessageListener;
+		TheoraVideoListener* mMessageListener;
 		eTexturePlayMode mPlayMode;
 
 		int mFrameNum;
