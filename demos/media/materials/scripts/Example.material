@@ -30,6 +30,7 @@ material SimpleVideo
 				texture_source ogg_video
 				{
 					filename clip.ogg
+					precache 50
 					play_mode play
 				}
 			}

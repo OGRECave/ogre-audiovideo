@@ -34,6 +34,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreRoot.h"
 #include "OgreException.h"
 #include "OgreLogManager.h"
+#include "OgreStringConverter.h"
 
 
 namespace Ogre
@@ -54,13 +55,13 @@ namespace Ogre
 
 
 	//Initial static command param method
-	TheoraVideoManager::CmdRenderFx TheoraVideoManager::msCmdRenderFx;
-	TheoraVideoManager::CmdSeekingEnabled TheoraVideoManager::msCmdSeekingEnabled;
+	TheoraVideoManager::CmdNumPrecachedFrames TheoraVideoManager::msCmdNumPrecachedFrames;
 	//----------------------------------------------------------------------------//
 	TheoraVideoManager::TheoraVideoManager() : 
-		mbInit( false )
+		mbInit( false ),
+		mNumPrecachedFrames(-1)
 	{
-		mPlugInName = "TheoraVideoPlugIn";
+		mPlugInName = "TheoraVideoPlugin";
 		mDictionaryName = mPlugInName;
 		tempTextureFX = render_normal;
 		mSeekEnabled = false;
@@ -75,8 +76,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	void TheoraVideoManager::createDefinedTexture( 
-		const String& sMaterialName, const String& groupName )
+	void TheoraVideoManager::createDefinedTexture(const String& sMaterialName,const String& groupName)
 	{
 		TheoraVideoClip* newMovie = 0;
 		bool bSound = false;
@@ -89,18 +89,18 @@ namespace Ogre
 		
 		try 
 		{
-			newMovie->load( 
-				mInputFileName, sMaterialName, groupName, mTechniqueLevel,
-				mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled,
-				mAutoUpdate );
+			newMovie->load(mInputFileName, sMaterialName, groupName, mTechniqueLevel,
+						  mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled, mAutoUpdate );
 
+			int n=(mNumPrecachedFrames == -1) ? 16 : mNumPrecachedFrames;
+			newMovie->setNumPrecachedFrames(n);
 			mMoviesList.push_back( newMovie );
 		}
 		catch(...)
 		{
 			delete newMovie;
 		}
-
+		mNumPrecachedFrames=-1;
 		tempTextureFX = render_normal;
 		mInputFileName = "None";
 		mTechniqueLevel = mPassLevel = mStateLevel = 0;
@@ -109,8 +109,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	void TheoraVideoManager::destroyAdvancedTexture( 
-		const String& sMaterialName, const String& groupName )
+	void TheoraVideoManager::destroyAdvancedTexture(const String& sMaterialName,const String& groupName)
 	{
 		mtClips::iterator i;
 		for(i = mMoviesList.begin(); i != mMoviesList.end(); ++i )
@@ -131,7 +130,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraVideoClip* TheoraVideoManager::getMovieNameClip( String sMovieName )
+	TheoraVideoClip* TheoraVideoManager::getMovieNameClip(String sMovieName)
 	{
 		//Search for an entry that has the searched for movie name
 		mtClips::iterator i;
@@ -176,17 +175,11 @@ namespace Ogre
 		ParamDictionary* dict = getParamDictionary();
 		
 		//Add render_fx method
-		msCmdRenderFx.setThis( this );
-		dict->addParameter(ParameterDef("render_fx", 
-			"Defines where/how this movie is decoded to"
-			, PT_STRING),
-			&TheoraVideoManager::msCmdRenderFx);
-
-		msCmdSeekingEnabled.setThis( this );
-		dict->addParameter(ParameterDef("set_seeking", 
-			"Sets wether or not seeking is enabled (true/false) Defaults to false"
-			, PT_STRING),
-			&TheoraVideoManager::msCmdSeekingEnabled);
+		msCmdNumPrecachedFrames.setThis( this );
+		dict->addParameter(ParameterDef("precache", 
+			"Defines how many frames should be precached to smooth video playback"
+			, PT_INT),
+			&TheoraVideoManager::msCmdNumPrecachedFrames);
 
 		mbInit = true;
 		return true;
@@ -205,35 +198,15 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	String TheoraVideoManager::CmdRenderFx::doGet(const void* target) const
+	String TheoraVideoManager::CmdNumPrecachedFrames::doGet(const void* target) const
 	{
 		return "NA";
 	}
 
 	//----------------------------------------------------------------------------//
-    void TheoraVideoManager::CmdRenderFx::doSet(void* target, const String& val)
+    void TheoraVideoManager::CmdNumPrecachedFrames::doSet(void* target, const String& val)
 	{
-		if( val == "render_to_alpha" )
-			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_to_alpha );
-		else if( val == "render_to_PF_B8G8R8A8" )
-			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_to_PF_B8G8R8A8 );
-		else
-			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_normal );
-	}
-	
-	//----------------------------------------------------------------------------//
-	String TheoraVideoManager::CmdSeekingEnabled::doGet(const void* target) const
-	{
-		return "NA";
-	}
-
-	//----------------------------------------------------------------------------//
-    void TheoraVideoManager::CmdSeekingEnabled::doSet(void* target, const String& val)
-	{
-		if( val == "true" )
-			static_cast<TheoraVideoManager*>(target)->setSeekEnabled( true );
-		else
-			static_cast<TheoraVideoManager*>(target)->setSeekEnabled( false );
+		static_cast<TheoraVideoManager*>(target)->mNumPrecachedFrames=StringConverter::parseInt(val);
 	}
 } //end namespace Ogre
 

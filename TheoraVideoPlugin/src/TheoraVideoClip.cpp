@@ -516,8 +516,6 @@ namespace Ogre
 				mMessageListener->discoveredMovieTime( mMovieLength );
 		}
 
-		// init our frame repository
-		setNumPrecachedFrames(16);
 		timer.reset();
 		while( mThreadRunning )
 		{

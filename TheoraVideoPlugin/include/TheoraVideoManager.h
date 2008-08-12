@@ -51,6 +51,11 @@ namespace Ogre
 	};
 
 
+
+
+
+
+
 	/**
 		Handles "ogg_video" external texture sources from material serializer.
 		It is recomended that you also use this class when creating
@@ -126,25 +131,17 @@ namespace Ogre
 		
 		void setAutoAudioUpdate( bool autoUpdateAudio ) {mAutoUpdate = autoUpdateAudio;}
         
-		/**
-			@remarks
-				Hook for texture scripts to set texture FX mode
-		*/
 
-		class CmdRenderFx : public ParamCommand
-        {
-        public:
-			String doGet(const void* target) const;
-            void doSet(void* target, const String& val);
-			void setThis( TheoraVideoManager* p ) { pThis = p; }
-		private:
-			TheoraVideoManager* pThis;
-        };
+
+
+
+
+
 		/**
 			@remarks
-				Hook for texture scripts to set seeking enabled
+				Sets the number of precached frames used in the video
 		*/
-		class CmdSeekingEnabled : public ParamCommand
+		class CmdNumPrecachedFrames : public ParamCommand
         {
         public:
 			String doGet(const void* target) const;
@@ -153,14 +150,16 @@ namespace Ogre
 		private:
 			TheoraVideoManager* pThis;
         };
+
 
 		typedef std::vector< TheoraVideoClip* > mtClips;
 		//! A list of movie clips
 		mtClips mMoviesList;
+		// param set by CmdNumPrecachedFrames class
+		int mNumPrecachedFrames;
 
 	protected:
-		static CmdRenderFx msCmdRenderFx;
-		static CmdSeekingEnabled msCmdSeekingEnabled;
+		static CmdNumPrecachedFrames msCmdNumPrecachedFrames;
 
 		TextureSpecialRenderFX tempTextureFX;
 		bool mSeekEnabled;
