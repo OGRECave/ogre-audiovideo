@@ -126,6 +126,15 @@ namespace Ogre
 			@param
 				pointer to XRGB buffer to write data to
 		*/
+		void decodeRGBtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out);
+		/**
+			@remarks
+				transfers YUV components directly to an RGB texture
+			@param
+				YUV Buffer
+			@param
+				pointer to XRGB buffer to write data to
+		*/
 		void decodeYUVtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out);
 		/** 
 			@remarks

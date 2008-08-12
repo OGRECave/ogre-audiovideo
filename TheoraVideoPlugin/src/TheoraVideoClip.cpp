@@ -39,7 +39,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "TheoraAudioDriver.h"
 #include "TheoraVideoDriver.h"
-#include "TheoraVideoController.h"
+#include "TheoraVideoManager.h"
 
 namespace Ogre
 {
@@ -54,10 +54,13 @@ namespace Ogre
 		delete mPixelBuffer;
 	}
 
-	void TheoraFrame::copyYUV(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb)
+	void TheoraFrame::decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_VideoMode mode)
 	{
 		mTimeToDisplay=timeToDisplay;
-		mParent->getVideoDriver()->decodeYUVtoTexture(&yuv,mPixelBuffer);
+
+		if      (mode == TH_RGB)  mParent->getVideoDriver()->decodeRGBtoTexture(&yuv,mPixelBuffer);
+		else if (mode == TH_Grey) mParent->getVideoDriver()->decodeYtoTexture(&yuv,mPixelBuffer);
+		else					  mParent->getVideoDriver()->decodeYUVtoTexture(&yuv,mPixelBuffer);
 		//yuvToRGB(yuv,mPixelBuffer);
 		mInUse=true;
 	}
@@ -92,7 +95,8 @@ namespace Ogre
 		mAvgYUVConvertedTime(0),
 		mSumBlited(0),
 		mNumFramesEvaluated(0),
-		mFramesReady(false)
+		mFramesReady(false),
+		mVideoMode(TH_RGB)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &mOggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -142,7 +146,7 @@ namespace Ogre
 	}
 	
 	//--------------------------------------------------------------------//	
-	void TheoraVideoClip::createMovieClip( 
+	void TheoraVideoClip::load( 
 		const String &sMovieName, const String &sMaterialName,
 		const String &sGroupName, int TechniqueLevel, int PassLevel,
 		int TextureUnitStateLevel, bool HasSound, eTexturePlayMode eMode,
@@ -427,13 +431,15 @@ namespace Ogre
 			}
 				
 			if (mFrames.size() == 0) mFramesReady=false;
-			mFrameMutex.unlock();
-			
+
 			Ogre::Timer timer;
 			mVideoInterface.renderToTexture( frame->mPixelBuffer );
-			// benchmarking
 			mSumBlited+=timer.getMilliseconds();
 			mNumFramesEvaluated++;
+
+			mFrameMutex.unlock();
+			// benchmarking
+
 
 			mTimeOfNextFrame=frame->mTimeToDisplay;
 			frame->mInUse=false;
@@ -574,7 +580,7 @@ namespace Ogre
 
 				frame_time = theora_granule_time( &mTheoraState, mTheoraState.granulepos );
 				timer.reset();
-				frame->copyYUV(yuv,frame_time);
+				frame->decodeYUV(yuv,frame_time,mVideoMode);
 				sumYUV+=timer.getMilliseconds();
 				mAvgYUVConvertedTime=sumYUV/numFramesEvaluated;
 

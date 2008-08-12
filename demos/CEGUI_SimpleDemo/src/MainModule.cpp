@@ -3,7 +3,7 @@
 #include "OgreCEGUIResourceProvider.h"
 
 #include "ExampleApplication.h"
-#include "TheoraVideoController.h"
+#include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
 
 //----------------------------------------------------------------//
@@ -34,7 +34,7 @@ class ClipListener : public TheoraVideoListener
 		std::stringstream s2; s2 << "Frames dropped: " << info.mNumFramesDropped;
 		std::stringstream s3; s3 << "Video time: " << std::fixed << std::setprecision(1) << info.mVideoTime;
 		std::stringstream s4; s4 << "Decoding time (ms): " << std::fixed << std::setprecision(2) << info.mAvgDecodeTime;
-		std::stringstream s5; s5 << "YUV--RGB time (ms): " << std::fixed << std::setprecision(2) << info.mAvgYUVConvertTime;
+		std::stringstream s5; s5 << "YUV decode time (ms): " << std::fixed << std::setprecision(2) << info.mAvgYUVConvertTime;
 		std::stringstream s6; s6 << "TexBlit time (ms): " << std::fixed << std::setprecision(2)  << info.mAvgBlitTime;
 		float time=(info.mAvgDecodeTime+info.mAvgYUVConvertTime+info.mAvgBlitTime);
 		std::stringstream s7; s7 << "Time per frame (ms): " << std::fixed << std::setprecision(2)  << time;
@@ -87,7 +87,7 @@ public:
     {
 		if (!init)
 		{
-			TheoraVideoController* c = (TheoraVideoController*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
 			TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
 			clip->registerMessageHandler(&mMovieListener);
 			init=true;

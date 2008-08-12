@@ -28,7 +28,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 ***************************************************************************/
-#include "TheoraVideoController.h"
+#include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
 
 #include "OgreRoot.h"
@@ -41,9 +41,9 @@ namespace Ogre
 
 	bool TheoraVideoFrameListener::frameStarted(const FrameEvent& evt)
 	{
-		TheoraVideoController* c = (TheoraVideoController*)
+		TheoraVideoManager* c = (TheoraVideoManager*)
 			ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		for (TheoraVideoController::mtClips::iterator it=c->mMoviesList.begin();it!=c->mMoviesList.end();it++)
+		for (TheoraVideoManager::mtClips::iterator it=c->mMoviesList.begin();it!=c->mMoviesList.end();it++)
 		{
 			(*it)->blitFrameCheck();
 		}
@@ -54,10 +54,10 @@ namespace Ogre
 
 
 	//Initial static command param method
-	TheoraVideoController::CmdRenderFx TheoraVideoController::msCmdRenderFx;
-	TheoraVideoController::CmdSeekingEnabled TheoraVideoController::msCmdSeekingEnabled;
+	TheoraVideoManager::CmdRenderFx TheoraVideoManager::msCmdRenderFx;
+	TheoraVideoManager::CmdSeekingEnabled TheoraVideoManager::msCmdSeekingEnabled;
 	//----------------------------------------------------------------------------//
-	TheoraVideoController::TheoraVideoController() : 
+	TheoraVideoManager::TheoraVideoManager() : 
 		mbInit( false )
 	{
 		mPlugInName = "TheoraVideoPlugIn";
@@ -68,14 +68,14 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraVideoController::~TheoraVideoController()
+	TheoraVideoManager::~TheoraVideoManager()
 	{
 		if(mbInit)
 			shutDown();
 	}
 
 	//----------------------------------------------------------------------------//
-	void TheoraVideoController::createDefinedTexture( 
+	void TheoraVideoManager::createDefinedTexture( 
 		const String& sMaterialName, const String& groupName )
 	{
 		TheoraVideoClip* newMovie = 0;
@@ -89,7 +89,7 @@ namespace Ogre
 		
 		try 
 		{
-			newMovie->createMovieClip( 
+			newMovie->load( 
 				mInputFileName, sMaterialName, groupName, mTechniqueLevel,
 				mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled,
 				mAutoUpdate );
@@ -109,7 +109,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	void TheoraVideoController::destroyAdvancedTexture( 
+	void TheoraVideoManager::destroyAdvancedTexture( 
 		const String& sMaterialName, const String& groupName )
 	{
 		mtClips::iterator i;
@@ -126,12 +126,12 @@ namespace Ogre
 		}
 		
 		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoController::DestroyVideoTexture Tried to delete Movie Texture " 
+			"**Warning** ::>> TheoraVideoManager::DestroyVideoTexture Tried to delete Movie Texture " 
 			+ sMaterialName + ". Though, Texture was not anywhere to be found :< " );
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraVideoClip* TheoraVideoController::getMovieNameClip( String sMovieName )
+	TheoraVideoClip* TheoraVideoManager::getMovieNameClip( String sMovieName )
 	{
 		//Search for an entry that has the searched for movie name
 		mtClips::iterator i;
@@ -142,13 +142,13 @@ namespace Ogre
 		}
 
 		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoController::getMovieNameClip Tried to find Movie Texture " 
+			"**Warning** ::>> TheoraVideoManager::getMovieNameClip Tried to find Movie Texture " 
 			+ sMovieName + ". Though, Texture was not anywhere to be found :< " );
 		return 0;
 	}
 
 	//----------------------------------------------------------------------------//
-	TheoraVideoClip* TheoraVideoController::getMaterialNameClip( String sMaterialName )
+	TheoraVideoClip* TheoraVideoManager::getMaterialNameClip( String sMaterialName )
 	{
 		//Search for an entry that has the searched for material name
 		mtClips::iterator i;
@@ -159,13 +159,13 @@ namespace Ogre
 		}
 
 		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoController::getMovieClip Tried to find Movie Texture " 
+			"**Warning** ::>> TheoraVideoManager::getMovieClip Tried to find Movie Texture " 
 			+ sMaterialName + ". Though, Texture was not anywhere to be found :< " );
 		return 0;
 	}
 
 	//----------------------------------------------------------------------------//
-	bool TheoraVideoController::initialise( )
+	bool TheoraVideoManager::initialise( )
 	{
 		if( mbInit )
 			return true;
@@ -180,20 +180,20 @@ namespace Ogre
 		dict->addParameter(ParameterDef("render_fx", 
 			"Defines where/how this movie is decoded to"
 			, PT_STRING),
-			&TheoraVideoController::msCmdRenderFx);
+			&TheoraVideoManager::msCmdRenderFx);
 
 		msCmdSeekingEnabled.setThis( this );
 		dict->addParameter(ParameterDef("set_seeking", 
 			"Sets wether or not seeking is enabled (true/false) Defaults to false"
 			, PT_STRING),
-			&TheoraVideoController::msCmdSeekingEnabled);
+			&TheoraVideoManager::msCmdSeekingEnabled);
 
 		mbInit = true;
 		return true;
 	}
 
 	//----------------------------------------------------------------------------//
-	void TheoraVideoController::shutDown()
+	void TheoraVideoManager::shutDown()
 	{
 		//Destroy all movie clips
 		mtClips::iterator i;
@@ -205,35 +205,35 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	String TheoraVideoController::CmdRenderFx::doGet(const void* target) const
+	String TheoraVideoManager::CmdRenderFx::doGet(const void* target) const
 	{
 		return "NA";
 	}
 
 	//----------------------------------------------------------------------------//
-    void TheoraVideoController::CmdRenderFx::doSet(void* target, const String& val)
+    void TheoraVideoManager::CmdRenderFx::doSet(void* target, const String& val)
 	{
 		if( val == "render_to_alpha" )
-			static_cast<TheoraVideoController*>(target)->setRenderFx( render_to_alpha );
+			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_to_alpha );
 		else if( val == "render_to_PF_B8G8R8A8" )
-			static_cast<TheoraVideoController*>(target)->setRenderFx( render_to_PF_B8G8R8A8 );
+			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_to_PF_B8G8R8A8 );
 		else
-			static_cast<TheoraVideoController*>(target)->setRenderFx( render_normal );
+			static_cast<TheoraVideoManager*>(target)->setRenderFx( render_normal );
 	}
 	
 	//----------------------------------------------------------------------------//
-	String TheoraVideoController::CmdSeekingEnabled::doGet(const void* target) const
+	String TheoraVideoManager::CmdSeekingEnabled::doGet(const void* target) const
 	{
 		return "NA";
 	}
 
 	//----------------------------------------------------------------------------//
-    void TheoraVideoController::CmdSeekingEnabled::doSet(void* target, const String& val)
+    void TheoraVideoManager::CmdSeekingEnabled::doSet(void* target, const String& val)
 	{
 		if( val == "true" )
-			static_cast<TheoraVideoController*>(target)->setSeekEnabled( true );
+			static_cast<TheoraVideoManager*>(target)->setSeekEnabled( true );
 		else
-			static_cast<TheoraVideoController*>(target)->setSeekEnabled( false );
+			static_cast<TheoraVideoManager*>(target)->setSeekEnabled( false );
 	}
 } //end namespace Ogre
 

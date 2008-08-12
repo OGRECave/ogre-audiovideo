@@ -45,16 +45,23 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "vorbis/codec.h"
 #include "pasync.h"
 
-#ifdef min 
-#undef min 
-#endif 
-
-#ifdef max 
-#undef max 
-#endif 
-
 namespace Ogre
 {
+	/**
+		How video is transfered from libtheora to a texture
+	*/
+	enum TheoraVideo_VideoMode
+	{
+		// theora output is converted to RGB
+		TH_RGB = 0,
+		// Only luma is used
+		TH_Grey = 1,
+		// direct YUV data copied to RGB, useful for shader decoding
+		TH_YUV = 2
+	};
+
+
+
 	/**
 		A messenger class for sending off messages relating to stream/movie events	
 	*/
@@ -146,7 +153,7 @@ namespace Ogre
 				latest time this frame should be displayed
 			@param convert_to_rgb
 		*/
-		void copyYUV(yuv_buffer yuv,double timeToDisplay,bool convert_to_rgb=true);
+		void decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_VideoMode mode=TH_RGB);
 
 		double mTimeToDisplay;
 		bool mInUse;
@@ -155,12 +162,8 @@ namespace Ogre
 		unsigned char* mPixelBuffer;
 	};
 //******************************************************************************//
-
-
-
-
 	/** 
-		Class that holds an Ogg Theora Movie clip
+		Class that holds an Ogg Theora Video clip
 	*/
 	class _OgreTheoraExport TheoraVideoClip : public pt::thread
 	{
@@ -182,7 +185,7 @@ namespace Ogre
 			@return
 				true on success, false otherwise
 		*/
-		void createMovieClip( 
+		void load( 
 			const String &sMovieName, const String &sMaterialName,
 			const String &sGroupName, int TechniqueLevel, int PassLevel, 
 			int TextureUnitStateLevel, bool HasSound = false, 
@@ -196,7 +199,16 @@ namespace Ogre
 			@param eMode
 				Mode to change to 
 		*/
+
+		void setVideoMode(TheoraVideo_VideoMode mode) { mVideoMode=mode; }
+		TheoraVideo_VideoMode getVideoMoge() { return mVideoMode; }
+
+
 		void changePlayMode( eTexturePlayMode eMode );
+		void play()  { changePlayMode(TextureEffectPlay_ASAP); }
+		void pause() { changePlayMode(TextureEffectPause); }
+		void stop()  { changePlayMode(TextureEffectPause); }
+		bool isPaused() { return mPlayMode == TextureEffectPause; }
 
 		eTexturePlayMode getPlayMode() { return mPlayMode; }
 
@@ -320,6 +332,9 @@ namespace Ogre
 		volatile bool mDoSeek;
 		volatile float mSeekTime;
 		TheoraSeekUtility *mSeeker;
+
+		// how would you like your output to be.
+		TheoraVideo_VideoMode mVideoMode;
 
 		// time the video clip has to reach before it should display the next frame
 		double mTimeOfNextFrame;

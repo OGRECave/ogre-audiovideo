@@ -39,18 +39,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 //Defines
 #define MAX( a, b ) ((a > b) ? a : b)
 #define MIN( a, b ) ((a < b) ? a : b)
-
-//int rgb_color_test, unsigned char rgb_char_buffer - can never be negative
-//#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-//	if( rgb_color_test > 255 )							  \
-//		rgb_char_buffer = 255;							  \
-//	else if( rgb_color_test >= 0 )						  \
-//		rgb_char_buffer = rgb_color_test;				  \
-//	else												  \
-//		rgb_char_buffer = 0
-
-#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-	rgb_char_buffer = MAX( MIN(rgb_color_test, 255), 0 )
+#define CLIP_RGB_COLOR( rgb_color_test ) \
+	MAX( MIN(rgb_color_test, 255), 0 )
 
 
 namespace Ogre
@@ -130,19 +120,18 @@ namespace Ogre
 	//----------------------------------------------------------------------//
 	void TheoraVideoDriver::decodeYtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out)
 	{
-		int x,y;
-
-		unsigned char* ySrc=yuv->y;
-		unsigned char* ySrc2=yuv->y;
+		unsigned char*ySrc=yuv->y,*ySrc2=yuv->y,*ySrcEnd;
+		unsigned int cy,*out=(unsigned int*) xrgb_out;
+		int y;
 
 		for (y=0;y<yuv->y_height;y++)
 		{
-			ySrc=ySrc2;
-			for (x=0;x<yuv->y_width;x++)
+			ySrc=ySrc2; ySrcEnd=ySrc2+yuv->y_width;
+			while (ySrc != ySrcEnd)
 			{
-				xrgb_out[0]=xrgb_out[1]=xrgb_out[2]=*ySrc;
-				xrgb_out[3]=255;
-				xrgb_out+=4;
+				cy=*ySrc;
+				*out=(((cy << 8) | cy) << 8) | cy;
+				out++;
 				ySrc++;
 			}
 			ySrc2+=yuv->y_stride;
@@ -152,150 +141,63 @@ namespace Ogre
 	//----------------------------------------------------------------------//
 	void TheoraVideoDriver::decodeYUVtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out)
 	{
-		//Convert 4:2:0 YUV YCrCb to an X8R8G8B8 Bitmap
-/*
-		unsigned char *y=yuv->y, *yLineEnd=yuv->y+yuv->y_width,*yStrideEnd=yuv->y+yuv->y_stride;
-		unsigned char *u=yuv->u;
-		unsigned char *v=yuv->v, cy,cu,cv;
-		int h=0,x_inc=0,y_inc=0;
+		int t,y;
+		unsigned char *ySrc=yuv->y, *ySrc2=yuv->y,*ySrcEnd,
+		              *uSrc=yuv->u, *uSrc2=yuv->u,
+		              *vSrc=yuv->v, *vSrc2=yuv->v;
+		unsigned int *out=(unsigned int*) xrgb_out;
 
-		while (h < yuv->y_height)
+		for (y=0;y<yuv->y_height;y++)
 		{
-			while (y < yLineEnd)
+			t=0; ySrc=ySrc2; ySrcEnd=ySrc2+yuv->y_width; uSrc=uSrc2; vSrc=vSrc2;
+			while (ySrc != ySrcEnd)
 			{
-				//R = Y + 1.140V
-				//G = Y - 0.395U - 0.581V
-				//B = Y + 2.032U
-				cy=*y; cu=*u; cv=*v;
-
-				xrgb_out[0]=cy+2.032*cu;
-				xrgb_out[1]=cy-0.395f*cu - 0.581f*cv;
-				xrgb_out[2]=cy+1.14f*cv;
-				xrgb_out[3]=255;
-				xrgb_out+=4;
-				y++;
-				x_inc=!x_inc;
-				if (x_inc == 0) { u++; v++; }
+				*out=(((*ySrc << 8) | *uSrc) << 8) | *vSrc;
+				out++;
+				ySrc++;
+				if (t=!t == 1) { uSrc++; vSrc++; }
 			}
-			y=yStrideEnd;			yStrideEnd+=yuv->y_stride;			yLineEnd=y+yuv->y_width;
-			
-			y_inc=!y_inc;
-			u-=yuv->uv_width; v-=yuv->uv_width;
-			if (y_inc == 0) { u+=yuv->uv_stride; v+=yuv->uv_stride; }
-
-
-			h++;
+			ySrc2+=yuv->y_stride;
+			if (y%2 == 1) { uSrc2+=yuv->uv_stride; vSrc2+=yuv->uv_stride; }
 		}
-*/
-		//convenient pointers
+	}
 
-		mBytesPerPixel=4; // temp hack
+	//----------------------------------------------------------------------//
+	void TheoraVideoDriver::decodeRGBtoTexture(yuv_buffer *yuv,unsigned char* xrgb_out)
+	{
+		int t,y;
+		unsigned char *ySrc=yuv->y, *ySrc2=yuv->y,*ySrcEnd,
+		              *uSrc=yuv->u, *uSrc2=yuv->u,
+		              *vSrc=yuv->v, *vSrc2=yuv->v;
+		unsigned int *out=(unsigned int*) xrgb_out;
+		int r, g, b, cu, cv, bU, gUV, rV, rgbY;
 
-		unsigned char *dstBitmap=xrgb_out;
-		unsigned char *dstBitmapOffset = xrgb_out + (mBytesPerPixel * mWidth);
-
-		unsigned char *ySrc = (unsigned char*)yuv->y,
-					  *uSrc = (unsigned char*)yuv->u,
-					  *vSrc = (unsigned char*)yuv->v,
-					  *ySrc2 = ySrc + yuv->y_stride;
-		
-		//Calculate buffer offsets
-		unsigned int dstOff = mWidth * mBytesPerPixel;//( mWidth*6 ) - ( yuv->y_width*3 );
-		int yOff = (yuv->y_stride * 2) - yuv->y_width;
-			
-		
-		//Check if upside down, if so, reverse buffers and offsets
-		if ( yuv->y_height < 0 )
+		for (y=0;y<yuv->y_height;y++)
 		{
-			yuv->y_height = -yuv->y_height;
-			ySrc		 += (yuv->y_height - 1) * yuv->y_stride;
-			
-			uSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
-			vSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
-			
-			ySrc2 = ySrc - yuv->y_stride;
-			yOff  = -yuv->y_width - ( yuv->y_stride * 2 );
-			
-			yuv->uv_stride = -yuv->uv_stride;
-		}
-
-		//Cut width and height in half (uv field is only half y field)
-		yuv->y_height = yuv->y_height >> 1;
-		yuv->y_width = yuv->y_width >> 1;
-
-		//Convientient temp vars
-		signed int r, g, b, u, v, bU, gUV, rV, rgbY;
-		int x;
-		
-		//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-		for (int y = yuv->y_height; y > 0; --y)
-		{
-			for (x = 0; x < yuv->y_width; ++x) 
+			t=0; ySrc=ySrc2; ySrcEnd=ySrc2+yuv->y_width; uSrc=uSrc2; vSrc=vSrc2;
+			while (ySrc != ySrcEnd)
 			{
-				//Get uv pointers for row
-				u = uSrc[x]; 
-				v = vSrc[x];
-				
 				//get corresponding lookup values
-				rgbY= YTable[*ySrc];				
-				rV  = RVTable[v];
-				gUV = GUTable[u] + GVTable[v];
-				bU  = BUTable[u];
-				++ySrc;
-
-				//scale down - brings are values back into the 8 bits of a byte
-				r = (rgbY + rV ) >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU ) >> 13;
-				
-				//Clip to RGB values (255 0)
-				CLIP_RGB_COLOR( r, dstBitmap[2] );
-				CLIP_RGB_COLOR( g, dstBitmap[1] );
-				CLIP_RGB_COLOR( b, dstBitmap[0] );
-				
-				//And repeat for other pixels (note, y is unique for each
-				//pixel, while uv are not)
 				rgbY = YTable[*ySrc];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmap[mBytesPerPixel+2] );
-				CLIP_RGB_COLOR( g, dstBitmap[mBytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmap[mBytesPerPixel+0] );
-				++ySrc;
-
-				rgbY = YTable[*ySrc2];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[2] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[0] );
-				++ySrc2;
-				
-				rgbY = YTable[*ySrc2];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[mBytesPerPixel+2] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[mBytesPerPixel+1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[mBytesPerPixel+0] );
-				++ySrc2;
-
-				//Advance inner loop offsets
-				dstBitmap += mBytesPerPixel << 1;
-				dstBitmapOffset += mBytesPerPixel << 1;
-			} // end for x
-
-			//Advance destination pointers by offsets
-			dstBitmap		+= dstOff;
-			dstBitmapOffset += dstOff;
-			ySrc			+= yOff;
-			ySrc2			+= yOff;
-			uSrc			+= yuv->uv_stride;
-			vSrc			+= yuv->uv_stride;
-		} //end for y
-
+				if (t=!t == 1)
+				{
+					cu=*uSrc; cv=*vSrc;
+					rV   = RVTable[cv];
+					gUV  = GUTable[cu] + GVTable[cv];
+					bU   = BUTable[cu];
+					uSrc++; vSrc++;
+				}
+				//scale down - brings are values back into the 8 bits of a byte
+				r = CLIP_RGB_COLOR((rgbY + rV ) >> 13);
+				g = CLIP_RGB_COLOR((rgbY - gUV) >> 13);
+				b = CLIP_RGB_COLOR((rgbY + bU ) >> 13);
+				*out=(((r << 8) | g) << 8) | b;
+				out++;
+				ySrc++;
+			}
+			ySrc2+=yuv->y_stride;
+			if (y%2 == 1) { uSrc2+=yuv->uv_stride; vSrc2+=yuv->uv_stride; }
+		}
 	}
 
 	//----------------------------------------------------------------------//

@@ -56,11 +56,11 @@ namespace Ogre
 		It is recomended that you also use this class when creating
 		textures in code, but it is not required.
 	*/
-	class _OgreTheoraExport TheoraVideoController : public ExternalTextureSource, public FrameListener
+	class _OgreTheoraExport TheoraVideoManager : public ExternalTextureSource, public FrameListener
 	{
 	public:
-		TheoraVideoController();
-		~TheoraVideoController();
+		TheoraVideoManager();
+		~TheoraVideoManager();
 
 		/**
 			@remarks
@@ -136,9 +136,9 @@ namespace Ogre
         public:
 			String doGet(const void* target) const;
             void doSet(void* target, const String& val);
-			void setThis( TheoraVideoController* p ) { pThis = p; }
+			void setThis( TheoraVideoManager* p ) { pThis = p; }
 		private:
-			TheoraVideoController* pThis;
+			TheoraVideoManager* pThis;
         };
 		/**
 			@remarks
@@ -149,9 +149,9 @@ namespace Ogre
         public:
 			String doGet(const void* target) const;
             void doSet(void* target, const String& val);
-			void setThis( TheoraVideoController* p ) { pThis = p; }
+			void setThis( TheoraVideoManager* p ) { pThis = p; }
 		private:
-			TheoraVideoController* pThis;
+			TheoraVideoManager* pThis;
         };
 
 		typedef std::vector< TheoraVideoClip* > mtClips;

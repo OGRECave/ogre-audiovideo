@@ -46,7 +46,7 @@ namespace Ogre
 	class TheoraAudioDriver;
 	class TheoraGenericAudio;
 	class TheoraVideoDriver;
-	class TheoraVideoController;
+	class TheoraVideoManager;
 }
 
 #endif //_TheoraPlayerPreReqsHeader_

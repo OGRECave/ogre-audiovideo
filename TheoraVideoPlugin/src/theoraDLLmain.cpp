@@ -39,7 +39,7 @@ date                 : Jan 1 2004
 email                : pjcast@yahoo.com
 ***************************************************************************/
 #include "Ogre.h"
-#include "TheoraVideoController.h"
+#include "TheoraVideoManager.h"
 
 #include "TheoraVideoDriver.h"
 
@@ -53,7 +53,7 @@ namespace Ogre
 	extern "C" void dllStartPlugin( void )
 	{
 		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoController();
+		theoraVideoPlugin = new TheoraVideoManager();
 		theoraFrameListener = new TheoraVideoFrameListener();
 
 		//Create YUV Lookup tables here
