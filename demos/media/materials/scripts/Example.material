@@ -18,22 +18,23 @@ material Examples/CloudySky
 
 material SimpleVideo
 {
-	technique
-	{
-		pass
-		{
-			cull_software none
-			cull_hardware none
-			lighting off
-			texture_unit
-			{
-				texture_source ogg_video
-				{
-					filename clip.ogg
-					precache 50
-					play_mode play
-				}
-			}
-		}
-	}
+  technique
+  {
+    pass
+    {
+      cull_software none
+      cull_hardware none
+      lighting off
+      texture_unit
+      {
+        texture_source ogg_video
+        {
+          filename clip.ogg
+          precache 16
+          // output grey
+          play_mode play
+        }
+      }
+    }
+  }
 }

@@ -48,21 +48,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 namespace Ogre
 {
 	/**
-		How video is transfered from libtheora to a texture
-	*/
-	enum TheoraVideo_VideoMode
-	{
-		// theora output is converted to RGB
-		TH_RGB = 0,
-		// Only luma is used
-		TH_Grey = 1,
-		// direct YUV data copied to RGB, useful for shader decoding
-		TH_YUV = 2
-	};
-
-
-
-	/**
 		A messenger class for sending off messages relating to stream/movie events	
 	*/
 	class _OgreTheoraExport TheoraVideoListener
@@ -153,7 +138,7 @@ namespace Ogre
 				latest time this frame should be displayed
 			@param convert_to_rgb
 		*/
-		void decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_VideoMode mode=TH_RGB);
+		void decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_OutputMode mode=TH_RGB);
 
 		double mTimeToDisplay;
 		bool mInUse;
@@ -200,8 +185,8 @@ namespace Ogre
 				Mode to change to 
 		*/
 
-		void setVideoMode(TheoraVideo_VideoMode mode) { mVideoMode=mode; }
-		TheoraVideo_VideoMode getVideoMoge() { return mVideoMode; }
+		void setOutputMode(TheoraVideo_OutputMode mode);
+		TheoraVideo_OutputMode getVideoMoge() { return mOutputMode; }
 
 
 		void changePlayMode( eTexturePlayMode eMode );
@@ -334,7 +319,7 @@ namespace Ogre
 		TheoraSeekUtility *mSeeker;
 
 		// how would you like your output to be.
-		TheoraVideo_VideoMode mVideoMode;
+		TheoraVideo_OutputMode mOutputMode;
 
 		// time the video clip has to reach before it should display the next frame
 		double mTimeOfNextFrame;

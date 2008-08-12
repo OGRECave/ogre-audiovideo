@@ -75,13 +75,10 @@ public:
 		mKeyboard->setEventCallback(this);
     }
 
-    /// Tell the frame listener to exit at the end of the next frame
     void requestShutdown(void)
     {
         mShutdownRequested = true;
     }
-
-	int mLastFrameTicks;
 
 	bool frameStarted(const FrameEvent& evt)
     {
@@ -233,6 +230,8 @@ protected:
                 (CEGUI::utf8*)"SimpleDemo.layout"); 
         mGUISystem->setGUISheet(sheet);
 
+		setupEventHandlers();
+
     }
 
     // Create new frame listener
@@ -242,8 +241,45 @@ protected:
         mRoot->addFrameListener(mFrameListener);
     }
 
+    bool OnRGB(const CEGUI::EventArgs& e)
+    {
+		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		clip->setOutputMode(TH_RGB);
+        return true;
+    }
+
+    bool OnYUV(const CEGUI::EventArgs& e)
+    {
+		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		clip->setOutputMode(TH_YUV);
+        return true;
+    }
+
+    bool OnGrey(const CEGUI::EventArgs& e)
+    {
+		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		clip->setOutputMode(TH_Grey);
+        return true;
+    }
+
     void setupEventHandlers(void)
     {
+		CEGUI::WindowManager& wmgr = CEGUI::WindowManager::getSingleton();
+        wmgr.getWindow((CEGUI::utf8*)"rgb_button")
+			->subscribeEvent(
+				CEGUI::PushButton::EventClicked, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnRGB,this));
+        wmgr.getWindow((CEGUI::utf8*)"yuv_button")
+			->subscribeEvent(
+				CEGUI::PushButton::EventClicked, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnYUV,this));
+        wmgr.getWindow((CEGUI::utf8*)"grey_button")
+			->subscribeEvent(
+				CEGUI::PushButton::EventClicked, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnGrey,this));
 
     }
 

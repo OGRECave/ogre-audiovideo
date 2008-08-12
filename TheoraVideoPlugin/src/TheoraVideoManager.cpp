@@ -52,18 +52,20 @@ namespace Ogre
 	}
 
 
+	//*****************************************************************************//
 
 
 	//Initial static command param method
 	TheoraVideoManager::CmdNumPrecachedFrames TheoraVideoManager::msCmdNumPrecachedFrames;
+	TheoraVideoManager::CmdOutputMode TheoraVideoManager::msCmdOutputMode;
 	//----------------------------------------------------------------------------//
 	TheoraVideoManager::TheoraVideoManager() : 
 		mbInit( false ),
-		mNumPrecachedFrames(-1)
+		mNumPrecachedFrames(-1),
+		mOutputMode(TH_RGB)
 	{
 		mPlugInName = "TheoraVideoPlugin";
 		mDictionaryName = mPlugInName;
-		tempTextureFX = render_normal;
 		mSeekEnabled = false;
 		mAutoUpdate = false;
 	}
@@ -94,14 +96,16 @@ namespace Ogre
 
 			int n=(mNumPrecachedFrames == -1) ? 16 : mNumPrecachedFrames;
 			newMovie->setNumPrecachedFrames(n);
+			newMovie->setOutputMode(mOutputMode);
 			mMoviesList.push_back( newMovie );
 		}
 		catch(...)
 		{
 			delete newMovie;
 		}
+		// reset variables for a new movie
 		mNumPrecachedFrames=-1;
-		tempTextureFX = render_normal;
+		mOutputMode=TH_RGB;
 		mInputFileName = "None";
 		mTechniqueLevel = mPassLevel = mStateLevel = 0;
 		mSeekEnabled = false;
@@ -164,7 +168,7 @@ namespace Ogre
 	}
 
 	//----------------------------------------------------------------------------//
-	bool TheoraVideoManager::initialise( )
+	bool TheoraVideoManager::initialise()
 	{
 		if( mbInit )
 			return true;
@@ -175,11 +179,15 @@ namespace Ogre
 		ParamDictionary* dict = getParamDictionary();
 		
 		//Add render_fx method
-		msCmdNumPrecachedFrames.setThis( this );
 		dict->addParameter(ParameterDef("precache", 
-			"Defines how many frames should be precached to smooth video playback"
-			, PT_INT),
-			&TheoraVideoManager::msCmdNumPrecachedFrames);
+										"Defines how many frames should be precached to smooth video playback",
+										PT_INT),
+						   &TheoraVideoManager::msCmdNumPrecachedFrames);
+
+		dict->addParameter(ParameterDef("output", 
+										"texture output mode",
+										PT_INT),
+						   &TheoraVideoManager::msCmdOutputMode);
 
 		mbInit = true;
 		return true;
@@ -207,6 +215,21 @@ namespace Ogre
     void TheoraVideoManager::CmdNumPrecachedFrames::doSet(void* target, const String& val)
 	{
 		static_cast<TheoraVideoManager*>(target)->mNumPrecachedFrames=StringConverter::parseInt(val);
+	}
+
+	//----------------------------------------------------------------------------//
+	String TheoraVideoManager::CmdOutputMode::doGet(const void* target) const
+	{
+		return "NA";
+	}
+
+	//----------------------------------------------------------------------------//
+    void TheoraVideoManager::CmdOutputMode::doSet(void* target, const String& val)
+	{
+		TheoraVideoManager* mgr=static_cast<TheoraVideoManager*>(target);
+		if      (val == "rgb") mgr->mOutputMode=TH_RGB;
+		else if (val == "yuv") mgr->mOutputMode=TH_YUV;
+		else                   mgr->mOutputMode=TH_Grey;
 	}
 } //end namespace Ogre
 

@@ -54,7 +54,7 @@ namespace Ogre
 		delete mPixelBuffer;
 	}
 
-	void TheoraFrame::decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_VideoMode mode)
+	void TheoraFrame::decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_OutputMode mode)
 	{
 		mTimeToDisplay=timeToDisplay;
 
@@ -96,7 +96,7 @@ namespace Ogre
 		mSumBlited(0),
 		mNumFramesEvaluated(0),
 		mFramesReady(false),
-		mVideoMode(TH_RGB)
+		mOutputMode(TH_RGB)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &mOggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -193,6 +193,11 @@ namespace Ogre
 		}
 	}
 
+	//--------------------------------------------------------------------//
+	void TheoraVideoClip::setOutputMode(TheoraVideo_OutputMode mode)
+	{
+		mOutputMode=mode;
+	}
 
 	//--------------------------------------------------------------------//
 	void TheoraVideoClip::load( const String& filename,
@@ -578,7 +583,7 @@ namespace Ogre
 
 				frame_time = theora_granule_time( &mTheoraState, mTheoraState.granulepos );
 				timer.reset();
-				frame->decodeYUV(yuv,frame_time,mVideoMode);
+				frame->decodeYUV(yuv,frame_time,mOutputMode);
 				sumYUV+=timer.getMilliseconds();
 				mAvgYUVConvertedTime=sumYUV/numFramesEvaluated;
 

@@ -116,13 +116,6 @@ namespace Ogre
 		*/
 		void shutDown();
 
-
-		/**
-			@remarks
-				Called to set the Texture FX mode on the next generated texture
-		*/
-		void setRenderFx( TextureSpecialRenderFX rfx ) { tempTextureFX = rfx; }
-
 		/**
 			@remarks
 				Called to set if seeking is enabled on the next generated video
@@ -146,22 +139,32 @@ namespace Ogre
         public:
 			String doGet(const void* target) const;
             void doSet(void* target, const String& val);
-			void setThis( TheoraVideoManager* p ) { pThis = p; }
-		private:
-			TheoraVideoManager* pThis;
+        };
+
+		/**
+			@remarks
+				sets video output mode
+		*/
+		class CmdOutputMode : public ParamCommand
+        {
+        public:
+			String doGet(const void* target) const;
+            void doSet(void* target, const String& val);
         };
 
 
-		typedef std::vector< TheoraVideoClip* > mtClips;
+		typedef std::vector<TheoraVideoClip*> mtClips;
 		//! A list of movie clips
 		mtClips mMoviesList;
 		// param set by CmdNumPrecachedFrames class
 		int mNumPrecachedFrames;
+		// param set by CmdOutputMode class
+		TheoraVideo_OutputMode mOutputMode;
 
 	protected:
 		static CmdNumPrecachedFrames msCmdNumPrecachedFrames;
+		static CmdOutputMode msCmdOutputMode;
 
-		TextureSpecialRenderFX tempTextureFX;
 		bool mSeekEnabled;
 		bool mAutoUpdate;
 		

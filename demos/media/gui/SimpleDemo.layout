@@ -2,7 +2,7 @@
 <GUILayout>
 <Window Type="DefaultGUISheet" Name="root">
     <Window Type="DefaultGUISheet" Name="OgreGuiDemo">
-		<Property Name="UnifiedSize" Value="{{0.22,0},{1,0}}" />
+		<Property Name="UnifiedSize" Value="{{0.24,0},{1,0}}" />
 
             <Window Type="TaharezLook/StaticText" Name="cFrame">
                 <Property Name="UnifiedPosition" Value="{{0.0,0},{0.01,0}}" />
@@ -47,6 +47,24 @@
             <Window Type="TaharezLook/StaticText" Name="precached">
                 <Property Name="UnifiedPosition" Value="{{0.0,0},{0.49,0}}" />
                 <Property Name="UnifiedSize" Value="{{1.0,0},{0.05,0}}" />
+            </Window>
+
+            <Window Type="TaharezLook/Button" Name="rgb_button">
+                <Property Name="UnifiedPosition" Value="{{0.05,0},{0.55,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.3,0},{0.04,0}}" />
+    		    <Property Name="Text" Value="RGB" />
+            </Window>
+
+            <Window Type="TaharezLook/Button" Name="yuv_button">
+                <Property Name="UnifiedPosition" Value="{{0.37,0},{0.55,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.3,0},{0.04,0}}" />
+    		    <Property Name="Text" Value="YUV" />
+            </Window>
+
+            <Window Type="TaharezLook/Button" Name="grey_button">
+                <Property Name="UnifiedPosition" Value="{{0.69,0},{0.55,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.3,0},{0.04,0}}" />
+    		    <Property Name="Text" Value="Grey" />
             </Window>
 
             <Window Type="TaharezLook/StaticText" Name="speed">

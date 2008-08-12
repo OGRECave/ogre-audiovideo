@@ -33,11 +33,17 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	enum TextureSpecialRenderFX
+	/**
+		How video is transfered from libtheora to a texture
+	*/
+	enum TheoraVideo_OutputMode
 	{
-		render_normal = 0,		//Default mode - decodes texture normally
-		render_to_alpha,		//Uses Y component and renders to alpha channel only
-		render_to_PF_B8G8R8A8	//Same as default, though, has a full alpha texture
+		// theora output is converted to RGB
+		TH_RGB = 0,
+		// Only luma is used
+		TH_Grey = 1,
+		// direct YUV data copied to RGB, useful for shader decoding
+		TH_YUV = 2
 	};
 
 	//Forward declare our classes
