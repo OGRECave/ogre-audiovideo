@@ -25,6 +25,7 @@ material SimpleVideo
       cull_software none
       cull_hardware none
       lighting off
+
       texture_unit
       {
         texture_source ogg_video

@@ -354,6 +354,7 @@ namespace Ogre
 		eTexturePlayMode mPlayMode;
 
 		int mFrameNum;
+		// Benchmark variables
 		int mNumDroppedFrames;
 		float mAvgDecodedTime, mAvgYUVConvertedTime,mSumBlited;
 		float mDecodedTime, mYUVConvertTime, mBlitTime;

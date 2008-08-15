@@ -140,11 +140,14 @@ private:
     CEGUI::OgreCEGUIRenderer* mGUIRenderer;
     CEGUI::System* mGUISystem;
     CEGUI::Window* mEditorGuiSheet;
+	bool mShaders;
 public:
+
     GuiApplication()
       : mGUIRenderer(0),
         mGUISystem(0),
-        mEditorGuiSheet(0)
+        mEditorGuiSheet(0),
+		mShaders(false)
     {
 
 
@@ -265,6 +268,26 @@ protected:
         return true;
     }
 
+
+    bool OnShaders(const CEGUI::EventArgs& e)
+    {
+		mShaders=!mShaders;
+		CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("shaders_button");
+		MaterialPtr mat=MaterialManager::getSingleton().getByName("SimpleVideo");
+		Pass* pass=mat->getTechnique(0)->getPass(0);
+		if (mShaders)
+		{
+			wnd->setText("Shader yuv2rgb = on");
+			pass->setFragmentProgram("TheoraVideoPlugin/yuv2rgb");
+		}
+		else
+		{
+			wnd->setText("Shader yuv2rgb = off");
+			pass->setFragmentProgram("");
+		}
+        return true;
+    }
+
     void setupEventHandlers(void)
     {
 		CEGUI::WindowManager& wmgr = CEGUI::WindowManager::getSingleton();
@@ -280,6 +303,10 @@ protected:
 			->subscribeEvent(
 				CEGUI::PushButton::EventClicked, 
 				CEGUI::Event::Subscriber(&GuiApplication::OnGrey,this));
+        wmgr.getWindow((CEGUI::utf8*)"shaders_button")
+			->subscribeEvent(
+				CEGUI::PushButton::EventClicked, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnShaders,this));
 
     }
 

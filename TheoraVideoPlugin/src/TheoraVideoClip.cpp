@@ -198,7 +198,6 @@ namespace Ogre
 	{
 		mOutputMode=mode;
 	}
-
 	//--------------------------------------------------------------------//
 	void TheoraVideoClip::load( const String& filename,
 		const String& groupName, bool useAudio )
@@ -214,7 +213,7 @@ namespace Ogre
 		parseVorbisTheoraHeaders( useAudio );
 		activateVorbisTheoraCodecs( useAudio );
 	}
-	
+
 	//--------------------------------------------------------------------//
 	void TheoraVideoClip::initVorbisTheoraLayer( )
 	{
@@ -511,7 +510,7 @@ namespace Ogre
 		float sumDecoded=0,sumYUV=0;
 		double frame_time; // holds granule time
 		Ogre::Timer timer;
-
+		TheoraVideo_OutputMode last_output_mode=TH_RGB;
 		
 		
 		//Build seek map if seeking is enabled for this clip
@@ -530,6 +529,13 @@ namespace Ogre
 				//relax(30);
 				pt::psleep(30);
 				continue;
+			}
+			// if the next frame's output mode changes, the benchmark values get reset
+			if (mOutputMode != last_output_mode)
+			{
+				last_output_mode=mOutputMode;
+				numFramesEvaluated=nDropped=decodingTime=0;
+				sumDecoded=sumYUV=0;
 			}
 			
 			if (mDoSeek && mSeeker)

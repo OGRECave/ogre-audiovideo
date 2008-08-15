@@ -1,0 +1,22 @@
+fragment_program TheoraVideoPlugin/yuv2rgb_HLSL hlsl
+{
+	source yuv2rgb.hlsl
+	entry_point ps_main
+	target ps_2_0
+}
+
+fragment_program TheoraVideoPlugin/yuv2rgb_GLSL glsl
+{
+	source yuv2rgb.glsl
+
+	default_params
+	{
+		param_named diffuseMap int 0
+	}
+}
+
+fragment_program TheoraVideoPlugin/yuv2rgb unified
+{
+	delegate TheoraVideoPlugin/yuv2rgb_HLSL
+	delegate TheoraVideoPlugin/yuv2rgb_GLSL
+}
