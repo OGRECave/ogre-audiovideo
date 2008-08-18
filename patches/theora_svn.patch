@@ -1,6 +1,6 @@
 Index: win32/VS2005/dump_video/dump_video.vcproj
 ===================================================================
---- win32/VS2005/dump_video/dump_video.vcproj	(revision 15151)
+--- win32/VS2005/dump_video/dump_video.vcproj	(revision 15189)
 +++ win32/VS2005/dump_video/dump_video.vcproj	(working copy)
 @@ -1,11 +1,12 @@
  <?xml version="1.0" encoding="Windows-1252"?>
@@ -64,7 +64,7 @@ Index: win32/VS2005/dump_video/dump_video.vcproj
  	<Files>
 Index: win32/VS2005/encoder_example/encoder_example.vcproj
 ===================================================================
---- win32/VS2005/encoder_example/encoder_example.vcproj	(revision 15151)
+--- win32/VS2005/encoder_example/encoder_example.vcproj	(revision 15189)
 +++ win32/VS2005/encoder_example/encoder_example.vcproj	(working copy)
 @@ -1,11 +1,12 @@
  <?xml version="1.0" encoding="Windows-1252"?>
@@ -128,7 +128,7 @@ Index: win32/VS2005/encoder_example/encoder_example.vcproj
  	<Files>
 Index: win32/VS2005/libtheora/libtheora.vcproj
 ===================================================================
---- win32/VS2005/libtheora/libtheora.vcproj	(revision 15151)
+--- win32/VS2005/libtheora/libtheora.vcproj	(revision 15189)
 +++ win32/VS2005/libtheora/libtheora.vcproj	(working copy)
 @@ -1,11 +1,12 @@
  <?xml version="1.0" encoding="Windows-1252"?>
@@ -355,9 +355,23 @@ Index: win32/VS2005/libtheora/libtheora.vcproj
  				Name="VCPostBuildEventTool"
  			/>
  		</Configuration>
+@@ -2370,11 +2289,11 @@
+ 					>
+ 				</File>
+ 				<File
+-					RelativePath="..\..\..\lib\dec\bitwise.c"
++					RelativePath="..\..\..\lib\dec\bitpack.c"
+ 					>
+ 				</File>
+ 				<File
+-					RelativePath="..\..\..\lib\dec\bitwise.h"
++					RelativePath="..\..\..\lib\dec\bitpack.h"
+ 					>
+ 				</File>
+ 				<File
 Index: win32/VS2005/theora.sln
 ===================================================================
---- win32/VS2005/theora.sln	(revision 15151)
+--- win32/VS2005/theora.sln	(revision 15189)
 +++ win32/VS2005/theora.sln	(working copy)
 @@ -1,5 +1,5 @@
 -Microsoft Visual Studio Solution File, Format Version 9.00
