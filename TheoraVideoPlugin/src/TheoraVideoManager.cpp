@@ -30,7 +30,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 ***************************************************************************/
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
-
 #include "OgreRoot.h"
 #include "OgreException.h"
 #include "OgreLogManager.h"
@@ -91,7 +90,7 @@ namespace Ogre
 		
 		try 
 		{
-			newMovie->load(mInputFileName, sMaterialName, groupName, mTechniqueLevel,
+			newMovie->createDefinedTexture(mInputFileName, sMaterialName, groupName, mTechniqueLevel,
 						  mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled, mAutoUpdate );
 
 			int n=(mNumPrecachedFrames == -1) ? 16 : mNumPrecachedFrames;

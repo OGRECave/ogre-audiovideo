@@ -45,6 +45,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
+	int nextPow2(int x)
+	{
+		int y;
+		for (y=1;y<x;y*=2);
+		return y;
+
+	}
+
+
 	//Handle static member vars
 	unsigned int TheoraVideoDriver::YTable[ 256 ];
 	unsigned int TheoraVideoDriver::BUTable[ 256 ];
@@ -90,16 +99,18 @@ namespace Ogre
 
 		mWidth = width;
 		mHeight = height;
+		mTexWidth = nextPow2(width);
+		mTexHeight = nextPow2(height);
 
 		// create texture
 		mTexture = TextureManager::getSingleton().createManual(sTextureName,sGroupName,TEX_TYPE_2D,
-			mWidth,mHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+			mTexWidth,mTexHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
 		// clear to black
 
-		PixelFormat pf=mTexture->getFormat();
-		int w=mTexture->getWidth();
+		//PixelFormat pf=mTexture->getFormat();
+		//int w=mTexture->getWidth();
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
-		memset(texData,0,mWidth*mHeight*4);
+		memset(texData,0,mTexWidth*mTexHeight*4);
 		mTexture->getBuffer()->unlock();
 
 		// Grab Our material, then find the Texture Unit
@@ -110,13 +121,18 @@ namespace Ogre
 		t->setTextureName(sTextureName,TEX_TYPE_2D);
 		t->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
 		t->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+
+		// scale tex coords to fit the 0-1 uv range
+		Matrix4 mat=Matrix4::IDENTITY;
+		mat.setScale(Vector3((float) mWidth/mTexWidth, (float) mHeight/mTexHeight,1));
+		t->setTextureTransform(mat);
 	}
 
 	//----------------------------------------------------------------------//
 	void TheoraVideoDriver::renderToTexture(unsigned char* buffer)
 	{
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
-		memcpy(texData,buffer,mWidth*mHeight*4);
+		memcpy(texData,buffer,mTexWidth*mHeight*4);
 		mTexture->getBuffer()->unlock();
 	}
 
@@ -136,6 +152,11 @@ namespace Ogre
 				*out=(((cy << 8) | cy) << 8) | cy;
 				out++;
 				ySrc++;
+			}
+			if (mTexWidth-mWidth)
+			{
+				memset(out,0,(mTexWidth-mWidth)*4);
+				out+=mTexWidth-mWidth;
 			}
 			ySrc2+=yuv->y_stride;
 		}
@@ -159,6 +180,11 @@ namespace Ogre
 				out++;
 				ySrc++;
 				if (t=!t == 1) { uSrc++; vSrc++; }
+			}
+			if (mTexWidth-mWidth)
+			{
+				memset(out,0,(mTexWidth-mWidth)*4);
+				out+=mTexWidth-mWidth;
 			}
 			ySrc2+=yuv->y_stride;
 			if (y%2 == 1) { uSrc2+=yuv->uv_stride; vSrc2+=yuv->uv_stride; }
@@ -197,6 +223,11 @@ namespace Ogre
 				*out=(((r << 8) | g) << 8) | b;
 				out++;
 				ySrc++;
+			}
+			if (mTexWidth-mWidth)
+			{
+				memset(out,0,(mTexWidth-mWidth)*4);
+				out+=mTexWidth-mWidth;
 			}
 			ySrc2+=yuv->y_stride;
 			if (y%2 == 1) { uSrc2+=yuv->uv_stride; vSrc2+=yuv->uv_stride; }

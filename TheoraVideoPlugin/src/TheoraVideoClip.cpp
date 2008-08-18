@@ -146,7 +146,7 @@ namespace Ogre
 	}
 	
 	//--------------------------------------------------------------------//	
-	void TheoraVideoClip::load( 
+	void TheoraVideoClip::createDefinedTexture( 
 		const String &sMovieName, const String &sMaterialName,
 		const String &sGroupName, int TechniqueLevel, int PassLevel,
 		int TextureUnitStateLevel, bool HasSound, eTexturePlayMode eMode,
@@ -188,7 +188,7 @@ namespace Ogre
 
 		for (int i=0;i<num;i++)
 		{
-			frame=new TheoraFrame(this,mVideoInterface.getWidth(),mVideoInterface.getHeight());
+			frame=new TheoraFrame(this,mVideoInterface.getTexWidth(),mVideoInterface.getTexHeight());
 			mFrameRepository.push_back(frame);
 		}
 	}

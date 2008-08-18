@@ -102,6 +102,8 @@ namespace Ogre
 
 		unsigned int getWidth() { return mWidth; }
 		unsigned int getHeight() { return mHeight; }
+		unsigned int getTexWidth() { return mTexWidth; }
+		unsigned int getTexHeight() { return mTexHeight; }
 
 		/** 
 			@remarks
@@ -152,10 +154,13 @@ namespace Ogre
 		//! Pointer to the Ogre Texture
 		TexturePtr mTexture;
 
-		//! Width of the movie (possibly not the width of the texture)
+		//! Width and height of the video
 		unsigned int mWidth,
-		//! Height of the movie (possibly not the hight of the texture)
 					 mHeight;
+
+		//! actual texture size (power of 2 dimensions)
+		unsigned int mTexWidth,
+					 mTexHeight;
 
 		unsigned char mBytesPerPixel;
 

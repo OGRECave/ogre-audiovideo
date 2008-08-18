@@ -170,7 +170,7 @@ namespace Ogre
 			@return
 				true on success, false otherwise
 		*/
-		void load( 
+		void createDefinedTexture( 
 			const String &sMovieName, const String &sMaterialName,
 			const String &sGroupName, int TechniqueLevel, int PassLevel, 
 			int TextureUnitStateLevel, bool HasSound = false, 
