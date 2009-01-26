@@ -153,7 +153,8 @@ namespace Ogre
 		bool seekingEnabled,
 		bool autoUpdateAudio )
 	{
-		mMovieName = sMovieName;
+		mMovieName = sMovieName.substr(0,sMovieName.length()-1); // seems to be an ogre bug
+	
 		mMaterialName = sMaterialName;
 		mAutoUpdate = autoUpdateAudio;
 

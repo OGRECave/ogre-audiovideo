@@ -87,6 +87,7 @@ public:
 			TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
 			TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
 			clip->registerMessageHandler(&mMovieListener);
+			clip->changePlayMode(Ogre::TextureEffectPlay_ASAP);
 			init=true;
 		}
 
@@ -322,7 +323,7 @@ protected:
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+
 
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 #else
