@@ -78,6 +78,44 @@ namespace Ogre
 		mSeekEnabled = false;
 		mAutoUpdate = false;
 	}
+	//----------------------------------------------------------------------------//
+	bool TheoraVideoManager::setParameter(const String &name, const String &value)
+	{
+		 if (name == "destroy")
+		 {
+			LogManager::getSingleton().logMessage("Force destroy Movie clip");
+			if (mMoviesList.begin() != mMoviesList.end())
+			{
+				delete *mMoviesList.begin();
+				mMoviesList.clear();
+			}
+		 }
+		 return ExternalTextureSource::setParameter(name,value);
+	}
+
+	String TheoraVideoManager::getParameter (const String &name) const
+	{		
+		if (mMoviesList.begin() != mMoviesList.end())
+		{
+			TheoraVideoClip* clip=*mMoviesList.begin();
+			if (name == "started")
+			{
+				if (clip->mFirstRun) return "0";
+				else return "1";
+			}
+			if (name == "finished")
+			{
+				if (clip->mFinished) return "1";
+				else return "0";
+			}
+			else return ExternalTextureSource::getParameter(name);
+		}
+		else if (name == "finished")
+		{
+			return "1";
+		}
+		else return ExternalTextureSource::getParameter(name);
+	}
 
 	//----------------------------------------------------------------------------//
 	TheoraVideoManager::~TheoraVideoManager()
@@ -113,6 +151,7 @@ namespace Ogre
 		}
 		catch(...)
 		{
+			LogManager::getSingleton().logMessage("TheoraVideoPlugin: error creating texture");
 			delete newMovie;
 		}
 		// reset variables for a new movie

@@ -296,6 +296,7 @@ namespace Ogre
 		void setNumPrecachedFrames(int num);
 		int getNumPrecachedFrames() { return mFrameRepository.size(); }
 		bool mFinished; // temp hack
+		bool mFirstRun; //! if first run, precache N frames
 	protected:
 		/**
 			@remarks
@@ -373,7 +374,7 @@ namespace Ogre
 		bool mEndOfAudio;
 		bool mEndOfVideo;
 		bool mAudioStarted;
-		bool mFirstRun; //! if first run, precache N frames
+		
 
 		bool mAutoUpdate;
 

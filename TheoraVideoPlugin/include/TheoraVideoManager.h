@@ -52,7 +52,7 @@ namespace Ogre
 
 
 
-
+	
 
 
 
@@ -66,6 +66,8 @@ namespace Ogre
 	public:
 		TheoraVideoManager();
 		~TheoraVideoManager();
+		bool setParameter(const String &name, const String &value); // temp
+		virtual String getParameter (const String &name) const;
 
 		/**
 			@remarks
