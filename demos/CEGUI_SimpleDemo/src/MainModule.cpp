@@ -87,7 +87,7 @@ public:
 			TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
 			TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
 			clip->registerMessageHandler(&mMovieListener);
-			clip->changePlayMode(Ogre::TextureEffectPlay_ASAP);
+			//clip->changePlayMode(Ogre::TextureEffectPlay_ASAP);
 			init=true;
 		}
 

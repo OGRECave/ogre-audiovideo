@@ -129,6 +129,14 @@ namespace Ogre
 			waitfor();
 		}
 
+		TheoraFrame* frame;
+		while (mFrameRepository.size())
+		{
+			frame=mFrameRepository.front();
+			delete frame;
+			mFrameRepository.pop_front();
+		}
+
 		if( mTimer )
 			delete mTimer;
 
@@ -173,7 +181,7 @@ namespace Ogre
 			sMaterialName, sMovieName, sGroupName, TechniqueLevel, 
 			PassLevel, TextureUnitStateLevel, mTheoraInfo.width, 
 			mTheoraInfo.height );
-		changePlayMode( Ogre::TextureEffectPause );
+		changePlayMode( Ogre::TextureEffectPlay_ASAP );
 	}
 
 	//--------------------------------------------------------------------//
@@ -185,7 +193,7 @@ namespace Ogre
 		{
 			frame=mFrameRepository.front();
 			delete frame;
-			mFrameRepository.pop_back();
+			mFrameRepository.pop_front();
 		}
 
 		for (int i=0;i<num;i++)
