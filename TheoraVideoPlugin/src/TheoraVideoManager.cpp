@@ -43,9 +43,19 @@ namespace Ogre
 	{
 		TheoraVideoManager* c = (TheoraVideoManager*)
 			ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		for (TheoraVideoManager::mtClips::iterator it=c->mMoviesList.begin();it!=c->mMoviesList.end();it++)
+		
+		TheoraVideoManager::mtClips::iterator it;
+		for (it=c->mMoviesList.begin();it!=c->mMoviesList.end();it++)
 		{
 			(*it)->blitFrameCheck();
+		}
+		// HAAACKYYYY. allows only one movie to play. will fix in the future
+		it=c->mMoviesList.begin();
+	
+		if (!c->mMoviesList.empty() && (*it)->mFinished)
+		{
+			delete *it;
+			c->mMoviesList.clear();
 		}
 		return true;
 	}
@@ -86,6 +96,9 @@ namespace Ogre
 		if( mMode == TextureEffectPause )
 			bSound = true;
 
+
+		LogManager::getSingleton().logMessage("Creating ogg video: "+mInputFileName);
+
 		newMovie = new TheoraVideoClip();
 		
 		try 
@@ -109,6 +122,8 @@ namespace Ogre
 		mTechniqueLevel = mPassLevel = mStateLevel = 0;
 		mSeekEnabled = false;
 		mAutoUpdate = false;
+
+		LogManager::getSingleton().logMessage("ogg video created");
 	}
 
 	//----------------------------------------------------------------------------//
@@ -226,8 +241,8 @@ namespace Ogre
     void TheoraVideoManager::CmdOutputMode::doSet(void* target, const String& val)
 	{
 		TheoraVideoManager* mgr=static_cast<TheoraVideoManager*>(target);
-		if      (val == "rgb") mgr->mOutputMode=TH_RGB;
-		else if (val == "yuv") mgr->mOutputMode=TH_YUV;
+		if      (val == "rgb ") mgr->mOutputMode=TH_RGB; // space is here for ogre1.6.0 bug, will restore once fixed
+		else if (val == "yuv ") mgr->mOutputMode=TH_YUV;
 		else                   mgr->mOutputMode=TH_Grey;
 	}
 } //end namespace Ogre

@@ -82,6 +82,7 @@ namespace Ogre
 		mThreadRunning(false),
 		mEndOfAudio(false),
 		mEndOfVideo(false),
+		mFinished(false),
 		mEndOfFile(false),
 		mAutoUpdate(false),
 		mTheoraStreams(0), 
@@ -96,7 +97,8 @@ namespace Ogre
 		mSumBlited(0),
 		mNumFramesEvaluated(0),
 		mFramesReady(false),
-		mOutputMode(TH_RGB)
+		mOutputMode(TH_RGB),
+		mFirstRun(true)
 	{
 		//Ensure all structures get cleared out. Already bit me in the arse ;)
 		memset( &mOggSyncState, 0, sizeof( ogg_sync_state ) );
@@ -118,6 +120,7 @@ namespace Ogre
 	//--------------------------------------------------------------------//
 	TheoraVideoClip::~TheoraVideoClip()
 	{
+		LogManager::getSingleton().logMessage("TheoraVideoPlugin: destroying video clip");
 		changePlayMode( TextureEffectPause );
 		if( mThreadRunning )
 		{
@@ -153,11 +156,11 @@ namespace Ogre
 		bool seekingEnabled,
 		bool autoUpdateAudio )
 	{
-		mMovieName = sMovieName.substr(0,sMovieName.length()-1); // seems to be an ogre bug
+		
+		mMovieName = sMovieName.substr(0,sMovieName.length()-1); // seems to be an ogre 1.6.0 bug
 	
 		mMaterialName = sMaterialName;
 		mAutoUpdate = autoUpdateAudio;
-
 		load( mMovieName, sGroupName, HasSound );
 			
 		//Build seeking data
@@ -165,14 +168,12 @@ namespace Ogre
 			mSeeker = new TheoraSeekUtility( mOggFile, &mOggSyncState,
 				&mTheoraStreamState, &mVorbisStreamState, &mTheoraInfo, &mVorbisInfo,
 				&mTheoraState, &mVorbisDSPState, &mVorbisBlock );
-
 		// Attach our video to a texture unit
 		mVideoInterface.attachVideoToTextureUnit( 
 			sMaterialName, sMovieName, sGroupName, TechniqueLevel, 
 			PassLevel, TextureUnitStateLevel, mTheoraInfo.width, 
 			mTheoraInfo.height );
-
-		changePlayMode( eMode );
+		changePlayMode( Ogre::TextureEffectPause );
 	}
 
 	//--------------------------------------------------------------------//
@@ -409,7 +410,18 @@ namespace Ogre
 	{
 		if( mFramesReady )
 		{
-			
+			if (mFirstRun)
+			{
+				// make sure we precache N frames before starting the movie
+				std::list<TheoraFrame*>::iterator it;
+				for (it=mFrameRepository.begin();it!=mFrameRepository.end();it++)
+				{
+					if (!(*it)->mInUse) break;
+				}
+				if (it != mFrameRepository.end()) return;
+				mFirstRun=false;
+				mTimer->reset();
+			}
 			double nowTime=getMovieTime();
 			TheoraFrame* frame;
 			
@@ -429,7 +441,7 @@ namespace Ogre
 				mFrames.pop();
 				if (frame->mTimeToDisplay < nowTime)
 				{
-					if (mFrames.size() > 0) frame->mInUse=false;
+					frame->mInUse=false;
 					mNumDroppedFrames++;
 				}
 				else break;
@@ -477,6 +489,10 @@ namespace Ogre
 				mMessageListener->displayedFrame(info);
 			}
 		}
+		else if (mEndOfFile)
+		{
+			mFinished=true;
+		}
 
 		//If user requested that we update audio buffers
 		if( mAutoUpdate && mAudioStarted )
@@ -522,7 +538,7 @@ namespace Ogre
 		}
 
 		timer.reset();
-		while( mThreadRunning )
+		while( mThreadRunning && !mEndOfFile)
 		{
 			if (mPlayMode == TextureEffectPause)
 			{
@@ -625,18 +641,12 @@ namespace Ogre
 					mMessageListener->messageEvent( TheoraVideoListener::TH_OggStreamDone );
 			
 				mEndOfFile = true;
+				LogManager::getSingleton().logMessage("TheoraVideoPlugin: End of File reached");
 			}
-
-			//XXX: hmmm :?
-			/*
-			if( mVideoFrameReady )	{
-				int ticks = 1000.0f * ( videobuf_time - getMovieTime() );
-				if(ticks > 0)
-					pt::psleep(ticks);
-					//relax(ticks);
-			}
-			*/
 		} //while mThreadRunning
+
+		LogManager::getSingleton().logMessage("TheoraVideoPlugin: ending video thread");
+		mThreadRunning=false;
 	}
 
 	//--------------------------------------------------------------------//

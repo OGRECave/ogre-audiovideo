@@ -107,8 +107,6 @@ namespace Ogre
 			mTexWidth,mTexHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
 		// clear to black
 
-		//PixelFormat pf=mTexture->getFormat();
-		//int w=mTexture->getWidth();
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
 		memset(texData,0,mTexWidth*mTexHeight*4);
 		mTexture->getBuffer()->unlock();
@@ -126,6 +124,7 @@ namespace Ogre
 		Matrix4 mat=Matrix4::IDENTITY;
 		mat.setScale(Vector3((float) mWidth/mTexWidth, (float) mHeight/mTexHeight,1));
 		t->setTextureTransform(mat);
+
 	}
 
 	//----------------------------------------------------------------------//
