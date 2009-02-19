@@ -43,7 +43,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "theora/theora.h"
 #include "vorbis/codec.h"
-#include "pasync.h"
+#include "ptypes/pasync.h"
 
 namespace Ogre
 {

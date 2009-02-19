@@ -80,7 +80,7 @@
 				OutputFile="../Bin/Release/CEGUI_TheoraDemo.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\..\TheoraVideoPlugin\bin\release_SSE2"
+				AdditionalLibraryDirectories="..\..\..\TheoraVideoPlugin\bin\release"
 				ProgramDatabaseFile=".\../obj/Release/GuiTesting.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

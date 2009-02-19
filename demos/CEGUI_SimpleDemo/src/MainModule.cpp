@@ -85,7 +85,7 @@ public:
 		if (!init)
 		{
 			TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+			TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
 			clip->registerMessageHandler(&mMovieListener);
 			//clip->changePlayMode(Ogre::TextureEffectPlay_ASAP);
 			init=true;
@@ -248,7 +248,7 @@ protected:
     bool OnRGB(const CEGUI::EventArgs& e)
     {
 		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
 		clip->setOutputMode(TH_RGB);
         return true;
     }
@@ -256,7 +256,7 @@ protected:
     bool OnYUV(const CEGUI::EventArgs& e)
     {
 		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
 		clip->setOutputMode(TH_YUV);
         return true;
     }
@@ -264,7 +264,7 @@ protected:
     bool OnGrey(const CEGUI::EventArgs& e)
     {
 		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("clip.ogg");
+		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
 		clip->setOutputMode(TH_Grey);
         return true;
     }
