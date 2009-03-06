@@ -19,29 +19,27 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+n
+#ifndef _TheoraTimer_h
+#define _TheoraTimer_h
 
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
-
-#include "TheoraVideoManager.h"
+#include "TheoraExport.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
-
-	extern "C" void dllStartPlugin()
+	/**
+		
+	*/
+	class _OgreTheoraExport TheoraTimer
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
+	public:
+		TheoraTimer();
+		~TheoraTimer();
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
-	}
+		void pause();
+		void stop();
+		void seek(float time):
 
-	extern "C" void dllStopPlugin()
-	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
-	}
+	};
 }
+#endif

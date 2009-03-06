@@ -1,7 +1,7 @@
 #include "CEGUI/CEGUI.h"
 #include "OgreCEGUIRenderer.h"
 #include "OgreCEGUIResourceProvider.h"
-
+#include "OgreExternalTextureSourceManager.h"
 #include "ExampleApplication.h"
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
@@ -19,13 +19,12 @@ CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
     }
 }
 //----------------------------------------------------------------//
+/*
 class ClipListener : public TheoraVideoListener
 {
 	int messageEvent( PLUGIN_theora_message m ) { return 0; }
 
-	/**
-		grabs video info and displays it in cegui staticText objects
-	*/
+
 	void displayedFrame(TheoraVideoListener::FrameInfo info)
 	{
 		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
@@ -52,7 +51,7 @@ class ClipListener : public TheoraVideoListener
 		Mgr.getWindow("precached")->setText(s9.str());
 	}
 };
-
+*/
 
 class GuiFrameListener : public OIS::KeyListener, public OIS::MouseListener, public ExampleFrameListener
 {
@@ -60,7 +59,7 @@ private:
     CEGUI::Renderer* mGUIRenderer;
     bool mShutdownRequested;
 	bool init;
-	ClipListener mMovieListener;
+	//ClipListener mMovieListener;
 
 public:
     // NB using buffered input, this is the only change
@@ -68,8 +67,8 @@ public:
         : ExampleFrameListener(win, cam, true, true, true), 
           mGUIRenderer(renderer),
           mShutdownRequested(false),
-		  init(false),
-		  mMovieListener()
+		  init(false)
+		 // mMovieListener()
     {
 		mMouse->setEventCallback(this);
 		mKeyboard->setEventCallback(this);
@@ -84,9 +83,9 @@ public:
     {
 		if (!init)
 		{
-			TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
-			clip->registerMessageHandler(&mMovieListener);
+			//TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			//TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
+			//clip->registerMessageHandler(&mMovieListener);
 			//clip->changePlayMode(Ogre::TextureEffectPlay_ASAP);
 			init=true;
 		}
@@ -193,7 +192,7 @@ protected:
         ManualObject* model = mSceneMgr->createManualObject("quad");
 		model->begin("SimpleVideo");
 
-		model->position( 1,-1,0);
+		model->position( 1,-0.94,0);
 		model->textureCoord(1,1);
 
 		model->position( 1,1,0);
@@ -205,10 +204,10 @@ protected:
 		model->position(-0.5,1,0);
 		model->textureCoord(0,0);
 
-		model->position( 1,-1,0);
+		model->position( 1,-0.94,0);
 		model->textureCoord(1,1);
 
-		model->position(-0.5,-1,0);
+		model->position(-0.5,-0.94,0);
 		model->textureCoord(0,1);
 
 		model->end();
@@ -245,33 +244,50 @@ protected:
         mRoot->addFrameListener(mFrameListener);
     }
 
+    bool OnPlayPause(const CEGUI::EventArgs& e)
+    {
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+
+		if (clip->isPlaying())
+		{
+			clip->pause();
+		}
+		else
+		{
+			clip->play();
+		}
+        return true;
+    }
+
     bool OnRGB(const CEGUI::EventArgs& e)
     {
-		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
 		clip->setOutputMode(TH_RGB);
         return true;
     }
 
     bool OnYUV(const CEGUI::EventArgs& e)
     {
-		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
 		clip->setOutputMode(TH_YUV);
         return true;
     }
 
     bool OnGrey(const CEGUI::EventArgs& e)
     {
-		TheoraVideoManager* c = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		TheoraVideoClip* clip=c->getMovieNameClip("konqi.ogg");
-		clip->setOutputMode(TH_Grey);
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+		clip->setOutputMode(TH_GREY);
         return true;
     }
 
 
     bool OnShaders(const CEGUI::EventArgs& e)
     {
+		
 		mShaders=!mShaders;
 		CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("shaders_button");
 		MaterialPtr mat=MaterialManager::getSingleton().getByName("SimpleVideo");
@@ -308,6 +324,11 @@ protected:
 			->subscribeEvent(
 				CEGUI::PushButton::EventClicked, 
 				CEGUI::Event::Subscriber(&GuiApplication::OnShaders,this));
+
+        wmgr.getWindow((CEGUI::utf8*)"Play/Pause")
+			->subscribeEvent(
+				CEGUI::PushButton::EventClicked, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnPlayPause,this));
 
     }
 

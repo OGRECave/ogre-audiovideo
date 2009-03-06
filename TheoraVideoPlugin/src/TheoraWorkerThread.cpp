@@ -19,29 +19,45 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
-
+#include "TheoraWorkerThread.h"
 #include "TheoraVideoManager.h"
+#include "TheoraVideoClip.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
-
-	extern "C" void dllStartPlugin()
+	TheoraWorkerThread::TheoraWorkerThread() : pt::thread(false)
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
-
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
+		mClip=NULL;
+		mThreadRunning=false;
 	}
 
-	extern "C" void dllStopPlugin()
+	TheoraWorkerThread::~TheoraWorkerThread()
 	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
+		if (mThreadRunning)
+		{
+			//Terminate Thread and wait for it to leave
+			mThreadRunning = false;
+			waitfor();
+		}
 	}
-}
+	
+	void TheoraWorkerThread::execute()
+	{
+		mThreadRunning = true;
+		while( mThreadRunning)
+		{
+			mClip=TheoraVideoManager::getSingleton().requestWork();
+			if (!mClip)
+			{
+				pt::psleep(30);
+				continue;
+			}
+			mClip->mAssignedWorkerThread=this;
+
+			mClip->decodeNextFrame();
+
+			mClip->mAssignedWorkerThread=NULL;
+		}
+	}
+
+} // end namespace Ogre

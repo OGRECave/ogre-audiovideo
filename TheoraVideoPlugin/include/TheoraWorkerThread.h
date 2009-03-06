@@ -19,29 +19,31 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+#ifndef _TheoraWorkerThread_h
+#define _TheoraWorkerThread_h
 
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
-
-#include "TheoraVideoManager.h"
+#include "pasync.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
+	/**
+		
+	*/
 
-	extern "C" void dllStartPlugin()
+	class TheoraVideoClip;
+
+	class TheoraWorkerThread : public pt::thread
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
+		TheoraVideoClip* mClip;
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
-	}
+		volatile bool mThreadRunning;
 
-	extern "C" void dllStopPlugin()
-	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
-	}
+	public:
+		TheoraWorkerThread();
+		~TheoraWorkerThread();
+
+	    //! Main Thread Body - do not call directly!
+		void execute();
+	};
 }
+#endif

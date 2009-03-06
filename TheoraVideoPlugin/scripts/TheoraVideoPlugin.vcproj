@@ -20,7 +20,6 @@
 			OutputDirectory=".\..\bin\Debug"
 			IntermediateDirectory=".\..\obj\Debug"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -50,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\include\"
+				AdditionalIncludeDirectories="..\include\;..\include\ptypes"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -83,7 +82,7 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib\"
-				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
+				ModuleDefinitionFile="TheoraVideoPlugin.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\bin\Debug/Plugin_TheoraVideoSystem.pdb"
 				RandomizedBaseAddress="1"
@@ -118,7 +117,6 @@
 			OutputDirectory=".\..\bin\Release"
 			IntermediateDirectory=".\..\obj\Release"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -148,7 +146,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\include\"
+				AdditionalIncludeDirectories="..\include\;..\include\ptypes"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -181,7 +179,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\lib\"
-				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
+				ModuleDefinitionFile="TheoraVideoPlugin.def"
 				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -210,200 +208,6 @@
 				CommandLine="copy ..\bin\release\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
 			/>
 		</Configuration>
-		<Configuration
-			Name="Release_SSE2|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine=""
-				ExcludedFromBuild="true"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\..\bin\Release/TheoraVideo.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Release/"
-				ObjectFile=".\..\obj\Release/"
-				ProgramDataBaseFileName=".\..\obj\Release/"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ogremain.lib ptypes.lib libogg.lib libvorbis.lib libtheora.lib"
-				OutputFile="..\bin\Release_SSE2/Plugin_TheoraVideoSystem.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../../../ptypes/Win32/release;../../../libtheora\win32\VS2005\Release_SSE2;../../../libogg\win32\VS2005\Release_SSE2;../../../libvorbis\win32\VS2005\Release_SSE2"
-				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
-				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\..\bin\Release_SSE2/Plugin_TheoraVideoSystem.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\bin\release_sse2\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release_SSE|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine=""
-				ExcludedFromBuild="true"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\..\bin\Release/TheoraVideo.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\libvorbis\include;..\..\..\libogg\include;..\..\..\libtheora\include;..\include\;..\..\..\ptypes\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;THEORAVIDEO_PLUGIN_EXPORTS"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Release/"
-				ObjectFile=".\..\obj\Release/"
-				ProgramDataBaseFileName=".\..\obj\Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ogremain.lib ptypes.lib libogg.lib libvorbis.lib libtheora.lib"
-				OutputFile="..\bin\Release_SSE/Plugin_TheoraVideoSystem.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="../../../ptypes/Win32/release;../../../libtheora\win32\VS2005\Release_SSE;../../../libogg\win32\VS2005\Release_SSE;../../../libvorbis\win32\VS2005\Release_SSE"
-				ModuleDefinitionFile="..\misc\TheoraVideoPlugin.def"
-				ProgramDatabaseFile=".\..\bin\Release/Plugin_TheoraVideoSystem.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\..\bin\Release_SSE/Plugin_TheoraVideoSystem.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\bin\release_sse\*.dll ..\..\demos\CEGUI_SimpleDemo\bin\release&#x0D;&#x0A;"
-			/>
-		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -413,15 +217,15 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="..\src\TheoraAudioDriver.cpp"
+				RelativePath="..\src\TheoraAudioInterface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\TheoraRingBuffer.cpp"
+				RelativePath="..\src\TheoraFrameQueue.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\TheoraSeekUtility.cpp"
+				RelativePath="..\src\TheoraMuteAudioInterface.cpp"
 				>
 			</File>
 			<File
@@ -429,11 +233,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\TheoraVideoDriver.cpp"
+				RelativePath="..\src\TheoraVideoFrame.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\TheoraVideoManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\TheoraWorkerThread.cpp"
 				>
 			</File>
 		</Filter>
@@ -442,19 +250,15 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="..\include\TheoraAudioDriver.h"
+				RelativePath="..\include\TheoraAudioInterface.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\TheoraPlayerPreReqs.h"
+				RelativePath="..\include\TheoraFrameQueue.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\TheoraRingBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\TheoraSeekUtility.h"
+				RelativePath="..\include\TheoraMuteAudioInterface.h"
 				>
 			</File>
 			<File
@@ -462,11 +266,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\include\TheoraVideoDriver.h"
+				RelativePath="..\include\TheoraVideoFrame.h"
 				>
 			</File>
 			<File
 				RelativePath="..\include\TheoraVideoManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TheoraWorkerThread.h"
 				>
 			</File>
 		</Filter>
@@ -479,10 +287,6 @@
 			</File>
 			<File
 				RelativePath="..\include\TheoraExport.h"
-				>
-			</File>
-			<File
-				RelativePath="..\misc\TheoraVideoPlugin.def"
 				>
 			</File>
 		</Filter>

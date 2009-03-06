@@ -1,18 +1,9 @@
-/*
------------------------------------------------------------------------------
-This source file is part of the TheoraVideoSystem ExternalTextureSource PlugIn 
-for OGRE (Object-oriented Graphics Rendering Engine)
-For the latest info, see www.wreckedgames.com or www.ogre3d.org
-*****************************************************************************
-				This PlugIn uses the following resources:
-
-Ogre - see above
-Ogg / Vorbis / Theora www.xiph.org
-C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
-
-*****************************************************************************
-Copyright © 2008 Kresimir Spes (kreso@cateia.com)
-          © 2000-2004 pjcast@yahoo.com
+/************************************************************************************
+This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
+for OGRE3D (Object-oriented Graphics Rendering Engine)
+For latest info, see http://ogrevideo.sourceforge.net/
+*************************************************************************************
+Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -27,133 +18,114 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
-***************************************************************************/
+*************************************************************************************/
 #include "OgreRoot.h"
 #include "TheoraVideoManager.h"
+#include "TheoraWorkerThread.h"
 #include "TheoraVideoClip.h"
-#include "OgreException.h"
-#include "OgreLogManager.h"
-#include "OgreStringConverter.h"
-
 
 namespace Ogre
 {
+	// declaring function prototype here so I don't have to put it in a header file
+	// it only needs to be used by this plugin and called once
+	void createYUVtoRGBtables();
 
-	bool TheoraVideoFrameListener::frameStarted(const FrameEvent& evt)
-	{
-		TheoraVideoManager* c = (TheoraVideoManager*)
-			ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-		
-		TheoraVideoManager::mtClips::iterator it;
-		for (it=c->mMoviesList.begin();it!=c->mMoviesList.end();it++)
-		{
-			(*it)->blitFrameCheck();
-		}
-		// HAAACKYYYY. allows only one movie to play. will fix in the future
-		it=c->mMoviesList.begin();
-	
-		if (!c->mMoviesList.empty() && (*it)->mFinished)
-		{
-			delete *it;
-			c->mMoviesList.clear();
-		}
-		return true;
-	}
+	// Singleton code
+    template<> TheoraVideoManager* Singleton<TheoraVideoManager>::ms_Singleton = 0;
+    TheoraVideoManager* TheoraVideoManager::getSingletonPtr(void)
+    {
+        return ms_Singleton;
+    }
+    TheoraVideoManager& TheoraVideoManager::getSingleton(void)
+    {  
+        assert( ms_Singleton );  return ( *ms_Singleton );  
+    }
 
-
-	//*****************************************************************************//
-
-
-	//Initial static command param method
-	TheoraVideoManager::CmdNumPrecachedFrames TheoraVideoManager::msCmdNumPrecachedFrames;
-	TheoraVideoManager::CmdOutputMode TheoraVideoManager::msCmdOutputMode;
-	//----------------------------------------------------------------------------//
-	TheoraVideoManager::TheoraVideoManager() : 
-		mbInit( false ),
-		mNumPrecachedFrames(-1),
-		mOutputMode(TH_RGB)
+	TheoraVideoManager::TheoraVideoManager()
 	{
 		mPlugInName = "TheoraVideoPlugin";
 		mDictionaryName = mPlugInName;
-		mSeekEnabled = false;
-		mAutoUpdate = false;
+		mbInit=false;
+
 	}
-	//----------------------------------------------------------------------------//
-	bool TheoraVideoManager::setParameter(const String &name, const String &value)
+
+	bool TheoraVideoManager::initialise()
 	{
-		 if (name == "destroy")
-		 {
-			LogManager::getSingleton().logMessage("Force destroy Movie clip");
-			if (mMoviesList.begin() != mMoviesList.end())
-			{
-				delete *mMoviesList.begin();
-				mMoviesList.clear();
-			}
-		 }
-		 return ExternalTextureSource::setParameter(name,value);
-	}
+		if (mbInit) return false;
+		addBaseParams(); // ExternalTextureSource's function
 
-	String TheoraVideoManager::getParameter (const String &name) const
-	{		
-		if (mMoviesList.begin() != mMoviesList.end())
-		{
-			TheoraVideoClip* clip=*mMoviesList.begin();
-			if (name == "started")
-			{
-				if (clip->mFirstRun) return "0";
-				else return "1";
-			}
-			if (name == "finished")
-			{
-				if (clip->mFinished) return "1";
-				else return "0";
-			}
-			else return ExternalTextureSource::getParameter(name);
-		}
-		else if (name == "finished")
-		{
-			return "1";
-		}
-		else return ExternalTextureSource::getParameter(name);
-	}
+		// create worker threads
 
-	//----------------------------------------------------------------------------//
+		TheoraWorkerThread* t;
+		for (int i=0;i<1;i++)
+		{
+			t=new TheoraWorkerThread();
+			t->start();
+			mWorkerThreads.push_back(t);
+		}
+
+		// for CPU yuv2rgb decoding
+		createYUVtoRGBtables();
+
+		mbInit=true;
+		return true;
+	}
+	
 	TheoraVideoManager::~TheoraVideoManager()
 	{
-		if(mbInit)
-			shutDown();
+		shutDown();
 	}
 
-	//----------------------------------------------------------------------------//
-	void TheoraVideoManager::createDefinedTexture(const String& sMaterialName,const String& groupName)
+	void TheoraVideoManager::shutDown()
 	{
-		TheoraVideoClip* newMovie = 0;
-		bool bSound = false;
+		if (!mbInit) return;
 
-		//Give the possibility of sound... Later we really check for sound
-		if( mMode == TextureEffectPause )
-			bSound = true;
+		ThreadList::iterator ti;
+		for (ti=mWorkerThreads.begin(); ti != mWorkerThreads.end();ti++)
+			delete (*ti);
+		mWorkerThreads.clear();
 
+		ClipList::iterator ci;
+		for (ci=mClips.begin(); ci != mClips.end();ci++)
+			delete (*ci);
+		mClips.clear();
 
-		LogManager::getSingleton().logMessage("Creating ogg video: "+mInputFileName);
+		mbInit=false;
+	}
 
-		newMovie = new TheoraVideoClip();
-		
+	TheoraVideoClip* TheoraVideoManager::getVideoClipByName(String name)
+	{
+		ClipList::iterator ci;
+		for (ci=mClips.begin(); ci != mClips.end();ci++)
+			if ((*ci)->getName() == name) return *ci;
+
+		return 0;
+	}
+
+	void TheoraVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
+	{
+		TheoraVideoClip* clip = NULL;
+
+		LogManager::getSingleton().logMessage("Creating ogg_video texture on material: "+material_name);
+
+		clip = new TheoraVideoClip(material_name,16);
+
 		try 
 		{
-			newMovie->createDefinedTexture(mInputFileName, sMaterialName, groupName, mTechniqueLevel,
-						  mPassLevel, mStateLevel, bSound, mMode, mSeekEnabled, mAutoUpdate );
+			clip->createDefinedTexture(mInputFileName, material_name, group_name, mTechniqueLevel,
+						  mPassLevel, mStateLevel);
 
-			int n=(mNumPrecachedFrames == -1) ? 16 : mNumPrecachedFrames;
-			newMovie->setNumPrecachedFrames(n);
-			newMovie->setOutputMode(mOutputMode);
-			mMoviesList.push_back( newMovie );
+			//int n=(mNumPrecachedFrames == -1) ? 16 : mNumPrecachedFrames;
+			//clip->setNumPrecachedFrames(n);
+			//clip->setOutputMode(mOutputMode);
 		}
 		catch(...)
 		{
-			LogManager::getSingleton().logMessage("TheoraVideoPlugin: error creating texture");
-			delete newMovie;
+			LogManager::getSingleton().logMessage("Error creating ogg_video texture!");
+			delete clip;
+			return;
 		}
+		/*
 		// reset variables for a new movie
 		mNumPrecachedFrames=-1;
 		mOutputMode=TH_RGB;
@@ -161,129 +133,44 @@ namespace Ogre
 		mTechniqueLevel = mPassLevel = mStateLevel = 0;
 		mSeekEnabled = false;
 		mAutoUpdate = false;
+        */
 
-		LogManager::getSingleton().logMessage("ogg video created");
+		// push the clip into the list at the very end, to ensure worker threads
+		// don't start decoding until the clip is fully initialised
+		mClips.push_back(clip);
 	}
 
-	//----------------------------------------------------------------------------//
-	void TheoraVideoManager::destroyAdvancedTexture(const String& sMaterialName,const String& groupName)
+	void TheoraVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
 	{
-		mtClips::iterator i;
-		for(i = mMoviesList.begin(); i != mMoviesList.end(); ++i )
+		LogManager::getSingleton().logMessage("Destroying ogg_video texture on material: "+material_name);
+
+		for (ClipList::iterator i=mClips.begin();i != mClips.end();i++)
 		{
-			//Perhaps we were sent either movie file name, or material name
-			if( (*i)->getMaterialName() == sMaterialName ||
-				(*i)->getMovieName() == sMaterialName )
+			if ((*i)->getMaterialName() == material_name)
 			{
 				delete (*i);
-				mMoviesList.erase( i );
+				mClips.erase(i);
 				return;
 			}
 		}
 		
-		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoManager::DestroyVideoTexture Tried to delete Movie Texture " 
-			+ sMaterialName + ". Though, Texture was not anywhere to be found :< " );
+		LogManager::getSingleton().logMessage("Error destroying ogg_video texture, texture not found!");
 	}
 
-	//----------------------------------------------------------------------------//
-	TheoraVideoClip* TheoraVideoManager::getMovieNameClip(String sMovieName)
+	bool TheoraVideoManager::frameStarted(const FrameEvent& evt)
 	{
-		//Search for an entry that has the searched for movie name
-		mtClips::iterator i;
-		for( i = mMoviesList.begin(); i != mMoviesList.end(); ++i )
-		{
-			if( (*i)->getMovieName() == sMovieName )
-				return (*i);
-		}
 
-		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoManager::getMovieNameClip Tried to find Movie Texture " 
-			+ sMovieName + ". Though, Texture was not anywhere to be found :< " );
-		return 0;
-	}
-
-	//----------------------------------------------------------------------------//
-	TheoraVideoClip* TheoraVideoManager::getMaterialNameClip( String sMaterialName )
-	{
-		//Search for an entry that has the searched for material name
-		mtClips::iterator i;
-		for( i = mMoviesList.begin(); i != mMoviesList.end(); ++i )
-		{
-			if( (*i)->getMaterialName() == sMaterialName )
-				return (*i);
-		}
-
-		LogManager::getSingleton().logMessage( 
-			"**Warning** ::>> TheoraVideoManager::getMovieClip Tried to find Movie Texture " 
-			+ sMaterialName + ". Though, Texture was not anywhere to be found :< " );
-		return 0;
-	}
-
-	//----------------------------------------------------------------------------//
-	bool TheoraVideoManager::initialise()
-	{
-		if( mbInit )
-			return true;
-
-		//Ensure base dictionary is setup
-		addBaseParams();
-	    
-		ParamDictionary* dict = getParamDictionary();
-		
-		//Add render_fx method
-		dict->addParameter(ParameterDef("precache", 
-										"Defines how many frames should be precached to smooth video playback",
-										PT_INT),
-						   &TheoraVideoManager::msCmdNumPrecachedFrames);
-
-		dict->addParameter(ParameterDef("output", 
-										"texture output mode",
-										PT_INT),
-						   &TheoraVideoManager::msCmdOutputMode);
-
-		mbInit = true;
+		ClipList::iterator ci;
+		for (ci=mClips.begin(); ci != mClips.end();ci++)
+			(*ci)->blitFrameCheck(evt.timeSinceLastFrame);
 		return true;
 	}
 
-	//----------------------------------------------------------------------------//
-	void TheoraVideoManager::shutDown()
+	TheoraVideoClip* TheoraVideoManager::requestWork()
 	{
-		//Destroy all movie clips
-		mtClips::iterator i;
-		for(i = mMoviesList.begin(); i != mMoviesList.end(); ++i )
-			delete (*i);
-		mMoviesList.clear();
-		
-		mbInit = false;
+		if (mClips.size() == 0) return NULL;
+		return mClips.front();
 	}
 
-	//----------------------------------------------------------------------------//
-	String TheoraVideoManager::CmdNumPrecachedFrames::doGet(const void* target) const
-	{
-		return "NA";
-	}
 
-	//----------------------------------------------------------------------------//
-    void TheoraVideoManager::CmdNumPrecachedFrames::doSet(void* target, const String& val)
-	{
-		static_cast<TheoraVideoManager*>(target)->mNumPrecachedFrames=StringConverter::parseInt(val);
-	}
-
-	//----------------------------------------------------------------------------//
-	String TheoraVideoManager::CmdOutputMode::doGet(const void* target) const
-	{
-		return "NA";
-	}
-
-	//----------------------------------------------------------------------------//
-    void TheoraVideoManager::CmdOutputMode::doSet(void* target, const String& val)
-	{
-		TheoraVideoManager* mgr=static_cast<TheoraVideoManager*>(target);
-		if      (val == "rgb ") mgr->mOutputMode=TH_RGB; // space is here for ogre1.6.0 bug, will restore once fixed
-		else if (val == "yuv ") mgr->mOutputMode=TH_YUV;
-		else                   mgr->mOutputMode=TH_Grey;
-	}
-} //end namespace Ogre
-
-
+} // end namespace Ogre

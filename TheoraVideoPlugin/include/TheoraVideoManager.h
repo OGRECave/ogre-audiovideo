@@ -1,18 +1,9 @@
-/*
------------------------------------------------------------------------------
-This source file is part of the TheoraVideoSystem ExternalTextureSource PlugIn 
-for OGRE (Object-oriented Graphics Rendering Engine)
-For the latest info, see www.wreckedgames.com or www.ogre3d.org
-*****************************************************************************
-				This PlugIn uses the following resources:
-
-Ogre - see above
-Ogg / Vorbis / Theora www.xiph.org
-C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
-
-*****************************************************************************
-Copyright © 2008 Kresimir Spes (kreso@cateia.com)
-          © 2000-2004 pjcast@yahoo.com
+/************************************************************************************
+This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
+for OGRE3D (Object-oriented Graphics Rendering Engine)
+For latest info, see http://ogrevideo.sourceforge.net/
+*************************************************************************************
+Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -27,152 +18,94 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
-***************************************************************************/
+*************************************************************************************/
 
-#ifndef _TheoraVideoTextureController_H
-#define _TheoraVideoTextureController_H
+#ifndef _TheoraVideoManager_h
+#define _TheoraVideoManager_h
 
-#include "OgreString.h"
 #include "OgreExternalTextureSource.h"
-#include "OgreExternalTextureSourceManager.h"
 #include "OgreFrameListener.h"
-#include "TheoraPlayerPreReqs.h"
 #include "TheoraExport.h"
+#include <list>
 
 namespace Ogre
 {
-	/**
-		A frame listener used by the plugin, it just updates video clips so you don't have to :)
-	*/
-	class TheoraVideoFrameListener : public FrameListener
-	{
-	public:
-		bool frameStarted(const FrameEvent& evt);
-	};
-
-
-
-	
-
-
+	// forward class declarations
+	class TheoraWorkerThread;
+	class TheoraVideoClip;
 
 	/**
-		Handles "ogg_video" external texture sources from material serializer.
-		It is recomended that you also use this class when creating
-		textures in code, but it is not required.
+		This is the main class that interfaces with Ogre, parses material files
+		and distributes decoding jobs among threads.
 	*/
-	class _OgreTheoraExport TheoraVideoManager : public ExternalTextureSource, public FrameListener
+	class _OgreTheoraExport TheoraVideoManager : public Singleton<TheoraVideoManager>, 
+		                                         public ExternalTextureSource,
+												 public FrameListener
 	{
+		friend class TheoraWorkerThread;
+
+		typedef std::list<TheoraWorkerThread*> ThreadList;
+		//! stores pointers to worker threads which are decoding video and audio
+		ThreadList mWorkerThreads;
+		typedef std::list<TheoraVideoClip*> ClipList;
+		//! stores pointers to created video clips		
+		ClipList mClips;
+
+		int mDefaultNumPrecachedFrames;
+		//! whether the plugin has been initialised
+		bool mbInit;
+		
+
+
+		/**
+		 * Called by TheoraWorkerThread to request a TheoraVideoClip instance to work on decoding
+		 */
+		TheoraVideoClip* requestWork();
 	public:
 		TheoraVideoManager();
 		~TheoraVideoManager();
-		bool setParameter(const String &name, const String &value); // temp
-		virtual String getParameter (const String &name) const;
 
-		/**
-			@remarks
-				Creates a texture into an already defined material
-				All setting should have been set before calling this.
-				Mainly, movie name and play mode. Refer to base 
-				class ( ExternalTextureSource ) for details
-			@param sMaterialName
-				Material you are attaching a movie to.
-		*/
-		void createDefinedTexture( const String& sMaterialName,
-			const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-		
-		/**
-			@remarks
-				Destroys Video Texture. Currently does not destroy material/texture
-			@param sMaterialName
-				Material Name you are looking to remove movie form
-		*/
-		void destroyAdvancedTexture( const String& sMaterialName,
-			const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-		
-		/**
-			@remarks 
-				Returns the clip that is holding the Video Material
-			@param sMovieName
-				Search using movie file name
-		*/
-		TheoraVideoClip* getMovieNameClip( String sMovieName );
+		static TheoraVideoManager& getSingleton(void);
+		static TheoraVideoManager* getSingletonPtr(void);
 
-		/**
-			@remarks 
-				Returns the clip that is holding the Video Material
-			@param sMovieName
-				Search using material name
-		*/
-		TheoraVideoClip* getMaterialNameClip( String sMaterialName );
-		
 		/**
 			@remarks
 				This function is called to init this plugin - do not call directly
 		*/
 		bool initialise();
-		
-		/**
-			@remarks
-				Called to shut down this plugIn - called from manager class
-		*/
 		void shutDown();
 
+		TheoraVideoClip* getVideoClipByName(String name);
+
+
 		/**
 			@remarks
-				Called to set if seeking is enabled on the next generated video
+				Creates a texture into an already defined material
+				All setting should have been set before calling this.
+				Refer to base class ( ExternalTextureSource ) for details
+			@param material_name
+				Material  you are attaching a movie to.
 		*/
-		void setSeekEnabled( bool bEnabled ) { mSeekEnabled = bEnabled; }
+		void createDefinedTexture(const String& material_name,
+                                  const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		
-		void setAutoAudioUpdate( bool autoUpdateAudio ) {mAutoUpdate = autoUpdateAudio;}
-        
-
-
-
-
-
-
 		/**
 			@remarks
-				Sets the number of precached frames used in the video
+				Destroys a Video Texture.
+			@param material_name
+				Material Name you are looking to remove a video clip from
 		*/
-		class CmdNumPrecachedFrames : public ParamCommand
-        {
-        public:
-			String doGet(const void* target) const;
-            void doSet(void* target, const String& val);
-        };
+		void destroyAdvancedTexture(const String& material_name,
+                                    const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-		/**
-			@remarks
-				sets video output mode
-		*/
-		class CmdOutputMode : public ParamCommand
-        {
-        public:
-			String doGet(const void* target) const;
-            void doSet(void* target, const String& val);
-        };
+		bool frameStarted(const FrameEvent& evt);
 
+		int getNumWorkerThreads();
+		void setNumWorkerThreads(int n);
 
-		typedef std::vector<TheoraVideoClip*> mtClips;
-		//! A list of movie clips
-		mtClips mMoviesList;
-		// param set by CmdNumPrecachedFrames class
-		int mNumPrecachedFrames;
-		// param set by CmdOutputMode class
-		TheoraVideo_OutputMode mOutputMode;
+		void setDefaultNumPrecachedFrames(int n);
+		int getDefaultNumPrecachedFrames();
 
-	protected:
-		static CmdNumPrecachedFrames msCmdNumPrecachedFrames;
-		static CmdOutputMode msCmdOutputMode;
-
-		bool mSeekEnabled;
-		bool mAutoUpdate;
-		
-		//! A flag indicating whether init has been called 
-		bool mbInit;
 	};
 }
 #endif
-

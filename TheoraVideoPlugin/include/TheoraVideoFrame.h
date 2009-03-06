@@ -19,29 +19,40 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+#ifndef _TheoraVideoFrame_h
+#define _TheoraVideoFrame_h
 
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
-
-#include "TheoraVideoManager.h"
+#include <theora/theoradec.h>
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
-
-	extern "C" void dllStartPlugin()
+	class TheoraVideoClip;
+	/**
+		
+	*/
+	class TheoraVideoFrame
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
+		TheoraVideoClip* mParent;
+		unsigned char* mBuffer;
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
-	}
+		void decodeRGB(th_ycbcr_buffer yuv);
+		void decodeGrey(th_ycbcr_buffer yuv);
+		void decodeYUV(th_ycbcr_buffer yuv);
 
-	extern "C" void dllStopPlugin()
-	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
-	}
+	public:
+		float mTimeToDisplay;
+		bool mReady;
+		bool mInUse;
+
+		TheoraVideoFrame(TheoraVideoClip* parent);
+		~TheoraVideoFrame();
+
+		//! do not call directly, this function is used to reset back colour after video clip output mode change
+		void fillBackColour(unsigned int colour);
+
+		unsigned char* getBuffer();
+
+		void decode(th_ycbcr_buffer yuv);
+	};
 }
+#endif

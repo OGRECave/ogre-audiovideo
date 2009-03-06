@@ -19,29 +19,27 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-
-#include "OgreExternalTextureSourceManager.h"
 #include "OgreRoot.h"
-
 #include "TheoraVideoManager.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
 
-	extern "C" void dllStartPlugin()
+	TheoraVideoManager::TheoraVideoManager()
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
+	}
+	
+	TheoraVideoManager::~TheoraVideoManager()
+	{
+
 	}
 
-	extern "C" void dllStopPlugin()
+	bool TheoraVideoManager::frameStarted(const FrameEvent& evt)
 	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
+		return true;
 	}
-}
+
+} // end namespace Ogre
+
+

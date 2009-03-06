@@ -1,18 +1,9 @@
-/*
------------------------------------------------------------------------------
-This source file is part of the TheoraVideoSystem ExternalTextureSource PlugIn 
-for OGRE (Object-oriented Graphics Rendering Engine)
-For the latest info, see www.wreckedgames.com or www.ogre3d.org
-*****************************************************************************
-				This PlugIn uses the following resources:
-
-Ogre - see above
-Ogg / Vorbis / Theora www.xiph.org
-C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
-
-*****************************************************************************
-Copyright © 2008 Kresimir Spes (kreso@cateia.com)
-          © 2000-2004 pjcast@yahoo.com
+/************************************************************************************
+This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
+for OGRE3D (Object-oriented Graphics Rendering Engine)
+For latest info, see http://ogrevideo.sourceforge.net/
+*************************************************************************************
+Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -27,226 +18,283 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
-***************************************************************************/
-#include "OgreResourceGroupManager.h"
+*************************************************************************************/
+#include "OgreTextureManager.h"
+#include "OgreMaterialManager.h"
+#include "OgreMaterial.h"
+#include "OgreTechnique.h"
 #include "OgreStringConverter.h"
 #include "OgreLogManager.h"
-#include "OgreException.h"
-#include "OgreTimer.h"
-#include "OgreRoot.h"
-
 #include "TheoraVideoClip.h"
-
-#include "TheoraAudioDriver.h"
-#include "TheoraVideoDriver.h"
-#include "TheoraVideoManager.h"
+#include "TheoraVideoFrame.h"
+#include "TheoraFrameQueue.h"
+#include "OgreHardwarePixelBuffer.h"
 
 namespace Ogre
 {
-	TheoraFrame::TheoraFrame(TheoraVideoClip* parent,int w,int h)
+	int nextPow2(int x)
 	{
-		mPixelBuffer=new unsigned char[w*h*4];
-		mInUse=false;
-		mParent=parent;
-	}
-	TheoraFrame::~TheoraFrame()
-	{
-		delete mPixelBuffer;
-	}
+		int y;
+		for (y=1;y<x;y*=2);
+		return y;
 
-	void TheoraFrame::decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_OutputMode mode)
+	}
+	//! clears a portion of memory with an unsign
+	void memset_uint(void* buffer,unsigned int colour,unsigned int size_in_bytes)
 	{
-		mTimeToDisplay=timeToDisplay;
-
-		if      (mode == TH_RGB)  mParent->getVideoDriver()->decodeRGBtoTexture(&yuv,mPixelBuffer);
-		else if (mode == TH_Grey) mParent->getVideoDriver()->decodeYtoTexture(&yuv,mPixelBuffer);
-		else					  mParent->getVideoDriver()->decodeYUVtoTexture(&yuv,mPixelBuffer);
-		//yuvToRGB(yuv,mPixelBuffer);
-		mInUse=true;
+		unsigned int* data=(unsigned int*) buffer;
+		for (unsigned int i=0;i<size_in_bytes;i+=4)
+		{
+			*data=colour;
+			data++;
+		}
 	}
 
-
-
-
-
-	//--------------------------------------------------------------------//
-	TheoraVideoClip::TheoraVideoClip() : 
-		pt::thread( false ), 
-		mMessageListener(0),
-		mAudioStarted( false ),
-		mPlayMode(TextureEffectPause),
-		mFrameNum(0),
-		mNumDroppedFrames(0),
-		mLastFrameTime(0.0f),
-		mAudioInterface(0),
-		mThreadRunning(false),
-		mEndOfAudio(false),
-		mEndOfVideo(false),
-		mFinished(false),
-		mEndOfFile(false),
-		mAutoUpdate(false),
-		mTheoraStreams(0), 
+	TheoraVideoClip::TheoraVideoClip(std::string name,int nPrecachedFrames):
+		mTheoraStreams(0),
 		mVorbisStreams(0),
-		currentTicks(-1),	
-		mVideoFrameReady(false),
-		videobuf_time(0.0f),
-		audiobuf_granulepos(0),
-		mTimer(0),
-		mAvgDecodedTime(0),
-		mAvgYUVConvertedTime(0),
-		mSumBlited(0),
-		mNumFramesEvaluated(0),
-		mFramesReady(false),
+		mTimePos(0),
+		mPaused(false),
+		mName(name),
 		mOutputMode(TH_RGB),
-		mFirstRun(true)
+		mBackColourChanged(0)
 	{
-		//Ensure all structures get cleared out. Already bit me in the arse ;)
-		memset( &mOggSyncState, 0, sizeof( ogg_sync_state ) );
-		memset( &mOggPage, 0, sizeof( ogg_page ) );
-		memset( &mVorbisStreamState, 0, sizeof( ogg_stream_state ) );
-		memset( &mTheoraStreamState, 0, sizeof( ogg_stream_state ) );
-		memset( &mTheoraInfo, 0, sizeof( theora_info ) );
-		memset( &mTheoraComment, 0, sizeof( theora_comment ) );
-		memset( &mTheoraState, 0, sizeof( theora_state ) );
-		memset( &mVorbisInfo, 0, sizeof( vorbis_info ) );
-		memset( &mVorbisDSPState, 0, sizeof( vorbis_dsp_state ) );
-		memset( &mVorbisBlock, 0, sizeof( vorbis_block ) );
-		memset( &mVorbisComment, 0, sizeof( vorbis_comment ) );
+		mFrameQueue=NULL;
+		mAssignedWorkerThread=NULL;
+		mNumPrecachedFrames=nPrecachedFrames;
 
-		mDoSeek = false;
-		mSeeker = 0;
+		//Ensure all structures get cleared out.
+		memset(&mOggSyncState, 0, sizeof(ogg_sync_state));
+		memset(&mOggPage, 0, sizeof(ogg_page));
+		memset(&mVorbisStreamState, 0, sizeof(ogg_stream_state));
+		memset(&mTheoraStreamState, 0, sizeof(ogg_stream_state));
+		memset(&mTheoraInfo, 0, sizeof(th_info));
+		memset(&mTheoraComment, 0, sizeof(th_comment));
+		//memset(&mTheoraState, 0, sizeof(th_state));
+		memset(&mVorbisInfo, 0, sizeof(vorbis_info));
+		memset(&mVorbisDSPState, 0, sizeof(vorbis_dsp_state));
+		memset(&mVorbisBlock, 0, sizeof(vorbis_block));
+		memset(&mVorbisComment, 0, sizeof(vorbis_comment));
+
+		mTheoraSetup=NULL;
 	}
 
-	//--------------------------------------------------------------------//
 	TheoraVideoClip::~TheoraVideoClip()
 	{
-		LogManager::getSingleton().logMessage("TheoraVideoPlugin: destroying video clip");
-		changePlayMode( TextureEffectPause );
-		if( mThreadRunning )
-		{
-			//Terminate Thread and wait for it to leave
-			mThreadRunning = false;
-			waitfor();
-		}
-
-		TheoraFrame* frame;
-		while (mFrameRepository.size())
-		{
-			frame=mFrameRepository.front();
-			delete frame;
-			mFrameRepository.pop_front();
-		}
-
-		if( mTimer )
-			delete mTimer;
-
-		mTimer = 0;
-		
-		close();
-	}
 	
-	//--------------------------------------------------------------------//	
-	void TheoraVideoClip::setAudioDriver( TheoraAudioDriver *pAud )
+	}
+
+	String TheoraVideoClip::getMaterialName()
 	{
-		if( !mThreadRunning )
-			mAudioInterface = pAud;
+		return "";
+	}
+
+	void TheoraVideoClip::decodeNextFrame()
+	{
+		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
+		if (!frame) return; // max number of precached frames reached
+
+		ogg_packet opTheora;
+		ogg_int64_t granulePos;
+		th_ycbcr_buffer buff;
+		for(;;)
+		{
+			if (ogg_stream_packetout(&mTheoraStreamState,&opTheora) > 0)
+			{
+				th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos );
+				float time=th_granule_time(mTheoraDecoder,granulePos);
+				if (time < mTimePos) continue; // drop frame
+				frame->mTimeToDisplay=time;
+				th_decode_ycbcr_out(mTheoraDecoder,buff);
+				frame->decode(buff);
+				break;
+			}
+			else
+			{
+				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
+				int bytesRead = mStream->read( buffer, 4096 );
+				ogg_sync_wrote( &mOggSyncState, bytesRead );
+
+				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
+				{
+					if(mTheoraStreams) 
+						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
+					if(mVorbisStreams) 
+						ogg_stream_pagein( &mVorbisStreamState, &mOggPage );
+				}
+			}
+		}
+	}
+
+	void TheoraVideoClip::blitFrameCheck(float time_increase)
+	{
+		if (mPaused) return;
+		mTimePos+=time_increase;
+		TheoraVideoFrame* frame;
+		while (true)
+		{
+			frame=mFrameQueue->getFirstAvailableFrame();
+			if (!frame) return; // no frames ready
+			if (frame->mTimeToDisplay > mTimePos) return;
+			if (frame->mTimeToDisplay < mTimePos-0.1)
+			{
+				mFrameQueue->pop();
+			}
+			else break;
+		}
+
+		// use blitFromMemory or smtg faster
+		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+		memcpy(texData,frame->getBuffer(),mTexWidth*mHeight*4);
+		if (mBackColourChanged)
+		{
+			memset_uint(texData+mTexWidth*mHeight*4,mFrameQueue->getBackColour(),mTexWidth*(mTexHeight-mHeight)*4);
+			mBackColourChanged=false;
+		}
+
+		mTexture->getBuffer()->unlock();
+
+		mFrameQueue->pop(); // after transfering frame data to the texture, free the frame
+		                    // so it can be used again
+	}
+
+	void TheoraVideoClip::createDefinedTexture(const String& name, const String& material_name,
+                              const String& group_name, int technique_level, int pass_level, 
+			                  int tex_level)
+	{
+		mName=name;
+		load(name,group_name);
+
+		mMaterialName=material_name;
+		mTechniqueLevel=technique_level;
+		mPassLevel=pass_level;
+		mTexLevel=tex_level;
+		// create texture
+		mTexture = TextureManager::getSingleton().createManual(mName,group_name,TEX_TYPE_2D,
+			mTexWidth,mTexHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+		// clear it to black
+		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+		if (mOutputMode == TH_YUV)
+			memset_uint(texData,0xFF008080,mTexWidth*mTexHeight*4); // (0,128,128) is YUV->RGB for Black
 		else
-			LogManager::getSingleton().logMessage("**** void TheoraVideoClip::set"
-				"AudioDriver( TheoraAudioDriver *pAud )> Tried to set sound \n"
-				"on already setup clip... Ignored...! ****");
-	}
-	
-	//--------------------------------------------------------------------//	
-	void TheoraVideoClip::createDefinedTexture( 
-		const String &sMovieName, const String &sMaterialName,
-		const String &sGroupName, int TechniqueLevel, int PassLevel,
-		int TextureUnitStateLevel, bool HasSound, eTexturePlayMode eMode,
-		bool seekingEnabled,
-		bool autoUpdateAudio )
-	{
-		
-		mMovieName = sMovieName.substr(0,sMovieName.length()); // seems to be an ogre 1.6.0 bug
-	
-		mMaterialName = sMaterialName;
-		mAutoUpdate = autoUpdateAudio;
-		load( mMovieName, sGroupName, HasSound );
-			
-		//Build seeking data
-		if( seekingEnabled )
-			mSeeker = new TheoraSeekUtility( mOggFile, &mOggSyncState,
-				&mTheoraStreamState, &mVorbisStreamState, &mTheoraInfo, &mVorbisInfo,
-				&mTheoraState, &mVorbisDSPState, &mVorbisBlock );
-		// Attach our video to a texture unit
-		mVideoInterface.attachVideoToTextureUnit( 
-			sMaterialName, sMovieName, sGroupName, TechniqueLevel, 
-			PassLevel, TextureUnitStateLevel, mTheoraInfo.width, 
-			mTheoraInfo.height );
-		changePlayMode( Ogre::TextureEffectPlay_ASAP );
+			memset(texData,0,mTexWidth*mTexHeight*4);
+
+		mTexture->getBuffer()->unlock();
+
+		// attach it to a material
+		MaterialPtr material = MaterialManager::getSingleton().getByName(mMaterialName);
+		TextureUnitState* t = material->getTechnique(mTechniqueLevel)->\
+			getPass(mPassLevel)->getTextureUnitState(mTexLevel);
+
+		//Now, attach the texture to the material texture unit (single layer) and setup properties
+		t->setTextureName(mName,TEX_TYPE_2D);
+		t->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
+		t->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+
+		// scale tex coords to fit the 0-1 uv range
+		Matrix4 mat=Matrix4::IDENTITY;
+		mat.setScale(Vector3((float) mWidth/mTexWidth, (float) mHeight/mTexHeight,1));
+		t->setTextureTransform(mat);
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::setNumPrecachedFrames(int num)
+	void TheoraVideoClip::load(const String& file_name,const String& group_name)
 	{
-		TheoraFrame* frame;
-		// clear current frame repository (if any)
-		while (mFrameRepository.size())
+		if (!(mStream.isNull()))
+            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "ogg_video "+file_name+" already loded!",
+			             "TheoraVideoClip::load" );
+	
+		//mEndOfFile = false;
+		mStream = ResourceGroupManager::getSingleton().openResource( file_name, group_name );
+
+
+		readTheoraVorbisHeaders();
+
+
+		/* 
+
+
+		ogg_page page;
+		char *buffer;
+		int read = 1;
+		long gran;
+		float movieLentgh = 0;
+		unsigned int start = mStream->tell();
+		unsigned int begin = start - 4096;	//To protect from the overlap between reading the header packet, 
+											//and the first ogg_page after that
+
+		int keyframe_granule_shift=mTheoraInfo.keyframe_granule_shift;
+
+		while( !mStream->eof() && read != 0 )
 		{
-			frame=mFrameRepository.front();
-			delete frame;
-			mFrameRepository.pop_front();
+			buffer = ogg_sync_buffer( &mOggSyncState, 4096);
+			read = mStream->read( buffer, 4096 );
+			ogg_sync_wrote( &mOggSyncState, read );
+
+			while ( ogg_sync_pageout( &mOggSyncState, &page ) > 0 )
+			{
+				int serno = ogg_page_serialno( &page );
+				//This is theora stream we were searching for
+				if( mTheoraStreamState.serialno == serno )
+				{
+					//Calculate a rough time estimate
+					gran = ogg_page_granulepos( &page );
+					if( gran >= 0 )
+					{
+					    long iframe = gran >> keyframe_granule_shift;
+						long pframe = gran	-(iframe << keyframe_granule_shift );
+						movieLentgh = (iframe+pframe)*
+							((double)mTheoraInfo.fps_denominator / mTheoraInfo.fps_numerator );
+						
+                       // addSeekerPoint( movieLentgh, begin );
+						begin = mStream->tell();
+					}
+				}
+			}
 		}
 
-		for (int i=0;i<num;i++)
-		{
-			frame=new TheoraFrame(this,mVideoInterface.getTexWidth(),mVideoInterface.getTexHeight());
-			mFrameRepository.push_back(frame);
-		}
+		ogg_sync_reset( &mOggSyncState );
+		ogg_sync_clear( &mOggSyncState );
+		ogg_sync_init(  &mOggSyncState );
+		mStream->seek( start );
+
+
+
+
+
+		*/
+
+
+
+
+
+
+
+		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
+
+		mWidth=mTheoraInfo.frame_width;
+		mHeight=mTheoraInfo.frame_height;
+		mTexWidth = nextPow2(mWidth);
+		mTexHeight= nextPow2(mHeight);
+
+		mFrameQueue=new TheoraFrameQueue(mNumPrecachedFrames,this);
+		setOutputMode(mOutputMode); // clear the frame backgrounds
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::setOutputMode(TheoraVideo_OutputMode mode)
-	{
-		mOutputMode=mode;
-	}
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::load( const String& filename,
-		const String& groupName, bool useAudio )
-	{
-		//ensure a file is not already open
-		if( !(mOggFile.isNull()) )
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "File name already loded! " + filename, "TheoraVideoClip::load" );
-	
-		mEndOfFile = false;
-		mOggFile = ResourceGroupManager::getSingleton().openResource( filename, groupName );
-
-		initVorbisTheoraLayer( );
-		parseVorbisTheoraHeaders( useAudio );
-		activateVorbisTheoraCodecs( useAudio );
-	}
-
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::initVorbisTheoraLayer( )
-	{
-		//start up Ogg stream synchronization layer
-		ogg_sync_init( &mOggSyncState );
-		//init supporting Theora structures needed in header parsing
-		theora_comment_init(&mTheoraComment);
-		theora_info_init(&mTheoraInfo);
-		
-		vorbis_info_init( &mVorbisInfo );//init supporting Vorbis structures needed in header parsing
-		vorbis_comment_init(&mVorbisComment);
-	}
-
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::parseVorbisTheoraHeaders( bool useAudio )
+	void TheoraVideoClip::readTheoraVorbisHeaders()
 	{
 		ogg_packet tempOggPacket;
-		bool NotDone = true;
+		bool done = false;
+		//init Vorbis/Theora Layer
+		ogg_sync_init(&mOggSyncState);
+		th_comment_init(&mTheoraComment);
+		th_info_init(&mTheoraInfo);
+		vorbis_info_init(&mVorbisInfo);
+		vorbis_comment_init(&mVorbisComment);
 
-		while( NotDone )
+		while (!done)
 		{
 			char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
-			int bytesRead = mOggFile->read( buffer, 4096 );
+			int bytesRead = mStream->read( buffer, 4096 );
 			ogg_sync_wrote( &mOggSyncState, bytesRead );
 		
 			if( bytesRead == 0 )
@@ -260,12 +308,12 @@ namespace Ogre
 				if( !ogg_page_bos( &mOggPage ) )
 				{
 					//This is done blindly, because stream only accept them selfs
-					if(mTheoraStreams) 
+					if (mTheoraStreams) 
 						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
-					if(mVorbisStreams) 
+					if (mVorbisStreams) 
 						ogg_stream_pagein( &mVorbisStreamState, &mOggPage );
 					
-					NotDone = false;
+					done=true;
 					break;
 				}
 		
@@ -274,29 +322,36 @@ namespace Ogre
 				ogg_stream_packetout( &OggStateTest, &tempOggPacket );
 
 				//identify the codec
-				if( !mTheoraStreams && 
-					theora_decode_header( &mTheoraInfo, &mTheoraComment, &tempOggPacket) >=0 )
+				int ret;
+				if( !mTheoraStreams)
 				{
-					//This is the Theora Header
-					memcpy( &mTheoraStreamState, &OggStateTest, sizeof(OggStateTest));
-					mTheoraStreams = 1;
+					ret=ret=th_decode_headerin( &mTheoraInfo, &mTheoraComment, &mTheoraSetup, &tempOggPacket);
+
+					if (ret > 0)
+					{
+						//This is the Theora Header
+						memcpy( &mTheoraStreamState, &OggStateTest, sizeof(OggStateTest));
+						mTheoraStreams = 1;
+					}
 				}
-				else if( !mVorbisStreams && useAudio &&
+				/*
+				else if( !mVorbisStreams &&
 					vorbis_synthesis_headerin(&mVorbisInfo, &mVorbisComment, &tempOggPacket) >=0 )
 				{
 					//This is vorbis header
 					memcpy( &mVorbisStreamState, &OggStateTest, sizeof(OggStateTest));
 					mVorbisStreams = 1;
 				}
+				*/
 				else
 				{
 					//Hmm. I guess it's not a header we support, so erase it
 					ogg_stream_clear(&OggStateTest);
 				}
-			} //end while ogg_sync_pageout
-		} //end while notdone
+			}
+		}
 
-		while( (mTheoraStreams && (mTheoraStreams < 3)) ||
+		while ((mTheoraStreams && (mTheoraStreams < 3)) ||
 			   (mVorbisStreams && (mVorbisStreams < 3)) )
 		{
 			//Check 2nd'dary headers... Theora First
@@ -309,7 +364,7 @@ namespace Ogre
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error parsing Theora stream headers.",
 						"TheoraVideoClip::parseVorbisTheoraHeaders" );
 
-				if( theora_decode_header(&mTheoraInfo, &mTheoraComment, &tempOggPacket) )
+				if( !th_decode_headerin(&mTheoraInfo, &mTheoraComment, &mTheoraSetup, &tempOggPacket) )
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "invalid stream",
 						"TheoraVideoClip::parseVorbisTheoraHeaders ");
 
@@ -343,7 +398,7 @@ namespace Ogre
 			else
 			{
 				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
-				int bytesRead = mOggFile->read( buffer, 4096 );
+				int bytesRead = mStream->read( buffer, 4096 );
 				ogg_sync_wrote( &mOggSyncState, bytesRead );
 
 				if( bytesRead == 0 )
@@ -357,518 +412,68 @@ namespace Ogre
 		LogManager::getSingleton().logMessage("Vorbis Headers: " + temp1 + " Theora Headers : " + temp2);
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::activateVorbisTheoraCodecs( bool useAudio )
+	String TheoraVideoClip::getName()
 	{
-		if( mTheoraStreams )
-			theora_decode_init( &mTheoraState, &mTheoraInfo );
-
-		if( mVorbisStreams )
-		{
-			vorbis_synthesis_init( &mVorbisDSPState, &mVorbisInfo );
-			vorbis_block_init( &mVorbisDSPState, &mVorbisBlock );  
-		}
+		return mName;
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::changePlayMode( eTexturePlayMode eMode )
+	TheoraOutputMode TheoraVideoClip::getOutputMode()
 	{
-		//TextureEffectPause = 0,			//! Video starts out paused
-		//TextureEffectPlay_ASAP = 1,		//! Video starts playing as soon as posible
-		//TextureEffectPlay_Looping = 2		//! Video Plays Instantly && Loops
-
-		if( mPlayMode == eMode )
-			return;
-
-		//If current mode is paused than - sent mode must either be loop, or playASAP
-		if( mPlayMode == TextureEffectPause )
-		{
-			if( mThreadRunning == false )
-			{
-				//Get audio setup and ready is we have vorbis and interface
-				if( mVorbisStreams && mAudioInterface )
-					mAudioInterface->open( &mVorbisInfo );
-
-				//Set playmode for thread, and start it thread decoding
-				mPlayMode = eMode;
-				start();
-			}
-			else //Thread is already running, so change status only
-			{
-				//Resumed Paused Audio
-				if( mVorbisStreams && mAudioInterface )
-					mAudioInterface->setAudioStreamPause( false );
-
-				mPlayMode = eMode;
-			}
-		}
-		else if( eMode == TextureEffectPause )
-		{		
-			if( mVorbisStreams && mAudioInterface )
-				mAudioInterface->setAudioStreamPause( true );
-			//else
-			//	mTimer->setPausedState( true ); //Pause our reference timer
-
-			mPlayMode = eMode;
-		}
+		return mOutputMode;
 	}
+
+	void TheoraVideoClip::setOutputMode(TheoraOutputMode mode)
+	{
+		// Yuv black is (0,128,128) and grey/rgb (0,0,0) so we need to make sure we
+		// clear our frames to that colour so we won't get border pixels in different colour
+		if (mode == TH_YUV) mFrameQueue->fillBackColour(0xFF008080);
+		else                mFrameQueue->fillBackColour(0xFF000000);
+		mOutputMode=mode;
+		mBackColourChanged=true;
+	}
+
+	float TheoraVideoClip::getTimePosition()
+	{
+		return 0;
+	}
+
+	float TheoraVideoClip::getDuration()
+	{
+		return 1;
+	}
+
+	void TheoraVideoClip::play()
+	{
+		mPaused=false;
+	}
+
+	void TheoraVideoClip::pause()
+	{
+		mPaused=true;
+	}
+
+	void TheoraVideoClip::stop()
+	{
 	
-	//--------------------------------------------------------------------//	
-	void TheoraVideoClip::blitFrameCheck()
-	{
-		if( mFramesReady )
-		{
-			if (mFirstRun)
-			{
-				// make sure we precache N frames before starting the movie
-				std::list<TheoraFrame*>::iterator it;
-				for (it=mFrameRepository.begin();it!=mFrameRepository.end();it++)
-				{
-					if (!(*it)->mInUse) break;
-				}
-				if (it != mFrameRepository.end()) return;
-				mFirstRun=false;
-				mTimer->reset();
-			}
-			double nowTime=getMovieTime();
-			TheoraFrame* frame;
-			
-			// we go through the list of available frames and try to find one suitable for presentation
-			// if a frame's time to display has ended, it will be dropped, which will hopefully happen
-			// rearely.
-			// if all frames are dropped, the last still get's displayed.
-
-			if (mTimeOfNextFrame > nowTime) return;
-
-			mFrameMutex.lock();
-			while (mFrames.size())
-			{
-				frame=mFrames.front();
-				//if (frame->mDisplayed && frame->mTimeToDisplay > nowTime) return;
-
-				mFrames.pop();
-				if (frame->mTimeToDisplay < nowTime)
-				{
-					frame->mInUse=false;
-					mNumDroppedFrames++;
-				}
-				else break;
-			}
-				
-			if (mFrames.size() == 0) mFramesReady=false;
-
-			Ogre::Timer timer;
-			mVideoInterface.renderToTexture( frame->mPixelBuffer );
-			mSumBlited+=timer.getMilliseconds();
-			mNumFramesEvaluated++;
-
-			mFrameMutex.unlock();
-			// benchmarking
-
-
-			mTimeOfNextFrame=frame->mTimeToDisplay;
-			frame->mInUse=false;
-
-			mVideoFrameReady = false;
-			mLastFrameTime = getMovieTime();
-			float audTime = 0.0f;
-
-			if (mVorbisStreams && mAudioInterface)
-			{
-				if( mAudioStarted == false )
-				{
-					mAudioInterface->startAudioStream();
-					mAudioStarted = true;
-				}
-				
-				audTime = mAudioInterface->getAudioStreamTime() / 1000.0f;
-			}
-
-			if (mMessageListener)
-			{
-				TheoraVideoListener::FrameInfo info;
-				info.mAudioTime=0.0f; info.mVideoTime=videobuf_time; info.mCurrentFrame=mFrameNum;
-				
-				info.mAvgDecodeTime=mAvgDecodedTime;
-				info.mAvgYUVConvertTime=mAvgYUVConvertedTime;
-				info.mAvgBlitTime=mSumBlited/mNumFramesEvaluated;
-				info.mNumPrecachedFrames=mFrames.size();
-				info.mNumFramesDropped=mNumDroppedFrames;
-				mMessageListener->displayedFrame(info);
-			}
-		}
-		else if (mEndOfFile)
-		{
-			mFinished=true;
-		}
-
-		//If user requested that we update audio buffers
-		if( mAutoUpdate && mAudioStarted )
-			mAudioInterface->autoUpdate();
-
-		if( mMessageListener )
-		{
-			//Check for done playback
-			if( mAudioInterface )
-			{
-				if( mEndOfAudio && mEndOfVideo )
-					mMessageListener->messageEvent( TheoraVideoListener::TH_EndOfMovie );
-			}
-			else if( mEndOfVideo )
-			{
-				mMessageListener->messageEvent( TheoraVideoListener::TH_EndOfMovie );			
-			}
-		}
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::execute()
+	void TheoraVideoClip::seek(float time)
 	{
-		mThreadRunning = true;
-		int bytesRead = 1;
-		TheoraFrame* frame;
-		std::list<TheoraFrame*>::iterator it;
-		yuv_buffer yuv; // holds theora yuv buffer
-
-		int numFramesEvaluated=0; // for calculating average values
-		int nDropped=0,decodingTime=0;
-		float sumDecoded=0,sumYUV=0;
-		double frame_time; // holds granule time
-		Ogre::Timer timer;
-		TheoraVideo_OutputMode last_output_mode=TH_RGB;
+		//mTimePos=time;
+		//ogg_sync_reset( &mOggSyncState );
+		//ogg_stream_reset( &mTheoraStreamState );
+		mStream->seek(mStream->size()/2);
 		
-		
-		//Build seek map if seeking is enabled for this clip
-		if( mSeeker ) {
-			mMovieLength = mSeeker->buildTheoraSeekMap();
-			if( mMessageListener )
-				mMessageListener->discoveredMovieTime( mMovieLength );
-		}
-
-		timer.reset();
-		while( mThreadRunning && !mEndOfFile)
-		{
-			if (mPlayMode == TextureEffectPause)
-			{
-				//If we are paused, just sleep a bit, and then check again
-				//relax(30);
-				pt::psleep(30);
-				continue;
-			}
-			// if the next frame's output mode changes, the benchmark values get reset
-			if (mOutputMode != last_output_mode)
-			{
-				last_output_mode=mOutputMode;
-				numFramesEvaluated=nDropped=decodingTime=0;
-				sumDecoded=sumYUV=0;
-			}
-			
-			if (mDoSeek && mSeeker)
-			{
-				//Handle the seeking request
-				if( mAudioInterface )
-					mAudioInterface->close();
-				float seekedTo = mSeeker->doSeek( mSeekTime );
-				if( mAudioInterface )
-					mAudioInterface->open( &mVorbisInfo, seekedTo * 1000 );
-				mAudioStarted = false;
-				mDoSeek = false;
-				mEndOfFile = false;
-			}
-			// find an empty frame page
-			for (it=mFrameRepository.begin();it!=mFrameRepository.end();it++)
-			{
-				frame=*it;
-				if (!frame->mInUse) break;
-			}
-			// if frame not found (max number of precached frames reached), sleep a bit and continue
-			if (it == mFrameRepository.end())
-			{
-				pt::psleep(10);
-				continue;
-			}
-
-			if (mAudioInterface && mVorbisStreams)
-				decodeVorbis();
-
-			if (!mVideoFrameReady && mTheoraStreams)
-			{
-				int nDropped=mNumDroppedFrames;
-				timer.reset();
-				decodeTheora();
-				decodingTime+=timer.getMilliseconds();
-				
-			}
-
-			if (mVideoFrameReady)
-			{
-				numFramesEvaluated++; timer.reset(); // inc number of evaluated frame, for benchmarking
-
-				theora_decode_YUVout( &mTheoraState, &yuv);
-
-				// calculate number of dropped frames to get the actual decoding time
-				nDropped=(mNumDroppedFrames-nDropped) ? mNumDroppedFrames-nDropped : 1;
-				sumDecoded+=timer.getMilliseconds()+(float) decodingTime/nDropped;
-				mAvgDecodedTime=sumDecoded/numFramesEvaluated;
-				decodingTime=0; nDropped=mNumDroppedFrames;
-
-				frame_time = theora_granule_time( &mTheoraState, mTheoraState.granulepos );
-				timer.reset();
-				frame->decodeYUV(yuv,frame_time,mOutputMode);
-				sumYUV+=timer.getMilliseconds();
-				mAvgYUVConvertedTime=sumYUV/numFramesEvaluated;
-
-
-				mFrameMutex.lock();
-				if (mFrames.size() == 0) mFramesReady=true;
-				mFrames.push(frame);
-				mFrameMutex.unlock();
-				mVideoFrameReady=false;
-				timer.reset();
-				continue;
-			}
-			//Buffer data into Ogg Pages
-			if( bytesRead > 0 )
-			{
-				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
-				bytesRead = mOggFile->read( buffer, 4096 );
-				ogg_sync_wrote( &mOggSyncState, bytesRead );
-
-				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
-				{
-					if(mTheoraStreams) 
-						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
-					if(mVorbisStreams) 
-						ogg_stream_pagein( &mVorbisStreamState, &mOggPage );
-				}
-			}
-			else
-			{
-				//End of file, but movie is still playing
-				if( mMessageListener && mEndOfFile == false )
-					mMessageListener->messageEvent( TheoraVideoListener::TH_OggStreamDone );
-			
-				mEndOfFile = true;
-				LogManager::getSingleton().logMessage("TheoraVideoPlugin: End of File reached");
-			}
-		} //while mThreadRunning
-
-		LogManager::getSingleton().logMessage("TheoraVideoPlugin: ending video thread");
-		mThreadRunning=false;
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::decodeVorbis()
+	bool TheoraVideoClip::isPlaying()
 	{
-		int ret, maxBytesToWrite = 0;
-		float **pcm;
-		ogg_packet opVorbis;
-
-		//get some audio data
-		for(;;)
-		{
-			//is there pending audio... Will it fit our circular buffer without blocking
-			ret = vorbis_synthesis_pcmout( &mVorbisDSPState, &pcm );
-			maxBytesToWrite = mAudioInterface->getAudioStreamWriteable();
-
-			//don't break out until there is a significant amount of
-			//data to avoid a series of small write operations.
-			if ( maxBytesToWrite <= FRAMES_PER_BUFFER )
-				break;
-
-			//if there's pending, decoded audio, grab it
-			if(( ret > 0 ) && ( maxBytesToWrite > 0 ))
-			{
-				//XXX: opt -> converts to 16 bit Stereo PCM format
-				int Writting = maxBytesToWrite / mVorbisInfo.channels;
-				int i = 0;
-				//short *pData = mAudioInterface->samples;
-				int count = 0;
-
-				for( ; i < ret && i < Writting; i++ )
-				{
-					for(int j  =0; j < mVorbisInfo.channels; j++)
-					{
-						int val=(int)(pcm[j][i]*32767.f);
-						if(val>32767)	val=32767;
-						if(val<-32768)	val=-32768;
-			//			*pData = val;
-						mAudioInterface->samples[count]=val;
-						count++;
-					}
-				}
-
-				mAudioInterface->writeAudioStream( i );
-
-				//tell libvorbis how many samples we actually consumed
-				vorbis_synthesis_read( &mVorbisDSPState, i );
-
-				if( mVorbisDSPState.granulepos >= 0 )	
-					audiobuf_granulepos = mVorbisDSPState.granulepos - ret + i;
-				else					
-					audiobuf_granulepos += i;
-
-			} //end if audio bytes
-			else
-			{
-				//no pending audio; is there a pending packet to decode?
-				if( ogg_stream_packetout( &mVorbisStreamState, &opVorbis) >0 )
-				{
-					//test for success!
-					if(vorbis_synthesis( &mVorbisBlock, &opVorbis) == 0 )
-						vorbis_synthesis_blockin( &mVorbisDSPState, &mVorbisBlock );
-				}
-				else	//we need more data; break out to suck in another page
-				{
-					if( mEndOfFile )
-					{
-						if( mMessageListener && mEndOfAudio == false )
-							mMessageListener->messageEvent( TheoraVideoListener::TH_VorbisStreamDone );
-						
-						mEndOfAudio = true;
-					}
-
-					break;
-				}
-			} //end else: no audio bytes
-		} //end audio cycle
+		return !mPaused;
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::decodeTheora()
+	float TheoraVideoClip::getPriority()
 	{
-		ogg_packet opTheora;
-		float nowTime,delay;
-		for(;;)
-		{
-
-			//get one video packet...
-			if( ogg_stream_packetout( &mTheoraStreamState, &opTheora) > 0 )
-			{
-				
-      			theora_decode_packetin( &mTheoraState, &opTheora );
-				videobuf_time = theora_granule_time( &mTheoraState, mTheoraState.granulepos );
-				
-				//update the frame counter
-				mFrameNum++;
-
-				//check if this frame time has not passed yet.
-				//If the frame is late we need to decode additonal
-				//ones and keep looping, since theora at this stage
-				//needs to decode all frames
-				
-				//if there are no frames in queue, first let's see if the frame we just decoded
-				//should even be displayed. but, display at least one frame per second
-				nowTime=getMovieTime();
-				delay=videobuf_time - nowTime;
-				if (delay >= 0.0f || delay < -1.0f)
-				{
-					//got a good frame, within time window
-					mVideoFrameReady = true;
-					break;
-				}
-				else //frame is dropped
-				{
-					mNumDroppedFrames++;
-				}
-			}
-			else
-			{
-				if( mEndOfFile )
-				{
-					if( mMessageListener && mEndOfVideo == false )
-						mMessageListener->messageEvent( TheoraVideoListener::TH_TheoraStreamDone );
-
-					mEndOfVideo = true;
-				}
-
-
-				//need more data
-				break;
-			}
-		}
+		return 0;
 	}
 
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::cleanup()
-	{
-	}
-
-	//--------------------------------------------------------------------//
-	float TheoraVideoClip::getMovieTime() 
-	{
-		if ( mAudioInterface ) 
-		{
-			//We are using audio, so get the audio time as sync
-			return mAudioInterface->getAudioStreamTime() / 1000.0f;
-		}
-		else
-		{
-			//We are not using audio, base our time off of an ogre clock
-			if ( mTimer )
-			{
-				return mTimer->getMilliseconds() / 1000.0f;
-			}
-			else
-			{
-				//Initialize timer variable first time up
-				mTimer = new Timer();
-				mTimer->reset();
-				mTimeOfNextFrame=-1.0f;
-				return 0.0f;
-			}
-		}
-	}
-
-	//--------------------------------------------------------------------//
-	void TheoraVideoClip::close()
-	{
-		mEndOfFile = false;
-		
-		delete mSeeker;
-		mSeeker = 0;
-
-		mOggFile.setNull();
-
-		if(mVorbisStreams)
-		{
-			if( mAudioInterface )
-				mAudioInterface->close();
-
-			ogg_stream_clear( &mVorbisStreamState );
-			vorbis_block_clear( &mVorbisBlock );
-			vorbis_dsp_clear( &mVorbisDSPState );
-			vorbis_comment_clear( &mVorbisComment );
-			vorbis_info_clear( &mVorbisInfo ); 
-			
-			mVorbisStreams = 0;
-		}
-
-		if(mTheoraStreams)
-		{
-			ogg_stream_clear( &mTheoraStreamState );
-			theora_clear( &mTheoraState );
-			theora_comment_clear( &mTheoraComment );
-			theora_info_clear( &mTheoraInfo );
-
-			mTheoraStreams = 0;
-		}
-
-		ogg_sync_clear( &mOggSyncState );
-	}
-
-	void TheoraVideoClip::seekToTime( float seconds )
-	{
-		//No point seeking to the end.. were already there
-		if( seconds >= mMovieLength || seconds < 0.0f )
-			return;
-		
-		//If seeking is not enabled, just return
-		if( !mSeeker )
-			return;
-
-		//Sets seeking flag on for thread to know & carry out later
-		mDoSeek = true;
-		mSeekTime = seconds;
-	}
-} //end namespace Ogre
+} // end namespace Ogre

@@ -1,18 +1,9 @@
-/*
------------------------------------------------------------------------------
-This source file is part of the TheoraVideoSystem ExternalTextureSource PlugIn 
-for OGRE (Object-oriented Graphics Rendering Engine)
-For the latest info, see www.wreckedgames.com or www.ogre3d.org
-*****************************************************************************
-				This PlugIn uses the following resources:
-
-Ogre - see above
-Ogg / Vorbis / Theora www.xiph.org
-C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
-
-*****************************************************************************
-Copyright © 2008 Kresimir Spes (kreso@cateia.com)
-          © 2000-2004 pjcast@yahoo.com
+/************************************************************************************
+This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
+for OGRE3D (Object-oriented Graphics Rendering Engine)
+For latest info, see http://ogrevideo.sourceforge.net/
+*************************************************************************************
+Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -27,368 +18,153 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
-***************************************************************************/
-#ifndef _TheoraVideoMovieClip_H
-#define _TheoraVideoMovieClip_H
+*************************************************************************************/
 
-#include "OgreExternalTextureSource.h"
-#include "OgrePrerequisites.h"
-#include "OgreDataStream.h"
-#include "OgreString.h"
+#ifndef _TheoraVideoClip_h
+#define _TheoraVideoClip_h
 
 #include "TheoraExport.h"
-#include "TheoraPlayerPreReqs.h"
-#include "TheoraVideoDriver.h"
-#include "TheoraSeekUtility.h"
-
-#include "theora/theora.h"
+#include "OgreDataStream.h"
+#include "OgreTexture.h"
+#include "theora/theoradec.h"
 #include "vorbis/codec.h"
-#include "ptypes/pasync.h"
+
+enum TheoraOutputMode
+{
+	TH_RGB,
+	TH_GREY,
+	TH_YUV
+};
 
 namespace Ogre
 {
+	class TheoraFrameQueue;
+	class TheoraTimer;
+	class TheoraAudioInterface;
+	class TheoraWorkerThread;
+
+
+
 	/**
-		A messenger class for sending off messages relating to stream/movie events	
-	*/
-	class _OgreTheoraExport TheoraVideoListener
-	{
-	public:
-		TheoraVideoListener() {}
-		virtual ~TheoraVideoListener() {}
-
-		enum PLUGIN_theora_message
-		{
-			//Signal that movie reached end of ogg stream, still playing though
-			TH_OggStreamDone = 0,
-			//No more vorbis packets for decoding.. buffered audio still present
-			TH_VorbisStreamDone,
-			//No more theora packets found in the stream.
-			TH_TheoraStreamDone,
-			//The movie is no longer playing
-			TH_EndOfMovie
-		};
-
-		/**
-			@remarks
-				This message is sent once the movie length is determined
-			@param discoveredTime
-				Movie duration in seconds
-		*/		
-		virtual void discoveredMovieTime( float discoveredTime ) {}
-
-		/**
-			@remarks
-				Event method to send messages.
-			@param m
-				The message that occured
-			@return
-				varies on message... Currently unused
-		*/
-		virtual int messageEvent( PLUGIN_theora_message m ) = 0;
 		
-		/**
-			@remarks
-				Event raised when a frame is blitted
-			@param
-				Video Time is seconds
-			@param
-				Audio Time is seconds
-			@param
-				The current frame that was blitted
-			@param
-				Amount of frames that have been discarded to keep sync
-		*/
-
-		struct FrameInfo
-		{
-			float mVideoTime,
-				  mAudioTime,
-				  mAvgDecodeTime,
-				  mAvgYUVConvertTime,
-				  mAvgBlitTime;
-			int   mCurrentFrame,
-				  mNumFramesDropped,
-				  mNumPrecachedFrames;
-		};
-		virtual void displayedFrame(FrameInfo info) {};
-	};
-
-
-//******************************************************************************//
-	class TheoraFrame
-	{
-	public:
-		/**
-			@remarks
-				initializes a frame
-			@param w
-				width of the frame in pixels
-			@param h
-				height of the frame in pixels
-		*/
-		TheoraFrame(TheoraVideoClip* parent,int w,int h);
-		~TheoraFrame();
-		/**
-			@remarks
-				copies theora YUV buffer to mPixelBuffer and performes either
-				YUV->RGB conversion or stores YUV directly into RGB (for shaders to convert later on)
-			@param yuv
-				theora's yuv_buffer structure
-			@param timeToDisplay
-				latest time this frame should be displayed
-			@param convert_to_rgb
-		*/
-		void decodeYUV(yuv_buffer yuv,double timeToDisplay,TheoraVideo_OutputMode mode=TH_RGB);
-
-		double mTimeToDisplay;
-		bool mInUse;
-		TheoraVideoClip* mParent;
-
-		unsigned char* mPixelBuffer;
-	};
-//******************************************************************************//
-	/** 
-		Class that holds an Ogg Theora Video clip
 	*/
-	class _OgreTheoraExport TheoraVideoClip : public pt::thread
+	class _OgreTheoraExport TheoraVideoClip
 	{
+		friend class TheoraWorkerThread;
+		friend class TheoraVideoFrame;
+
+		TheoraFrameQueue* mFrameQueue;
+		TheoraAudioInterface* mAudioInterface;
+		DataStreamPtr mStream;
+		TexturePtr mTexture;
+
+		TheoraWorkerThread* mAssignedWorkerThread;
+
+		// ogg/vorbis/theora variables
+		ogg_sync_state   mOggSyncState;
+		ogg_page         mOggPage;
+		ogg_stream_state mVorbisStreamState;
+		ogg_stream_state mTheoraStreamState;
+		//Theora State
+		th_info        mTheoraInfo;
+		th_comment     mTheoraComment;
+		th_setup_info* mTheoraSetup;
+		th_dec_ctx*    mTheoraDecoder;
+		//th_state     mTheoraState;
+		//Vorbis State
+		vorbis_info      mVorbisInfo;
+		vorbis_dsp_state mVorbisDSPState;
+		vorbis_block     mVorbisBlock;
+		vorbis_comment   mVorbisComment;
+		int mTheoraStreams, mVorbisStreams;	// Keeps track of Theora and Vorbis Streams
+
+		int mNumPrecachedFrames;
+
+		String mName;
+		int mWidth,mHeight;
+		int mTexWidth,mTexHeight;
+		TheoraOutputMode mOutputMode;
+
+		// material binding information
+		String mMaterialName;
+		int mTechniqueLevel;
+		int mPassLevel;
+		int mTexLevel;
+		bool mBackColourChanged;
+
+		bool mPaused;
+		float mTimePos;
+		float mUserPriority;
+
+
+		/**
+		 * Get the priority of a video clip. based on a forumula that includes user
+		 * priority factor, whether the video is paused or not, how many precached
+		 * frames it has etc.
+		 * This function is used in TheoraVideoManager to efficiently distribute job
+		 * assignments among worker threads
+		 * @return priority number of this video clip
+		 */
+		int calculatePriority();
+		void readTheoraVorbisHeaders();
 	public:
-		TheoraVideoClip();
+		TheoraVideoClip(std::string name,int nPrecachedFrames);
 		~TheoraVideoClip();
 
-		/**
-			@remarks
-				Sets up texture for movie playing
-			@param sMovieName
-			@param sMaterialName
-			@param TechniqueLevel
-			@param PassLevel
-			@param TextureUnitStateLevel
-			@param HasSound
-			@param eMode
-			@param renderMode
-			@return
-				true on success, false otherwise
-		*/
-		void createDefinedTexture( 
-			const String &sMovieName, const String &sMaterialName,
-			const String &sGroupName, int TechniqueLevel, int PassLevel, 
-			int TextureUnitStateLevel, bool HasSound = false, 
-			eTexturePlayMode eMode = TextureEffectPause,
-			bool seekingEnabled = false,
-			bool autoUpdateAudio = false );
+		String getName();
+		//! return the material name this video clip is assigned to
+		String getMaterialName();
+
+		//! return width in pixels of the video clip
+		int getWidth();
+		//! return height in pixels of the video clip
+		int getHeight();
+
+		void createDefinedTexture(
+			const String& name, const String& material_name,
+			const String& group_name, int technique_level, int pass_level, 
+			int tex_level);
+
+		void decodeNextFrame();
+
+		//! check if it's time to transfer another frame to the texture
+		void blitFrameCheck(float time_increase);
+
+		void TheoraVideoClip::load(const String& file_name,const String& group_name);
+
+		void setAudioInterface(TheoraAudioInterface* iface);
+		TheoraAudioInterface getAudioInterface();
+
+		void setNumPrecachedFrames(int n);
+		int getNumPrecachedFrames();
 
 		/**
-			@remarks
-				Changes the play mode of this movie
-			@param eMode
-				Mode to change to 
-		*/
-
-		void setOutputMode(TheoraVideo_OutputMode mode);
-		TheoraVideo_OutputMode getVideoMoge() { return mOutputMode; }
-
-
-		void changePlayMode( eTexturePlayMode eMode );
-		void play()  { changePlayMode(TextureEffectPlay_ASAP); }
-		void pause() { changePlayMode(TextureEffectPause); }
-		void stop()  { changePlayMode(TextureEffectPause); }
-		bool isPaused() { return mPlayMode == TextureEffectPause; }
-
-		eTexturePlayMode getPlayMode() { return mPlayMode; }
-
+		 * sets a user priority factor.
+		 * @param priority must be in range [0,1]
+		 */
+		void setPriority(float priority);
 		/**
-			@remarks
-				You want audio? Then register an audio class that is derived
-				from TheoraAudioDriver and register it before you play your video
-			@param pAud
-				Class to handle audio output
-		*/
-		void setAudioDriver( TheoraAudioDriver *pAud );
-		
-		/**
-			@remarks
-				Get the audio driver this movie uses
-			@returns
-				The audio driver or null
-		*/
-		TheoraAudioDriver* getAudioDriver() { return mAudioInterface; }
-		
-		/**
-			@remarks
-				Get the video driver this movie uses
-			@returns
-				The video driver class
-		*/
-		TheoraVideoDriver* getVideoDriver() { return &mVideoInterface; }
+		 * @return user set priority
+		 */
+		float getPriority();
 
-		/**
-			@remarks
-				Register a listener for movie events
-			@param m
-				The class to recieve messages
-		*/
-		void registerMessageHandler( TheoraVideoListener* m ) {mMessageListener = m;}
+		float getTimePosition();
+		float getDuration();
 
-		/**
-			@remarks
-				Loads the movie - after this point it is ready to play
-			@param filename
-				The string movie filename
-			@param useAudio
-				Leaves the possibility of sound playing there
-		*/			
-		void load( const String& filename, 
-			const String& groupName, bool useAudio );
-		
-		/**
-			@remarks
-				Close & delete all resources for this movie
-		*/
-		void close();
-	
-		/**
-			@remarks
-				Call every frame to check for a ready frame
-		*/
-		void blitFrameCheck();
-		
-		/**
-			@remarks
-				Gets the movie name
-			@returns
-				Returns the string name of this movie
-		*/
-		const String & getMovieName() const { return mMovieName; }
-		
-		/**
-			@remarks
-				Gets the material name
-			@returns
-				Returns the string name of this movie
-		*/		
-		const String & getMaterialName() const { return mMaterialName; }
-		
-		/**
-			@remarks
-				Seeks to sent time (in seconds).. This call returns immediately
-		*/		
-		void seekToTime( float seconds );
+		TheoraOutputMode getOutputMode();
+		void setOutputMode(TheoraOutputMode mode);
 
-		/**
-			@remarks
-				Gets the best guess (means quickest results) movie length
-			@returns
-				Returns time in seconds
-		*/
-		float getMaxSeekTime( ) { return mMovieLength; }
-
-	    //! Main Thread Body - do not call directly!
-		void execute();
-
-		//! Called during thread clean up - do not call directly!
-		void cleanup();
-
-		/**
-			@remarks
-				initialises N TheoraFrame objects to hold prerendered frames
-		*/
-		void setNumPrecachedFrames(int num);
-		int getNumPrecachedFrames() { return mFrameRepository.size(); }
-		bool mFinished; // temp hack
-		bool mFirstRun; //! if first run, precache N frames
-	protected:
-		/**
-			@remarks
-				Used in syncronization layer
-			@returns
-				Returns the time of playing (in seconds)
-		*/
-		float getMovieTime();
-
-
-		void initVorbisTheoraLayer( );
-		void parseVorbisTheoraHeaders( bool useAudio );
-		void activateVorbisTheoraCodecs( bool useAudio );
-		void decodeVorbis();
-		void decodeTheora();
-		
-		//Seeking helper objects
-		float mMovieLength;
-		volatile bool mDoSeek;
-		volatile float mSeekTime;
-		TheoraSeekUtility *mSeeker;
-
-		// how would you like your output to be.
-		TheoraVideo_OutputMode mOutputMode;
-
-		// time the video clip has to reach before it should display the next frame
-		double mTimeOfNextFrame;
-		// a list that holds our available frame buffers
-		std::list<TheoraFrame*> mFrameRepository;
-		// mutex that syncs the main thread and the frame extraction thread
-		pt::mutex mFrameMutex;
-		// queue containing rendered frames
-		std::queue<TheoraFrame*> mFrames;
-		bool mFramesReady;
-
-		//Mux/Demux Structs
-		ogg_sync_state   mOggSyncState;		//sync and verify incoming physical bitstream
-		ogg_page         mOggPage;				//one Ogg bitstream page
-		ogg_stream_state mVorbisStreamState;	//take physical pages, weld into a logical
-		ogg_stream_state mTheoraStreamState;	//take physical pages, weld into a logical
-		//Theora State
-		theora_info      mTheoraInfo;		//struct that stores all the static theora bitstream settings
-		theora_comment   mTheoraComment;
-		theora_state     mTheoraState;
-		//Vorbis State
-		vorbis_info      mVorbisInfo;		//struct that stores all the static theora bitstream settings
-		vorbis_dsp_state mVorbisDSPState;	//central working state for the packet->PCM decoder
-		vorbis_block     mVorbisBlock;		//local working space for packet->PCM decode
-		vorbis_comment   mVorbisComment;
-
-		String mMovieName;
-		String mMaterialName;
-
-		Timer* mTimer;
-		TheoraVideoListener* mMessageListener;
-		eTexturePlayMode mPlayMode;
-
-		int mFrameNum;
-		// Benchmark variables
-		int mNumDroppedFrames;
-		float mAvgDecodedTime, mAvgYUVConvertedTime,mSumBlited;
-		float mDecodedTime, mYUVConvertTime, mBlitTime;
-		int mNumFramesEvaluated;
-
-		unsigned int mLastFrameTime;
-
-		//! A class that handles the audio
-		TheoraAudioDriver *mAudioInterface;
-		//! A class that handles the video/textures
-		TheoraVideoDriver mVideoInterface;
-
-		volatile bool mThreadRunning;
-		bool mEndOfFile;
-		
-		bool mEndOfAudio;
-		bool mEndOfVideo;
-		bool mAudioStarted;
+		void play();
+		void pause();
+		void stop();
+		void seek(float time);
+		//! whether the video clip is paused or not
+		bool isPlaying();
 		
 
-		bool mAutoUpdate;
 
-		//Open File Stream
-		DataStreamPtr mOggFile;
 
-		int mTheoraStreams, mVorbisStreams;	// Keeps track of Theora and Vorbis Streams
-		int currentTicks;		//! ticks information to be used if the audio stream is not present
-
-		//single frame video buffering
-		bool mVideoFrameReady;
-		float videobuf_time; // TODO: (kspes) hmm, why is this a member var?
-
-		ogg_int64_t audiobuf_granulepos; //time position of last sample
 	};
 }
-#endif//_TheoraVideoMovieClip_H
+#endif
+

@@ -101,8 +101,14 @@
                 <Property Name="UnifiedSize" Value="{{0.4,0},{0.04,0}}" />
     		    <Property Name="Text" Value="Stop" />
             </Window>
-
-
+    </Window>
+    <Window Type="TaharezLook/HorizontalScrollbar" Name="seeker">
+        <Property Name="UnifiedPosition" Value="{{0.25,0},{0.97,0}}" />
+        <Property Name="UnifiedSize" Value="{{0.75,0},{0.03,0}}" />
+	  <Property Name="DocumentSize" Value="256" />
+	  <Property Name="PageSize" Value="1" />
+	  <Property Name="StepSize" Value="1" />
+	  <Property Name="OverlapSize" Value="1" />
     </Window>
 </Window>
 

@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="CEGUI_TheoraDemo"
 	ProjectGUID="{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
+	RootNamespace="CEGUI_TheoraDemo"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>

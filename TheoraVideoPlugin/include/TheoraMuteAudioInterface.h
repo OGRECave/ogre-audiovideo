@@ -19,29 +19,22 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+#ifndef _TheoraMuteAudioInterface_h
+#define _TheoraMuteAudioInterface_h
 
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
-
-#include "TheoraVideoManager.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
-
-	extern "C" void dllStartPlugin()
+	/**
+		
+	*/
+	class TheoraMuteAudioInterface
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
+	public:
+		TheoraMuteAudioInterface();
+		~TheoraMuteAudioInterface();
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
-	}
 
-	extern "C" void dllStopPlugin()
-	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
-	}
+	};
 }
+#endif

@@ -20,28 +20,40 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
 
-#include "OgreExternalTextureSourceManager.h"
-#include "OgreRoot.h"
+#ifndef _TheoraFrameQueue_h
+#define _TheoraFrameQueue_h
 
-#include "TheoraVideoManager.h"
 
 namespace Ogre
 {
-	TheoraVideoManager* theoraVideoPlugin;
-
-	extern "C" void dllStartPlugin()
+	class TheoraVideoFrame;
+	class TheoraVideoClip;
+	/**
+		
+	*/
+	class TheoraFrameQueue
 	{
-		// Create our new External Textue Source PlugIn
-		theoraVideoPlugin = new TheoraVideoManager();
+		TheoraVideoFrame** mQueue;
+		int mSize;
+		TheoraVideoClip* mParent;
+		unsigned int mBackColour;
+	public:
+		TheoraFrameQueue(int n,TheoraVideoClip* parent);
+		~TheoraFrameQueue();
 
-		// Register with Manger
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
-	}
+		TheoraVideoFrame* getFirstAvailableFrame();
 
-	extern "C" void dllStopPlugin()
-	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
-		delete theoraVideoPlugin;
-	}
+		//! do not call directly, this function is used to reset back colour after video clip output mode change
+		void fillBackColour(unsigned int colour);
+		unsigned int getBackColour();
+
+		void pop();
+		//! Called by WorkerThreads when they need to unload frame data
+		TheoraVideoFrame* requestEmptyFrame();
+		
+
+		void setSize(int n);
+		int getSize();
+	};
 }
+#endif
