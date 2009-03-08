@@ -54,6 +54,7 @@ namespace Ogre
 		mTheoraStreams(0),
 		mVorbisStreams(0),
 		mTimePos(0),
+		mDuration(-1),
 		mPaused(false),
 		mName(name),
 		mOutputMode(TH_RGB),
@@ -117,8 +118,22 @@ namespace Ogre
 
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
-					if(mTheoraStreams) 
+					if(mTheoraStreams)
+					{
 						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
+						/*
+						long granule,t,s;
+						float duration,time;
+						granule=ogg_page_granulepos(&mOggPage);
+						if (granule >= 0)
+						{
+							time=th_granule_time(mTheoraDecoder,granule);
+							t=mStream->tell();s=mStream->size();
+							mDuration=time/(((double) t)/s);
+						}
+						*/
+
+					}
 					if(mVorbisStreams) 
 						ogg_stream_pagein( &mVorbisStreamState, &mOggPage );
 				}
@@ -210,65 +225,6 @@ namespace Ogre
 		readTheoraVorbisHeaders();
 
 
-		/* 
-
-
-		ogg_page page;
-		char *buffer;
-		int read = 1;
-		long gran;
-		float movieLentgh = 0;
-		unsigned int start = mStream->tell();
-		unsigned int begin = start - 4096;	//To protect from the overlap between reading the header packet, 
-											//and the first ogg_page after that
-
-		int keyframe_granule_shift=mTheoraInfo.keyframe_granule_shift;
-
-		while( !mStream->eof() && read != 0 )
-		{
-			buffer = ogg_sync_buffer( &mOggSyncState, 4096);
-			read = mStream->read( buffer, 4096 );
-			ogg_sync_wrote( &mOggSyncState, read );
-
-			while ( ogg_sync_pageout( &mOggSyncState, &page ) > 0 )
-			{
-				int serno = ogg_page_serialno( &page );
-				//This is theora stream we were searching for
-				if( mTheoraStreamState.serialno == serno )
-				{
-					//Calculate a rough time estimate
-					gran = ogg_page_granulepos( &page );
-					if( gran >= 0 )
-					{
-					    long iframe = gran >> keyframe_granule_shift;
-						long pframe = gran	-(iframe << keyframe_granule_shift );
-						movieLentgh = (iframe+pframe)*
-							((double)mTheoraInfo.fps_denominator / mTheoraInfo.fps_numerator );
-						
-                       // addSeekerPoint( movieLentgh, begin );
-						begin = mStream->tell();
-					}
-				}
-			}
-		}
-
-		ogg_sync_reset( &mOggSyncState );
-		ogg_sync_clear( &mOggSyncState );
-		ogg_sync_init(  &mOggSyncState );
-		mStream->seek( start );
-
-
-
-
-
-		*/
-
-
-
-
-
-
-
 		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
 
 		mWidth=mTheoraInfo.frame_width;
@@ -278,6 +234,69 @@ namespace Ogre
 
 		mFrameQueue=new TheoraFrameQueue(mNumPrecachedFrames,this);
 		setOutputMode(mOutputMode); // clear the frame backgrounds
+
+		//return;
+		// find out the duration of the file by seeking to the end
+		// having ogg decode pages, extract the granule pos from
+		// the last theora page and seek back to beginning of the file
+
+		long stream_pos=mStream->tell();
+
+		for (int i=1;i<=3;i++)
+		{
+			ogg_sync_reset(&mOggSyncState);
+			mStream->seek(mStream->size()-4096*i);
+
+			char *buffer = ogg_sync_buffer( &mOggSyncState, 4096*i);
+			int bytesRead = mStream->read( buffer, 4096*i);
+			ogg_sync_wrote( &mOggSyncState, bytesRead );
+			long offset=ogg_sync_pageseek(&mOggSyncState,&mOggPage);
+
+			while (1)
+			{
+				int ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
+				if (ret < 0)
+					ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
+				if ( ret < 0) break;
+
+				int serno=ogg_page_serialno(&mOggPage);
+				// if page is not a theora page, skip it
+				if (serno != mTheoraStreamState.serialno)
+				{
+					int eos=ogg_page_eos(&mOggPage);
+					if (eos > 0) break;
+					continue;
+				}
+
+				long granule=ogg_page_granulepos(&mOggPage);
+				if (granule >= 0)
+					mDuration=th_granule_time(mTheoraDecoder,granule);
+			}
+			if (mDuration > 0) break;
+
+		}
+		if (mDuration < 0)
+		{
+			LogManager::getSingleton().logMessage("TheoraVideoPlugin: unable to determine file duration!");
+		}
+		// restore to beginning of stream.
+		// the following solution is temporary and hacky, will be replaced soon
+
+		ogg_sync_reset(&mOggSyncState);
+		mStream->seek(0);
+		memset(&mOggSyncState, 0, sizeof(ogg_sync_state));
+		memset(&mOggPage, 0, sizeof(ogg_page));
+		memset(&mVorbisStreamState, 0, sizeof(ogg_stream_state));
+		memset(&mTheoraStreamState, 0, sizeof(ogg_stream_state));
+		memset(&mTheoraInfo, 0, sizeof(th_info));
+		memset(&mTheoraComment, 0, sizeof(th_comment));
+		//memset(&mTheoraState, 0, sizeof(th_state));
+		memset(&mVorbisInfo, 0, sizeof(vorbis_info));
+		memset(&mVorbisDSPState, 0, sizeof(vorbis_dsp_state));
+		memset(&mVorbisBlock, 0, sizeof(vorbis_block));
+		memset(&mVorbisComment, 0, sizeof(vorbis_comment));
+		mTheoraStreams=0;
+		readTheoraVorbisHeaders();
 	}
 
 	void TheoraVideoClip::readTheoraVorbisHeaders()
@@ -434,12 +453,12 @@ namespace Ogre
 
 	float TheoraVideoClip::getTimePosition()
 	{
-		return 0;
+		return mTimePos;
 	}
 
 	float TheoraVideoClip::getDuration()
 	{
-		return 1;
+		return mDuration;
 	}
 
 	void TheoraVideoClip::play()

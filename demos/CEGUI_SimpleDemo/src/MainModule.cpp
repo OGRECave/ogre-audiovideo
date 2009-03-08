@@ -90,6 +90,20 @@ public:
 			init=true;
 		}
 
+		CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("cFrame");
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+		float dur=clip->getDuration();
+		String s=StringConverter::toString(dur);
+		wnd->setText("duration: "+s+" seconds");
+
+		float cTime=clip->getTimePosition();
+		float duration=clip->getDuration();
+		int pos=1024*(cTime/duration);
+
+		CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+		wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
+
         if (mShutdownRequested)
             return false;
         else

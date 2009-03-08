@@ -83,6 +83,7 @@ namespace Ogre
 		String mName;
 		int mWidth,mHeight;
 		int mTexWidth,mTexHeight;
+		float mDuration;
 		TheoraOutputMode mOutputMode;
 
 		// material binding information
