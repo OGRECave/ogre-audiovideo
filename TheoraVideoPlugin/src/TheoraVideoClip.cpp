@@ -54,6 +54,7 @@ namespace Ogre
 		mTheoraStreams(0),
 		mVorbisStreams(0),
 		mTimePos(0),
+		mSeekPos(-1),
 		mDuration(-1),
 		mPaused(false),
 		mName(name),
@@ -476,12 +477,44 @@ namespace Ogre
 	
 	}
 
+	void TheoraVideoClip::doSeek()
+	{
+
+		ogg_sync_reset( &mOggSyncState );
+		ogg_stream_reset( &mTheoraStreamState );
+		mStream->seek((mSeekPos/mDuration)*mStream->size());
+		char *buffer = ogg_sync_buffer( &mOggSyncState, 4096*3);
+		int bytesRead = mStream->read( buffer, 4096*3);
+		ogg_sync_wrote( &mOggSyncState, bytesRead );
+		while (1)
+		{
+			int ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
+			if (ret < 0)
+				ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
+			if ( ret < 0) break;
+
+			int serno=ogg_page_serialno(&mOggPage);
+			// if page is not a theora page, skip it
+			if (serno != mTheoraStreamState.serialno)
+			{
+				int eos=ogg_page_eos(&mOggPage);
+				if (eos > 0) break;
+				continue;
+			}
+			else break;
+		}
+
+		long granule=ogg_page_granulepos(&mOggPage);
+		if (granule >= 0)
+			mTimePos=th_granule_time(mTheoraDecoder,granule);
+		else mTimePos=mSeekPos;
+
+		mSeekPos=-1;
+	}
+
 	void TheoraVideoClip::seek(float time)
 	{
-		//mTimePos=time;
-		//ogg_sync_reset( &mOggSyncState );
-		//ogg_stream_reset( &mTheoraStreamState );
-		mStream->seek(mStream->size()/2);
+		mSeekPos=time;
 		
 	}
 

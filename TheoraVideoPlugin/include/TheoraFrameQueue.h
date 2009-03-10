@@ -48,6 +48,7 @@ namespace Ogre
 		unsigned int getBackColour();
 
 		void pop();
+		void clear(); //! frees all decoded frames for reuse (does not destroy memory, just marks them as free)
 		//! Called by WorkerThreads when they need to unload frame data
 		TheoraVideoFrame* requestEmptyFrame();
 		

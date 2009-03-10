@@ -68,6 +68,15 @@ namespace Ogre
 		return 0;
 	}
 
+	void TheoraFrameQueue::clear()
+	{
+		for (int i=0;i<mSize;i++)
+		{
+			mQueue[i]->mInUse=false;
+			mQueue[i]->mReady=false;
+		}
+	}
+
 	void TheoraFrameQueue::pop()
 	{
 		TheoraVideoFrame* first=mQueue[0];

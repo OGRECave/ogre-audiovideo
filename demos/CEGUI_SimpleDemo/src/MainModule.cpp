@@ -6,6 +6,8 @@
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
 
+bool g_seeking=false;
+
 //----------------------------------------------------------------//
 CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
 {
@@ -101,9 +103,11 @@ public:
 		float duration=clip->getDuration();
 		int pos=1024*(cTime/duration);
 
-		CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
-		wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
-
+		if (!g_seeking)
+		{
+			CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+			wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
+		}
         if (mShutdownRequested)
             return false;
         else
@@ -274,6 +278,33 @@ protected:
         return true;
     }
 
+    bool OnSeekStart(const CEGUI::EventArgs& e)
+    {
+		g_seeking=true;
+		return true;
+	}
+
+    bool OnSeekEnd(const CEGUI::EventArgs& e)
+    {
+		g_seeking=false;
+
+		CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+		float dur=clip->getDuration();
+
+		CEGUI::String prop=wnd->getProperty("ScrollPosition");
+		int step=StringConverter::parseInt(prop.c_str());
+
+		float seek_time=((float) step/1024)*dur;
+
+
+		clip->seek(seek_time);
+
+
+		return true;
+	}
+
     bool OnRGB(const CEGUI::EventArgs& e)
     {
 		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
@@ -343,6 +374,16 @@ protected:
 			->subscribeEvent(
 				CEGUI::PushButton::EventClicked, 
 				CEGUI::Event::Subscriber(&GuiApplication::OnPlayPause,this));
+
+        wmgr.getWindow((CEGUI::utf8*)"seeker")
+			->subscribeEvent(
+			CEGUI::Scrollbar::EventThumbTrackStarted, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnSeekStart,this));
+
+        wmgr.getWindow((CEGUI::utf8*)"seeker")
+			->subscribeEvent(
+				CEGUI::Scrollbar::EventThumbTrackEnded, 
+				CEGUI::Event::Subscriber(&GuiApplication::OnSeekEnd,this));
 
     }
 

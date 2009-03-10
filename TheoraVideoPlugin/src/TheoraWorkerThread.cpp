@@ -44,7 +44,7 @@ namespace Ogre
 	void TheoraWorkerThread::execute()
 	{
 		mThreadRunning = true;
-		while( mThreadRunning)
+		while (mThreadRunning)
 		{
 			mClip=TheoraVideoManager::getSingleton().requestWork();
 			if (!mClip)
@@ -53,6 +53,9 @@ namespace Ogre
 				continue;
 			}
 			mClip->mAssignedWorkerThread=this;
+	
+			// if user requested seeking, do that then.
+			if (mClip->mSeekPos >= 0) mClip->doSeek();
 
 			mClip->decodeNextFrame();
 

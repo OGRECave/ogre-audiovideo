@@ -84,6 +84,7 @@ namespace Ogre
 		int mWidth,mHeight;
 		int mTexWidth,mTexHeight;
 		float mDuration;
+		float mSeekPos; //! stores desired seek position. next worker thread will do the seeking and reset this var to -1
 		TheoraOutputMode mOutputMode;
 
 		// material binding information
@@ -108,6 +109,7 @@ namespace Ogre
 		 */
 		int calculatePriority();
 		void readTheoraVorbisHeaders();
+		void doSeek(); //! called by WorkerThread to seek to mSeekPos
 	public:
 		TheoraVideoClip(std::string name,int nPrecachedFrames);
 		~TheoraVideoClip();
