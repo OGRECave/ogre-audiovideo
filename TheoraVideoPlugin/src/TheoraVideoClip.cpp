@@ -95,13 +95,13 @@ namespace Ogre
 	{
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
-
 		ogg_packet opTheora;
 		ogg_int64_t granulePos;
 		th_ycbcr_buffer buff;
 		for(;;)
 		{
-			if (ogg_stream_packetout(&mTheoraStreamState,&opTheora) > 0)
+			int ret=ogg_stream_packetout(&mTheoraStreamState,&opTheora);
+			if (ret > 0)
 			{
 				th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos );
 				float time=th_granule_time(mTheoraDecoder,granulePos);
@@ -116,23 +116,13 @@ namespace Ogre
 				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
 				int bytesRead = mStream->read( buffer, 4096 );
 				ogg_sync_wrote( &mOggSyncState, bytesRead );
+				if (bytesRead < 4096) return;
 
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
 					if(mTheoraStreams)
 					{
 						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
-						/*
-						long granule,t,s;
-						float duration,time;
-						granule=ogg_page_granulepos(&mOggPage);
-						if (granule >= 0)
-						{
-							time=th_granule_time(mTheoraDecoder,granule);
-							t=mStream->tell();s=mStream->size();
-							mDuration=time/(((double) t)/s);
-						}
-						*/
 
 					}
 					if(mVorbisStreams) 
@@ -260,14 +250,12 @@ namespace Ogre
 					ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
 				if ( ret < 0) break;
 
+				int eos=ogg_page_eos(&mOggPage);
+				if (eos > 0) break;
+
 				int serno=ogg_page_serialno(&mOggPage);
 				// if page is not a theora page, skip it
-				if (serno != mTheoraStreamState.serialno)
-				{
-					int eos=ogg_page_eos(&mOggPage);
-					if (eos > 0) break;
-					continue;
-				}
+				if (serno != mTheoraStreamState.serialno) continue;
 
 				long granule=ogg_page_granulepos(&mOggPage);
 				if (granule >= 0)
@@ -479,37 +467,64 @@ namespace Ogre
 
 	void TheoraVideoClip::doSeek()
 	{
-
+		/*
+		mTimePos=0;
+		mFrameQueue->clear();
+		mStream->seek((mSeekPos/mDuration)*mStream->size());
+		mSeekPos=-1;
 		ogg_sync_reset( &mOggSyncState );
 		ogg_stream_reset( &mTheoraStreamState );
+		th_decode_free(mTheoraDecoder);
+		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
+		return;
+		*/
+		ogg_sync_reset( &mOggSyncState );
+		ogg_stream_reset( &mTheoraStreamState );
+		th_decode_free(mTheoraDecoder);
+		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
 		mStream->seek((mSeekPos/mDuration)*mStream->size());
-		char *buffer = ogg_sync_buffer( &mOggSyncState, 4096*3);
-		int bytesRead = mStream->read( buffer, 4096*3);
-		ogg_sync_wrote( &mOggSyncState, bytesRead );
+		mFrameQueue->clear();
+		ogg_int64_t granule;
+
+
+		memset(&mOggPage, 0, sizeof(ogg_page));
+		ogg_sync_pageseek(&mOggSyncState,&mOggPage);
 		while (1)
 		{
 			int ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
-			if (ret < 0)
-				ret=ogg_sync_pageout( &mOggSyncState, &mOggPage );
-			if ( ret < 0) break;
-
-			int serno=ogg_page_serialno(&mOggPage);
-			// if page is not a theora page, skip it
-			if (serno != mTheoraStreamState.serialno)
+			if (ret == 1)
 			{
+				//ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
+
+				int serno=ogg_page_serialno(&mOggPage);
+				// if page is not a theora page, skip it
+
+				if (serno != mTheoraStreamState.serialno)
+				{
+					continue;
+				}
+				else
+				{
+					granule=ogg_page_granulepos(&mOggPage);
+					if (granule >= 0) break;
+				}
 				int eos=ogg_page_eos(&mOggPage);
-				if (eos > 0) break;
-				continue;
+				if (eos > 0) return;
 			}
-			else break;
+			else
+			{
+				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
+				int bytesRead = mStream->read( buffer, 4096);
+				ogg_sync_wrote( &mOggSyncState, bytesRead );
+			}
 		}
-
-		long granule=ogg_page_granulepos(&mOggPage);
-		if (granule >= 0)
-			mTimePos=th_granule_time(mTheoraDecoder,granule);
-		else mTimePos=mSeekPos;
-
+		ogg_sync_reset( &mOggSyncState );
+		//memset(&mOggPage, 0, sizeof(ogg_page));
+		th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
+		mTimePos=th_granule_time(mTheoraDecoder,granule);
+		mStream->seek((mSeekPos/mDuration)*mStream->size());
 		mSeekPos=-1;
+		
 	}
 
 	void TheoraVideoClip::seek(float time)
