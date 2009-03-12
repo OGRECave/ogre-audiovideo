@@ -101,10 +101,21 @@ namespace Ogre
 		for(;;)
 		{
 			int ret=ogg_stream_packetout(&mTheoraStreamState,&opTheora);
+
 			if (ret > 0)
 			{
-				th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos );
+				if (th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos ) != 0) continue; // 0 means success
 				float time=th_granule_time(mTheoraDecoder,granulePos);
+				if (mSeekPos < -1)
+				{
+					if (!th_packet_iskeyframe(&opTheora)) continue; // get keyframe after seek
+					else
+					{
+						mSeekPos=-1;
+						mTimePos=time;
+					}
+				}
+
 				if (time < mTimePos) continue; // drop frame
 				frame->mTimeToDisplay=time;
 				th_decode_ycbcr_out(mTheoraDecoder,buff);
@@ -444,6 +455,10 @@ namespace Ogre
 	{
 		return mTimePos;
 	}
+	int TheoraVideoClip::getNumPrecachedFrames()
+	{
+		return mFrameQueue->getUsedCount();
+	}
 
 	float TheoraVideoClip::getDuration()
 	{
@@ -523,7 +538,7 @@ namespace Ogre
 		th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
 		mTimePos=th_granule_time(mTheoraDecoder,granule);
 		mStream->seek((mSeekPos/mDuration)*mStream->size());
-		mSeekPos=-1;
+		mSeekPos=-2;
 		
 	}
 

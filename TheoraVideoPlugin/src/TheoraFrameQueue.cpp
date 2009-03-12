@@ -117,5 +117,11 @@ namespace Ogre
 		return mBackColour;
 	}
 
-
+	int TheoraFrameQueue::getUsedCount()
+	{
+		int i,n=0;
+		for (i=0;i<mSize;i++)
+			if (mQueue[i]->mInUse) n++;
+		return n;
+	}
 } // end namespace Ogre

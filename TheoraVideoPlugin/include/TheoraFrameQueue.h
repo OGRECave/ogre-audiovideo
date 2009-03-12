@@ -46,6 +46,7 @@ namespace Ogre
 		//! do not call directly, this function is used to reset back colour after video clip output mode change
 		void fillBackColour(unsigned int colour);
 		unsigned int getBackColour();
+		int getUsedCount();
 
 		void pop();
 		void clear(); //! frees all decoded frames for reuse (does not destroy memory, just marks them as free)

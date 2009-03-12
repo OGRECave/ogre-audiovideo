@@ -97,7 +97,13 @@ public:
 		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
 		float dur=clip->getDuration();
 		String s=StringConverter::toString(dur);
+		String s2=StringConverter::toString(clip->getTimePosition(),4);
 		wnd->setText("duration: "+s+" seconds");
+		CEGUI::WindowManager::getSingleton().getWindow("droppedFrames")->setText("time position: "+s2+" seconds");
+		
+		String np=StringConverter::toString(clip->getNumPrecachedFrames());
+		CEGUI::WindowManager::getSingleton().getWindow("precached")->setText("Precached: "+np);
+		
 
 		float cTime=clip->getTimePosition();
 		float duration=clip->getDuration();
