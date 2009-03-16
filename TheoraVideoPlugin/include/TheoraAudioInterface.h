@@ -41,6 +41,7 @@ namespace Ogre
 
 	class _OgreTheoraExport TheoraAudioInterfaceFactory
 	{
+
 	public:
 		virtual TheoraAudioInterface* createInstance(TheoraVideoClip* owner,int nChannels)=0;
 	};
