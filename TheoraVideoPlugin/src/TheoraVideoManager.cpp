@@ -162,7 +162,10 @@ namespace Ogre
 
 		ClipList::iterator ci;
 		for (ci=mClips.begin(); ci != mClips.end();ci++)
+		{
 			(*ci)->blitFrameCheck(evt.timeSinceLastFrame);
+			(*ci)->decodedAudioCheck();
+		}
 		return true;
 	}
 

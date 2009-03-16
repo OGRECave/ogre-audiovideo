@@ -72,7 +72,6 @@ namespace Ogre
 		memset(&mTheoraStreamState, 0, sizeof(ogg_stream_state));
 		memset(&mTheoraInfo, 0, sizeof(th_info));
 		memset(&mTheoraComment, 0, sizeof(th_comment));
-		//memset(&mTheoraState, 0, sizeof(th_state));
 		memset(&mVorbisInfo, 0, sizeof(vorbis_info));
 		memset(&mVorbisDSPState, 0, sizeof(vorbis_dsp_state));
 		memset(&mVorbisBlock, 0, sizeof(vorbis_block));
@@ -95,9 +94,10 @@ namespace Ogre
 	{
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
-		ogg_packet opTheora;
+		ogg_packet opTheora, opVorbis;
 		ogg_int64_t granulePos;
 		th_ycbcr_buffer buff;
+
 		for(;;)
 		{
 			int ret=ogg_stream_packetout(&mTheoraStreamState,&opTheora);
@@ -116,6 +116,15 @@ namespace Ogre
 					}
 				}
 
+				//decode vorbis
+				if (mVorbisStreams)
+				{
+					while (ogg_stream_packetout(&mVorbisStreamState,&opVorbis) > 0)
+					{
+						if (vorbis_synthesis(&mVorbisBlock,&opVorbis) == 0)
+							vorbis_synthesis_blockin(&mVorbisDSPState,&mVorbisBlock);
+					}
+				}
 				if (time < mTimePos) continue; // drop frame
 				frame->mTimeToDisplay=time;
 				th_decode_ycbcr_out(mTheoraDecoder,buff);
@@ -131,13 +140,8 @@ namespace Ogre
 
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
-					if(mTheoraStreams)
-					{
-						ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
-
-					}
-					if(mVorbisStreams) 
-						ogg_stream_pagein( &mVorbisStreamState, &mOggPage );
+					if (mTheoraStreams) ogg_stream_pagein(&mTheoraStreamState,&mOggPage);
+					if (mVorbisStreams)	ogg_stream_pagein(&mVorbisStreamState,&mOggPage);
 				}
 			}
 		}
@@ -173,6 +177,20 @@ namespace Ogre
 
 		mFrameQueue->pop(); // after transfering frame data to the texture, free the frame
 		                    // so it can be used again
+	}
+
+	void TheoraVideoClip::decodedAudioCheck()
+	{
+		if (!mVorbisStreams) return;
+
+		float **pcm;
+		int ret,len=0;
+		while (ret = vorbis_synthesis_pcmout(&mVorbisDSPState,&pcm) > 0)
+		{
+			vorbis_synthesis_read(&mVorbisDSPState,ret);
+			len+=ret;
+		}
+		//LogManager::getSingleton().logMessage("wrote "+StringConverter::toString(len)+" vorbis bytes");
 	}
 
 	void TheoraVideoClip::createDefinedTexture(const String& name, const String& material_name,
@@ -295,8 +313,14 @@ namespace Ogre
 		memset(&mVorbisDSPState, 0, sizeof(vorbis_dsp_state));
 		memset(&mVorbisBlock, 0, sizeof(vorbis_block));
 		memset(&mVorbisComment, 0, sizeof(vorbis_comment));
-		mTheoraStreams=0;
+		mTheoraStreams=mVorbisStreams=0;
 		readTheoraVorbisHeaders();
+
+		if (mVorbisStreams)
+		{
+			vorbis_synthesis_init(&mVorbisDSPState,&mVorbisInfo);
+			vorbis_block_init(&mVorbisDSPState,&mVorbisBlock);
+		}
 	}
 
 	void TheoraVideoClip::readTheoraVorbisHeaders()
@@ -353,7 +377,7 @@ namespace Ogre
 						mTheoraStreams = 1;
 					}
 				}
-				/*
+				
 				else if( !mVorbisStreams &&
 					vorbis_synthesis_headerin(&mVorbisInfo, &mVorbisComment, &tempOggPacket) >=0 )
 				{
@@ -361,7 +385,7 @@ namespace Ogre
 					memcpy( &mVorbisStreamState, &OggStateTest, sizeof(OggStateTest));
 					mVorbisStreams = 1;
 				}
-				*/
+				
 				else
 				{
 					//Hmm. I guess it's not a header we support, so erase it
@@ -381,11 +405,11 @@ namespace Ogre
 			{
 				if( iSuccess < 0 ) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error parsing Theora stream headers.",
-						"TheoraVideoClip::parseVorbisTheoraHeaders" );
+						"TheoraVideoClip::readTheoraVorbisHeaders" );
 
 				if( !th_decode_headerin(&mTheoraInfo, &mTheoraComment, &mTheoraSetup, &tempOggPacket) )
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "invalid stream",
-						"TheoraVideoClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::readTheoraVorbisHeaders ");
 
 				mTheoraStreams++;			
 			} //end while looking for more theora headers
@@ -397,11 +421,11 @@ namespace Ogre
 			{
 				if(iSuccess < 0) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Error parsing vorbis stream headers",
-						"TheoraVideoClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::readTheoraVorbisHeaders ");
 
 				if(vorbis_synthesis_headerin( &mVorbisInfo, &mVorbisComment,&tempOggPacket)) 
 					OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "invalid stream",
-						"TheoraVideoClip::parseVorbisTheoraHeaders ");
+						"TheoraVideoClip::readTheoraVorbisHeaders ");
 
 				mVorbisStreams++;
 			} //end while looking for more vorbis headers

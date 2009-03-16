@@ -1,0 +1,23 @@
+material SimpleVideo
+{
+  technique
+  {
+    pass
+    {
+      cull_software none
+      cull_hardware none
+      lighting off
+
+      texture_unit
+      {
+        texture_source ogg_video
+        {
+          filename konqi.ogg 
+          precache 16
+          // output grey
+          play_mode play
+        }
+      }
+    }
+  }
+}
