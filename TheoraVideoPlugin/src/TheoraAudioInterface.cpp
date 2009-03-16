@@ -19,10 +19,19 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+#include "TheoraAudioInterface.h"
 
 namespace Ogre
 {
+	TheoraAudioInterface::TheoraAudioInterface(TheoraVideoClip* owner,int nChannels)
+	{
+		mClip=owner;
+	}
 
+	TheoraAudioInterface::~TheoraAudioInterface()
+	{
+	
+	}
 
 
 } // end namespace Ogre

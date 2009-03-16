@@ -218,14 +218,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\include\ExampleApplication.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\ExampleFrameListener.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

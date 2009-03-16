@@ -33,7 +33,7 @@ namespace Ogre
 	// forward class declarations
 	class TheoraWorkerThread;
 	class TheoraVideoClip;
-
+	class TheoraAudioInterfaceFactory;
 	/**
 		This is the main class that interfaces with Ogre, parses material files
 		and distributes decoding jobs among threads.
@@ -54,7 +54,8 @@ namespace Ogre
 		int mDefaultNumPrecachedFrames;
 		//! whether the plugin has been initialised
 		bool mbInit;
-		
+
+		TheoraAudioInterfaceFactory* mAudioFactory;
 
 
 		/**
@@ -99,6 +100,9 @@ namespace Ogre
                                     const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 		bool frameStarted(const FrameEvent& evt);
+
+		void setAudioInterfaceFactory(TheoraAudioInterfaceFactory* factory);
+		TheoraAudioInterfaceFactory* getAudioInterfaceFactory();
 
 		int getNumWorkerThreads();
 		void setNumWorkerThreads(int n);

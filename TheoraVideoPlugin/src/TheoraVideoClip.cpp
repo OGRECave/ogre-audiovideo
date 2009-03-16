@@ -25,10 +25,12 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreTechnique.h"
 #include "OgreStringConverter.h"
 #include "OgreLogManager.h"
+#include "OgreHardwarePixelBuffer.h"
+
 #include "TheoraVideoClip.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraFrameQueue.h"
-#include "OgreHardwarePixelBuffer.h"
+#include "TheoraAudioInterface.h"
 
 namespace Ogre
 {
@@ -59,7 +61,8 @@ namespace Ogre
 		mPaused(false),
 		mName(name),
 		mOutputMode(TH_RGB),
-		mBackColourChanged(0)
+		mBackColourChanged(0),
+		mAudioInterface(NULL)
 	{
 		mFrameQueue=NULL;
 		mAssignedWorkerThread=NULL;
@@ -181,16 +184,17 @@ namespace Ogre
 
 	void TheoraVideoClip::decodedAudioCheck()
 	{
-		if (!mVorbisStreams) return;
+		if (!mAudioInterface) return;
 
 		float **pcm;
-		int ret,len=0;
-		while (ret = vorbis_synthesis_pcmout(&mVorbisDSPState,&pcm) > 0)
+		int len=0;
+		while (1)
 		{
-			vorbis_synthesis_read(&mVorbisDSPState,ret);
-			len+=ret;
+			len = vorbis_synthesis_pcmout(&mVorbisDSPState,&pcm);
+			if (!len) break;
+			mAudioInterface->insertData(pcm,len);
+			vorbis_synthesis_read(&mVorbisDSPState,len);
 		}
-		//LogManager::getSingleton().logMessage("wrote "+StringConverter::toString(len)+" vorbis bytes");
 	}
 
 	void TheoraVideoClip::createDefinedTexture(const String& name, const String& material_name,
@@ -378,7 +382,7 @@ namespace Ogre
 					}
 				}
 				
-				else if( !mVorbisStreams &&
+				else if (mAudioInterface && !mVorbisStreams &&
 					vorbis_synthesis_headerin(&mVorbisInfo, &mVorbisComment, &tempOggPacket) >=0 )
 				{
 					//This is vorbis header
@@ -580,6 +584,16 @@ namespace Ogre
 	float TheoraVideoClip::getPriority()
 	{
 		return 0;
+	}
+
+	void TheoraVideoClip::setAudioInterface(TheoraAudioInterface* iface)
+	{
+		mAudioInterface=iface;
+	}
+	
+	TheoraAudioInterface* TheoraVideoClip::getAudioInterface()
+	{
+		return mAudioInterface;
 	}
 
 } // end namespace Ogre

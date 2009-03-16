@@ -19,10 +19,34 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
+#ifndef _TheoraAudioInterface_h
+#define _TheoraAudioInterface_h
+
+#include "TheoraExport.h"
 
 namespace Ogre
 {
+	class TheoraVideoClip;
+
+	class _OgreTheoraExport TheoraAudioInterface
+	{
+		TheoraVideoClip* mClip;
+	public:
+		TheoraAudioInterface(TheoraVideoClip* owner,int nChannels);
+		~TheoraAudioInterface();
+
+		virtual void insertData(float** data,int nSamples)=0;
+
+	};
+
+	class _OgreTheoraExport TheoraAudioInterfaceFactory
+	{
+	public:
+		virtual TheoraAudioInterface* createInstance(TheoraVideoClip* owner,int nChannels)=0;
+	};
 
 
 
 } // end namespace Ogre
+
+#endif

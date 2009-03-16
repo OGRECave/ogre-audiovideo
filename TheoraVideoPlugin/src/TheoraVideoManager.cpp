@@ -23,6 +23,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraVideoManager.h"
 #include "TheoraWorkerThread.h"
 #include "TheoraVideoClip.h"
+#include "TheoraAudioInterface.h"
 
 namespace Ogre
 {
@@ -44,6 +45,7 @@ namespace Ogre
 	TheoraVideoManager::TheoraVideoManager()
 	{
 		mPlugInName = "TheoraVideoPlugin";
+		mAudioFactory = NULL;
 		mDictionaryName = mPlugInName;
 		mbInit=false;
 
@@ -102,6 +104,16 @@ namespace Ogre
 		return 0;
 	}
 
+	void TheoraVideoManager::setAudioInterfaceFactory(TheoraAudioInterfaceFactory* factory)
+	{
+		mAudioFactory=factory;
+	}
+	
+	TheoraAudioInterfaceFactory* TheoraVideoManager::getAudioInterfaceFactory()
+	{
+		return mAudioFactory;
+	}
+
 	void TheoraVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
 		TheoraVideoClip* clip = NULL;
@@ -109,6 +121,7 @@ namespace Ogre
 		LogManager::getSingleton().logMessage("Creating ogg_video texture on material: "+material_name);
 
 		clip = new TheoraVideoClip(material_name,16);
+		if (mAudioFactory) clip->setAudioInterface(mAudioFactory->createInstance(clip,2));
 
 		try 
 		{

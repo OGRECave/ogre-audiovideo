@@ -217,15 +217,15 @@
 				RelativePath="audio_openal.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\OpenAL_AudioInterface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\OpenAL_AudioInterface.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\include\ExampleApplication.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\ExampleFrameListener.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

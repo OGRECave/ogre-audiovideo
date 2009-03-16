@@ -5,6 +5,8 @@
 #include "ExampleApplication.h"
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
+#include "TheoraAudioInterface.h"
+#include "OpenAL_AudioInterface.h"
 
 bool g_seeking=false;
 
@@ -158,6 +160,7 @@ public:
 	}
 };
 
+
 class GuiApplication : public ExampleApplication
 {
 private:
@@ -165,6 +168,7 @@ private:
     CEGUI::System* mGUISystem;
     CEGUI::Window* mEditorGuiSheet;
 	bool mShaders;
+	OpenAL_AudioInterfaceFactory* mAudioFactory;
 public:
 
     GuiApplication()
@@ -267,6 +271,16 @@ protected:
         mFrameListener= new GuiFrameListener(mWindow, mCamera, mGUIRenderer);
         mRoot->addFrameListener(mFrameListener);
     }
+
+	void loadResources()
+	{
+		mAudioFactory=new OpenAL_AudioInterfaceFactory();
+		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+		mgr->setAudioInterfaceFactory(mAudioFactory);
+
+		ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+	}
 
     bool OnPlayPause(const CEGUI::EventArgs& e)
     {

@@ -138,7 +138,7 @@ namespace Ogre
 		void TheoraVideoClip::load(const String& file_name,const String& group_name);
 
 		void setAudioInterface(TheoraAudioInterface* iface);
-		TheoraAudioInterface getAudioInterface();
+		TheoraAudioInterface* getAudioInterface();
 
 		void setNumPrecachedFrames(int n);
 		int getNumPrecachedFrames();
