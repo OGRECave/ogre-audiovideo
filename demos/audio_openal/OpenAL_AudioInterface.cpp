@@ -14,6 +14,7 @@ namespace Ogre
 		mTempBuffer=new short[mMaxBuffSize];
 		alGenBuffers(2,mBuffers);
 		alGenSources(1,&mSource);
+		owner->setTimer(this);
 	}
 
 	OpenAL_AudioInterface::~OpenAL_AudioInterface()
@@ -49,6 +50,11 @@ namespace Ogre
 				mBuffSize=0;
 			}
 		}
+	}
+
+	void OpenAL_AudioInterface::update(float time_increase)
+	{
+		mTime+=time_increase;
 	}
 
 

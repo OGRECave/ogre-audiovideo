@@ -19,25 +19,41 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-#include "OgreRoot.h"
-#include "TheoraVideoManager.h"
+#include "TheoraTimer.h"
 
 namespace Ogre
 {
 
-	TheoraVideoManager::TheoraVideoManager()
+	TheoraTimer::TheoraTimer()
 	{
+		mTime=0;
+		mPaused=0;
+	}
 
+	void TheoraTimer::update(float time_increase)
+	{
+		mTime+=time_increase;
 	}
 	
-	TheoraVideoManager::~TheoraVideoManager()
+	float TheoraTimer::getTime()
 	{
-
+		return mTime;
+	}
+		
+	void TheoraTimer::pause()
+	{
+	
 	}
 
-	bool TheoraVideoManager::frameStarted(const FrameEvent& evt)
+
+	void TheoraTimer::stop()
 	{
-		return true;
+	
+	}
+	
+	void TheoraTimer::seek(float time)
+	{
+		mTime=time;
 	}
 
 } // end namespace Ogre

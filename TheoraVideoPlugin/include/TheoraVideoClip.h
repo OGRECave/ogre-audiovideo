@@ -47,8 +47,7 @@ namespace Ogre
 	class TheoraTimer;
 	class TheoraAudioInterface;
 	class TheoraWorkerThread;
-
-
+	
 
 	/**
 		
@@ -62,6 +61,8 @@ namespace Ogre
 		TheoraAudioInterface* mAudioInterface;
 		DataStreamPtr mStream;
 		TexturePtr mTexture;
+
+		TheoraTimer *mTimer,*mDefaultTimer;
 
 		TheoraWorkerThread* mAssignedWorkerThread;
 
@@ -100,7 +101,6 @@ namespace Ogre
 		bool mBackColourChanged;
 
 		bool mPaused;
-		float mTimePos;
 		float mUserPriority;
 
 
@@ -129,6 +129,9 @@ namespace Ogre
 		int getWidth();
 		//! return height in pixels of the video clip
 		int getHeight();
+		
+		TheoraTimer* getTimer();
+		void setTimer(TheoraTimer* timer);
 
 		void createDefinedTexture(
 			const String& name, const String& material_name,

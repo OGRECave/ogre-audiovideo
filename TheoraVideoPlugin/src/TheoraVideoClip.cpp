@@ -33,6 +33,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraVideoFrame.h"
 #include "TheoraFrameQueue.h"
 #include "TheoraAudioInterface.h"
+#include "TheoraTimer.h"
 
 namespace Ogre
 {
@@ -57,7 +58,6 @@ namespace Ogre
 	TheoraVideoClip::TheoraVideoClip(std::string name,int nPrecachedFrames):
 		mTheoraStreams(0),
 		mVorbisStreams(0),
-		mTimePos(0),
 		mSeekPos(-1),
 		mDuration(-1),
 		mPaused(false),
@@ -67,6 +67,8 @@ namespace Ogre
 		mAudioInterface(NULL)
 	{
 		mAudioMutex=new pt::mutex();
+
+		mTimer=mDefaultTimer=new TheoraTimer();
 
 		mFrameQueue=NULL;
 		mAssignedWorkerThread=NULL;
@@ -90,11 +92,23 @@ namespace Ogre
 	TheoraVideoClip::~TheoraVideoClip()
 	{
 		delete mAudioMutex;
+		delete mDefaultTimer;
 	}
 
 	String TheoraVideoClip::getMaterialName()
 	{
 		return "";
+	}
+
+	TheoraTimer* TheoraVideoClip::getTimer()
+	{
+		return mTimer;
+	}
+
+	void TheoraVideoClip::setTimer(TheoraTimer* timer)
+	{
+		if (!timer) mTimer=mDefaultTimer;
+		else mTimer=timer;
 	}
 
 	void TheoraVideoClip::decodeNextFrame()
@@ -119,11 +133,11 @@ namespace Ogre
 					else
 					{
 						mSeekPos=-1;
-						mTimePos=time;
+						mTimer->seek(time);
 					}
 				}
 
-				if (time < mTimePos) continue; // drop frame
+				if (time < mTimer->getTime()) continue; // drop frame
 				frame->mTimeToDisplay=time;
 				th_decode_ycbcr_out(mTheoraDecoder,buff);
 				frame->decode(buff);
@@ -156,14 +170,14 @@ namespace Ogre
 	void TheoraVideoClip::blitFrameCheck(float time_increase)
 	{
 		if (mPaused) return;
-		mTimePos+=time_increase;
+		mTimer->update(time_increase);
 		TheoraVideoFrame* frame;
 		while (true)
 		{
 			frame=mFrameQueue->getFirstAvailableFrame();
 			if (!frame) return; // no frames ready
-			if (frame->mTimeToDisplay > mTimePos) return;
-			if (frame->mTimeToDisplay < mTimePos-0.1)
+			if (frame->mTimeToDisplay > mTimer->getTime()) return;
+			if (frame->mTimeToDisplay < mTimer->getTime()-0.1)
 			{
 				mFrameQueue->pop();
 			}
@@ -498,7 +512,7 @@ namespace Ogre
 
 	float TheoraVideoClip::getTimePosition()
 	{
-		return mTimePos;
+		return mTimer->getTime();
 	}
 	int TheoraVideoClip::getNumPrecachedFrames()
 	{
@@ -582,7 +596,7 @@ namespace Ogre
 		}
 		ogg_sync_reset( &mOggSyncState );
 		th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
-		mTimePos=time; // this will be changed in decodeNextFrame when seeking to the next keyframe
+		mTimer->seek(time); // this will be changed in decodeNextFrame when seeking to the next keyframe
 		mStream->seek((seek_min+seek_max)/2);
 		mSeekPos=-2;
 	}

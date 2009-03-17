@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  ..\bin\debug\*.dll  ..\..\demos\player\bin\debug&#x0D;&#x0A;copy  ..\bin\debug\*.dll  ..\..\demos\audio_openal\bin\debug"
+				CommandLine="copy  ..\bin\debug\*.dll  ..\..\demos\player\bin\debug&#x0D;&#x0A;copy  ..\bin\debug\*.dll  ..\..\demos\audio_openal\bin\debug&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -229,6 +229,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\TheoraTimer.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\TheoraVideoClip.cpp"
 				>
 			</File>
@@ -259,6 +263,10 @@
 			</File>
 			<File
 				RelativePath="..\include\TheoraMuteAudioInterface.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TheoraTimer.h"
 				>
 			</File>
 			<File

@@ -19,7 +19,7 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-n
+
 #ifndef _TheoraTimer_h
 #define _TheoraTimer_h
 
@@ -33,13 +33,16 @@ namespace Ogre
 	class _OgreTheoraExport TheoraTimer
 	{
 	public:
+		float mTime;
+		bool mPaused;
+
 		TheoraTimer();
-		~TheoraTimer();
 
-		void pause();
-		void stop();
-		void seek(float time):
-
+		virtual float getTime();
+		virtual void update(float time_increase);
+		virtual void pause();
+		virtual void stop();
+		virtual void seek(float time);
 	};
 }
 #endif
