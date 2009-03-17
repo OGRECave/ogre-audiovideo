@@ -36,6 +36,11 @@ enum TheoraOutputMode
 	TH_YUV
 };
 
+namespace pt
+{
+	struct mutex;
+};
+
 namespace Ogre
 {
 	class TheoraFrameQueue;
@@ -98,6 +103,8 @@ namespace Ogre
 		float mTimePos;
 		float mUserPriority;
 
+
+		pt::mutex* mAudioMutex; //! syncs audio decoding and extraction
 
 		/**
 		 * Get the priority of a video clip. based on a forumula that includes user

@@ -27,6 +27,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreLogManager.h"
 #include "OgreHardwarePixelBuffer.h"
 
+#include "pasync.h"
+
 #include "TheoraVideoClip.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraFrameQueue.h"
@@ -64,6 +66,8 @@ namespace Ogre
 		mBackColourChanged(0),
 		mAudioInterface(NULL)
 	{
+		mAudioMutex=new pt::mutex();
+
 		mFrameQueue=NULL;
 		mAssignedWorkerThread=NULL;
 		mNumPrecachedFrames=nPrecachedFrames;
@@ -85,7 +89,7 @@ namespace Ogre
 
 	TheoraVideoClip::~TheoraVideoClip()
 	{
-	
+		delete mAudioMutex;
 	}
 
 	String TheoraVideoClip::getMaterialName()
@@ -97,7 +101,7 @@ namespace Ogre
 	{
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
-		ogg_packet opTheora, opVorbis;
+		ogg_packet opTheora;
 		ogg_int64_t granulePos;
 		th_ycbcr_buffer buff;
 
@@ -119,15 +123,6 @@ namespace Ogre
 					}
 				}
 
-				//decode vorbis
-				if (mVorbisStreams)
-				{
-					while (ogg_stream_packetout(&mVorbisStreamState,&opVorbis) > 0)
-					{
-						if (vorbis_synthesis(&mVorbisBlock,&opVorbis) == 0)
-							vorbis_synthesis_blockin(&mVorbisDSPState,&mVorbisBlock);
-					}
-				}
 				if (time < mTimePos) continue; // drop frame
 				frame->mTimeToDisplay=time;
 				th_decode_ycbcr_out(mTheoraDecoder,buff);
@@ -139,12 +134,20 @@ namespace Ogre
 				char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
 				int bytesRead = mStream->read( buffer, 4096 );
 				ogg_sync_wrote( &mOggSyncState, bytesRead );
-				if (bytesRead < 4096) return;
+				if (bytesRead < 4096)
+					return;
 
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
 					if (mTheoraStreams) ogg_stream_pagein(&mTheoraStreamState,&mOggPage);
-					if (mVorbisStreams)	ogg_stream_pagein(&mVorbisStreamState,&mOggPage);
+					if (mVorbisStreams)
+					{
+						int serno=ogg_page_serialno(&mOggPage);
+
+						mAudioMutex->lock();
+						ogg_stream_pagein(&mVorbisStreamState,&mOggPage);
+						mAudioMutex->unlock();
+					}
 				}
 			}
 		}
@@ -186,15 +189,29 @@ namespace Ogre
 	{
 		if (!mAudioInterface) return;
 
+		mAudioMutex->lock();
+		
+		ogg_packet opVorbis;
 		float **pcm;
 		int len=0;
 		while (1)
 		{
 			len = vorbis_synthesis_pcmout(&mVorbisDSPState,&pcm);
-			if (!len) break;
+			if (!len)
+			{
+				if (ogg_stream_packetout(&mVorbisStreamState,&opVorbis) > 0)
+				{
+					if (vorbis_synthesis(&mVorbisBlock,&opVorbis) == 0)
+						vorbis_synthesis_blockin(&mVorbisDSPState,&mVorbisBlock);
+					continue;
+				}
+				else break;
+			}
 			mAudioInterface->insertData(pcm,len);
 			vorbis_synthesis_read(&mVorbisDSPState,len);
 		}
+		
+		mAudioMutex->unlock();
 	}
 
 	void TheoraVideoClip::createDefinedTexture(const String& name, const String& material_name,

@@ -9,7 +9,7 @@ namespace Ogre
 	OpenAL_AudioInterface::OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels) :
 		TheoraAudioInterface(owner,nChannels)
 	{
-		mMaxBuffSize=4096;
+		mMaxBuffSize=40960*10;
 		mBuffSize=0;
 		mTempBuffer=new short[mMaxBuffSize];
 		alGenBuffers(2,mBuffers);
@@ -26,17 +26,25 @@ namespace Ogre
 		int s;
 		for (int i=0;i<nSamples;i++)
 		{
-			s=data[0][i]*32768;
-			if (s >  32768) s= 32768;
-			if (s < -32768) s=-32768;
+			s=data[0][i]*32767;
+			if (s >  32767) s= 32767;
+			if (s < -32767) s=-32767;
 
 			mTempBuffer[mBuffSize++]=s;
 			if (mBuffSize == mMaxBuffSize)
 			{
-				//alSourceStop(mSource);
-				//alBufferData(mBuffers[0],AL_FORMAT_MONO16,mTempBuffer,mMaxBuffSize,44100);
-				//alSourcei(mSource, AL_BUFFER, mBuffers[0]);
-				//alSourcePlay(mSource);
+				alSourceStop(mSource);
+//				short* drek=new short[100000];
+
+//				for (int j=0;j<100000;j++)
+//					drek[j]=sin(float(j)/5.0f)*32000;
+
+				alSourcei(mSource, AL_BUFFER, 0);
+				alBufferData(mBuffers[0],AL_FORMAT_MONO16,mTempBuffer,mBuffSize,44100);
+				alSourcei(mSource, AL_BUFFER, mBuffers[0]);
+				alSourcePlay(mSource);
+
+				//delete drek;
 				// dump buffer to OpenAL buffer and clear temp buffer
 				mBuffSize=0;
 			}
