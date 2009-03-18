@@ -37,10 +37,18 @@ namespace Ogre
 		int mMaxBuffSize;
 		int mBuffSize;
 		short *mTempBuffer;
-		ALuint mBuffers[2];
+		struct
+		{
+			ALuint id;
+			bool queued;
+			int nSamples;
+		}mBuffers[2];
+		int mBufferIndex;
 		ALuint mSource;
+		int mNumProcessedSamples;
+		float mSourceTime;
 	public:
-		OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels);
+		OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels,int freq);
 		~OpenAL_AudioInterface();
 		void insertData(float** data,int nSamples);
 
@@ -54,7 +62,7 @@ namespace Ogre
 	public:
 		OpenAL_AudioInterfaceFactory();
 		~OpenAL_AudioInterfaceFactory();
-		OpenAL_AudioInterface* createInstance(TheoraVideoClip* owner,int nChannels);
+		OpenAL_AudioInterface* createInstance(TheoraVideoClip* owner,int nChannels,int freq);
 	};
 }
 

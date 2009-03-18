@@ -23,8 +23,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	TheoraAudioInterface::TheoraAudioInterface(TheoraVideoClip* owner,int nChannels)
+	TheoraAudioInterface::TheoraAudioInterface(TheoraVideoClip* owner,int nChannels,int freq)
 	{
+		mFreq=freq;
+		mNumChannels=nChannels;
 		mClip=owner;
 	}
 

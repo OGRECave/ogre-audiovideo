@@ -56,6 +56,7 @@ namespace Ogre
 	{
 		friend class TheoraWorkerThread;
 		friend class TheoraVideoFrame;
+		friend class TheoraVideoManager;
 
 		TheoraFrameQueue* mFrameQueue;
 		TheoraAudioInterface* mAudioInterface;

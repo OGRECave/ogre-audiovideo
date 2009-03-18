@@ -30,6 +30,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "pasync.h"
 
 #include "TheoraVideoClip.h"
+#include "TheoraVideoManager.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraFrameQueue.h"
 #include "TheoraAudioInterface.h"
@@ -154,7 +155,7 @@ namespace Ogre
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
 					if (mTheoraStreams) ogg_stream_pagein(&mTheoraStreamState,&mOggPage);
-					if (mVorbisStreams)
+					if (mAudioInterface)
 					{
 						int serno=ogg_page_serialno(&mOggPage);
 
@@ -351,10 +352,14 @@ namespace Ogre
 		mTheoraStreams=mVorbisStreams=0;
 		readTheoraVorbisHeaders();
 
-		if (mVorbisStreams)
+		if (mVorbisStreams) // if there is no audio interface factory defined, even though the video
+			                // clip might have audio, it will be ignored
 		{
 			vorbis_synthesis_init(&mVorbisDSPState,&mVorbisInfo);
 			vorbis_block_init(&mVorbisDSPState,&mVorbisBlock);
+			// create an audio interface instance if available
+			TheoraAudioInterfaceFactory* audio_factory=TheoraVideoManager::getSingleton().getAudioInterfaceFactory();
+			if (audio_factory) setAudioInterface(audio_factory->createInstance(this,mVorbisInfo.channels,mVorbisInfo.rate));
 		}
 	}
 
@@ -362,6 +367,7 @@ namespace Ogre
 	{
 		ogg_packet tempOggPacket;
 		bool done = false;
+		bool decode_audio=TheoraVideoManager::getSingleton().getAudioInterfaceFactory() != NULL;
 		//init Vorbis/Theora Layer
 		ogg_sync_init(&mOggSyncState);
 		th_comment_init(&mTheoraComment);
@@ -413,7 +419,7 @@ namespace Ogre
 					}
 				}
 				
-				else if (mAudioInterface && !mVorbisStreams &&
+				else if (decode_audio && !mVorbisStreams &&
 					vorbis_synthesis_headerin(&mVorbisInfo, &mVorbisComment, &tempOggPacket) >=0 )
 				{
 					//This is vorbis header

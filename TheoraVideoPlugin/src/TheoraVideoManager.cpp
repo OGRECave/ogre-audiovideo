@@ -120,9 +120,7 @@ namespace Ogre
 
 		LogManager::getSingleton().logMessage("Creating ogg_video texture on material: "+material_name);
 
-		clip = new TheoraVideoClip(material_name,16);
-		if (mAudioFactory) clip->setAudioInterface(mAudioFactory->createInstance(clip,2));
-
+		clip = new TheoraVideoClip(material_name,64);
 		try 
 		{
 			clip->createDefinedTexture(mInputFileName, material_name, group_name, mTechniqueLevel,
@@ -138,6 +136,7 @@ namespace Ogre
 			delete clip;
 			return;
 		}
+
 		/*
 		// reset variables for a new movie
 		mNumPrecachedFrames=-1;

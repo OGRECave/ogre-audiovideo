@@ -30,9 +30,12 @@ namespace Ogre
 
 	class _OgreTheoraExport TheoraAudioInterface
 	{
-		TheoraVideoClip* mClip;
 	public:
-		TheoraAudioInterface(TheoraVideoClip* owner,int nChannels);
+		int mFreq;
+		int mNumChannels;
+		TheoraVideoClip* mClip;
+
+		TheoraAudioInterface(TheoraVideoClip* owner,int nChannels,int freq);
 		~TheoraAudioInterface();
 
 		virtual void insertData(float** data,int nSamples)=0;
@@ -43,7 +46,7 @@ namespace Ogre
 	{
 
 	public:
-		virtual TheoraAudioInterface* createInstance(TheoraVideoClip* owner,int nChannels)=0;
+		virtual TheoraAudioInterface* createInstance(TheoraVideoClip* owner,int nChannels,int freq)=0;
 	};
 
 

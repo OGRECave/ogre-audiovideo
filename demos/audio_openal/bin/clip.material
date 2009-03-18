@@ -13,7 +13,7 @@ material SimpleVideo
         texture_source ogg_video
         {
           filename konqi.ogg 
-          precache 16
+          precache 64
           // output grey
           play_mode play
         }

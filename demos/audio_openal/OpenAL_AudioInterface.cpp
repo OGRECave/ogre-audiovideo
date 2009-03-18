@@ -6,19 +6,28 @@ ALCcontext* gContext=0;
 
 namespace Ogre
 {
-	OpenAL_AudioInterface::OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels) :
-		TheoraAudioInterface(owner,nChannels)
+	OpenAL_AudioInterface::OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels,int freq) :
+		TheoraAudioInterface(owner,nChannels,freq)
 	{
-		mMaxBuffSize=40960*10;
+		mMaxBuffSize=freq*2;
 		mBuffSize=0;
+		mBufferIndex=0;
+		mNumProcessedSamples=0;
+		mSourceTime=0.0;
+
 		mTempBuffer=new short[mMaxBuffSize];
-		alGenBuffers(2,mBuffers);
+		for (int i=0;i<2;i++)
+		{
+			alGenBuffers(1,&mBuffers[i].id);
+			mBuffers[i].queued=false;
+		}
 		alGenSources(1,&mSource);
 		owner->setTimer(this);
 	}
 
 	OpenAL_AudioInterface::~OpenAL_AudioInterface()
 	{
+		// todo: delete buffers and source
 		if (mTempBuffer) delete mTempBuffer;
 	}
 
@@ -31,30 +40,71 @@ namespace Ogre
 			if (s >  32767) s= 32767;
 			if (s < -32767) s=-32767;
 
-			mTempBuffer[mBuffSize++]=s;
-			if (mBuffSize == mMaxBuffSize)
-			{
-				alSourceStop(mSource);
-//				short* drek=new short[100000];
-
-//				for (int j=0;j<100000;j++)
-//					drek[j]=sin(float(j)/5.0f)*32000;
-
-				alSourcei(mSource, AL_BUFFER, 0);
-				alBufferData(mBuffers[0],AL_FORMAT_MONO16,mTempBuffer,mBuffSize,44100);
-				alSourcei(mSource, AL_BUFFER, mBuffers[0]);
-				alSourcePlay(mSource);
-
-				//delete drek;
-				// dump buffer to OpenAL buffer and clear temp buffer
-				mBuffSize=0;
-			}
+			if (mBuffSize < mMaxBuffSize) mTempBuffer[mBuffSize++]=s;
 		}
 	}
 
 	void OpenAL_AudioInterface::update(float time_increase)
 	{
-		mTime+=time_increase;
+		float time;
+		alGetSourcef(mSource,AL_SEC_OFFSET,&time);
+		if (time > mSourceTime) mSourceTime=time;
+		
+		// check for processed buffers
+		int nProcessed;
+		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
+		if (nProcessed > 0)
+		{
+			int index=(mBuffers[!mBufferIndex].queued) ? !mBufferIndex : mBufferIndex;
+			if (mBuffers[index].queued)
+			{
+				mBuffers[index].queued=false;
+				alSourceUnqueueBuffers(mSource,1,&mBuffers[index].id);
+				mNumProcessedSamples+=mBuffers[index].nSamples;
+				alGetSourcef(mSource,AL_SEC_OFFSET,&mSourceTime);
+			}
+
+		}
+
+
+		int state;
+		bool write_buffer=false;
+		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
+
+		if (state == AL_PLAYING)
+		{
+			if (time > (mBuffers[!mBufferIndex].nSamples*0.8)/mFreq)
+				write_buffer=true;
+		}
+		else
+		{
+			if (mBuffSize >= mFreq/2) write_buffer=true;
+		}
+
+		if (write_buffer) // let's hold half a second of audio data in each buffer
+		{
+			if (!mBuffers[mBufferIndex].queued)
+			{
+				alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
+				alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
+				mBuffers[mBufferIndex].queued=true;
+				mBuffers[mBufferIndex].nSamples=mBuffSize;
+				mBufferIndex=!mBufferIndex;
+				mBuffSize=0;
+
+				if (state != AL_PLAYING)
+				{
+					alSourcePlay(mSource);
+
+				}
+			}
+		}
+
+
+
+		//mTime+=time_increase;
+		mTime=mSourceTime+(float) mNumProcessedSamples/mFreq;
+
 	}
 
 
@@ -70,8 +120,8 @@ namespace Ogre
 
 		return;
 Fail:
-	gDevice=NULL;
-	gContext=NULL;
+		gDevice=NULL;
+		gContext=NULL;
 	}
 
 	OpenAL_AudioInterfaceFactory::~OpenAL_AudioInterfaceFactory()
@@ -84,9 +134,9 @@ Fail:
 		}
 	}
 
-	OpenAL_AudioInterface* OpenAL_AudioInterfaceFactory::createInstance(TheoraVideoClip* owner,int nChannels)
+	OpenAL_AudioInterface* OpenAL_AudioInterfaceFactory::createInstance(TheoraVideoClip* owner,int nChannels,int freq)
 	{
-		return new OpenAL_AudioInterface(owner,nChannels);
+		return new OpenAL_AudioInterface(owner,nChannels,freq);
 	}
 
 }
