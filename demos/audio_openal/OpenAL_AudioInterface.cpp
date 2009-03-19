@@ -18,19 +18,13 @@ namespace Ogre
 	{
 		mMaxBuffSize=freq*2;
 		mBuffSize=0;
-		mBufferIndex=0;
 		mNumProcessedSamples=0;
-		mSourceTime=0.0;
-		mQueueCounter=0;
+		mTimeOffset=0;
 
 		mTempBuffer=new short[mMaxBuffSize];
-		for (int i=0;i<1000;i++)
-		{
-			alGenBuffers(1,&mBuffers[i].id);
-			mBuffers[i].queue_index=-1;
-		}
 		alGenSources(1,&mSource);
 		owner->setTimer(this);
+		mNumPlayedSamples=0;
 	}
 
 	OpenAL_AudioInterface::~OpenAL_AudioInterface()
@@ -55,84 +49,34 @@ namespace Ogre
 
 	void OpenAL_AudioInterface::update(float time_increase)
 	{
-		float time;
-		
+
 		int state;
 		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
-/*
-		if (time > mSourceTime) mSourceTime=time;
-		
 
-		int i,nProcessed,index;
-		int pendreki[10];
+		int nProcessed;
+		OpenAL_Buffer buff;
 		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
-		alGetSourceiv(mSource,AL_BUFFERS_PROCESSED,pendreki);
-		if (nProcessed == 1)
-			i=i;
-		for (i=0;i<nProcessed;i++)
+
+		for (int i=0;i<nProcessed;i++)
 		{
-			index=(mBuffers[0].queue_index > mBuffers[1].queue_index) ? 1 : 0;
-			mBuffers[index].queue_index=-1;
-			alSourceUnqueueBuffers(mSource,1,&mBuffers[index].id);
-			mNumProcessedSamples+=mBuffers[index].nSamples;
-			alGetSourcef(mSource,AL_SEC_OFFSET,&mSourceTime);
-			time=mSourceTime;
-
-			LogManager::getSingleton().logMessage("unqueuing: "+StringConverter::toString(index));
+			buff=mBufferQueue.front();
+			mBufferQueue.pop();
+			mNumPlayedSamples+=buff.nSamples;
+			alSourceUnqueueBuffers(mSource,1,&buff.id);
+			alDeleteBuffers(1,&buff.id);
 		}
-
-		int state;
-		bool write_buffer=false;
-		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
-
-		if (state == AL_PLAYING)
-		{
-			//if (time > (mBuffers[!mBufferIndex].nSamples*0.7)/mFreq)
-			//	write_buffer=true;
-			if (mBuffSize >= mFreq/2) write_buffer=true;
-		}
-		else
-		{
-			if (mBuffSize >= mFreq/2) write_buffer=true;
-		}
-
-		if (write_buffer) // let's hold half a second of audio data in each buffer
-		{
-			mBufferIndex=(mBuffers[0].queue_index == -1) ? 0 : 1;
-			if (mBuffers[mBufferIndex].queue_index == -1)
-			{
-				alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
-				alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
-				mBuffers[mBufferIndex].queue_index=mQueueCounter++;
-				mBuffers[mBufferIndex].nSamples=mBuffSize;
-				//mBufferIndex=!mBufferIndex;
-				mBuffSize=0;
-
-				if (state != AL_PLAYING)
-				{
-					alSourcef(mSource,AL_PITCH,0.5); //temp, for debug
-					alSourcePlay(mSource);
-
-				}
-			}
-		}
-
-
-
-		if (state == AL_PLAYING) mTime+=time_increase*0.5;
-		//mTime=mSourceTime+(float) mNumProcessedSamples/mFreq;
-		*/
 
 		if (mBuffSize >= mFreq/4)
 		{
 			int size=mBuffSize; mBuffSize=mFreq/4;
-			alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
-			alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
-			mBuffers[mBufferIndex].queue_index=mQueueCounter++;
-			mBuffers[mBufferIndex].nSamples=mBuffSize;
-			mBufferIndex++;
+
+			
+			alGenBuffers(1,&buff.id);
+			alBufferData(buff.id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
+			alSourceQueueBuffers(mSource, 1, &buff.id);
+			buff.nSamples=mBuffSize;
 			mNumProcessedSamples+=mBuffSize;
-			mBuffSize=0;
+			mBufferQueue.push(buff);
 
 			for (int i=0;i<size-mFreq/4;i++)
 				mTempBuffer[i]=mTempBuffer[i+mFreq/4];
@@ -143,7 +87,7 @@ namespace Ogre
 			{
 				//alSourcef(mSource,AL_PITCH,0.5); //temp, for debug
 				alSourcePlay(mSource);
-				alSourcef(mSource,AL_SAMPLE_OFFSET,mNumProcessedSamples-mBuffers[mBufferIndex-1].nSamples);
+				alSourcef(mSource,AL_SAMPLE_OFFSET,mNumProcessedSamples-mFreq/4);
 
 			}
 
@@ -152,12 +96,17 @@ namespace Ogre
 		if (state == AL_PLAYING)
 		{
 			alGetSourcef(mSource,AL_SEC_OFFSET,&mTime);
+			mTime+=(float) mNumPlayedSamples/mFreq;
+			mTimeOffset=0;
 		}
 		else
 		{
-			mTime=(float) mNumProcessedSamples/mFreq;
+			mTime=(float) mNumProcessedSamples/mFreq+mTimeOffset;
+			mTimeOffset+=time_increase;
 		}
 		//mTime=mSourceTime;
+		float duration=mClip->getDuration();
+		if (mTime > duration) mTime=duration;
 	}
 
 

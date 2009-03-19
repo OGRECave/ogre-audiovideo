@@ -29,6 +29,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "al.h"
 #include "alc.h"
+#include <queue>
 
 namespace Ogre
 {
@@ -37,18 +38,17 @@ namespace Ogre
 		int mMaxBuffSize;
 		int mBuffSize;
 		short *mTempBuffer;
-		int mQueueCounter;
+		float mTimeOffset;
 
-		struct
+		struct OpenAL_Buffer
 		{
 			ALuint id;
-			int queue_index;
 			int nSamples;
 		}mBuffers[1000];
-		int mBufferIndex;
+		std::queue<OpenAL_Buffer> mBufferQueue;
+
 		ALuint mSource;
-		int mNumProcessedSamples;
-		float mSourceTime;
+		int mNumProcessedSamples,mNumPlayedSamples;
 	public:
 		OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels,int freq);
 		~OpenAL_AudioInterface();
