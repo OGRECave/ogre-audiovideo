@@ -42,9 +42,19 @@ namespace Ogre
 		
 	void TheoraTimer::pause()
 	{
-	
+		mPaused=true;
 	}
 
+	void TheoraTimer::play()
+	{
+		mPaused=false;
+	}
+
+
+	bool TheoraTimer::isPaused()
+	{
+		return mPaused;
+	}
 
 	void TheoraTimer::stop()
 	{

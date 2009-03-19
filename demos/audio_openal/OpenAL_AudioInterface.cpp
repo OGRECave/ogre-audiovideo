@@ -43,21 +43,42 @@ namespace Ogre
 			if (s < -32767) s=-32767;
 
 			if (mBuffSize < mMaxBuffSize) mTempBuffer[mBuffSize++]=s;
-		}
-	}
+			if (mBuffSize == mFreq/4)
+			{	
+				OpenAL_Buffer buff;
+				alGenBuffers(1,&buff.id);
+				alBufferData(buff.id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
+				alSourceQueueBuffers(mSource, 1, &buff.id);
+				buff.nSamples=mBuffSize;
+				mNumProcessedSamples+=mBuffSize;
+				mBufferQueue.push(buff);
 
+				mBuffSize=0;
+
+				int state;
+				alGetSourcei(mSource,AL_SOURCE_STATE,&state);
+				if (state != AL_PLAYING)
+				{
+					//alSourcef(mSource,AL_PITCH,0.5); // debug
+					alSourcef(mSource,AL_SAMPLE_OFFSET,mNumProcessedSamples-mFreq/4);
+					alSourcePlay(mSource);
+
+				}
+
+			}
+		}
+
+
+	}
 
 	void OpenAL_AudioInterface::update(float time_increase)
 	{
-
-		int state;
-		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
-
-		int nProcessed;
+		int i,state,nProcessed;
 		OpenAL_Buffer buff;
-		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
 
-		for (int i=0;i<nProcessed;i++)
+		// process played buffers
+		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
+		for (i=0;i<nProcessed;i++)
 		{
 			buff=mBufferQueue.front();
 			mBufferQueue.pop();
@@ -66,32 +87,7 @@ namespace Ogre
 			alDeleteBuffers(1,&buff.id);
 		}
 
-		if (mBuffSize >= mFreq/4)
-		{
-			int size=mBuffSize; mBuffSize=mFreq/4;
-
-			
-			alGenBuffers(1,&buff.id);
-			alBufferData(buff.id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
-			alSourceQueueBuffers(mSource, 1, &buff.id);
-			buff.nSamples=mBuffSize;
-			mNumProcessedSamples+=mBuffSize;
-			mBufferQueue.push(buff);
-
-			for (int i=0;i<size-mFreq/4;i++)
-				mTempBuffer[i]=mTempBuffer[i+mFreq/4];
-
-			mBuffSize=size-mFreq/4;
-
-			if (state != AL_PLAYING)
-			{
-				//alSourcef(mSource,AL_PITCH,0.5); //temp, for debug
-				alSourcePlay(mSource);
-				alSourcef(mSource,AL_SAMPLE_OFFSET,mNumProcessedSamples-mFreq/4);
-
-			}
-
-		}
+		// control playback and return time position
 		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
 		if (state == AL_PLAYING)
 		{
@@ -104,15 +100,29 @@ namespace Ogre
 			mTime=(float) mNumProcessedSamples/mFreq+mTimeOffset;
 			mTimeOffset+=time_increase;
 		}
-		//mTime=mSourceTime;
+
 		float duration=mClip->getDuration();
 		if (mTime > duration) mTime=duration;
 	}
 
+	void OpenAL_AudioInterface::pause()
+	{
+		alSourcePause(mSource);
+		TheoraTimer::pause();
+	}
+
+	void OpenAL_AudioInterface::play()
+	{
+		alSourcePlay(mSource);
+		TheoraTimer::play();
+	}
 
 
 	OpenAL_AudioInterfaceFactory::OpenAL_AudioInterfaceFactory()
 	{
+		// openal init is here used only to simplify samples for this plugin
+		// if you want to use this interface in your own program, you'll
+		// probably want to remove the openal init/destory lines
 		gDevice = alcOpenDevice("Generic Software");
 		if (alcGetError(gDevice) != ALC_NO_ERROR) goto Fail;
 		gContext = alcCreateContext(gDevice, NULL);
@@ -140,5 +150,4 @@ Fail:
 	{
 		return new OpenAL_AudioInterface(owner,nChannels,freq);
 	}
-
 }

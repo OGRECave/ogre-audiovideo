@@ -101,7 +101,6 @@ namespace Ogre
 		int mTexLevel;
 		bool mBackColourChanged;
 
-		bool mPaused;
 		float mUserPriority;
 
 
@@ -172,14 +171,9 @@ namespace Ogre
 
 		void play();
 		void pause();
+		bool isPaused();
 		void stop();
 		void seek(float time);
-		//! whether the video clip is paused or not
-		bool isPlaying();
-		
-
-
-
 	};
 }
 #endif

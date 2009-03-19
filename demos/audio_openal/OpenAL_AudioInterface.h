@@ -55,6 +55,9 @@ namespace Ogre
 		void insertData(float** data,int nSamples);
 
 		void update(float time_increase);
+
+		void pause();
+		void play();
 	};
 
 

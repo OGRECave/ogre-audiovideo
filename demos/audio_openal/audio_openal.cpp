@@ -287,7 +287,7 @@ protected:
 		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
 		TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
 
-		if (clip->isPlaying())
+		if (!clip->isPaused())
 		{
 			clip->pause();
 		}

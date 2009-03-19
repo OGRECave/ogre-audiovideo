@@ -61,7 +61,6 @@ namespace Ogre
 		mVorbisStreams(0),
 		mSeekPos(-1),
 		mDuration(-1),
-		mPaused(false),
 		mName(name),
 		mOutputMode(TH_RGB),
 		mBackColourChanged(0),
@@ -170,7 +169,7 @@ namespace Ogre
 
 	void TheoraVideoClip::blitFrameCheck(float time_increase)
 	{
-		if (mPaused) return;
+		if (mTimer->isPaused()) return;
 		mTimer->update(time_increase);
 		TheoraVideoFrame* frame;
 		while (true)
@@ -532,12 +531,17 @@ namespace Ogre
 
 	void TheoraVideoClip::play()
 	{
-		mPaused=false;
+		mTimer->play();
 	}
 
 	void TheoraVideoClip::pause()
 	{
-		mPaused=true;
+		mTimer->pause();
+	}
+
+	bool TheoraVideoClip::isPaused()
+	{
+		return mTimer->isPaused();
 	}
 
 	void TheoraVideoClip::stop()
@@ -611,11 +615,6 @@ namespace Ogre
 	{
 		mSeekPos=time;
 		
-	}
-
-	bool TheoraVideoClip::isPlaying()
-	{
-		return !mPaused;
 	}
 
 	float TheoraVideoClip::getPriority()

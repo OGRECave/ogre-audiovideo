@@ -41,6 +41,8 @@ namespace Ogre
 		virtual float getTime();
 		virtual void update(float time_increase);
 		virtual void pause();
+		virtual void play();
+		virtual bool isPaused();
 		virtual void stop();
 		virtual void seek(float time);
 	};
