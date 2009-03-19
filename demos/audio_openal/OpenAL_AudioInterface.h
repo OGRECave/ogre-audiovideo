@@ -37,10 +37,12 @@ namespace Ogre
 		int mMaxBuffSize;
 		int mBuffSize;
 		short *mTempBuffer;
+		int mQueueCounter;
+
 		struct
 		{
 			ALuint id;
-			bool queued;
+			int queue_index;
 			int nSamples;
 		}mBuffers[2];
 		int mBufferIndex;

@@ -23,6 +23,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #ifndef _TheoraFrameQueue_h
 #define _TheoraFrameQueue_h
 
+#include "pasync.h"
 
 namespace Ogre
 {
@@ -37,6 +38,7 @@ namespace Ogre
 		int mSize;
 		TheoraVideoClip* mParent;
 		unsigned int mBackColour;
+		pt::mutex mMutex;
 	public:
 		TheoraFrameQueue(int n,TheoraVideoClip* parent);
 		~TheoraFrameQueue();

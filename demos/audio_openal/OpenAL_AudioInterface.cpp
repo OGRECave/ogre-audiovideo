@@ -1,5 +1,12 @@
 #include "OpenAL_AudioInterface.h"
 
+
+
+#include "OgrePrerequisites.h"
+#include "OgreLogManager.h"
+#include "OgreStringConverter.h"
+
+
 ALCdevice* gDevice=0;
 ALCcontext* gContext=0;
 
@@ -14,12 +21,13 @@ namespace Ogre
 		mBufferIndex=0;
 		mNumProcessedSamples=0;
 		mSourceTime=0.0;
+		mQueueCounter=0;
 
 		mTempBuffer=new short[mMaxBuffSize];
 		for (int i=0;i<2;i++)
 		{
 			alGenBuffers(1,&mBuffers[i].id);
-			mBuffers[i].queued=false;
+			mBuffers[i].queue_index=-1;
 		}
 		alGenSources(1,&mSource);
 		owner->setTimer(this);
@@ -44,6 +52,7 @@ namespace Ogre
 		}
 	}
 
+
 	void OpenAL_AudioInterface::update(float time_increase)
 	{
 		float time;
@@ -51,19 +60,19 @@ namespace Ogre
 		if (time > mSourceTime) mSourceTime=time;
 		
 		// check for processed buffers
+		LogManager::getSingleton().logMessage("0: "+StringConverter::toString(mBuffers[0].queue_index));
+		LogManager::getSingleton().logMessage("1: "+StringConverter::toString(mBuffers[1].queue_index));
 		int nProcessed;
 		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
 		if (nProcessed > 0)
 		{
-			int index=(mBuffers[!mBufferIndex].queued) ? !mBufferIndex : mBufferIndex;
-			if (mBuffers[index].queued)
-			{
-				mBuffers[index].queued=false;
-				alSourceUnqueueBuffers(mSource,1,&mBuffers[index].id);
-				mNumProcessedSamples+=mBuffers[index].nSamples;
-				alGetSourcef(mSource,AL_SEC_OFFSET,&mSourceTime);
-			}
+			int index=(mBuffers[0].queue_index > mBuffers[1].queue_index) ? 1 : 0;
+			mBuffers[index].queue_index=-1;
+			alSourceUnqueueBuffers(mSource,1,&mBuffers[index].id);
+			mNumProcessedSamples+=mBuffers[index].nSamples;
+			alGetSourcef(mSource,AL_SEC_OFFSET,&mSourceTime);
 
+			LogManager::getSingleton().logMessage("unqueuing: "+StringConverter::toString(index));
 		}
 
 
@@ -73,7 +82,7 @@ namespace Ogre
 
 		if (state == AL_PLAYING)
 		{
-			if (time > (mBuffers[!mBufferIndex].nSamples*0.8)/mFreq)
+			if (time > (mBuffers[!mBufferIndex].nSamples*0.5)/mFreq)
 				write_buffer=true;
 		}
 		else
@@ -83,11 +92,11 @@ namespace Ogre
 
 		if (write_buffer) // let's hold half a second of audio data in each buffer
 		{
-			if (!mBuffers[mBufferIndex].queued)
+			if (mBuffers[mBufferIndex].queue_index == -1)
 			{
 				alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
 				alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
-				mBuffers[mBufferIndex].queued=true;
+				mBuffers[mBufferIndex].queue_index=mQueueCounter++;
 				mBuffers[mBufferIndex].nSamples=mBuffSize;
 				mBufferIndex=!mBufferIndex;
 				mBuffSize=0;

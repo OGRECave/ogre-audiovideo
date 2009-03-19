@@ -44,6 +44,7 @@ namespace Ogre
 
 	void TheoraFrameQueue::setSize(int n)
 	{
+		mMutex.lock();
 		if (mQueue)
 		{
 			// todo: copy frames
@@ -55,6 +56,7 @@ namespace Ogre
 			mQueue[i]=new TheoraVideoFrame(mParent);
 
 		mSize=n;
+		mMutex.unlock();
 	}
 
 	int TheoraFrameQueue::getSize()
@@ -64,21 +66,27 @@ namespace Ogre
 
 	TheoraVideoFrame* TheoraFrameQueue::getFirstAvailableFrame()
 	{
-		if (mQueue[0]->mReady) return mQueue[0];
-		return 0;
+		TheoraVideoFrame* frame=0;
+		mMutex.lock();
+		if (mQueue[0]->mReady) frame=mQueue[0];
+		mMutex.unlock();
+		return frame;
 	}
 
 	void TheoraFrameQueue::clear()
 	{
+		mMutex.lock();
 		for (int i=0;i<mSize;i++)
 		{
 			mQueue[i]->mInUse=false;
 			mQueue[i]->mReady=false;
 		}
+		mMutex.unlock();
 	}
 
 	void TheoraFrameQueue::pop()
 	{
+		mMutex.lock();
 		TheoraVideoFrame* first=mQueue[0];
 
 		for (int i=0;i<mSize-1;i++)
@@ -89,27 +97,33 @@ namespace Ogre
 
 		first->mInUse=false;
 		first->mReady=false;
-
+		mMutex.unlock();
 	}
 		
 	TheoraVideoFrame* TheoraFrameQueue::requestEmptyFrame()
 	{
+		TheoraVideoFrame* frame=0;
+		mMutex.lock();
 		for (int i=0;i<mSize;i++)
 		{
 			if (!mQueue[i]->mInUse)
 			{
 				mQueue[i]->mInUse=true;
 				mQueue[i]->mReady=false;
-				return mQueue[i];
+				frame=mQueue[i];
+				break;
 			}
 		}
-		return 0;
+		mMutex.unlock();
+		return frame;
 	}
 
 	void TheoraFrameQueue::fillBackColour(unsigned int colour)
 	{
+		mMutex.lock();
 		mBackColour=colour;
 		for (int i=0;i<mSize;i++) mQueue[i]->fillBackColour(colour);
+		mMutex.unlock();
 	}
 
 	unsigned int TheoraFrameQueue::getBackColour()
@@ -119,9 +133,11 @@ namespace Ogre
 
 	int TheoraFrameQueue::getUsedCount()
 	{
+		mMutex.lock();
 		int i,n=0;
 		for (i=0;i<mSize;i++)
 			if (mQueue[i]->mInUse) n++;
+		mMutex.unlock();
 		return n;
 	}
 } // end namespace Ogre
