@@ -44,7 +44,7 @@ namespace Ogre
 			ALuint id;
 			int queue_index;
 			int nSamples;
-		}mBuffers[2];
+		}mBuffers[1000];
 		int mBufferIndex;
 		ALuint mSource;
 		int mNumProcessedSamples;

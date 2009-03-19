@@ -120,7 +120,7 @@ namespace Ogre
 
 		LogManager::getSingleton().logMessage("Creating ogg_video texture on material: "+material_name);
 
-		clip = new TheoraVideoClip(material_name,16);
+		clip = new TheoraVideoClip(material_name,64);
 		try 
 		{
 			clip->createDefinedTexture(mInputFileName, material_name, group_name, mTechniqueLevel,

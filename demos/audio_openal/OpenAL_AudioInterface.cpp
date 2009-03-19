@@ -24,7 +24,7 @@ namespace Ogre
 		mQueueCounter=0;
 
 		mTempBuffer=new short[mMaxBuffSize];
-		for (int i=0;i<2;i++)
+		for (int i=0;i<1000;i++)
 		{
 			alGenBuffers(1,&mBuffers[i].id);
 			mBuffers[i].queue_index=-1;
@@ -56,25 +56,30 @@ namespace Ogre
 	void OpenAL_AudioInterface::update(float time_increase)
 	{
 		float time;
-		alGetSourcef(mSource,AL_SEC_OFFSET,&time);
+		
+		int state;
+		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
+/*
 		if (time > mSourceTime) mSourceTime=time;
 		
-		// check for processed buffers
-		LogManager::getSingleton().logMessage("0: "+StringConverter::toString(mBuffers[0].queue_index));
-		LogManager::getSingleton().logMessage("1: "+StringConverter::toString(mBuffers[1].queue_index));
-		int nProcessed;
+
+		int i,nProcessed,index;
+		int pendreki[10];
 		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
-		if (nProcessed > 0)
+		alGetSourceiv(mSource,AL_BUFFERS_PROCESSED,pendreki);
+		if (nProcessed == 1)
+			i=i;
+		for (i=0;i<nProcessed;i++)
 		{
-			int index=(mBuffers[0].queue_index > mBuffers[1].queue_index) ? 1 : 0;
+			index=(mBuffers[0].queue_index > mBuffers[1].queue_index) ? 1 : 0;
 			mBuffers[index].queue_index=-1;
 			alSourceUnqueueBuffers(mSource,1,&mBuffers[index].id);
 			mNumProcessedSamples+=mBuffers[index].nSamples;
 			alGetSourcef(mSource,AL_SEC_OFFSET,&mSourceTime);
+			time=mSourceTime;
 
 			LogManager::getSingleton().logMessage("unqueuing: "+StringConverter::toString(index));
 		}
-
 
 		int state;
 		bool write_buffer=false;
@@ -82,8 +87,9 @@ namespace Ogre
 
 		if (state == AL_PLAYING)
 		{
-			if (time > (mBuffers[!mBufferIndex].nSamples*0.5)/mFreq)
-				write_buffer=true;
+			//if (time > (mBuffers[!mBufferIndex].nSamples*0.7)/mFreq)
+			//	write_buffer=true;
+			if (mBuffSize >= mFreq/2) write_buffer=true;
 		}
 		else
 		{
@@ -92,17 +98,19 @@ namespace Ogre
 
 		if (write_buffer) // let's hold half a second of audio data in each buffer
 		{
+			mBufferIndex=(mBuffers[0].queue_index == -1) ? 0 : 1;
 			if (mBuffers[mBufferIndex].queue_index == -1)
 			{
 				alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
 				alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
 				mBuffers[mBufferIndex].queue_index=mQueueCounter++;
 				mBuffers[mBufferIndex].nSamples=mBuffSize;
-				mBufferIndex=!mBufferIndex;
+				//mBufferIndex=!mBufferIndex;
 				mBuffSize=0;
 
 				if (state != AL_PLAYING)
 				{
+					alSourcef(mSource,AL_PITCH,0.5); //temp, for debug
 					alSourcePlay(mSource);
 
 				}
@@ -111,9 +119,45 @@ namespace Ogre
 
 
 
-		//mTime+=time_increase;
-		mTime=mSourceTime+(float) mNumProcessedSamples/mFreq;
+		if (state == AL_PLAYING) mTime+=time_increase*0.5;
+		//mTime=mSourceTime+(float) mNumProcessedSamples/mFreq;
+		*/
 
+		if (mBuffSize >= mFreq/4)
+		{
+			int size=mBuffSize; mBuffSize=mFreq/4;
+			alBufferData(mBuffers[mBufferIndex].id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
+			alSourceQueueBuffers(mSource, 1, &mBuffers[mBufferIndex].id);
+			mBuffers[mBufferIndex].queue_index=mQueueCounter++;
+			mBuffers[mBufferIndex].nSamples=mBuffSize;
+			mBufferIndex++;
+			mNumProcessedSamples+=mBuffSize;
+			mBuffSize=0;
+
+			for (int i=0;i<size-mFreq/4;i++)
+				mTempBuffer[i]=mTempBuffer[i+mFreq/4];
+
+			mBuffSize=size-mFreq/4;
+
+			if (state != AL_PLAYING)
+			{
+				//alSourcef(mSource,AL_PITCH,0.5); //temp, for debug
+				alSourcePlay(mSource);
+				alSourcef(mSource,AL_SAMPLE_OFFSET,mNumProcessedSamples-mBuffers[mBufferIndex-1].nSamples);
+
+			}
+
+		}
+		alGetSourcei(mSource,AL_SOURCE_STATE,&state);
+		if (state == AL_PLAYING)
+		{
+			alGetSourcef(mSource,AL_SEC_OFFSET,&mTime);
+		}
+		else
+		{
+			mTime=(float) mNumProcessedSamples/mFreq;
+		}
+		//mTime=mSourceTime;
 	}
 
 
