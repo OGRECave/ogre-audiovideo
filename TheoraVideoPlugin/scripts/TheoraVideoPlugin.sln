@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_OpenAL", "..\..\demos\
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E} = {388E4B0F-0860-40C7-8530-FD6F79E7AB3E}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_MultipleVideos", "..\..\demos\multiple_videos\Demo_MultipleVideos.vcproj", "{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E} = {388E4B0F-0860-40C7-8530-FD6F79E7AB3E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +35,10 @@ Global
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Debug|Win32.Build.0 = Debug|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Release|Win32.ActiveCfg = Release|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Release|Win32.Build.0 = Release|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Debug|Win32.Build.0 = Debug|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Release|Win32.ActiveCfg = Release|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
