@@ -1,4 +1,27 @@
-material SimpleVideo
+material fedora01
+{
+  technique
+  {
+    pass
+    {
+      cull_software none
+      cull_hardware none
+      lighting off
+
+      texture_unit
+      {
+        texture_source ogg_video
+        {
+          filename fedora01.ogg 
+          precache 64
+          play_mode play
+        }
+      }
+    }
+  }
+}
+
+material konqi
 {
   technique
   {
@@ -14,7 +37,53 @@ material SimpleVideo
         {
           filename konqi.ogg 
           precache 64
-          // output grey
+          play_mode play
+        }
+      }
+    }
+  }
+}
+
+
+material fedora02
+{
+  technique
+  {
+    pass
+    {
+      cull_software none
+      cull_hardware none
+      lighting off
+
+      texture_unit
+      {
+        texture_source ogg_video
+        {
+          filename fedora02.ogg 
+          precache 64
+          play_mode play
+        }
+      }
+    }
+  }
+}
+
+material fedora03
+{
+  technique
+  {
+    pass
+    {
+      cull_software none
+      cull_hardware none
+      lighting off
+
+      texture_unit
+      {
+        texture_source ogg_video
+        {
+          filename fedora03.ogg 
+          precache 64
           play_mode play
         }
       }

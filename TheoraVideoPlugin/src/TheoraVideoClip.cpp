@@ -64,7 +64,8 @@ namespace Ogre
 		mName(name),
 		mOutputMode(TH_RGB),
 		mBackColourChanged(0),
-		mAudioInterface(NULL)
+		mAudioInterface(NULL),
+		mAutoRestart(1)
 	{
 		mAudioMutex=new pt::mutex();
 
@@ -127,6 +128,7 @@ namespace Ogre
 			{
 				if (th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos ) != 0) continue; // 0 means success
 				float time=th_granule_time(mTheoraDecoder,granulePos);
+//				if (granulePos == 0) mTimer->seek(0); // reset after restart
 				if (mSeekPos < -1)
 				{
 					if (!th_packet_iskeyframe(&opTheora)) continue; // get keyframe after seek
@@ -149,8 +151,10 @@ namespace Ogre
 				int bytesRead = mStream->read( buffer, 4096 );
 				ogg_sync_wrote( &mOggSyncState, bytesRead );
 				if (bytesRead < 4096)
-					return;
-
+				{
+					if (mAutoRestart) mStream->seek(0); // if we reached the end, restart
+					else return;
+				}
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
 					if (mTheoraStreams) ogg_stream_pagein(&mTheoraStreamState,&mOggPage);

@@ -28,6 +28,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraExport.h"
 #include <list>
 
+namespace pt
+{
+	struct mutex;
+}
+
 namespace Ogre
 {
 	// forward class declarations
@@ -55,13 +60,15 @@ namespace Ogre
 		//! whether the plugin has been initialised
 		bool mbInit;
 
+		pt::mutex* mWorkMutex;
+
 		TheoraAudioInterfaceFactory* mAudioFactory;
 
 
 		/**
 		 * Called by TheoraWorkerThread to request a TheoraVideoClip instance to work on decoding
 		 */
-		TheoraVideoClip* requestWork();
+		TheoraVideoClip* requestWork(TheoraWorkerThread* caller);
 	public:
 		TheoraVideoManager();
 		~TheoraVideoManager();

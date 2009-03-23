@@ -100,6 +100,7 @@ namespace Ogre
 		int mPassLevel;
 		int mTexLevel;
 		bool mBackColourChanged;
+		bool mAutoRestart;
 
 		float mUserPriority;
 

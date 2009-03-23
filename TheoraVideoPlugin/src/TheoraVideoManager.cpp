@@ -48,6 +48,7 @@ namespace Ogre
 		mAudioFactory = NULL;
 		mDictionaryName = mPlugInName;
 		mbInit=false;
+		mWorkMutex=new pt::mutex();
 
 	}
 
@@ -75,6 +76,7 @@ namespace Ogre
 	
 	TheoraVideoManager::~TheoraVideoManager()
 	{
+		delete mWorkMutex;
 		shutDown();
 	}
 
@@ -121,7 +123,7 @@ namespace Ogre
 		LogManager::getSingleton().logMessage("Creating ogg_video texture on material: "+material_name);
 
 		clip = new TheoraVideoClip(material_name,32);
-		try 
+		try
 		{
 			clip->createDefinedTexture(mInputFileName, material_name, group_name, mTechniqueLevel,
 						  mPassLevel, mStateLevel);
@@ -181,10 +183,31 @@ namespace Ogre
 		return true;
 	}
 
-	TheoraVideoClip* TheoraVideoManager::requestWork()
+	TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
 	{
-		if (mClips.size() == 0) return NULL;
-		return mClips.front();
+		mWorkMutex->lock();
+		TheoraVideoClip* c=NULL;
+		static int cnt=0;
+		int i;
+		ClipList::iterator it;
+		if (mClips.size() == 0) c=NULL;
+		else
+		{
+			for (it=mClips.begin(),i=0;i<cnt;it++,i++)
+			{
+
+			}
+			if ((*it)->mAssignedWorkerThread == NULL)
+			{
+				c=*it;
+				c->mAssignedWorkerThread=caller;
+				
+			}
+		}
+		cnt++;
+		if (cnt >= mClips.size()) cnt=0;
+		mWorkMutex->unlock();
+		return c;
 	}
 
 

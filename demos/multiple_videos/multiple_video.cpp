@@ -99,10 +99,11 @@ protected:
 		float top[]=   {    1,    1, -0.01, -0.01};
 		float right[]= {-0.01,    1, -0.01,     1};
 		float bottom[]={ 0.01, 0.01,    -1,    -1};
+		String materials[]={"konqi","fedora01","fedora02","fedora03"};
 		for (int i=0;i<4;i++)
 		{
 			ManualObject* model = mSceneMgr->createManualObject("quad"+StringConverter::toString(i));
-			model->begin("SimpleVideo");
+			model->begin(materials[i]);
 
 			model->position( right[i],bottom[i],0);
 			model->textureCoord(1,1);
