@@ -76,7 +76,9 @@ namespace Ogre
 	
 	TheoraVideoManager::~TheoraVideoManager()
 	{
+		mWorkMutex->lock(); // to avoid sync problems. in case a thread is asking for work, and we delete the mutex halfway through
 		delete mWorkMutex;
+		mWorkMutex=NULL;
 		shutDown();
 	}
 
@@ -185,6 +187,7 @@ namespace Ogre
 
 	TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
 	{
+		if (!mWorkMutex) return NULL;
 		mWorkMutex->lock();
 		TheoraVideoClip* c=NULL;
 		static int cnt=0;

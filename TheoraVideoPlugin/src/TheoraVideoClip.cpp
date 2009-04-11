@@ -129,12 +129,12 @@ namespace Ogre
 				if (th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos ) != 0) continue; // 0 means success
 				float time=th_granule_time(mTheoraDecoder,granulePos);
 //				if (granulePos == 0) mTimer->seek(0); // reset after restart
-				if (mSeekPos < -1)
+				if (mSeekPos == -2)
 				{
 					if (!th_packet_iskeyframe(&opTheora)) continue; // get keyframe after seek
 					else
 					{
-						mSeekPos=-1;
+						mSeekPos=-3; // -3 means we need to ensure the frame is displayed (otherwise it won't be if the video is paused)
 						mTimer->seek(time);
 					}
 				}
@@ -173,7 +173,8 @@ namespace Ogre
 
 	void TheoraVideoClip::blitFrameCheck(float time_increase)
 	{
-		if (mTimer->isPaused()) return;
+		if (mTimer->isPaused() && mSeekPos != -3) return;
+		if (mSeekPos == -3) mSeekPos=-1; // -3 ensures the first frame after seek gets displayed even when the movie is paused
 		mTimer->update(time_increase);
 		TheoraVideoFrame* frame;
 		while (true)
