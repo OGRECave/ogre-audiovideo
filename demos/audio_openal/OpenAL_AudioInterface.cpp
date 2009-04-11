@@ -13,10 +13,17 @@ ALCcontext* gContext=0;
 
 namespace Ogre
 {
+	short float2short(float f)
+	{
+		if      (f >  1) f= 1;
+		else if (f < -1) f=-1;
+		return f*32767;
+	}
+
 	OpenAL_AudioInterface::OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels,int freq) :
 		TheoraAudioInterface(owner,nChannels,freq)
 	{
-		mMaxBuffSize=freq*2;
+		mMaxBuffSize=freq*mNumChannels*2;
 		mBuffSize=0;
 		mNumProcessedSamples=0;
 		mTimeOffset=0;
@@ -35,19 +42,20 @@ namespace Ogre
 
 	void OpenAL_AudioInterface::insertData(float** data,int nSamples)
 	{
-		int s;
 		for (int i=0;i<nSamples;i++)
 		{
-			s=data[0][i]*32767;
-			if (s >  32767) s= 32767;
-			if (s < -32767) s=-32767;
-
-			if (mBuffSize < mMaxBuffSize) mTempBuffer[mBuffSize++]=s;
-			if (mBuffSize == mFreq/4)
+			if (mBuffSize < mMaxBuffSize)
+			{
+				mTempBuffer[mBuffSize++]=float2short(data[0][i]);
+				if (mNumChannels == 2)
+					mTempBuffer[mBuffSize++]=float2short(data[1][i]);
+			}
+			if (mBuffSize == mFreq*mNumChannels/4)
 			{	
 				OpenAL_Buffer buff;
 				alGenBuffers(1,&buff.id);
-				alBufferData(buff.id,AL_FORMAT_MONO16,mTempBuffer,mBuffSize*2,mFreq);
+				ALuint format = (mNumChannels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+				alBufferData(buff.id,format,mTempBuffer,mBuffSize*2,mFreq);
 				alSourceQueueBuffers(mSource, 1, &buff.id);
 				buff.nSamples=mBuffSize;
 				mNumProcessedSamples+=mBuffSize;
@@ -67,8 +75,6 @@ namespace Ogre
 
 			}
 		}
-
-
 	}
 
 	void OpenAL_AudioInterface::update(float time_increase)
