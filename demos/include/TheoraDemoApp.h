@@ -68,6 +68,12 @@ namespace Ogre
 		node->attachObject(model);
 	}
 
+	TheoraVideoClip* getClip(String name)
+	{
+		TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
+		return mgr->getVideoClipByName("konqi.ogg");
+	}
+
     #define EVENT(wnd_name,function) \
 		CEGUI::WindowManager::getSingleton().getWindow(wnd_name)->subscribeEvent( \
 				CEGUI::PushButton::EventClicked, \

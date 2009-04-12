@@ -30,10 +30,12 @@ namespace Ogre
 	{
 		bool mShaders;
 		bool mSeeking;
+		bool mPaused;
+		int mSeekStep;
 	public:
 		DemoApp()
 		{
-			mSeeking=mShaders=0;
+			mSeeking=mPaused=mShaders=0;
 		}
 
 		void frameStarted(const FrameEvent& evt)
@@ -60,20 +62,37 @@ namespace Ogre
 				CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
 				wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
 			}
+			else
+			{
+				CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+				TheoraVideoClip* clip=getClip("konqi.ogg");
+				float dur=clip->getDuration();
+
+				CEGUI::String prop=wnd->getProperty("ScrollPosition");
+				int step=StringConverter::parseInt(prop.c_str());
+				if (abs(step-mSeekStep) > 10)
+				{
+					mSeekStep=step;
+					float seek_time=((float) step/1024)*dur;
+
+					clip->seek(seek_time);
+				}
+			}
 
 		}
 
 		bool OnPlayPause(const CEGUI::EventArgs& e)
 		{
-			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			TheoraVideoClip* clip=getClip("konqi.ogg");
 
 			if (!clip->isPaused())
 			{
+				mPaused=1;
 				clip->pause();
 			}
 			else
 			{
+				mPaused=0;
 				clip->play();
 			}
 			return true;
@@ -81,52 +100,33 @@ namespace Ogre
 
 		bool OnSeekStart(const CEGUI::EventArgs& e)
 		{
+			if (!mPaused) getClip("konqi.ogg")->pause();
 			mSeeking=true;
 			return true;
 		}
 
 		bool OnSeekEnd(const CEGUI::EventArgs& e)
 		{
+			if (!mPaused) getClip("konqi.ogg")->play();
 			mSeeking=false;
-
-			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
-			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
-			float dur=clip->getDuration();
-
-			CEGUI::String prop=wnd->getProperty("ScrollPosition");
-			int step=StringConverter::parseInt(prop.c_str());
-
-			float seek_time=((float) step/1024)*dur;
-
-
-			clip->seek(seek_time);
-
-
 			return true;
 		}
 
 		bool OnRGB(const CEGUI::EventArgs& e)
 		{
-			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
-			clip->setOutputMode(TH_RGB);
+			getClip("konqi.ogg")->setOutputMode(TH_RGB);
 			return true;
 		}
 
 		bool OnYUV(const CEGUI::EventArgs& e)
 		{
-			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
-			clip->setOutputMode(TH_YUV);
+			getClip("konqi.ogg")->setOutputMode(TH_YUV);
 			return true;
 		}
 
 		bool OnGrey(const CEGUI::EventArgs& e)
 		{
-			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
-			clip->setOutputMode(TH_GREY);
+			getClip("konqi.ogg")->setOutputMode(TH_GREY);
 			return true;
 		}
 

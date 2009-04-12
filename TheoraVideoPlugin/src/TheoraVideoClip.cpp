@@ -140,6 +140,7 @@ namespace Ogre
 
 	void TheoraVideoClip::decodeNextFrame()
 	{
+		if (mTimer->isPaused() && getNumPrecachedFrames() > 0) return;
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
 		ogg_packet opTheora;
