@@ -50,6 +50,9 @@ namespace Ogre
 		mbInit=false;
 		mWorkMutex=new pt::mutex();
 
+		mTechniqueLevel=mPassLevel=mStateLevel=0;
+
+		initialise();
 	}
 
 	bool TheoraVideoManager::initialise()
@@ -77,9 +80,9 @@ namespace Ogre
 	TheoraVideoManager::~TheoraVideoManager()
 	{
 		mWorkMutex->lock(); // to avoid sync problems. in case a thread is asking for work, and we delete the mutex halfway through
+		shutDown();
 		delete mWorkMutex;
 		mWorkMutex=NULL;
-		shutDown();
 	}
 
 	void TheoraVideoManager::shutDown()
@@ -199,8 +202,8 @@ namespace Ogre
 		if (!mWorkMutex) return NULL;
 		mWorkMutex->lock();
 		TheoraVideoClip* c=NULL;
-		static int cnt=0;
-		int i;
+		static unsigned int cnt=0;
+		unsigned int i;
 		ClipList::iterator it;
 		if (mClips.size() == 0) c=NULL;
 		else

@@ -166,7 +166,7 @@ class GuiApplication : public ExampleApplication
 private:
     CEGUI::OgreCEGUIRenderer* mGUIRenderer;
     CEGUI::System* mGUISystem;
-    CEGUI::Window* mEditorGuiSheet;
+    CEGUI::Window* mGuiSheet;
 	bool mShaders;
 	OpenAL_AudioInterfaceFactory* mAudioFactory;
 public:
@@ -174,7 +174,7 @@ public:
     GuiApplication()
       : mGUIRenderer(0),
         mGUISystem(0),
-        mEditorGuiSheet(0),
+        mGuiSheet(0),
 		mShaders(false)
     {
 
@@ -185,9 +185,9 @@ public:
     ~GuiApplication()
     {
 		return;
-        if(mEditorGuiSheet)
+        if(mGuiSheet)
         {
-            CEGUI::WindowManager::getSingleton().destroyWindow(mEditorGuiSheet);
+            CEGUI::WindowManager::getSingleton().destroyWindow(mGuiSheet);
         }
         if(mGUISystem)
         {

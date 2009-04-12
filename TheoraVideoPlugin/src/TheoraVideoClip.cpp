@@ -92,7 +92,6 @@ namespace Ogre
 
 	TheoraVideoClip::~TheoraVideoClip()
 	{
-		delete mAudioMutex;
 		delete mDefaultTimer;
 
 		if (!(mStream.isNull()))
@@ -105,10 +104,12 @@ namespace Ogre
 		th_decode_free(mTheoraDecoder);
 		th_comment_clear(&mTheoraComment);
 		th_info_clear(&mTheoraInfo);
+		th_setup_free(mTheoraSetup);
 
 		if (mAudioInterface)
 		{
 			mAudioMutex->lock(); // ensure a thread isn't using this mutex
+
 			ogg_stream_destroy(&mVorbisStreamState);
 			vorbis_block_clear(&mVorbisBlock);
 			vorbis_dsp_clear(&mVorbisDSPState);
@@ -116,6 +117,7 @@ namespace Ogre
 			vorbis_info_clear(&mVorbisInfo);
 			mAudioInterface->destroy(); // notify audio interface it's time to call it a day
 		}
+		delete mAudioMutex;
 
 		ogg_sync_destroy(&mOggSyncState);
 	}
@@ -381,8 +383,6 @@ namespace Ogre
 		readTheoraVorbisHeaders();
 
 		// END HACKY CODE
-
-		th_setup_free(mTheoraSetup);
 
 		if (mVorbisStreams) // if there is no audio interface factory defined, even though the video
 			                // clip might have audio, it will be ignored

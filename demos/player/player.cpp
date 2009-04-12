@@ -1,59 +1,180 @@
-#include "CEGUI/CEGUI.h"
-#include "OgreCEGUIRenderer.h"
-#include "OgreCEGUIResourceProvider.h"
-#include "OgreExternalTextureSourceManager.h"
-#include "ExampleApplication.h"
-#include "TheoraVideoManager.h"
-#include "TheoraVideoClip.h"
+/************************************************************************************
+This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
+for OGRE3D (Object-oriented Graphics Rendering Engine)
+For latest info, see http://ogrevideo.sourceforge.net/
+*************************************************************************************
+Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
 
-bool g_seeking=false;
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License (LGPL) as published by the 
+Free Software Foundation; either version 2 of the License, or (at your option) 
+any later version.
 
-//----------------------------------------------------------------//
-CEGUI::MouseButton convertOISMouseButtonToCegui(int buttonID)
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+http://www.gnu.org/copyleft/lesser.txt.
+*************************************************************************************/
+#include "TheoraDemoApp.h"
+
+
+
+namespace Ogre
 {
-    switch (buttonID)
-    {
-	case 0: return CEGUI::LeftButton;
-	case 1: return CEGUI::RightButton;
-	case 2:	return CEGUI::MiddleButton;
-	case 3: return CEGUI::X1Button;
-	default: return CEGUI::LeftButton;
-    }
-}
-//----------------------------------------------------------------//
-/*
-class ClipListener : public TheoraVideoListener
-{
-	int messageEvent( PLUGIN_theora_message m ) { return 0; }
 
-
-	void displayedFrame(TheoraVideoListener::FrameInfo info)
+	class DemoApp : public TheoraDemoApp
 	{
-		CEGUI::WindowManager &Mgr = CEGUI::WindowManager::getSingleton();
-		
-		std::stringstream s1; s1 << "Frame Number: " << info.mCurrentFrame;
-		std::stringstream s2; s2 << "Frames dropped: " << info.mNumFramesDropped;
-		std::stringstream s3; s3 << "Video time: " << std::fixed << std::setprecision(1) << info.mVideoTime;
-		std::stringstream s4; s4 << "Decoding time (ms): " << std::fixed << std::setprecision(2) << info.mAvgDecodeTime;
-		std::stringstream s5; s5 << "YUV decode time (ms): " << std::fixed << std::setprecision(2) << info.mAvgYUVConvertTime;
-		std::stringstream s6; s6 << "TexBlit time (ms): " << std::fixed << std::setprecision(2)  << info.mAvgBlitTime;
-		float time=(info.mAvgDecodeTime+info.mAvgYUVConvertTime+info.mAvgBlitTime);
-		std::stringstream s7; s7 << "Time per frame (ms): " << std::fixed << std::setprecision(2)  << time;
-		std::stringstream s8; s8 << "Max FPS (ms): " << std::fixed << std::setprecision(1) << (1000.0f/time);
-		std::stringstream s9; s9 << "Precached frames: " << info.mNumPrecachedFrames;
+		bool mShaders;
+		bool mSeeking;
+	public:
+		DemoApp()
+		{
+			mSeeking=mShaders=0;
+		}
 
-		Mgr.getWindow("cFrame")->setText(s1.str());
-		Mgr.getWindow("droppedFrames")->setText(s2.str());
-		Mgr.getWindow("vTime")->setText(s3.str());
-		Mgr.getWindow("decodeTime")->setText(s4.str());
-		Mgr.getWindow("yuvTime")->setText(s5.str());
-		Mgr.getWindow("blitTime")->setText(s6.str());
-		Mgr.getWindow("allTime")->setText(s7.str());
-		Mgr.getWindow("fps")->setText(s8.str());
-		Mgr.getWindow("precached")->setText(s9.str());
-	}
-};
-*/
+		void frameStarted(const FrameEvent& evt)
+		{
+			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("cFrame");
+			TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			float dur=clip->getDuration();
+			String s=StringConverter::toString(dur);
+			String s2=StringConverter::toString(clip->getTimePosition(),4);
+			wnd->setText("duration: "+s+" seconds");
+			CEGUI::WindowManager::getSingleton().getWindow("droppedFrames")->setText("time position: "+s2+" seconds");
+			
+			String np=StringConverter::toString(clip->getNumPrecachedFrames());
+			CEGUI::WindowManager::getSingleton().getWindow("precached")->setText("Precached: "+np);
+			
+
+			float cTime=clip->getTimePosition();
+			float duration=clip->getDuration();
+			int pos=1024*(cTime/duration);
+
+			if (!mSeeking)
+			{
+				CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+				wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
+			}
+
+		}
+
+		bool OnPlayPause(const CEGUI::EventArgs& e)
+		{
+			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+
+			if (!clip->isPaused())
+			{
+				clip->pause();
+			}
+			else
+			{
+				clip->play();
+			}
+			return true;
+		}
+
+		bool OnSeekStart(const CEGUI::EventArgs& e)
+		{
+			mSeeking=true;
+			return true;
+		}
+
+		bool OnSeekEnd(const CEGUI::EventArgs& e)
+		{
+			mSeeking=false;
+
+			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			float dur=clip->getDuration();
+
+			CEGUI::String prop=wnd->getProperty("ScrollPosition");
+			int step=StringConverter::parseInt(prop.c_str());
+
+			float seek_time=((float) step/1024)*dur;
+
+
+			clip->seek(seek_time);
+
+
+			return true;
+		}
+
+		bool OnRGB(const CEGUI::EventArgs& e)
+		{
+			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			clip->setOutputMode(TH_RGB);
+			return true;
+		}
+
+		bool OnYUV(const CEGUI::EventArgs& e)
+		{
+			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			clip->setOutputMode(TH_YUV);
+			return true;
+		}
+
+		bool OnGrey(const CEGUI::EventArgs& e)
+		{
+			TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
+			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			clip->setOutputMode(TH_GREY);
+			return true;
+		}
+
+
+		bool OnShaders(const CEGUI::EventArgs& e)
+		{
+			
+			mShaders=!mShaders;
+			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("shaders_button");
+			MaterialPtr mat=MaterialManager::getSingleton().getByName("video_material");
+			Pass* pass=mat->getTechnique(0)->getPass(0);
+			if (mShaders)
+			{
+				wnd->setText("Shader yuv2rgb = on");
+				pass->setFragmentProgram("TheoraVideoPlugin/yuv2rgb");
+			}
+			else
+			{
+				wnd->setText("Shader yuv2rgb = off");
+				pass->setFragmentProgram("");
+			}
+			return true;
+		}
+
+
+		void init()
+		{
+			CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"SimpleDemo.layout"); 
+			CEGUI::System::getSingleton().setGUISheet(sheet);
+
+			EVENT("rgb_button",DemoApp::OnRGB); EVENT("yuv_button",DemoApp::OnYUV); EVENT("grey_button",DemoApp::OnGrey);
+			EVENT("shaders_button",DemoApp::OnShaders); EVENT("Play/Pause",DemoApp::OnPlayPause);
+			EVENT_EX("seeker",DemoApp::OnSeekStart,CEGUI::Scrollbar::EventThumbTrackStarted);
+			EVENT_EX("seeker",DemoApp::OnSeekEnd,CEGUI::Scrollbar::EventThumbTrackEnded);
+
+			createQuad("video_quad","video_material",-0.5,1,1,-0.94);
+
+			TheoraVideoManager* mgr=TheoraVideoManager::getSingletonPtr();
+
+			mgr->setInputName("konqi.ogg");
+			mgr->createDefinedTexture("video_material");
+		}
+	};
+
+	TheoraDemoApp* start() { return new DemoApp(); }
+}
+
+/*
 
 class GuiFrameListener : public OIS::KeyListener, public OIS::MouseListener, public ExampleFrameListener
 {
@@ -109,7 +230,7 @@ public:
 		float duration=clip->getDuration();
 		int pos=1024*(cTime/duration);
 
-		if (!g_seeking)
+		if (!mSeeking)
 		{
 			CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
 			wnd2->setProperty("ScrollPosition",StringConverter::toString(pos));
@@ -163,14 +284,14 @@ class GuiApplication : public ExampleApplication
 private:
     CEGUI::OgreCEGUIRenderer* mGUIRenderer;
     CEGUI::System* mGUISystem;
-    CEGUI::Window* mEditorGuiSheet;
+    CEGUI::Window* mGuiSheet;
 	bool mShaders;
 public:
 
     GuiApplication()
       : mGUIRenderer(0),
         mGUISystem(0),
-        mEditorGuiSheet(0),
+        mGuiSheet(0),
 		mShaders(false)
     {
 
@@ -181,9 +302,9 @@ public:
     ~GuiApplication()
     {
 		return;
-        if(mEditorGuiSheet)
+        if(mGuiSheet)
         {
-            CEGUI::WindowManager::getSingleton().destroyWindow(mEditorGuiSheet);
+            CEGUI::WindowManager::getSingleton().destroyWindow(mGuiSheet);
         }
         if(mGUISystem)
         {
@@ -286,13 +407,13 @@ protected:
 
     bool OnSeekStart(const CEGUI::EventArgs& e)
     {
-		g_seeking=true;
+		mSeeking=true;
 		return true;
 	}
 
     bool OnSeekEnd(const CEGUI::EventArgs& e)
     {
-		g_seeking=false;
+		mSeeking=false;
 
 		CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
 		TheoraVideoManager* mgr = (TheoraVideoManager*) ExternalTextureSourceManager::getSingleton().getExternalTextureSource("ogg_video");
@@ -430,3 +551,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+*/
