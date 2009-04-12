@@ -84,6 +84,8 @@ namespace Ogre
 		void shutDown();
 
 		TheoraVideoClip* getVideoClipByName(String name);
+		//! returns the first video assigned to the given material name
+		TheoraVideoClip* getVideoClipByMaterialName(String material_name);
 
 
 		/**

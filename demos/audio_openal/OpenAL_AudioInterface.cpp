@@ -34,6 +34,11 @@ namespace Ogre
 		mNumPlayedSamples=0;
 	}
 
+	void OpenAL_AudioInterface::destroy()
+	{
+		// todo
+	}
+
 	OpenAL_AudioInterface::~OpenAL_AudioInterface()
 	{
 		// todo: delete buffers and source

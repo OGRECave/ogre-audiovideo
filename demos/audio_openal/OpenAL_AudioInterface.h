@@ -53,6 +53,7 @@ namespace Ogre
 		OpenAL_AudioInterface(TheoraVideoClip* owner,int nChannels,int freq);
 		~OpenAL_AudioInterface();
 		void insertData(float** data,int nSamples);
+		void destroy();
 
 		void update(float time_increase);
 

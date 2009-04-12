@@ -39,6 +39,7 @@ namespace Ogre
 		~TheoraAudioInterface();
 
 		virtual void insertData(float** data,int nSamples)=0;
+		virtual void destroy() = 0;
 
 	};
 

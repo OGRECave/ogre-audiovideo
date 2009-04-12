@@ -108,6 +108,15 @@ namespace Ogre
 		return 0;
 	}
 
+	TheoraVideoClip* TheoraVideoManager::getVideoClipByMaterialName(String material_name)
+	{
+		ClipList::iterator ci;
+		for (ci=mClips.begin(); ci != mClips.end();ci++)
+			if ((*ci)->getMaterialName() == material_name) return *ci;
+
+		return 0;
+	}
+
 	void TheoraVideoManager::setAudioInterfaceFactory(TheoraAudioInterfaceFactory* factory)
 	{
 		mAudioFactory=factory;
@@ -212,6 +221,4 @@ namespace Ogre
 		mWorkMutex->unlock();
 		return c;
 	}
-
-
 } // end namespace Ogre
