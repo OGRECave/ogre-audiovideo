@@ -61,6 +61,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -82,6 +83,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\release"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="obj/Release/GuiTesting.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

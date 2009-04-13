@@ -106,6 +106,7 @@ namespace Ogre
 		OpenAL_Buffer buff;
 
 		// process played buffers
+
 		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
 		for (i=0;i<nProcessed;i++)
 		{
