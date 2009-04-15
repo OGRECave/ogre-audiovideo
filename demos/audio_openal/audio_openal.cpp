@@ -22,6 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraDemoApp.h"
 #include "OpenAL_AudioInterface.h"
 
+#define VIDEO_FILE "konqi.ogg"
 
 namespace Ogre
 {
@@ -44,7 +45,7 @@ namespace Ogre
 		{
 			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("cFrame");
 			TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
-			TheoraVideoClip* clip=mgr->getVideoClipByName("konqi.ogg");
+			TheoraVideoClip* clip=mgr->getVideoClipByName(VIDEO_FILE);
 			float dur=clip->getDuration();
 			String s=StringConverter::toString(dur);
 			String s2=StringConverter::toString(clip->getTimePosition(),4);
@@ -67,7 +68,7 @@ namespace Ogre
 			else
 			{
 				CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
-				TheoraVideoClip* clip=getClip("konqi.ogg");
+				TheoraVideoClip* clip=getClip(VIDEO_FILE);
 				float dur=clip->getDuration();
 
 				CEGUI::String prop=wnd->getProperty("ScrollPosition");
@@ -85,7 +86,7 @@ namespace Ogre
 
 		bool OnPlayPause(const CEGUI::EventArgs& e)
 		{
-			TheoraVideoClip* clip=getClip("konqi.ogg");
+			TheoraVideoClip* clip=getClip(VIDEO_FILE);
 
 			if (!clip->isPaused())
 			{
@@ -102,33 +103,33 @@ namespace Ogre
 
 		bool OnSeekStart(const CEGUI::EventArgs& e)
 		{
-			if (!mPaused) getClip("konqi.ogg")->pause();
+			if (!mPaused) getClip(VIDEO_FILE)->pause();
 			mSeeking=true;
 			return true;
 		}
 
 		bool OnSeekEnd(const CEGUI::EventArgs& e)
 		{
-			if (!mPaused) getClip("konqi.ogg")->play();
+			if (!mPaused) getClip(VIDEO_FILE)->play();
 			mSeeking=false;
 			return true;
 		}
 
 		bool OnRGB(const CEGUI::EventArgs& e)
 		{
-			getClip("konqi.ogg")->setOutputMode(TH_RGB);
+			getClip(VIDEO_FILE)->setOutputMode(TH_RGB);
 			return true;
 		}
 
 		bool OnYUV(const CEGUI::EventArgs& e)
 		{
-			getClip("konqi.ogg")->setOutputMode(TH_YUV);
+			getClip(VIDEO_FILE)->setOutputMode(TH_YUV);
 			return true;
 		}
 
 		bool OnGrey(const CEGUI::EventArgs& e)
 		{
-			getClip("konqi.ogg")->setOutputMode(TH_GREY);
+			getClip(VIDEO_FILE)->setOutputMode(TH_GREY);
 			return true;
 		}
 
@@ -171,7 +172,7 @@ namespace Ogre
 			mAudioFactory=new OpenAL_AudioInterfaceFactory();
 			mgr->setAudioInterfaceFactory(mAudioFactory);
 
-			mgr->setInputName("konqi.ogg");
+			mgr->setInputName(VIDEO_FILE);
 			mgr->createDefinedTexture("video_material");
 		}
 	};

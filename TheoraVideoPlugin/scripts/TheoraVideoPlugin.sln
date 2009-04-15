@@ -20,23 +20,32 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Optimized_Debug|Win32 = Optimized_Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Debug|Win32.ActiveCfg = Debug|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Debug|Win32.Build.0 = Debug|Win32
+		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Optimized_Debug|Win32.ActiveCfg = Optimized_Debug|Win32
+		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Optimized_Debug|Win32.Build.0 = Optimized_Debug|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Release|Win32.ActiveCfg = Release|Win32
 		{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}.Release|Win32.Build.0 = Release|Win32
 		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Debug|Win32.Build.0 = Debug|Win32
+		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Optimized_Debug|Win32.ActiveCfg = Optimized_Debug|Win32
+		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Optimized_Debug|Win32.Build.0 = Optimized_Debug|Win32
 		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Release|Win32.ActiveCfg = Release|Win32
 		{F71CD603-13C3-4131-9E5B-9FC319C01C51}.Release|Win32.Build.0 = Release|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Debug|Win32.ActiveCfg = Debug|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Debug|Win32.Build.0 = Debug|Win32
+		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Optimized_Debug|Win32.ActiveCfg = Optimized_Debug|Win32
+		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Optimized_Debug|Win32.Build.0 = Optimized_Debug|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Release|Win32.ActiveCfg = Release|Win32
 		{8B773639-91FC-4E61-BA17-DBCF670649FC}.Release|Win32.Build.0 = Release|Win32
 		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Debug|Win32.Build.0 = Debug|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Optimized_Debug|Win32.ActiveCfg = Optimized_Debug|Win32
+		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Optimized_Debug|Win32.Build.0 = Optimized_Debug|Win32
 		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Release|Win32.ActiveCfg = Release|Win32
 		{4ABDC464-F2CD-4386-99BF-8D024A8A2FA7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

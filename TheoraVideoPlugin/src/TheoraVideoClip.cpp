@@ -155,7 +155,6 @@ namespace Ogre
 			{
 				if (th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos ) != 0) continue; // 0 means success
 				float time=th_granule_time(mTheoraDecoder,granulePos);
-//				if (granulePos == 0) mTimer->seek(0); // reset after restart
 				if (mSeekPos == -2)
 				{
 					if (!th_packet_iskeyframe(&opTheora)) continue; // get keyframe after seek
@@ -179,8 +178,21 @@ namespace Ogre
 				ogg_sync_wrote( &mOggSyncState, bytesRead );
 				if (bytesRead < 4096)
 				{
-					if (mAutoRestart) mStream->seek(0); // if we reached the end, restart
-					else return;
+					if (bytesRead == 0)
+					{
+						if (mAutoRestart)
+						{
+							long granule=0;
+							//th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
+							th_decode_free(mTheoraDecoder);
+							mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
+							ogg_stream_reset(&mTheoraStreamState);
+							ogg_sync_reset(&mOggSyncState);
+							mStream->seek(0); // if we reached the end, restart
+							continue;
+						}
+						else return;
+					}
 				}
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
@@ -208,6 +220,7 @@ namespace Ogre
 		{
 			frame=mFrameQueue->getFirstAvailableFrame();
 			if (!frame) return; // no frames ready
+			
 			if (frame->mTimeToDisplay > mTimer->getTime()) return;
 			if (frame->mTimeToDisplay < mTimer->getTime()-0.1)
 			{
@@ -442,29 +455,27 @@ namespace Ogre
 				int ret;
 				if( !mTheoraStreams)
 				{
-					ret=ret=th_decode_headerin( &mTheoraInfo, &mTheoraComment, &mTheoraSetup, &tempOggPacket);
+					ret=th_decode_headerin( &mTheoraInfo, &mTheoraComment, &mTheoraSetup, &tempOggPacket);
 
 					if (ret > 0)
 					{
 						//This is the Theora Header
 						memcpy( &mTheoraStreamState, &OggStateTest, sizeof(OggStateTest));
 						mTheoraStreams = 1;
+						continue;
 					}
 				}
-				
-				else if (decode_audio && !mVorbisStreams &&
+				if (decode_audio && !mVorbisStreams &&
 					vorbis_synthesis_headerin(&mVorbisInfo, &mVorbisComment, &tempOggPacket) >=0 )
 				{
 					//This is vorbis header
 					memcpy( &mVorbisStreamState, &OggStateTest, sizeof(OggStateTest));
 					mVorbisStreams = 1;
+					continue;
 				}
 				
-				else
-				{
-					//Hmm. I guess it's not a header we support, so erase it
-					ogg_stream_clear(&OggStateTest);
-				}
+				//Hmm. I guess it's not a header we support, so erase it
+				ogg_stream_clear(&OggStateTest);
 			}
 		}
 
@@ -489,7 +500,7 @@ namespace Ogre
 			} //end while looking for more theora headers
 		
 			//look 2nd vorbis header packets
-			while( mVorbisStreams && 
+			while(// mVorbisStreams && 
 				 ( mVorbisStreams < 3 ) && 
 				 ( iSuccess=ogg_stream_packetout( &mVorbisStreamState, &tempOggPacket))) 
 			{
@@ -590,7 +601,7 @@ namespace Ogre
 		ogg_int64_t granule;
 
 		mFrameQueue->clear();
-		ogg_stream_reset( &mTheoraStreamState );
+		ogg_stream_reset(&mTheoraStreamState);
 		th_decode_free(mTheoraDecoder);
 		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
 
