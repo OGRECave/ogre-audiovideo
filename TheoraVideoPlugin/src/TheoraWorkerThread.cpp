@@ -49,7 +49,8 @@ namespace Ogre
 			mClip=TheoraVideoManager::getSingleton().requestWork(this);
 			if (!mClip)
 			{
-				pt::psleep(30);
+				
+				pt::psleep(250);
 				continue;
 			}
 			
@@ -60,6 +61,7 @@ namespace Ogre
 			mClip->decodeNextFrame();
 
 			mClip->mAssignedWorkerThread=NULL;
+			pt::psleep(2);
 		}
 	}
 

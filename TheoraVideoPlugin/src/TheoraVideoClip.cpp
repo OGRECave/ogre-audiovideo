@@ -65,7 +65,9 @@ namespace Ogre
 		mOutputMode(TH_RGB),
 		mBackColourChanged(0),
 		mAudioInterface(NULL),
-		mAutoRestart(1)
+		mAutoRestart(0),
+		mAudioGain(1),
+		mEndOfFile(0)
 	{
 		mAudioMutex=new pt::mutex();
 
@@ -140,7 +142,7 @@ namespace Ogre
 
 	void TheoraVideoClip::decodeNextFrame()
 	{
-		if (mTimer->isPaused() && getNumPrecachedFrames() > 0) return;
+		if (mEndOfFile || mTimer->isPaused() && getNumPrecachedFrames() > 0) return;
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
 		ogg_packet opTheora;
@@ -191,7 +193,11 @@ namespace Ogre
 							mStream->seek(0); // if we reached the end, restart
 							continue;
 						}
-						else return;
+						else
+						{
+							mEndOfFile=true;
+							return;
+						}
 					}
 				}
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
@@ -265,6 +271,17 @@ namespace Ogre
 					continue;
 				}
 				else break;
+			}
+			if (mAudioGain < 1)
+			{
+				// gain applied, let's attenuate the samples
+				for (int i=0;i<len;i++)
+				{
+					for (int j=0;j<mVorbisInfo.channels;j++)
+					{
+						pcm[j][i]*=mAudioGain;
+					}
+				}
 			}
 			mAudioInterface->insertData(pcm,len);
 			vorbis_synthesis_read(&mVorbisDSPState,len);
@@ -659,6 +676,7 @@ namespace Ogre
 	void TheoraVideoClip::seek(float time)
 	{
 		mSeekPos=time;
+		mEndOfFile=false;
 		
 	}
 
@@ -675,6 +693,29 @@ namespace Ogre
 	TheoraAudioInterface* TheoraVideoClip::getAudioInterface()
 	{
 		return mAudioInterface;
+	}
+
+	void TheoraVideoClip::setAudioGain(float gain)
+	{
+		if (gain > 1) mAudioGain=1;
+		if (gain < 0) mAudioGain=0;
+		else          mAudioGain=gain;
+	}
+
+	float TheoraVideoClip::getAudioGain()
+	{
+		return mAudioGain;
+	}
+
+	void TheoraVideoClip::setAutoRestart(bool value)
+	{
+		mAutoRestart=value;
+		if (value) mEndOfFile=false;
+	}
+
+	bool TheoraVideoClip::getAutoRestart()
+	{
+		return mAutoRestart;
 	}
 
 } // end namespace Ogre

@@ -91,6 +91,8 @@ namespace Ogre
 		int mWidth,mHeight;
 		int mTexWidth,mTexHeight;
 		float mDuration;
+
+		float mAudioGain; //! multiplier for audio samples. between 0 and 1
 		float mSeekPos; //! stores desired seek position. next worker thread will do the seeking and reset this var to -1
 		TheoraOutputMode mOutputMode;
 
@@ -101,6 +103,7 @@ namespace Ogre
 		int mTexLevel;
 		bool mBackColourChanged;
 		bool mAutoRestart;
+		bool mEndOfFile;
 
 		float mUserPriority;
 
@@ -153,6 +156,11 @@ namespace Ogre
 
 		void setNumPrecachedFrames(int n);
 		int getNumPrecachedFrames();
+
+		void setAudioGain(float gain);
+		float getAudioGain();
+		void setAutoRestart(bool value);
+		bool getAutoRestart();
 
 		/**
 		 * sets a user priority factor.

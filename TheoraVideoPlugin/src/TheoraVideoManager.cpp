@@ -187,7 +187,6 @@ namespace Ogre
 
 	bool TheoraVideoManager::frameStarted(const FrameEvent& evt)
 	{
-
 		ClipList::iterator ci;
 		for (ci=mClips.begin(); ci != mClips.end();ci++)
 		{
