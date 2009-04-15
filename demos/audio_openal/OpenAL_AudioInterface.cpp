@@ -80,8 +80,8 @@ namespace Ogre
 				ALuint format = (mNumChannels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 				alBufferData(buff.id,format,mTempBuffer,mBuffSize*2,mFreq);
 				alSourceQueueBuffers(mSource, 1, &buff.id);
-				buff.nSamples=mBuffSize;
-				mNumProcessedSamples+=mBuffSize;
+				buff.nSamples=mBuffSize/mNumChannels;
+				mNumProcessedSamples+=mBuffSize/mNumChannels;
 				mBufferQueue.push(buff);
 
 				mBuffSize=0;
