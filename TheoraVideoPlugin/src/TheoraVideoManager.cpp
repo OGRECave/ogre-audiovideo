@@ -196,31 +196,30 @@ namespace Ogre
 		return true;
 	}
 
-	TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
-	{
-		if (!mWorkMutex) return NULL;
-		mWorkMutex->lock();
-		TheoraVideoClip* c=NULL;
-		static unsigned int cnt=0;
-		unsigned int i;
-		ClipList::iterator it;
-		if (mClips.size() == 0) c=NULL;
-		else
-		{
-			for (it=mClips.begin(),i=0;i<cnt;it++,i++)
-			{
-
-			}
-			if ((*it)->mAssignedWorkerThread == NULL)
-			{
+  TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
+   {
+      if (!mWorkMutex) return NULL;
+      mWorkMutex->lock();
+      TheoraVideoClip* c=NULL;
+      static unsigned int cnt=0;
+      unsigned int i;
+      ClipList::iterator it;
+      if (mClips.size() == 0) c=NULL;
+      else
+      {
+         for (it=mClips.begin(); it != mClips.end(); it++)
+         {
+			 if ((*it)->mAssignedWorkerThread == NULL)
+			 {
 				c=*it;
 				c->mAssignedWorkerThread=caller;
-				
-			}
-		}
-		cnt++;
-		if (cnt >= mClips.size()) cnt=0;
-		mWorkMutex->unlock();
-		return c;
-	}
+				continue;
+			 }
+         }
+      }
+      cnt++;
+      if (cnt >= mClips.size()) cnt=0;
+      mWorkMutex->unlock();
+      return c;
+   }
 } // end namespace Ogre

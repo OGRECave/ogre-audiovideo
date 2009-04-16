@@ -257,7 +257,7 @@ namespace Ogre
 		if (!mAudioInterface) return;
 
 		mAudioMutex->lock();
-		
+
 		ogg_packet opVorbis;
 		float **pcm;
 		int len=0;
@@ -622,14 +622,21 @@ namespace Ogre
 		mFrameQueue->clear();
 		ogg_stream_reset(&mTheoraStreamState);
 		th_decode_free(mTheoraDecoder);
+		if (mAudioInterface)
+		{
+			
+			vorbis_synthesis_restart(&mVorbisDSPState);
+			//vorbis_synthesis_init(&mVorbisDSPState,&mVorbisInfo);
+			//vorbis_block_init(&mVorbisDSPState,&mVorbisBlock);
+			ogg_stream_reset(&mVorbisStreamState);
+			mAudioMutex->lock();
+		}
 		mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
 
 		for (i=0;i<10;i++) // max 10 seek operations
 		{
 			ogg_sync_reset( &mOggSyncState );
 			mStream->seek((seek_min+seek_max)/2);
-			
-
 
 			memset(&mOggPage, 0, sizeof(ogg_page));
 			ogg_sync_pageseek(&mOggSyncState,&mOggPage);
@@ -641,29 +648,31 @@ namespace Ogre
 					//ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
 
 					int serno=ogg_page_serialno(&mOggPage);
-					// if page is not a theora page, skip it
-
-					if (serno != mTheoraStreamState.serialno)
-					{
-						continue;
-					}
-					else
+					// if audio is available, use vorbis for time positioning
+					// othervise use theora
+					if ( mAudioInterface && serno == mVorbisStreamState.serialno ||
+						     !mAudioInterface && serno == mTheoraStreamState.serialno)
 					{
 						granule=ogg_page_granulepos(&mOggPage);
 						if (granule >= 0) break;
 					}
+					else continue; // unknown page (could be flac or whatever)
 					int eos=ogg_page_eos(&mOggPage);
-					if (eos > 0) return;
+					if (eos > 0) break;
 				}
 				else
 				{
 					char *buffer = ogg_sync_buffer( &mOggSyncState, 4096);
 					int bytesRead = mStream->read( buffer, 4096);
+					if (bytesRead < 4096) break;
 					ogg_sync_wrote( &mOggSyncState, bytesRead );
 				}
 			}
-			time=th_granule_time(mTheoraDecoder,granule);
-			if (fabs(mSeekPos-time) < 0.5) break; // ok, we're close enough
+			if (mAudioInterface)
+				time=vorbis_granule_time(&mVorbisDSPState,granule);
+			else
+				time=th_granule_time(mTheoraDecoder,granule);
+			if (time <= mSeekPos && mSeekPos-time < 0.5) break; // ok, we're close enough
 			
 			if (time < mSeekPos) seek_min=(seek_min+seek_max)/2;
 			else				 seek_max=(seek_min+seek_max)/2;
@@ -673,13 +682,14 @@ namespace Ogre
 		mTimer->seek(time); // this will be changed in decodeNextFrame when seeking to the next keyframe
 		mStream->seek((seek_min+seek_max)/2);
 		mSeekPos=-2;
+
+		if (mAudioInterface) mAudioMutex->unlock();
 	}
 
 	void TheoraVideoClip::seek(float time)
 	{
 		mSeekPos=time;
 		mEndOfFile=false;
-		
 	}
 
 	float TheoraVideoClip::getPriority()

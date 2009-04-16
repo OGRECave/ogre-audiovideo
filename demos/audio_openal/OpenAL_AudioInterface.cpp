@@ -147,6 +147,27 @@ namespace Ogre
 		TheoraTimer::play();
 	}
 
+	void OpenAL_AudioInterface::seek(float time)
+	{
+		OpenAL_Buffer buff;
+
+		alSourceStop(mSource);
+		while (!mBufferQueue.empty())
+		{
+			buff=mBufferQueue.front();
+			mBufferQueue.pop();
+			alSourceUnqueueBuffers(mSource,1,&buff.id);
+			alDeleteBuffers(1,&buff.id);
+		}
+		int nProcessed;
+		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
+		if (nProcessed != 0)
+			nProcessed=nProcessed;
+		mBuffSize=0;
+		mTimeOffset=0;
+
+		mNumPlayedSamples=mNumProcessedSamples=time*mFreq;
+	}
 
 	OpenAL_AudioInterfaceFactory::OpenAL_AudioInterfaceFactory()
 	{

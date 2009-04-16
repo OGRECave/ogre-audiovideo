@@ -58,6 +58,7 @@ namespace Ogre
 
 		void pause();
 		void play();
+		void seek(float time);
 	};
 
 
