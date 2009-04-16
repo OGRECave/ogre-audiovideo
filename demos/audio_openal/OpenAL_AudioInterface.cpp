@@ -159,10 +159,10 @@ namespace Ogre
 			alSourceUnqueueBuffers(mSource,1,&buff.id);
 			alDeleteBuffers(1,&buff.id);
 		}
-		int nProcessed;
-		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
-		if (nProcessed != 0)
-			nProcessed=nProcessed;
+//		int nProcessed;
+//		alGetSourcei(mSource,AL_BUFFERS_PROCESSED,&nProcessed);
+//		if (nProcessed != 0)
+//			nProcessed=nProcessed;
 		mBuffSize=0;
 		mTimeOffset=0;
 

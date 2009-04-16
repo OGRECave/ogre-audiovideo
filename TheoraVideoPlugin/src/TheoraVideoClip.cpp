@@ -165,7 +165,7 @@ namespace Ogre
 					else
 					{
 						mSeekPos=-3; // -3 means we need to ensure the frame is displayed (otherwise it won't be if the video is paused)
-						mTimer->seek(time);
+						//mTimer->seek(time);
 					}
 				}
 
@@ -254,7 +254,7 @@ namespace Ogre
 
 	void TheoraVideoClip::decodedAudioCheck()
 	{
-		if (!mAudioInterface) return;
+		if (!mAudioInterface || mTimer->isPaused()) return;
 
 		mAudioMutex->lock();
 
