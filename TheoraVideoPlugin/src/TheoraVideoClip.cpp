@@ -102,26 +102,28 @@ namespace Ogre
 			mStream.setNull();
 		}
 
-		ogg_stream_destroy(&mTheoraStreamState);
 		th_decode_free(mTheoraDecoder);
-		th_comment_clear(&mTheoraComment);
-		th_info_clear(&mTheoraInfo);
+		//th_comment_clear(&mTheoraComment);
+		//th_info_clear(&mTheoraInfo);
 		th_setup_free(mTheoraSetup);
+
+		//ogg_stream_clear(&mTheoraStreamState);
 
 		if (mAudioInterface)
 		{
 			mAudioMutex->lock(); // ensure a thread isn't using this mutex
 
-			ogg_stream_destroy(&mVorbisStreamState);
-			vorbis_block_clear(&mVorbisBlock);
-			vorbis_dsp_clear(&mVorbisDSPState);
-			vorbis_comment_clear(&mVorbisComment);
-			vorbis_info_clear(&mVorbisInfo);
+		// probably not necesarry because all it does is memset to 0
+		//	ogg_stream_clear(&mVorbisStreamState);
+		//	vorbis_block_clear(&mVorbisBlock);
+		//	vorbis_dsp_clear(&mVorbisDSPState);
+		//	vorbis_comment_clear(&mVorbisComment);
+		//	vorbis_info_clear(&mVorbisInfo);
 			mAudioInterface->destroy(); // notify audio interface it's time to call it a day
 		}
 		delete mAudioMutex;
 
-		ogg_sync_destroy(&mOggSyncState);
+		//ogg_sync_clear(&mOggSyncState);
 	}
 
 	String TheoraVideoClip::getMaterialName()
