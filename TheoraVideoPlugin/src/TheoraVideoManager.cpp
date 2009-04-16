@@ -60,8 +60,10 @@ namespace Ogre
 		if (mbInit) return false;
 		addBaseParams(); // ExternalTextureSource's function
 
-		// create worker threads
+		// for CPU yuv2rgb decoding
+		createYUVtoRGBtables();
 
+		// create worker threads
 		TheoraWorkerThread* t;
 		for (int i=0;i<1;i++)
 		{
@@ -69,9 +71,6 @@ namespace Ogre
 			t->start();
 			mWorkerThreads.push_back(t);
 		}
-
-		// for CPU yuv2rgb decoding
-		createYUVtoRGBtables();
 
 		mbInit=true;
 		return true;
@@ -196,30 +195,30 @@ namespace Ogre
 		return true;
 	}
 
-  TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
-   {
-      if (!mWorkMutex) return NULL;
-      mWorkMutex->lock();
-      TheoraVideoClip* c=NULL;
-      static unsigned int cnt=0;
-      unsigned int i;
-      ClipList::iterator it;
-      if (mClips.size() == 0) c=NULL;
-      else
-      {
-         for (it=mClips.begin(); it != mClips.end(); it++)
-         {
-			 if ((*it)->mAssignedWorkerThread == NULL)
-			 {
-				c=*it;
-				c->mAssignedWorkerThread=caller;
-				continue;
-			 }
-         }
-      }
-      cnt++;
-      if (cnt >= mClips.size()) cnt=0;
-      mWorkMutex->unlock();
-      return c;
-   }
+	TheoraVideoClip* TheoraVideoManager::requestWork(TheoraWorkerThread* caller)
+	{
+		if (!mWorkMutex) return NULL;
+		mWorkMutex->lock();
+		TheoraVideoClip* c=NULL;
+
+		unsigned int i;
+		ClipList::iterator it;
+		if (mClips.size() == 0) c=NULL;
+		else
+		{
+			for (it=mClips.begin(); it != mClips.end(); it++)
+			{
+				int p,lp=0xfffffff;
+				p=(*it)->getPriority();
+				if (p < lp)
+				{
+					lp=p;
+					c=*it;
+				}
+			}
+			c->mAssignedWorkerThread=caller;
+		}
+		mWorkMutex->unlock();
+		return c;
+	}
 } // end namespace Ogre

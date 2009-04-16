@@ -694,7 +694,11 @@ namespace Ogre
 
 	float TheoraVideoClip::getPriority()
 	{
-		return 0;
+		// prioritize based on number of precached frames
+		// this way, we get even distribution of work among worker threads
+		// in the future this function will involve to include user priorities
+		// and to de-prioritize paused videos etc
+		return getNumPrecachedFrames()*10;
 	}
 
 	void TheoraVideoClip::setAudioInterface(TheoraAudioInterface* iface)
