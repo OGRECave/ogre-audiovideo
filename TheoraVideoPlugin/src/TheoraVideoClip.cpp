@@ -147,6 +147,7 @@ namespace Ogre
 		if (mEndOfFile || mTimer->isPaused() && getNumPrecachedFrames() > 0) return;
 		TheoraVideoFrame* frame=mFrameQueue->requestEmptyFrame();
 		if (!frame) return; // max number of precached frames reached
+		long seek_granule=-1;
 		ogg_packet opTheora;
 		ogg_int64_t granulePos;
 		th_ycbcr_buffer buff;
@@ -159,16 +160,23 @@ namespace Ogre
 			{
 				if (th_decode_packetin(mTheoraDecoder, &opTheora,&granulePos ) != 0) continue; // 0 means success
 				float time=th_granule_time(mTheoraDecoder,granulePos);
+				
 				if (mSeekPos == -2)
 				{
 					if (!th_packet_iskeyframe(&opTheora)) continue; // get keyframe after seek
 					else
 					{
 						mSeekPos=-3; // -3 means we need to ensure the frame is displayed (otherwise it won't be if the video is paused)
-						//mTimer->seek(time);
+						
+						//if we use audio we must maintain perfect sync
+						if (seek_granule != -1)
+						{
+							float time=vorbis_granule_time(&mVorbisDSPState,seek_granule);
+							mTimer->seek(time);
+						}
 					}
 				}
-
+				
 				if (time < mTimer->getTime()) continue; // drop frame
 				frame->mTimeToDisplay=time;
 				th_decode_ycbcr_out(mTheoraDecoder,buff);
@@ -205,13 +213,20 @@ namespace Ogre
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
 				{
 					if (mTheoraStreams) ogg_stream_pagein(&mTheoraStreamState,&mOggPage);
-					if (mAudioInterface)
+					if (mAudioInterface && mSeekPos != -2)
 					{
-						int serno=ogg_page_serialno(&mOggPage);
-
 						mAudioMutex->lock();
 						ogg_stream_pagein(&mVorbisStreamState,&mOggPage);
 						mAudioMutex->unlock();
+					}
+					else if (mAudioInterface && mSeekPos == -2)
+					{
+						if ( ogg_page_serialno(&mOggPage) == mVorbisStreamState.serialno)
+						{
+							int g=ogg_page_granulepos(&mOggPage);
+							if (g != -1) seek_granule=g;
+							
+						}
 					}
 				}
 			}
@@ -617,7 +632,7 @@ namespace Ogre
 	{
 		int i,seek_min=0, seek_max=mStream->size();
 		float time;
-		ogg_int64_t granule;
+		ogg_int64_t granule,th_granule;
 
 		mFrameQueue->clear();
 		ogg_stream_reset(&mTheoraStreamState);
@@ -648,13 +663,18 @@ namespace Ogre
 					//ogg_stream_pagein( &mTheoraStreamState, &mOggPage );
 
 					int serno=ogg_page_serialno(&mOggPage);
+					if (serno == mTheoraStreamState.serialno)
+					{
+						int g=ogg_page_granulepos(&mOggPage);
+						if (g > -1) th_granule=g;
+					}
 					// if audio is available, use vorbis for time positioning
 					// othervise use theora
 					if ( mAudioInterface && serno == mVorbisStreamState.serialno ||
 						     !mAudioInterface && serno == mTheoraStreamState.serialno)
 					{
 						granule=ogg_page_granulepos(&mOggPage);
-						if (granule >= 0) break;
+						if (granule >= 0 && th_granule >= 0) break;
 					}
 					else continue; // unknown page (could be flac or whatever)
 					int eos=ogg_page_eos(&mOggPage);
@@ -678,7 +698,7 @@ namespace Ogre
 			else				 seek_max=(seek_min+seek_max)/2;
 		}
 		ogg_sync_reset( &mOggSyncState );
-		th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
+		th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&th_granule,sizeof(th_granule));
 		mTimer->seek(time); // this will be changed in decodeNextFrame when seeking to the next keyframe
 		mStream->seek((seek_min+seek_max)/2);
 		mSeekPos=-2;
