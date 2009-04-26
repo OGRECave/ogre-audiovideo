@@ -67,7 +67,10 @@ namespace Ogre
 		mAudioInterface(NULL),
 		mAutoRestart(0),
 		mAudioGain(1),
-		mEndOfFile(0)
+		mEndOfFile(0),
+		mTheoraDecoder(0),
+		mTheoraSetup(0),
+		mTexture(0)
 	{
 		mAudioMutex=new pt::mutex();
 
@@ -88,13 +91,17 @@ namespace Ogre
 		memset(&mVorbisDSPState, 0, sizeof(vorbis_dsp_state));
 		memset(&mVorbisBlock, 0, sizeof(vorbis_block));
 		memset(&mVorbisComment, 0, sizeof(vorbis_comment));
-
-		mTheoraSetup=NULL;
 	}
 
 	TheoraVideoClip::~TheoraVideoClip()
 	{
 		delete mDefaultTimer;
+
+		// wait untill a worker thread is done decoding the frame
+		while (mAssignedWorkerThread)
+		{
+			pt::psleep(1);
+		}
 
 		if (!(mStream.isNull()))
 		{
@@ -102,12 +109,16 @@ namespace Ogre
 			mStream.setNull();
 		}
 
-		th_decode_free(mTheoraDecoder);
-		//th_comment_clear(&mTheoraComment);
-		//th_info_clear(&mTheoraInfo);
-		th_setup_free(mTheoraSetup);
+		if (mTheoraDecoder)
+			th_decode_free(mTheoraDecoder);
 
-		//ogg_stream_clear(&mTheoraStreamState);
+		if (mTheoraSetup)
+			th_setup_free(mTheoraSetup);
+
+		if (mTexture)
+		{
+			TextureManager::getSingleton().remove(mTexture);
+		}
 
 		if (mAudioInterface)
 		{
@@ -625,7 +636,8 @@ namespace Ogre
 
 	void TheoraVideoClip::stop()
 	{
-	
+		pause();
+		seek(0);
 	}
 
 	void TheoraVideoClip::doSeek()
@@ -639,10 +651,7 @@ namespace Ogre
 		th_decode_free(mTheoraDecoder);
 		if (mAudioInterface)
 		{
-			
 			vorbis_synthesis_restart(&mVorbisDSPState);
-			//vorbis_synthesis_init(&mVorbisDSPState,&mVorbisInfo);
-			//vorbis_block_init(&mVorbisDSPState,&mVorbisBlock);
 			ogg_stream_reset(&mVorbisStreamState);
 			mAudioMutex->lock();
 		}

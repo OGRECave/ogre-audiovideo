@@ -101,12 +101,19 @@ namespace Ogre
 		
 		/**
 			@remarks
-				Destroys a Video Texture.
+				Destroys a Video Texture based on material name. Mostly Ogre uses this,
+				you should use destroyVideoClip()
 			@param material_name
 				Material Name you are looking to remove a video clip from
 		*/
 		void destroyAdvancedTexture(const String& material_name,
                                     const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+		/**
+			@remarks
+				Destroys a video clip
+		*/
+		void destroyVideoClip(TheoraVideoClip* clip);
 
 		bool frameStarted(const FrameEvent& evt);
 

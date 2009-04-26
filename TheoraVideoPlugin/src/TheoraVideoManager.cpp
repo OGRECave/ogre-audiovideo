@@ -175,13 +175,21 @@ namespace Ogre
 		{
 			if ((*i)->getMaterialName() == material_name)
 			{
-				delete (*i);
-				mClips.erase(i);
+				destroyVideoClip(*i);
 				return;
 			}
 		}
-		
+
 		LogManager::getSingleton().logMessage("Error destroying ogg_video texture, texture not found!");
+	}
+
+	void TheoraVideoManager::destroyVideoClip(TheoraVideoClip* clip)
+	{
+		if (clip)
+		{
+			mClips.remove(clip);
+			delete clip;
+		}
 	}
 
 	bool TheoraVideoManager::frameStarted(const FrameEvent& evt)
