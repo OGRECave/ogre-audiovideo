@@ -95,13 +95,13 @@ namespace Ogre
 
 	TheoraVideoClip::~TheoraVideoClip()
 	{
-		delete mDefaultTimer;
-
 		// wait untill a worker thread is done decoding the frame
 		while (mAssignedWorkerThread)
 		{
 			pt::psleep(1);
 		}
+
+		delete mDefaultTimer;
 
 		if (!(mStream.isNull()))
 		{
@@ -115,9 +115,9 @@ namespace Ogre
 		if (mTheoraSetup)
 			th_setup_free(mTheoraSetup);
 
-		if (mTexture)
+		if (!mTexture.isNull())
 		{
-			TextureManager::getSingleton().remove(mTexture);
+			TextureManager::getSingleton().remove(mTexture->getName());
 		}
 
 		if (mAudioInterface)
@@ -206,7 +206,7 @@ namespace Ogre
 						if (mAutoRestart)
 						{
 							long granule=0;
-							//th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
+							th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
 							th_decode_free(mTheoraDecoder);
 							mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
 							ogg_stream_reset(&mTheoraStreamState);
@@ -248,13 +248,23 @@ namespace Ogre
 	{
 		if (mTimer->isPaused() && mSeekPos != -3) return;
 		if (mSeekPos == -3) mSeekPos=-1; // -3 ensures the first frame after seek gets displayed even when the movie is paused
-		mTimer->update(time_increase);
 		TheoraVideoFrame* frame;
+		mTimer->update(time_increase);
+		if (mAutoRestart && mTimer->getTime() >= getDuration())
+		{
+			mTimer->seek(mTimer->getTime()-getDuration());
+		}
+		
 		while (true)
 		{
 			frame=mFrameQueue->getFirstAvailableFrame();
 			if (!frame) return; // no frames ready
 			
+			if (frame->mTimeToDisplay-mTimer->getTime() > 1)
+			{
+				mFrameQueue->pop(); // this happens on Auto restart if there are some leftover frames
+				continue;
+			}
 			if (frame->mTimeToDisplay > mTimer->getTime()) return;
 			if (frame->mTimeToDisplay < mTimer->getTime()-0.1)
 			{

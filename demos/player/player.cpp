@@ -21,7 +21,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
 #include "TheoraDemoApp.h"
 
-#define VIDEO_FILE "fedora03.ogg"
+#define VIDEO_FILE "konqi.ogg"
 
 namespace Ogre
 {

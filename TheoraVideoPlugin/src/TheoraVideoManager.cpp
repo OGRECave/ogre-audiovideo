@@ -187,8 +187,10 @@ namespace Ogre
 	{
 		if (clip)
 		{
+			mWorkMutex->lock();
 			mClips.remove(clip);
 			delete clip;
+			mWorkMutex->unlock();
 		}
 	}
 
