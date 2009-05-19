@@ -773,4 +773,29 @@ namespace Ogre
 		return mAutoRestart;
 	}
 
+	int TheoraVideoClip::getWidth()
+	{
+		return mWidth;	
+	}
+
+	int TheoraVideoClip::getHeight()
+	{
+		return mHeight;
+	}
+
+	int TheoraVideoClip::getTextureWidth()
+	{
+		return mTexWidth;
+	}
+
+	int TheoraVideoClip::getTextureHeight()
+	{
+		return mTexHeight;
+	}
+
+	TexturePtr TheoraVideoClip::getTexture()
+	{
+		return mTexture;
+	}
+
 } // end namespace Ogre

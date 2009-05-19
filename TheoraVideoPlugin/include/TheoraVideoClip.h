@@ -133,7 +133,13 @@ namespace Ogre
 		int getWidth();
 		//! return height in pixels of the video clip
 		int getHeight();
-		
+		//! return actual width that the texture uses (nearest power of two dimension)
+		int getTextureWidth();
+		//! return actual height that the texture uses (nearest power of two dimension)
+		int getTextureHeight();
+		//! return texture pointer
+		TexturePtr getTexture();
+
 		TheoraTimer* getTimer();
 		void setTimer(TheoraTimer* timer);
 
