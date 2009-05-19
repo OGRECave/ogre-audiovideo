@@ -211,20 +211,27 @@ namespace Ogre
 		mWorkMutex->lock();
 		TheoraVideoClip* c=NULL;
 
-		unsigned int i;
+		static unsigned int counter=0;
+		if (counter >= mClips.size()) counter=0;
+		int i=counter;
+		counter++;
 		ClipList::iterator it;
 		if (mClips.size() == 0) c=NULL;
 		else
 		{
 			for (it=mClips.begin(); it != mClips.end(); it++)
 			{
+				/* priority based scheduling, unstable and experimental at the moment
 				int p,lp=0xfffffff;
 				p=(*it)->getPriority();
 				if (p < lp)
 				{
 					lp=p;
 					c=*it;
-				}
+				}*/
+				if (i == 0) { c=*it; break; }
+				i--;
+
 			}
 			c->mAssignedWorkerThread=caller;
 		}
