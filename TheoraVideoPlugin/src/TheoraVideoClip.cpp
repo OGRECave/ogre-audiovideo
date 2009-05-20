@@ -65,7 +65,7 @@ namespace Ogre
 		mOutputMode(TH_RGB),
 		mBackColourChanged(0),
 		mAudioInterface(NULL),
-		mAutoRestart(0),
+		mAutoRestart(1),
 		mAudioGain(1),
 		mEndOfFile(0),
 		mTheoraDecoder(0),
@@ -208,22 +208,8 @@ namespace Ogre
 				{
 					if (bytesRead == 0)
 					{
-						if (mAutoRestart)
-						{
-							long granule=0;
-							th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
-							th_decode_free(mTheoraDecoder);
-							mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
-							ogg_stream_reset(&mTheoraStreamState);
-							ogg_sync_reset(&mOggSyncState);
-							mStream->seek(0); // if we reached the end, restart
-							continue;
-						}
-						else
-						{
-							mEndOfFile=true;
-							return;
-						}
+						mEndOfFile=true;
+						return;
 					}
 				}
 				while ( ogg_sync_pageout( &mOggSyncState, &mOggPage ) > 0 )
@@ -252,24 +238,34 @@ namespace Ogre
 	void TheoraVideoClip::blitFrameCheck(float time_increase)
 	{
 		if (mTimer->isPaused() && mSeekPos != -3) return;
-		if (mSeekPos == -3) mSeekPos=-1; // -3 ensures the first frame after seek gets displayed even when the movie is paused
 		TheoraVideoFrame* frame;
 		mTimer->update(time_increase);
-		if (mAutoRestart && mTimer->getTime() >= getDuration())
-		{
-			mTimer->seek(mTimer->getTime()-getDuration());
-		}
 		
 		while (true)
 		{
 			frame=mFrameQueue->getFirstAvailableFrame();
-			if (!frame) return; // no frames ready
-			
-			if (frame->mTimeToDisplay-mTimer->getTime() > 1)
+			if (!frame)
 			{
-				mFrameQueue->pop(); // this happens on Auto restart if there are some leftover frames
-				continue;
+				if (mEndOfFile && mAutoRestart)
+				{
+					long granule=0;
+					th_decode_ctl(mTheoraDecoder,TH_DECCTL_SET_GRANPOS,&granule,sizeof(granule));
+					th_decode_free(mTheoraDecoder);
+					mTheoraDecoder=th_decode_alloc(&mTheoraInfo,mTheoraSetup);
+					ogg_stream_reset(&mTheoraStreamState);
+					ogg_sync_reset(&mOggSyncState);
+					mStream->seek(0);
+					mTimer->seek(0);
+					mEndOfFile=false;
+					mFrameQueue->clear();
+				}
+				return; // no frames ready
 			}
+			//if (frame->mTimeToDisplay-mTimer->getTime() > 1)
+			//{
+			//	mFrameQueue->pop(); // this happens on Auto restart if there are some leftover frames
+			//	continue;
+			//}
 			if (frame->mTimeToDisplay > mTimer->getTime()) return;
 			if (frame->mTimeToDisplay < mTimer->getTime()-0.1)
 			{
@@ -277,6 +273,8 @@ namespace Ogre
 			}
 			else break;
 		}
+		if (mSeekPos == -3)
+			mSeekPos=-1; // -3 ensures the first frame after seek gets displayed even when the movie is paused
 
 		// use blitFromMemory or smtg faster
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
@@ -716,7 +714,7 @@ namespace Ogre
 				time=vorbis_granule_time(&mVorbisDSPState,granule);
 			else
 				time=th_granule_time(mTheoraDecoder,granule);
-			if (time <= mSeekPos && mSeekPos-time < 0.5) break; // ok, we're close enough
+			if (time <= mSeekPos && time-mSeekPos < 0.5 && time-mSeekPos >= 0) break; // ok, we're close enough
 			
 			if (time < mSeekPos) seek_min=(seek_min+seek_max)/2;
 			else				 seek_max=(seek_min+seek_max)/2;

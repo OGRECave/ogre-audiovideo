@@ -71,7 +71,7 @@ namespace Ogre
 	TheoraVideoClip* getClip(String name)
 	{
 		TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
-		return mgr->getVideoClipByName("konqi.ogg");
+		return mgr->getVideoClipByName(name);
 	}
 
     #define EVENT(wnd_name,function) \
