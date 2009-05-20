@@ -117,7 +117,10 @@ namespace Ogre
 
 		if (!mTexture.isNull())
 		{
-			TextureManager::getSingleton().remove(mTexture->getName());
+			String name=mTexture->getName();
+			mTexture.setNull();
+			TextureManager::getSingleton().unload(name);
+			
 		}
 
 		if (mAudioInterface)
@@ -162,6 +165,8 @@ namespace Ogre
 		ogg_packet opTheora;
 		ogg_int64_t granulePos;
 		th_ycbcr_buffer buff;
+
+		//LogManager::getSingleton().logMessage("Decoding video "+mName);
 
 		for(;;)
 		{

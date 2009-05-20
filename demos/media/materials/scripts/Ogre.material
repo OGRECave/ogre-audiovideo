@@ -17,6 +17,27 @@ material video_material
 		}
 	}
 }
+
+material video_material_1
+{
+	technique
+	{
+		pass
+		{
+			cull_software none
+			cull_hardware none
+			lighting off
+			ambient 0 0 0
+			diffuse 1 1 1
+			texture_unit
+			{
+
+			}
+
+		}
+	}
+}
+
 material Core/StatsBlockBorder/Down
 {
 	technique
