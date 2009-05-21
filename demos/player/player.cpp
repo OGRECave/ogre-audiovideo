@@ -170,9 +170,9 @@ namespace Ogre
 			mgr->createDefinedTexture("video_material");
 		//	mgr->createDefinedTexture("video_material_1");
 
-		//	TheoraVideoClip*c=mgr->getVideoClipByMaterialName("video_material_1");
+		//	TheoraVideoClip*c=mgr->getVideoClipByMaterialName("video_material");
 		//	mgr->destroyVideoClip(c);
-		//	mgr->createDefinedTexture("video_material_1");
+		//	mgr->createDefinedTexture("video_material");
 		}
 	};
 

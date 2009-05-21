@@ -36,6 +36,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraAudioInterface.h"
 #include "TheoraTimer.h"
 
+int gNameCounter=0;
+
 namespace Ogre
 {
 	int nextPow2(int x)
@@ -343,7 +345,10 @@ namespace Ogre
 		mPassLevel=pass_level;
 		mTexLevel=tex_level;
 		// create texture
-		mTexture = TextureManager::getSingleton().createManual(mName,group_name,TEX_TYPE_2D,
+		
+		String texname="theora_texture_"+StringConverter::toString(gNameCounter++);
+
+		mTexture = TextureManager::getSingleton().createManual(texname,group_name,TEX_TYPE_2D,
 			mTexWidth,mTexHeight,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
 		// clear it to black
 		unsigned char* texData=(unsigned char*) mTexture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
@@ -360,7 +365,7 @@ namespace Ogre
 			getPass(mPassLevel)->getTextureUnitState(mTexLevel);
 
 		//Now, attach the texture to the material texture unit (single layer) and setup properties
-		t->setTextureName(mName,TEX_TYPE_2D);
+		t->setTextureName(texname,TEX_TYPE_2D);
 		t->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
 		t->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
 
