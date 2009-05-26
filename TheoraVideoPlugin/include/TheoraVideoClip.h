@@ -86,6 +86,7 @@ namespace Ogre
 		int mTheoraStreams, mVorbisStreams;	// Keeps track of Theora and Vorbis Streams
 
 		int mNumPrecachedFrames;
+		int mAudioSkipSeekFlag;
 
 		String mName;
 		int mWidth,mHeight;
