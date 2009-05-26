@@ -189,8 +189,8 @@ namespace Ogre
 						//if we use audio we must maintain perfect sync
 						if (seek_granule != -1)
 						{
-							float time=vorbis_granule_time(&mVorbisDSPState,seek_granule);
-							mTimer->seek(time);
+							float vorbis_time=vorbis_granule_time(&mVorbisDSPState,seek_granule);
+							mTimer->seek(vorbis_time);
 						}
 					}
 				}
@@ -405,7 +405,7 @@ namespace Ogre
 
 		long stream_pos=mStream->tell();
 
-		for (int i=1;i<=3;i++)
+		for (int i=1;i<=10;i++)
 		{
 			ogg_sync_reset(&mOggSyncState);
 			mStream->seek(mStream->size()-4096*i);
