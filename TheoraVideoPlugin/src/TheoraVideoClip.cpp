@@ -112,6 +112,8 @@ namespace Ogre
 			mStream.setNull();
 		}
 
+		if (mFrameQueue) delete mFrameQueue;
+
 		if (mTheoraDecoder)
 			th_decode_free(mTheoraDecoder);
 
