@@ -22,7 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #ifndef _TheoraWorkerThread_h
 #define _TheoraWorkerThread_h
 
-#include "pasync.h"
+#include <ptypes/pasync.h>
 
 namespace Ogre
 {

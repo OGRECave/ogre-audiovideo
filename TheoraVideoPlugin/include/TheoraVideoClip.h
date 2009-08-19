@@ -26,8 +26,8 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "TheoraExport.h"
 #include "OgreDataStream.h"
 #include "OgreTexture.h"
-#include "theora/theoradec.h"
-#include "vorbis/codec.h"
+#include <theora/theoradec.h>
+#include <vorbis/codec.h>
 
 enum TheoraOutputMode
 {

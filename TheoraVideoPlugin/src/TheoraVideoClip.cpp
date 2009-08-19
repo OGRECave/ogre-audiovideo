@@ -27,7 +27,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreLogManager.h"
 #include "OgreHardwarePixelBuffer.h"
 
-#include "pasync.h"
+#include <ptypes/pasync.h>
 
 #include "TheoraVideoClip.h"
 #include "TheoraVideoManager.h"

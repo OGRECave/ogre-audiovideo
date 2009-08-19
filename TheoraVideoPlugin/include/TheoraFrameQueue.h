@@ -23,7 +23,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #ifndef _TheoraFrameQueue_h
 #define _TheoraFrameQueue_h
 
-#include "pasync.h"
+#include <ptypes/pasync.h>
 
 namespace Ogre
 {
