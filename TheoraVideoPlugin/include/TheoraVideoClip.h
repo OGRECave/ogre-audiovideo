@@ -190,6 +190,7 @@ namespace Ogre
 		TheoraOutputMode getOutputMode();
 		void setOutputMode(TheoraOutputMode mode);
 
+        bool isDone();
 		void play();
 		void pause();
 		bool isPaused();

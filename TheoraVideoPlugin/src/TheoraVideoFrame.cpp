@@ -24,9 +24,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	#define MAX( a, b ) ((a > b) ? a : b)
-	#define MIN( a, b ) ((a < b) ? a : b)
-	#define CLIP_RGB_COLOR( rgb_color_test ) MAX( MIN(rgb_color_test, 255), 0 )
+	#define TH_MAX( a, b ) ((a > b) ? a : b)
+	#define TH_MIN( a, b ) ((a < b) ? a : b)
+	#define CLIP_RGB_COLOR( rgb_color_test ) TH_MAX( TH_MIN(rgb_color_test, 255), 0 )
 
 	unsigned int YTable [256];
 	unsigned int BUTable[256];
@@ -74,27 +74,42 @@ namespace Ogre
 					  *uSrc=yuv[1].data, *uSrc2=yuv[1].data,
 		              *vSrc=yuv[2].data, *vSrc2=yuv[2].data;
 		unsigned int *out=(unsigned int*) mBuffer;
-		int r, g, b, cu, cv, bU, gUV, rV, rgbY;
+		int r, g, b, cu, cy, cv, bU, gUV, rV, rgbY;
 
 		for (y=0;y<yuv[0].height;y++)
 		{
 			t=0; ySrc=ySrc2; ySrcEnd=ySrc2+yuv[0].width; uSrc=uSrc2; vSrc=vSrc2;
 			while (ySrc != ySrcEnd)
 			{
+                cy=*ySrc;
+                
+                // the following #ifdefs are (should be) temporary. There is something wrong with the conversion
+                // tables on MacOS and I can't figure it out (yet!).
+#ifndef __APPLE__
 				//get corresponding lookup values
-				rgbY = YTable[*ySrc];
+				rgbY = YTable[cy];
+#endif
 				if (t=!t == 1)
 				{
 					cu=*uSrc; cv=*vSrc;
+#ifndef __APPLE__
 					rV   = RVTable[cv];
 					gUV  = GUTable[cu] + GVTable[cv];
 					bU   = BUTable[cu];
+#endif
 					uSrc++; vSrc++;
 				}
 				//scale down - brings are values back into the 8 bits of a byte
+#ifndef __APPLE__
 				r = CLIP_RGB_COLOR((rgbY + rV ) >> 13);
 				g = CLIP_RGB_COLOR((rgbY - gUV) >> 13);
 				b = CLIP_RGB_COLOR((rgbY + bU ) >> 13);
+#else
+                r = CLIP_RGB_COLOR(1.164*(cy - 16) + 1.596*(cv - 128));
+                b = CLIP_RGB_COLOR(1.164*(cy - 16)                   + 2.018*(cu - 128));
+                g = CLIP_RGB_COLOR( 1.164*(cy - 16) - 0.813*(cv - 128) - 0.391*(cu - 128));
+#endif
+                
 				*out=(((r << 8) | g) << 8) | b;
 				out++;
 				ySrc++;
@@ -173,10 +188,13 @@ namespace Ogre
 	{
 		//used to bring the table into the high side (scale up) so we
 		//can maintain high precision and not use floats (FIXED POINT)
-		int scale = 1L << 13,
-			temp;
+//        r = 1.164*(*ySrc - 16) + 1.596*(cv - 128);
+//        b = 1.164*(*ySrc - 16)                   + 2.018*(cu - 128);
+//        g = 1.164*(*ySrc - 16) - 0.813*(cv - 128) - 0.391*(cu - 128);
+#ifndef __APPLE__
+        double scale = 1L << 13, temp;
 		
-		for ( unsigned int i = 0; i < 256; i++ )
+		for (int i = 0; i < 256; i++)
 		{
 			temp = i - 128;
 			
@@ -189,6 +207,7 @@ namespace Ogre
 			
 			BUTable[i] = (unsigned int)((2.018 * scale + 0.5) * temp);		//Calc B component
 		}
+#endif
 	}
 
 } // end namespace Ogre

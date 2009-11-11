@@ -76,7 +76,7 @@ namespace Ogre
 		mOutputMode(TH_RGB),
 		mBackColourChanged(0),
 		mAudioInterface(NULL),
-		mAutoRestart(1),
+		mAutoRestart(0),
 		mAudioGain(1),
 		mEndOfFile(0),
 		mTheoraDecoder(0),
@@ -674,6 +674,11 @@ namespace Ogre
 	{
 		return mTimer->isPaused();
 	}
+    
+    bool TheoraVideoClip::isDone()
+    {
+        return mEndOfFile && !mFrameQueue->getFirstAvailableFrame();
+    }
 
 	void TheoraVideoClip::stop()
 	{

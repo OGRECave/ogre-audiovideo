@@ -43,6 +43,8 @@
 		7F9D5B25103D5427008598D4 /* TheoraVideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoManager.h; path = include/TheoraVideoManager.h; sourceTree = "<group>"; };
 		7F9D5B26103D5427008598D4 /* TheoraWorkerThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraWorkerThread.h; path = include/TheoraWorkerThread.h; sourceTree = "<group>"; };
 		D1920CB410A969AC00234D34 /* Ogre.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogre.framework; path = /Library/Frameworks/Ogre.framework; sourceTree = "<absolute>"; };
+		D1F1C69610AAE69100A53B2B /* libtheora.0.3.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtheora.0.3.4.dylib; sourceTree = "<group>"; };
+		D1F1C69710AAE69100A53B2B /* libtheora.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libtheora.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,8 @@
 		508817C209F0C9740071BF1A = {
 			isa = PBXGroup;
 			children = (
+				D1F1C69610AAE69100A53B2B /* libtheora.0.3.4.dylib */,
+				D1F1C69710AAE69100A53B2B /* libtheora.0.dylib */,
 				D1920CB410A969AC00234D34 /* Ogre.framework */,
 				7F9D5B1D103D540E008598D4 /* Headers */,
 				508817E509F0C9EF0071BF1A /* Configuration Files */,
@@ -136,6 +140,7 @@
 				508817D009F0C9AD0071BF1A /* Resources */,
 				508817D109F0C9AD0071BF1A /* Sources */,
 				508817D209F0C9AD0071BF1A /* Frameworks */,
+				D1F1C67E10AAE39A00A53B2B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -173,6 +178,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D1F1C67E10AAE39A00A53B2B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "install_name_tool -change /usr/local/lib/libtheora.0.dylib @executable_path/../Frameworks/libtheora.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libvorbis.0.dylib @executable_path/../Frameworks/libvorbis.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		508817D109F0C9AD0071BF1A /* Sources */ = {
@@ -249,6 +270,10 @@
 				GCC_USE_INDIRECT_FUNCTION_CALLS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				INFOPLIST_FILE = "TheoraVideoSystem-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = (
 					"-I/usr/include",
@@ -272,7 +297,7 @@
 			baseConfigurationReference = 508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -286,6 +311,10 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				INFOPLIST_FILE = "TheoraVideoSystem-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = (
 					"-I/usr/include",

@@ -104,6 +104,50 @@ namespace Ogre
 
 		mbInit=false;
 	}
+    
+    bool TheoraVideoManager::setParameter(const String &name,const String &value)
+    {
+        // Hacky stuff used in situations where you don't have access to TheoraVideoManager
+        // eg, like when using the plugin in python (and not using the wrapped version by Python-Ogre)
+        // these parameters are here temporarily and I don't encourage anyone to use them.
+        
+        if (name == "destroy")
+        {
+            // destroys the first video clip.
+            if (mClips.size() > 0)
+            {
+                mWorkMutex->lock();
+                TheoraVideoClip* c=*(mClips.begin());
+                delete c;
+                mClips.clear();
+                mWorkMutex->unlock();
+                
+                LogManager::getSingleton().logMessage("Ending Theora video playback");
+                return 1;
+            }
+        }
+        
+        return ExternalTextureSource::setParameter(name, value);
+    }
+    
+    String TheoraVideoManager::getParameter(const String &name) const
+    {
+        // Hacky stuff used in situations where you don't have access to TheoraVideoManager
+        // eg, like when using the plugin in python (and not using the wrapped version by Python-Ogre)
+        // these parameters are here temporarily and I don't encourage anyone to use them.
+
+        if (name == "started")
+        {
+            return (mClips.size() > 0) ? "1" : "0";
+        }
+        else if (name == "finished")
+        {
+            if (mClips.size() == 0) return "0";
+            TheoraVideoClip* c=*(mClips.begin());
+            return (c->isDone()) ? "1" : "0";
+        }
+        return ExternalTextureSource::getParameter(name);
+    }
 
 	TheoraVideoClip* TheoraVideoManager::getVideoClipByName(String name)
 	{
@@ -142,6 +186,7 @@ namespace Ogre
 		clip = new TheoraVideoClip(material_name,32);
 		try
 		{
+            LogManager::getSingleton().logMessage("video file: "+mInputFileName);
 			clip->createDefinedTexture(mInputFileName, material_name, group_name, mTechniqueLevel,
 						  mPassLevel, mStateLevel);
 

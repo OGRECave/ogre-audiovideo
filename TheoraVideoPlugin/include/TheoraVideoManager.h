@@ -122,6 +122,9 @@ namespace Ogre
 
 		bool frameStarted(const FrameEvent& evt);
 
+        bool setParameter(const String &name,const String &value);
+        String getParameter(const String &name) const;
+        
 		void setAudioInterfaceFactory(TheoraAudioInterfaceFactory* factory);
 		TheoraAudioInterfaceFactory* getAudioInterfaceFactory();
 
