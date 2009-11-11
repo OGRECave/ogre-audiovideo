@@ -1,0 +1,332 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7F9D5B13103D5400008598D4 /* TheoraAudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */; };
+		7F9D5B14103D5400008598D4 /* theoraDLLmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */; };
+		7F9D5B15103D5400008598D4 /* TheoraFrameQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */; };
+		7F9D5B16103D5400008598D4 /* TheoraMuteAudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */; };
+		7F9D5B17103D5400008598D4 /* TheoraTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */; };
+		7F9D5B18103D5400008598D4 /* TheoraVideoClip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */; };
+		7F9D5B19103D5400008598D4 /* TheoraVideoFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */; };
+		7F9D5B1A103D5400008598D4 /* TheoraVideoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */; };
+		7F9D5B1B103D5400008598D4 /* TheoraWorkerThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */; };
+		D1920CB510A969AC00234D34 /* Ogre.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1920CB410A969AC00234D34 /* Ogre.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		508817D409F0C9AD0071BF1A /* Plugin_TheoraVideoSystem.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Plugin_TheoraVideoSystem.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		508817D609F0C9AD0071BF1A /* TheoraVideoSystem-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; path = "TheoraVideoSystem-Info.plist"; sourceTree = "<group>"; };
+		508817E609F0CA040071BF1A /* TheoraVideoPluginProj.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = TheoraVideoPluginProj.xcconfig; sourceTree = "<group>"; };
+		508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = TheoraVideoPluginTarget.xcconfig; sourceTree = "<group>"; };
+		7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraAudioInterface.cpp; path = src/TheoraAudioInterface.cpp; sourceTree = "<group>"; };
+		7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = theoraDLLmain.cpp; path = src/theoraDLLmain.cpp; sourceTree = "<group>"; };
+		7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraFrameQueue.cpp; path = src/TheoraFrameQueue.cpp; sourceTree = "<group>"; };
+		7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraMuteAudioInterface.cpp; path = src/TheoraMuteAudioInterface.cpp; sourceTree = "<group>"; };
+		7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraTimer.cpp; path = src/TheoraTimer.cpp; sourceTree = "<group>"; };
+		7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoClip.cpp; path = src/TheoraVideoClip.cpp; sourceTree = "<group>"; };
+		7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoFrame.cpp; path = src/TheoraVideoFrame.cpp; sourceTree = "<group>"; };
+		7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoManager.cpp; path = src/TheoraVideoManager.cpp; sourceTree = "<group>"; };
+		7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraWorkerThread.cpp; path = src/TheoraWorkerThread.cpp; sourceTree = "<group>"; };
+		7F9D5B1E103D5427008598D4 /* TheoraAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraAudioInterface.h; path = include/TheoraAudioInterface.h; sourceTree = "<group>"; };
+		7F9D5B1F103D5427008598D4 /* TheoraExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraExport.h; path = include/TheoraExport.h; sourceTree = "<group>"; };
+		7F9D5B20103D5427008598D4 /* TheoraFrameQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraFrameQueue.h; path = include/TheoraFrameQueue.h; sourceTree = "<group>"; };
+		7F9D5B21103D5427008598D4 /* TheoraMuteAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraMuteAudioInterface.h; path = include/TheoraMuteAudioInterface.h; sourceTree = "<group>"; };
+		7F9D5B22103D5427008598D4 /* TheoraTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraTimer.h; path = include/TheoraTimer.h; sourceTree = "<group>"; };
+		7F9D5B23103D5427008598D4 /* TheoraVideoClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoClip.h; path = include/TheoraVideoClip.h; sourceTree = "<group>"; };
+		7F9D5B24103D5427008598D4 /* TheoraVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoFrame.h; path = include/TheoraVideoFrame.h; sourceTree = "<group>"; };
+		7F9D5B25103D5427008598D4 /* TheoraVideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoManager.h; path = include/TheoraVideoManager.h; sourceTree = "<group>"; };
+		7F9D5B26103D5427008598D4 /* TheoraWorkerThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraWorkerThread.h; path = include/TheoraWorkerThread.h; sourceTree = "<group>"; };
+		D1920CB410A969AC00234D34 /* Ogre.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogre.framework; path = /Library/Frameworks/Ogre.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		508817D209F0C9AD0071BF1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1920CB510A969AC00234D34 /* Ogre.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		508817C209F0C9740071BF1A = {
+			isa = PBXGroup;
+			children = (
+				D1920CB410A969AC00234D34 /* Ogre.framework */,
+				7F9D5B1D103D540E008598D4 /* Headers */,
+				508817E509F0C9EF0071BF1A /* Configuration Files */,
+				508817D609F0C9AD0071BF1A /* TheoraVideoSystem-Info.plist */,
+				508817F509F0CAB50071BF1A /* Sources */,
+				5088180609F0CDD00071BF1A /* External Frameworks and Libraries */,
+				508817D509F0C9AD0071BF1A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		508817D509F0C9AD0071BF1A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				508817D409F0C9AD0071BF1A /* Plugin_TheoraVideoSystem.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		508817E509F0C9EF0071BF1A /* Configuration Files */ = {
+			isa = PBXGroup;
+			children = (
+				508817E609F0CA040071BF1A /* TheoraVideoPluginProj.xcconfig */,
+				508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */,
+			);
+			name = "Configuration Files";
+			sourceTree = "<group>";
+		};
+		508817F509F0CAB50071BF1A /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */,
+				7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */,
+				7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */,
+				7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */,
+				7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */,
+				7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */,
+				7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */,
+				7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */,
+				7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		5088180609F0CDD00071BF1A /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		7F9D5B1D103D540E008598D4 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				7F9D5B1E103D5427008598D4 /* TheoraAudioInterface.h */,
+				7F9D5B1F103D5427008598D4 /* TheoraExport.h */,
+				7F9D5B20103D5427008598D4 /* TheoraFrameQueue.h */,
+				7F9D5B21103D5427008598D4 /* TheoraMuteAudioInterface.h */,
+				7F9D5B22103D5427008598D4 /* TheoraTimer.h */,
+				7F9D5B23103D5427008598D4 /* TheoraVideoClip.h */,
+				7F9D5B24103D5427008598D4 /* TheoraVideoFrame.h */,
+				7F9D5B25103D5427008598D4 /* TheoraVideoManager.h */,
+				7F9D5B26103D5427008598D4 /* TheoraWorkerThread.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		508817D309F0C9AD0071BF1A /* TheoraVideoSystem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 508817D709F0C9AE0071BF1A /* Build configuration list for PBXNativeTarget "TheoraVideoSystem" */;
+			buildPhases = (
+				508817D009F0C9AD0071BF1A /* Resources */,
+				508817D109F0C9AD0071BF1A /* Sources */,
+				508817D209F0C9AD0071BF1A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TheoraVideoSystem;
+			productName = TheoraVideoPlugin;
+			productReference = 508817D409F0C9AD0071BF1A /* Plugin_TheoraVideoSystem.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		508817C409F0C9740071BF1A /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 508817C509F0C9740071BF1A /* Build configuration list for PBXProject "TheoraVideoPlugin" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 0;
+			mainGroup = 508817C209F0C9740071BF1A;
+			productRefGroup = 508817D509F0C9AD0071BF1A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				508817D309F0C9AD0071BF1A /* TheoraVideoSystem */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		508817D009F0C9AD0071BF1A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		508817D109F0C9AD0071BF1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F9D5B13103D5400008598D4 /* TheoraAudioInterface.cpp in Sources */,
+				7F9D5B14103D5400008598D4 /* theoraDLLmain.cpp in Sources */,
+				7F9D5B15103D5400008598D4 /* TheoraFrameQueue.cpp in Sources */,
+				7F9D5B16103D5400008598D4 /* TheoraMuteAudioInterface.cpp in Sources */,
+				7F9D5B17103D5400008598D4 /* TheoraTimer.cpp in Sources */,
+				7F9D5B18103D5400008598D4 /* TheoraVideoClip.cpp in Sources */,
+				7F9D5B19103D5400008598D4 /* TheoraVideoFrame.cpp in Sources */,
+				7F9D5B1A103D5400008598D4 /* TheoraVideoManager.cpp in Sources */,
+				7F9D5B1B103D5400008598D4 /* TheoraWorkerThread.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		508817C609F0C9740071BF1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 508817E609F0CA040071BF1A /* TheoraVideoPluginProj.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-I/usr/include",
+					"-I/usr/local/include",
+				);
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+			};
+			name = Debug;
+		};
+		508817C709F0C9740071BF1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 508817E609F0CA040071BF1A /* TheoraVideoPluginProj.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+			};
+			name = Release;
+		};
+		508817D809F0C9AE0071BF1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/ivucica/Developer/ogre/Mac/build/Release,
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = OGRE_MAC_FRAMEWORK;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_USE_INDIRECT_FUNCTION_CALLS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				INFOPLIST_FILE = "TheoraVideoSystem-Info.plist";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = (
+					"-I/usr/include",
+					"-I/usr/local/include",
+				);
+				OTHER_LDFLAGS = (
+					/usr/lib/libptypes.a,
+					"-L/usr/lib",
+					"-logg",
+					"-ltheora",
+					"-lvorbis",
+				);
+				PRODUCT_NAME = Plugin_TheoraVideoSystem;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		508817D909F0C9AE0071BF1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = i386;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/ivucica/Developer/ogre/Mac/build/Release,
+				);
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = OGRE_MAC_FRAMEWORK;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				INFOPLIST_FILE = "TheoraVideoSystem-Info.plist";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = (
+					"-I/usr/include",
+					"-I/usr/local/include",
+				);
+				OTHER_LDFLAGS = (
+					/usr/lib/libptypes.a,
+					"-L/usr/lib",
+					"-logg",
+					"-ltheora",
+					"-lvorbis",
+				);
+				PRODUCT_NAME = Plugin_TheoraVideoSystem;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		508817C509F0C9740071BF1A /* Build configuration list for PBXProject "TheoraVideoPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				508817C609F0C9740071BF1A /* Debug */,
+				508817C709F0C9740071BF1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		508817D709F0C9AE0071BF1A /* Build configuration list for PBXNativeTarget "TheoraVideoSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				508817D809F0C9AE0071BF1A /* Debug */,
+				508817D909F0C9AE0071BF1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 508817C409F0C9740071BF1A /* Project object */;
+}

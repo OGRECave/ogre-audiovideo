@@ -13,7 +13,7 @@ C++ Portable Types Library (PTypes - http://www.melikyan.com/ptypes/ )
 
 *****************************************************************************
 
-Copyright © 2000-2004 The OGRE Team
+Copyright ï¿½ 2000-2004 The OGRE Team
 Also see acknowledgements in Readme.html
 
 This program is free software; you can redistribute it and/or modify it under
@@ -41,8 +41,11 @@ email                : pjcast@yahoo.com
 #ifndef _theoraVideoExport_H
 #define _theoraVideoExport_H
 
-#include "OgrePrerequisites.h"
-
+#ifndef OGRE_MAC_FRAMEWORK
+  #include "OgrePrerequisites.h"
+#else
+  #include <Ogre/OgrePrerequisites.h>
+#endif
 //-----------------------------------------------------------------------
 // Windows Settings
 //-----------------------------------------------------------------------

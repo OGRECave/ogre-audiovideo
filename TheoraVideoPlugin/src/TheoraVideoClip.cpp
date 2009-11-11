@@ -3,7 +3,7 @@ This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn
 for OGRE3D (Object-oriented Graphics Rendering Engine)
 For latest info, see http://ogrevideo.sourceforge.net/
 *************************************************************************************
-Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
+Copyright ï¿½ 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
@@ -19,14 +19,23 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-#include "OgreTextureManager.h"
-#include "OgreMaterialManager.h"
-#include "OgreMaterial.h"
-#include "OgreTechnique.h"
-#include "OgreStringConverter.h"
-#include "OgreLogManager.h"
-#include "OgreHardwarePixelBuffer.h"
-
+#ifndef OGRE_MAC_FRAMEWORK
+  #include "OgreTextureManager.h"
+  #include "OgreMaterialManager.h"
+  #include "OgreMaterial.h"
+  #include "OgreTechnique.h"
+  #include "OgreStringConverter.h"
+  #include "OgreLogManager.h"
+  #include "OgreHardwarePixelBuffer.h"
+#else
+  #include <Ogre/OgreTextureManager.h>
+  #include <Ogre/OgreMaterialManager.h>
+  #include <Ogre/OgreMaterial.h>
+  #include <Ogre/OgreTechnique.h>
+  #include <Ogre/OgreStringConverter.h>
+  #include <Ogre/OgreLogManager.h>
+  #include <Ogre/OgreHardwarePixelBuffer.h>
+#endif
 #include <ptypes/pasync.h>
 
 #include "TheoraVideoClip.h"

@@ -3,7 +3,7 @@ This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn
 for OGRE3D (Object-oriented Graphics Rendering Engine)
 For latest info, see http://ogrevideo.sourceforge.net/
 *************************************************************************************
-Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
+Copyright ï¿½ 2008-2009 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published by the 
