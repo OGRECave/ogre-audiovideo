@@ -6,8 +6,8 @@ Plugin_TheoraVideoSystem_la_SOURCES = \
 	TheoraFrameQueue.cpp		TheoraVideoClip.cpp		TheoraWorkerThread.cpp \
 	TheoraMuteAudioInterface.cpp	TheoraVideoFrame.cpp		theoraDLLmain.cpp 
 Plugin_TheoraVideoSystem_la_LDFLAGS=-module -avoid-version
-#if DARWIN
+if DARWIN
 Plugin_TheoraVideoSystem_la_LDFLAGS += -shrext .bundle
-#endif DARWIN
+endif DARWIN
 
 

@@ -11,6 +11,11 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 AC_LANG(C++)
 
+
+# Check for Darwin.
+AC_CANONICAL_HOST
+AM_CONDITIONAL([DARWIN], [echo "$host_os" | grep '^darwin'])
+
 # Add extra configure options.
 #AC_ARG_ENABLE(debug, [  --enable-debug          enable debug], [
 #	DEBUG_FLAGS=-DDEBUGLEVEL=5
@@ -65,14 +70,14 @@ AC_CHECK_LIB(ogg, ogg_sync_pageseek, ,[AC_MSG_ERROR("*** Ogg library not found o
 
 # Check for theora
 AC_CHECK_HEADERS([theora/theoradec.h], ,[AC_MSG_ERROR("*** Theora headers not found.")])
-AC_CHECK_LIB(theora, th_decode_free, ,[AC_MSG_ERROR("*** Theora library not found or wrong version.")])
+AC_CHECK_LIB(theoradec, th_decode_free, ,[AC_MSG_ERROR("*** Theora library not found or wrong version. Get theora 1.1.1 here: http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2")])
 
 # Check for vorbis
 AC_CHECK_HEADERS([vorbis/codec.h], ,[AC_MSG_ERROR("*** Vorbis headers not found.")])
 AC_CHECK_LIB(vorbis, vorbis_comment_init, ,[AC_MSG_ERROR("*** Vorbis library not found or wrong version.")])
 
 # Check for Ogre
-AC_CHECK_HEADERS([OgrePrerequisites.h], ,[AC_MSG_ERROR("*** Ogre headers not found. You may want to specify something like this in CPPFLAGS: -I/usr/include/OGRE depending where you have Ogre headers. ")])
+AC_CHECK_HEADERS([OgrePrerequisites.h], ,[AC_MSG_ERROR("*** Ogre headers not found. You may want to specify something like this in CXXFLAGS: -I/usr/include/OGRE depending where you have Ogre headers. ")])
 #AC_CHECK_LIB(ogre, , ,[AC_MSG_ERROR("*** Ogre library not found or wrong version.")])
 
 # Output files

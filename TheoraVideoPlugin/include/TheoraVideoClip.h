@@ -159,9 +159,9 @@ namespace Ogre
 		//! check if it's time to transfer another frame to the texture
 		void blitFrameCheck(float time_increase);
 		//! check if there is enough audio data decoded to submit to the audio interface
-		void TheoraVideoClip::decodedAudioCheck();
+		void decodedAudioCheck();
 
-		void TheoraVideoClip::load(const String& file_name,const String& group_name);
+		void load(const String& file_name,const String& group_name);
 
 		void setAudioInterface(TheoraAudioInterface* iface);
 		TheoraAudioInterface* getAudioInterface();
