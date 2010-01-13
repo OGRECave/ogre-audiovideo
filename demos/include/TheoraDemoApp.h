@@ -1,13 +1,12 @@
 /************************************************************************************
-This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
-for OGRE3D (Object-oriented Graphics Rendering Engine)
+This source file is part of the Ogre3D Theora Video Plugin
 For latest info, see http://ogrevideo.sourceforge.net/
 *************************************************************************************
-Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
+Copyright (c) 2008-2010 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License (LGPL) as published by the 
-Free Software Foundation; either version 2 of the License, or (at your option) 
+the terms of the GNU Lesser General Public License (LGPL) as published by the
+Free Software Foundation; either version 2 of the License, or (at your option)
 any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
@@ -27,8 +26,10 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreCEGUIResourceProvider.h"
 #include "OgreExternalTextureSourceManager.h"
 #include "ExampleApplication.h"
+#include "OgreVideoManager.h"
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
+
 
 
 namespace Ogre

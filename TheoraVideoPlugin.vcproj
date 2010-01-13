@@ -78,7 +78,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ogremain_d.lib libtheoraplayer_d.lib"
-				OutputFile="bin/Debug/Plugin_TheoraVideoSystem.dll"
+				OutputFile="bin/Debug/Plugin_TheoraVideoSystem_d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib/"
@@ -208,7 +208,7 @@
 				CommandLine=""
 			/>
 		</Configuration>
-			</Configurations>
+	</Configurations>
 	<References>
 	</References>
 	<Files>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="Demo_Player"
 	ProjectGUID="{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
 	RootNamespace="Demo_Player"
@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\TheoraVideoPlugin\include;..\include"
+				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -82,7 +82,7 @@
 				OutputFile="bin/Release/Demo_Player.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\release"
+				AdditionalLibraryDirectories="../../lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="obj/Release/GuiTesting.pdb"
 				SubSystem="2"
@@ -145,7 +145,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\TheoraVideoPlugin\include;..\include"
+				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer;../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -174,11 +174,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CEGUIBase_d.lib OgreMain_d.lib OIS_d.lib OgreGUIRenderer_d.lib Plugin_TheoraVideoSystem.lib"
-				OutputFile="bin/Debug/Demo_Player.exe"
+				AdditionalDependencies="CEGUIBase_d.lib OgreMain_d.lib OIS_d.lib OgreGUIRenderer_d.lib Plugin_TheoraVideoSystem_d.lib libtheoraplayer_d.lib"
+				OutputFile="../../bin/Debug/Demo_Player.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\debug"
+				AdditionalLibraryDirectories="../../lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="obj/GuiTesting.pdb"
 				SubSystem="2"
@@ -240,7 +240,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\TheoraVideoPlugin\include;..\include"
+				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -274,7 +274,7 @@
 				OutputFile="bin/Release/Demo_Player.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\TheoraVideoPlugin\bin\release"
+				AdditionalLibraryDirectories="../../lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="obj/Release/GuiTesting.pdb"
 				SubSystem="2"
@@ -312,7 +312,19 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath="..\include\ExampleApplication.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\ExampleFrameListener.h"
+				>
+			</File>
+			<File
 				RelativePath="player.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TheoraDemoApp.h"
 				>
 			</File>
 		</Filter>
