@@ -1,13 +1,12 @@
 /************************************************************************************
-This source file is part of the TheoraVideoPlugin ExternalTextureSource PlugIn 
-for OGRE3D (Object-oriented Graphics Rendering Engine)
+This source file is part of the Ogre3D Theora Video Plugin
 For latest info, see http://ogrevideo.sourceforge.net/
 *************************************************************************************
-Copyright © 2008-2009 Kresimir Spes (kreso@cateia.com)
+Copyright (c) 2008-2010 Kresimir Spes (kreso@cateia.com)
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License (LGPL) as published by the 
-Free Software Foundation; either version 2 of the License, or (at your option) 
+the terms of the GNU Lesser General Public License (LGPL) as published by the
+Free Software Foundation; either version 2 of the License, or (at your option)
 any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT
@@ -19,22 +18,27 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 *************************************************************************************/
-#ifndef _TheoraMuteAudioInterface_h
-#define _TheoraMuteAudioInterface_h
+#ifndef _OgreVideoExport_H
+#define _OgreVideoExport_H
 
-
-namespace Ogre
-{
-	/**
-		
-	*/
-	class TheoraMuteAudioInterface
-	{
-	public:
-		TheoraMuteAudioInterface();
-		~TheoraMuteAudioInterface();
-
-
-	};
-}
+#ifndef OGRE_MAC_FRAMEWORK
+  #include "OgrePrerequisites.h"
+#else
+  #include <Ogre/OgrePrerequisites.h>
 #endif
+//-----------------------------------------------------------------------
+// Windows Settings
+//-----------------------------------------------------------------------
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+#   ifdef THEORAVIDEO_PLUGIN_EXPORTS 
+#       define _OgreTheoraExport __declspec(dllexport) 
+#   else 
+#       define _OgreTheoraExport __declspec(dllimport) 
+#   endif 
+#else 
+#   define _OgreTheoraExport 
+#endif 
+
+#endif
+
