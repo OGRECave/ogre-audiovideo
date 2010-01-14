@@ -24,27 +24,42 @@ http://www.gnu.org/copyleft/lesser.txt.
   #include <Ogre/OgreRoot.h>
 #endif
 #include "OgreVideoManager.h"
-#include "TheoraVideoManager.h"
+#include "OgreTheoraDataStream.h"
+
+#include "OgreTextureManager.h"
+#include "OgreMaterialManager.h"
+#include "OgreMaterial.h"
+#include "OgreTechnique.h"
+#include "OgreStringConverter.h"
+#include "OgreLogManager.h"
+#include "OgreHardwarePixelBuffer.h"
+
+#include "TheoraVideoFrame.h"
+#include <vector>
 
 namespace Ogre
 {
-	// Singleton code
-    template<> OgreVideoManager* Singleton<OgreVideoManager>::ms_Singleton = 0;
-    OgreVideoManager* OgreVideoManager::getSingletonPtr(void)
-    {
-        return ms_Singleton;
-    }
-    OgreVideoManager& OgreVideoManager::getSingleton(void)
-    {  
-        assert( ms_Singleton );  return ( *ms_Singleton );  
-    }
-
-	OgreVideoManager::OgreVideoManager()
+	void ogrevideo_log(std::string message)
 	{
+		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
+	}
+
+	int nextPow2(int x)
+	{
+		int y;
+		for (y=1;y<x;y*=2);
+		return y;
+	}
+
+	OgreVideoManager::OgreVideoManager(int num_worker_threads) : TheoraVideoManager(num_worker_threads)
+	{
+
 		mPlugInName = "TheoraVideoPlugin";
 		mDictionaryName = mPlugInName;
 		mbInit=false;
 		mTechniqueLevel=mPassLevel=mStateLevel=0;
+
+		setLogFunction(ogrevideo_log);
 
 		initialise();
 	}
@@ -54,9 +69,6 @@ namespace Ogre
 		if (mbInit) return false;
 		mbInit=true;
 		addBaseParams(); // ExternalTextureSource's function
-
-		mVideoMgr=new TheoraVideoManager(1);
-
 		return true;
 	}
 	
@@ -68,8 +80,6 @@ namespace Ogre
 	void OgreVideoManager::shutDown()
 	{
 		if (!mbInit) return;
-
-		delete mVideoMgr;
 
 		mbInit=false;
 	}
@@ -105,22 +115,79 @@ namespace Ogre
         return ExternalTextureSource::getParameter(name);
     }
 
-
 	void OgreVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
+		std::string name=mInputFileName;
+		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_RGB);
+		int w=nextPow2(clip->getWidth()),h=nextPow2(clip->getHeight());
+
+		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+		
+		if (t->getFormat() != PF_X8R8G8B8) ogrevideo_log("ERROR: Pixel format is not X8R8G8B8 which is what we requested!");
+		// clear it to black
+
+		unsigned char* texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+		memset(texData,0,w*h*4);
+		t->getBuffer()->unlock();
+		mTextures[name]=t;
+
+		// attach it to a material
+		MaterialPtr material = MaterialManager::getSingleton().getByName(material_name);
+		TextureUnitState* ts = material->getTechnique(mTechniqueLevel)->getPass(mPassLevel)->getTextureUnitState(mStateLevel);
+
+		//Now, attach the texture to the material texture unit (single layer) and setup properties
+		ts->setTextureName(name,TEX_TYPE_2D);
+		ts->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
+		ts->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+
+		// scale tex coords to fit the 0-1 uv range
+		Matrix4 mat=Matrix4::IDENTITY;
+		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
+		ts->setTextureTransform(mat);
 
 	}
 
 	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
 	{
-		LogManager::getSingleton().logMessage("Destroying ogg_video texture on material: "+material_name);
+		ogrevideo_log("Destroying ogg_video texture on material: "+material_name);
 
-		LogManager::getSingleton().logMessage("Error destroying ogg_video texture, texture not found!");
+		//ogrevideo_log("Error destroying ogg_video texture, texture not found!");
 	}
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
 	{
+		update(evt.timeSinceLastFrame);
+		// update playing videos
+		std::vector<TheoraVideoClip*>::iterator it;
+		TheoraVideoFrame* f;
+		for (it=mClips.begin();it!=mClips.end();it++)
+		{
+			f=(*it)->getNextFrame();
+			if (f)
+			{
+//				ogrevideo_log("decoded frame!");
+				int w=f->getWidth(),tw=nextPow2(f->getWidth()), h=f->getHeight(), s=f->getStride();
+				TexturePtr t=mTextures[(*it)->getName()];
 
+				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+				unsigned char *data=f->getBuffer();
+				unsigned char *line_end,*img_end=data+s*h*3;
+
+				for (;data!=img_end;texData+=(tw-s)*4)
+				{
+					for (line_end=data+s*3;data != line_end;texData+=4,data+=3)
+					{
+						texData[0]=data[2];
+						texData[1]=data[1];
+						texData[2]=data[0];
+						
+					}
+				}
+				
+				t->getBuffer()->unlock();
+				(*it)->popFrame();
+			}
+		}
 		return true;
 	}
 

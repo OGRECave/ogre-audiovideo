@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer"
+				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer;../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="OIS.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib"
+				AdditionalDependencies="OIS.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib libtheoraplayer.lib"
 				OutputFile="bin/Release/Demo_Player.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -146,7 +146,7 @@
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer;../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_STLP_DEBUG"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_STLP_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -240,7 +240,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer"
+				AdditionalIncludeDirectories="../../include;../../include/libtheoraplayer;../include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"

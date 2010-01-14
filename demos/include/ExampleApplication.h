@@ -111,7 +111,7 @@ protected:
 		String pluginsPath;
 		// only use plugins.cfg if not static
 #ifndef OGRE_STATIC_LIB
-		pluginsPath = mResourcePath + "plugins.cfg";
+		pluginsPath = mResourcePath + "../../demos/plugins.cfg";
 #endif
 		
         mRoot = new Root(pluginsPath, 
@@ -205,7 +205,7 @@ protected:
     {
         // Load resource paths from config file
         ConfigFile cf;
-        cf.load(mResourcePath + "resources.cfg");
+        cf.load(mResourcePath + "../../demos/resources.cfg");
 
         // Go through all sections & settings in the file
         ConfigFile::SectionIterator seci = cf.getSectionIterator();

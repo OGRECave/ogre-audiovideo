@@ -216,6 +216,10 @@
 			Name="src"
 			>
 			<File
+				RelativePath=".\src\OgreTheoraDataStream.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\OgreVideoDLLmain.cpp"
 				>
 			</File>
@@ -231,6 +235,10 @@
 		<Filter
 			Name="include"
 			>
+			<File
+				RelativePath=".\include\OgreTheoraDataStream.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\OgreVideoExport.h"
 				>

@@ -161,13 +161,13 @@ namespace Ogre
 			EVENT("shaders_button",DemoApp::OnShaders); EVENT("Play/Pause",DemoApp::OnPlayPause);
 			EVENT_EX("seeker",DemoApp::OnSeekStart,CEGUI::Scrollbar::EventThumbTrackStarted);
 			EVENT_EX("seeker",DemoApp::OnSeekEnd,CEGUI::Scrollbar::EventThumbTrackEnded);
-
+ 
 			createQuad("video_quad","video_material",-0.5,1,1,-0.94);
 
-			OgreVideoManager* mgr=OgreVideoManager::getSingletonPtr();
+			OgreVideoManager* mgr=(OgreVideoManager*) OgreVideoManager::getSingletonPtr();
 
-			//mgr->setInputName(VIDEO_FILE);
-			//mgr->createDefinedTexture("video_material");
+			mgr->setInputName(VIDEO_FILE);
+			mgr->createDefinedTexture("video_material");
 		//	mgr->createDefinedTexture("video_material_1");
 
 		//	TheoraVideoClip*c=mgr->getVideoClipByMaterialName("video_material");

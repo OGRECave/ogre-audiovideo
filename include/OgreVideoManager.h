@@ -30,25 +30,23 @@ http://www.gnu.org/copyleft/lesser.txt.
   #include <Ogre/OgreFrameListener.h>
 #endif
 #include "OgreVideoExport.h"
-#include <list>
-
-class TheoraVideoManager;
+#include "TheoraVideoManager.h"
+#include <string>
+#include <map>
 
 namespace Ogre
 {
+	class TexturePtr;
 	
-	class _OgreTheoraExport OgreVideoManager : public Singleton<OgreVideoManager>, 
-		                                       public ExternalTextureSource,
-											   public FrameListener
+	class _OgreTheoraExport OgreVideoManager : public ExternalTextureSource,
+											   public FrameListener,
+											   public TheoraVideoManager
 	{
+		std::map<std::string,TexturePtr> mTextures;
 		bool mbInit;
-		TheoraVideoManager* mVideoMgr;
 	public:
-		OgreVideoManager();
+		OgreVideoManager(int num_worker_threads=1);
 		~OgreVideoManager();
-
-		static OgreVideoManager& getSingleton(void);
-		static OgreVideoManager* getSingletonPtr(void);
 
 		/**
 			@remarks
