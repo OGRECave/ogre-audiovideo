@@ -23,7 +23,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 #define _OgreTheoraDataStream_h
 
 #include "TheoraDataSource.h"
+#ifndef OGRE_MAC_FRAMEWORK
 #include "OgreDataStream.h"
+#else
+#include <Ogre/OgreDataStream.h>
+#endif
 
 namespace Ogre
 {

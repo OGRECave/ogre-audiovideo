@@ -26,6 +26,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreVideoManager.h"
 #include "OgreTheoraDataStream.h"
 
+#ifndef OGRE_MAC_FRAMEWORK
 #include "OgreTextureManager.h"
 #include "OgreMaterialManager.h"
 #include "OgreMaterial.h"
@@ -33,6 +34,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "OgreStringConverter.h"
 #include "OgreLogManager.h"
 #include "OgreHardwarePixelBuffer.h"
+#else
+#include <Ogre/OgreTextureManager.h>
+#include <Ogre/OgreMaterialManager.h>
+#include <Ogre/OgreMaterial.h>
+#include <Ogre/OgreTechnique.h>
+#include <Ogre/OgreStringConverter.h>
+#include <Ogre/OgreLogManager.h>
+#include <Ogre/OgreHardwarePixelBuffer.h>
+#endif
 
 #include "TheoraVideoFrame.h"
 #include <vector>
@@ -165,7 +175,7 @@ namespace Ogre
 			f=(*it)->getNextFrame();
 			if (f)
 			{
-//				ogrevideo_log("decoded frame!");
+				//ogrevideo_log("decoded frame!");
 				int w=f->getWidth(),tw=nextPow2(f->getWidth()), h=f->getHeight(), s=f->getStride();
 				TexturePtr t=mTextures[(*it)->getName()];
 

@@ -1,6 +1,6 @@
 AC_PREREQ(2.61)
-AC_INIT([theoravideoplugin],[1.0],[kreso@cateia.com])
-AC_CONFIG_SRCDIR([src/TheoraFrameQueue.cpp])
+AC_INIT([theoravideoplugin],[1.1],[kreso@cateia.com])
+AC_CONFIG_SRCDIR([src/OgreTheoraDataStream.cpp])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_REVISION($Revision: 1.0 $)
@@ -60,21 +60,9 @@ AC_TYPE_UINT64_T
 AC_TYPE_SIZE_T
 
 
-# Check for ptypes' pasync
-AC_CHECK_HEADERS([ptypes/pasync.h], ,[AC_MSG_ERROR("*** ptypes headers not found.")])
-AC_CHECK_LIB(ptypes, __ptypes_version, ,[AC_MSG_ERROR("*** ptypes library not found or wrong version.")])
-
-# Check for ogg
-AC_CHECK_HEADERS([ogg/ogg.h], ,[AC_MSG_ERROR("*** Ogg headers not found.")])
-AC_CHECK_LIB(ogg, ogg_sync_pageseek, ,[AC_MSG_ERROR("*** Ogg library not found or wrong version.")])
-
-# Check for theora
-AC_CHECK_HEADERS([theora/theoradec.h], ,[AC_MSG_ERROR("*** Theora headers not found.")])
-AC_CHECK_LIB(theoradec, th_decode_free, ,[AC_MSG_ERROR("*** Theora library not found or wrong version. Get theora 1.1.1 here: http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2")])
-
-# Check for vorbis
-AC_CHECK_HEADERS([vorbis/codec.h], ,[AC_MSG_ERROR("*** Vorbis headers not found.")])
-AC_CHECK_LIB(vorbis, vorbis_comment_init, ,[AC_MSG_ERROR("*** Vorbis library not found or wrong version.")])
+# Check for libtheoraplayer
+AC_CHECK_HEADERS([TheoraVideoManager.h], ,[AC_MSG_ERROR("*** libtheoraplayer headers not found.")])
+#AC_CHECK_LIB(libtheoraplayer, addsomechecksymbolhere, ,[AC_MSG_ERROR("*** libtheoraplayer library not found or wrong version.")])
 
 # Check for Ogre
 AC_CHECK_HEADERS([OgrePrerequisites.h], ,[AC_MSG_ERROR("*** Ogre headers not found. You may want to specify something like this in CXXFLAGS: -I/usr/include/OGRE depending where you have Ogre headers. ")])

@@ -7,15 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F9D5B13103D5400008598D4 /* TheoraAudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */; };
-		7F9D5B14103D5400008598D4 /* theoraDLLmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */; };
-		7F9D5B15103D5400008598D4 /* TheoraFrameQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */; };
-		7F9D5B16103D5400008598D4 /* TheoraMuteAudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */; };
-		7F9D5B17103D5400008598D4 /* TheoraTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */; };
-		7F9D5B18103D5400008598D4 /* TheoraVideoClip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */; };
-		7F9D5B19103D5400008598D4 /* TheoraVideoFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */; };
-		7F9D5B1A103D5400008598D4 /* TheoraVideoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */; };
-		7F9D5B1B103D5400008598D4 /* TheoraWorkerThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */; };
+		7F13DEC910FF353B0016F837 /* OgreTheoraDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F13DEC610FF353B0016F837 /* OgreTheoraDataStream.cpp */; };
+		7F13DECA10FF353B0016F837 /* OgreVideoDLLmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F13DEC710FF353B0016F837 /* OgreVideoDLLmain.cpp */; };
+		7F13DECB10FF353B0016F837 /* OgreVideoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F13DEC810FF353B0016F837 /* OgreVideoManager.cpp */; };
+		7F13DED310FF35A20016F837 /* libtheoraplayer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F13DED210FF35A20016F837 /* libtheoraplayer.dylib */; };
 		D1920CB510A969AC00234D34 /* Ogre.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1920CB410A969AC00234D34 /* Ogre.framework */; };
 /* End PBXBuildFile section */
 
@@ -24,27 +19,14 @@
 		508817D609F0C9AD0071BF1A /* TheoraVideoSystem-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist.xml; path = "TheoraVideoSystem-Info.plist"; sourceTree = "<group>"; };
 		508817E609F0CA040071BF1A /* TheoraVideoPluginProj.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = TheoraVideoPluginProj.xcconfig; sourceTree = "<group>"; };
 		508817E709F0CA040071BF1A /* TheoraVideoPluginTarget.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = TheoraVideoPluginTarget.xcconfig; sourceTree = "<group>"; };
-		7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraAudioInterface.cpp; path = src/TheoraAudioInterface.cpp; sourceTree = "<group>"; };
-		7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = theoraDLLmain.cpp; path = src/theoraDLLmain.cpp; sourceTree = "<group>"; };
-		7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraFrameQueue.cpp; path = src/TheoraFrameQueue.cpp; sourceTree = "<group>"; };
-		7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraMuteAudioInterface.cpp; path = src/TheoraMuteAudioInterface.cpp; sourceTree = "<group>"; };
-		7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraTimer.cpp; path = src/TheoraTimer.cpp; sourceTree = "<group>"; };
-		7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoClip.cpp; path = src/TheoraVideoClip.cpp; sourceTree = "<group>"; };
-		7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoFrame.cpp; path = src/TheoraVideoFrame.cpp; sourceTree = "<group>"; };
-		7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraVideoManager.cpp; path = src/TheoraVideoManager.cpp; sourceTree = "<group>"; };
-		7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TheoraWorkerThread.cpp; path = src/TheoraWorkerThread.cpp; sourceTree = "<group>"; };
-		7F9D5B1E103D5427008598D4 /* TheoraAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraAudioInterface.h; path = include/TheoraAudioInterface.h; sourceTree = "<group>"; };
-		7F9D5B1F103D5427008598D4 /* TheoraExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraExport.h; path = include/TheoraExport.h; sourceTree = "<group>"; };
-		7F9D5B20103D5427008598D4 /* TheoraFrameQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraFrameQueue.h; path = include/TheoraFrameQueue.h; sourceTree = "<group>"; };
-		7F9D5B21103D5427008598D4 /* TheoraMuteAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraMuteAudioInterface.h; path = include/TheoraMuteAudioInterface.h; sourceTree = "<group>"; };
-		7F9D5B22103D5427008598D4 /* TheoraTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraTimer.h; path = include/TheoraTimer.h; sourceTree = "<group>"; };
-		7F9D5B23103D5427008598D4 /* TheoraVideoClip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoClip.h; path = include/TheoraVideoClip.h; sourceTree = "<group>"; };
-		7F9D5B24103D5427008598D4 /* TheoraVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoFrame.h; path = include/TheoraVideoFrame.h; sourceTree = "<group>"; };
-		7F9D5B25103D5427008598D4 /* TheoraVideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraVideoManager.h; path = include/TheoraVideoManager.h; sourceTree = "<group>"; };
-		7F9D5B26103D5427008598D4 /* TheoraWorkerThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TheoraWorkerThread.h; path = include/TheoraWorkerThread.h; sourceTree = "<group>"; };
+		7F13DEC610FF353B0016F837 /* OgreTheoraDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OgreTheoraDataStream.cpp; path = src/OgreTheoraDataStream.cpp; sourceTree = "<group>"; };
+		7F13DEC710FF353B0016F837 /* OgreVideoDLLmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OgreVideoDLLmain.cpp; path = src/OgreVideoDLLmain.cpp; sourceTree = "<group>"; };
+		7F13DEC810FF353B0016F837 /* OgreVideoManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OgreVideoManager.cpp; path = src/OgreVideoManager.cpp; sourceTree = "<group>"; };
+		7F13DECC10FF357E0016F837 /* OgreTheoraDataStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OgreTheoraDataStream.h; path = include/OgreTheoraDataStream.h; sourceTree = "<group>"; };
+		7F13DECD10FF357E0016F837 /* OgreVideoExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OgreVideoExport.h; path = include/OgreVideoExport.h; sourceTree = "<group>"; };
+		7F13DECE10FF357E0016F837 /* OgreVideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OgreVideoManager.h; path = include/OgreVideoManager.h; sourceTree = "<group>"; };
+		7F13DED210FF35A20016F837 /* libtheoraplayer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtheoraplayer.dylib; path = /usr/local/lib/libtheoraplayer.dylib; sourceTree = "<absolute>"; };
 		D1920CB410A969AC00234D34 /* Ogre.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogre.framework; path = /Library/Frameworks/Ogre.framework; sourceTree = "<absolute>"; };
-		D1F1C69610AAE69100A53B2B /* libtheora.0.3.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtheora.0.3.4.dylib; path = /usr/local/lib/libtheora.0.3.4.dylib; sourceTree = "<absolute>"; };
-		D1F1C69710AAE69100A53B2B /* libtheora.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtheora.0.dylib; path = /usr/local/lib/libtheora.0.dylib; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +35,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1920CB510A969AC00234D34 /* Ogre.framework in Frameworks */,
+				7F13DED310FF35A20016F837 /* libtheoraplayer.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,8 +45,7 @@
 		508817C209F0C9740071BF1A = {
 			isa = PBXGroup;
 			children = (
-				D1F1C69610AAE69100A53B2B /* libtheora.0.3.4.dylib */,
-				D1F1C69710AAE69100A53B2B /* libtheora.0.dylib */,
+				7F13DED210FF35A20016F837 /* libtheoraplayer.dylib */,
 				D1920CB410A969AC00234D34 /* Ogre.framework */,
 				7F9D5B1D103D540E008598D4 /* Headers */,
 				508817E509F0C9EF0071BF1A /* Configuration Files */,
@@ -94,15 +76,9 @@
 		508817F509F0CAB50071BF1A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				7F9D5B0A103D5400008598D4 /* TheoraAudioInterface.cpp */,
-				7F9D5B0B103D5400008598D4 /* theoraDLLmain.cpp */,
-				7F9D5B0C103D5400008598D4 /* TheoraFrameQueue.cpp */,
-				7F9D5B0D103D5400008598D4 /* TheoraMuteAudioInterface.cpp */,
-				7F9D5B0E103D5400008598D4 /* TheoraTimer.cpp */,
-				7F9D5B0F103D5400008598D4 /* TheoraVideoClip.cpp */,
-				7F9D5B10103D5400008598D4 /* TheoraVideoFrame.cpp */,
-				7F9D5B11103D5400008598D4 /* TheoraVideoManager.cpp */,
-				7F9D5B12103D5400008598D4 /* TheoraWorkerThread.cpp */,
+				7F13DEC610FF353B0016F837 /* OgreTheoraDataStream.cpp */,
+				7F13DEC710FF353B0016F837 /* OgreVideoDLLmain.cpp */,
+				7F13DEC810FF353B0016F837 /* OgreVideoManager.cpp */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -117,15 +93,9 @@
 		7F9D5B1D103D540E008598D4 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				7F9D5B1E103D5427008598D4 /* TheoraAudioInterface.h */,
-				7F9D5B1F103D5427008598D4 /* TheoraExport.h */,
-				7F9D5B20103D5427008598D4 /* TheoraFrameQueue.h */,
-				7F9D5B21103D5427008598D4 /* TheoraMuteAudioInterface.h */,
-				7F9D5B22103D5427008598D4 /* TheoraTimer.h */,
-				7F9D5B23103D5427008598D4 /* TheoraVideoClip.h */,
-				7F9D5B24103D5427008598D4 /* TheoraVideoFrame.h */,
-				7F9D5B25103D5427008598D4 /* TheoraVideoManager.h */,
-				7F9D5B26103D5427008598D4 /* TheoraWorkerThread.h */,
+				7F13DECC10FF357E0016F837 /* OgreTheoraDataStream.h */,
+				7F13DECD10FF357E0016F837 /* OgreVideoExport.h */,
+				7F13DECE10FF357E0016F837 /* OgreVideoManager.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -200,15 +170,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F9D5B13103D5400008598D4 /* TheoraAudioInterface.cpp in Sources */,
-				7F9D5B14103D5400008598D4 /* theoraDLLmain.cpp in Sources */,
-				7F9D5B15103D5400008598D4 /* TheoraFrameQueue.cpp in Sources */,
-				7F9D5B16103D5400008598D4 /* TheoraMuteAudioInterface.cpp in Sources */,
-				7F9D5B17103D5400008598D4 /* TheoraTimer.cpp in Sources */,
-				7F9D5B18103D5400008598D4 /* TheoraVideoClip.cpp in Sources */,
-				7F9D5B19103D5400008598D4 /* TheoraVideoFrame.cpp in Sources */,
-				7F9D5B1A103D5400008598D4 /* TheoraVideoManager.cpp in Sources */,
-				7F9D5B1B103D5400008598D4 /* TheoraWorkerThread.cpp in Sources */,
+				7F13DEC910FF353B0016F837 /* OgreTheoraDataStream.cpp in Sources */,
+				7F13DECA10FF353B0016F837 /* OgreVideoDLLmain.cpp in Sources */,
+				7F13DECB10FF353B0016F837 /* OgreVideoManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,7 +205,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_VERSION = 4.0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
