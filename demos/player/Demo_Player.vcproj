@@ -79,7 +79,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="OIS.lib CEGUIBase.lib OgreMain.lib OgreGUIRenderer.lib Plugin_TheoraVideoSystem.lib libtheoraplayer.lib"
-				OutputFile="bin/Release/Demo_Player.exe"
+				OutputFile="../../bin/Release/Demo_Player.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../lib"

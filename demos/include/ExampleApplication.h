@@ -111,7 +111,11 @@ protected:
 		String pluginsPath;
 		// only use plugins.cfg if not static
 #ifndef OGRE_STATIC_LIB
+#ifdef _DEBUG
+		pluginsPath = mResourcePath + "../../demos/plugins_d.cfg";
+#else
 		pluginsPath = mResourcePath + "../../demos/plugins.cfg";
+#endif
 #endif
 		
         mRoot = new Root(pluginsPath, 
