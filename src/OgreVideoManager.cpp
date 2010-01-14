@@ -176,7 +176,10 @@ namespace Ogre
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
 	{
-		update(evt.timeSinceLastFrame);
+		if (evt.timeSinceLastFrame > 0.3f)
+			update(0.3f);
+		else
+		    update(evt.timeSinceLastFrame);
 		// update playing videos
 		std::vector<TheoraVideoClip*>::iterator it;
 		TheoraVideoFrame* f;

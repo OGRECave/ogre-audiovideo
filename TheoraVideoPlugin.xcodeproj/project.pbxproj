@@ -161,7 +161,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change /usr/local/lib/libtheora.0.dylib @executable_path/../Frameworks/libtheora.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libvorbis.0.dylib @executable_path/../Frameworks/libvorbis.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH";
+			shellScript = "install_name_tool -change /usr/local/lib/libtheora.0.dylib @executable_path/../Frameworks/libtheora.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libogg.0.dylib @executable_path/../Frameworks/libogg.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libvorbis.0.dylib @executable_path/../Frameworks/libvorbis.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\ninstall_name_tool -change /usr/local/lib/libtheoraplayer.0.dylib @executable_path/../Frameworks/libtheoraplayer.0.dylib $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
