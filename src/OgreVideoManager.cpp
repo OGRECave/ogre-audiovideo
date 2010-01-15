@@ -45,6 +45,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #endif
 
 #include "TheoraVideoFrame.h"
+#include "TheoraTimer.h"
 #include <vector>
 
 namespace Ogre
@@ -60,6 +61,20 @@ namespace Ogre
 		for (y=1;y<x;y*=2);
 		return y;
 	}
+
+	class ManualTimer : public TheoraTimer
+	{
+	public:
+		void update(float t)
+		{
+		
+		}
+
+		void setTime(float time)
+		{
+			mTime=time;
+		}
+	};
 
 	OgreVideoManager::OgreVideoManager(int num_worker_threads) : TheoraVideoManager(num_worker_threads)
 	{
@@ -99,19 +114,33 @@ namespace Ogre
         // Hacky stuff used in situations where you don't have access to TheoraVideoManager
         // eg, like when using the plugin in python (and not using the wrapped version by Python-Ogre)
         // these parameters are here temporarily and I don't encourage anyone to use them.
-        
         if (name == "destroy")
         {
             // destroys the first video clip.
             if (mClips.size() > 0)
             {
-				mTextures[mClips[0]->getName()]->unload();
+			//	mTextures[mClips[0]->getName()]->unload();
 				mTextures.clear();
-				TextureManager::getSingleton().unload(mClips[0]->getName());
+				TextureManager::getSingleton().remove(mClips[0]->getName());
 				destroyVideoClip(mClips[0]);
                 return 1;
             }
         }
+		if (name == "set_time")
+		{
+			if (value == "initial")
+			{
+				mClips[0]->setTimer(new ManualTimer());
+			}
+			else
+			{
+				ManualTimer* t=(ManualTimer*) mClips[0]->getTimer();
+				
+				float time;
+				sscanf(value.c_str(),"%f",&time);
+				t->setTime(time);
+			}
+		}
         
         return ExternalTextureSource::setParameter(name, value);
     }
