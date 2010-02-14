@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="TheoraVideoPlugin"
+	Name="OgreVideoPlugin"
 	ProjectGUID="{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}"
-	RootNamespace="TheoraVideoPlugin"
+	RootNamespace="OgreVideo"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -78,16 +78,16 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ogremain_d.lib libtheoraplayer_d.lib"
-				OutputFile="bin/Debug/Plugin_TheoraVideoSystem_d.dll"
+				OutputFile="bin/Debug/Plugin_OgreVideo_d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile="TheoraVideoPlugin.def"
+				ModuleDefinitionFile="OgreVideo.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="bin/Debug/Plugin_TheoraVideoSystem.pdb"
+				ProgramDatabaseFile="bin/Debug/Plugin_OgreVideo.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/Plugin_TheoraVideoSystem_d.lib"
+				ImportLibrary="lib/Plugin_OgreVideo_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,15 +175,15 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ogremain.lib libtheoraplayer.lib"
-				OutputFile="bin/Release/Plugin_TheoraVideoSystem.dll"
+				OutputFile="bin/Release/Plugin_OgreVideo.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile="TheoraVideoPlugin.def"
-				ProgramDatabaseFile="bin/Release/Plugin_TheoraVideoSystem.pdb"
+				ModuleDefinitionFile="OgreVideo.def"
+				ProgramDatabaseFile="bin/Release/Plugin_OgreVideo.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/Plugin_TheoraVideoSystem.lib"
+				ImportLibrary="lib/Plugin_OgreVideo.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -227,10 +227,6 @@
 				RelativePath=".\src\OgreVideoManager.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\TheoraVideoPlugin.def"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="include"
@@ -248,6 +244,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\OgreVideo.def"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

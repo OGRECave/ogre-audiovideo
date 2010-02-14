@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheoraVideoPlugin", "TheoraVideoPlugin.vcproj", "{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreVideo", "OgreVideo.vcproj", "{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo_Player", "demos\player\Demo_Player.vcproj", "{F71CD603-13C3-4131-9E5B-9FC319C01C51}"
 	ProjectSection(ProjectDependencies) = postProject

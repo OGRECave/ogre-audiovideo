@@ -111,56 +111,11 @@ namespace Ogre
     
     bool OgreVideoManager::setParameter(const String &name,const String &value)
     {
-        // Hacky stuff used in situations where you don't have access to TheoraVideoManager
-        // eg, like when using the plugin in python (and not using the wrapped version by Python-Ogre)
-        // these parameters are here temporarily and I don't encourage anyone to use them.
-        if (name == "destroy")
-        {
-            // destroys the first video clip.
-            if (mClips.size() > 0)
-            {
-			//	mTextures[mClips[0]->getName()]->unload();
-				mTextures.clear();
-				TextureManager::getSingleton().remove(mClips[0]->getName());
-				destroyVideoClip(mClips[0]);
-                return 1;
-            }
-        }
-		if (name == "set_time")
-		{
-			if (value == "initial")
-			{
-				mClips[0]->setTimer(new ManualTimer());
-			}
-			else
-			{
-				ManualTimer* t=(ManualTimer*) mClips[0]->getTimer();
-				
-				float time;
-				sscanf(value.c_str(),"%f",&time);
-				t->setTime(time);
-			}
-		}
-        
         return ExternalTextureSource::setParameter(name, value);
     }
     
     String OgreVideoManager::getParameter(const String &name) const
     {
-        // Hacky stuff used in situations where you don't have access to TheoraVideoManager
-        // eg, like when using the plugin in python (and not using the wrapped version by Python-Ogre)
-        // these parameters are here temporarily and I don't encourage anyone to use them.
-
-        if (name == "started")
-        {
-            return (mClips.size() > 0) ? "1" : "0";
-        }
-        else if (name == "finished")
-        {
-            if (mClips.size() == 0) return "0";
-            TheoraVideoClip* c=*(mClips.begin());
-            return (c->isDone()) ? "1" : "0";
-        }
         return ExternalTextureSource::getParameter(name);
     }
 
