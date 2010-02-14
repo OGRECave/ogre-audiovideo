@@ -32,8 +32,14 @@ namespace Ogre
 {
 	OgreVideoManager* theoraVideoPlugin;
 
+	void ogrevideo_log(std::string message)
+	{
+		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
+	}
+
 	extern "C" void dllStartPlugin()
 	{
+		TheoraVideoManager::setLogFunction(ogrevideo_log);
 		// Create our new External Texture Source PlugIn
 		theoraVideoPlugin = new OgreVideoManager();
 

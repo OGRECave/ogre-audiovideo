@@ -50,11 +50,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Ogre
 {
-	void ogrevideo_log(std::string message)
-	{
-		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
-	}
-
 	int nextPow2(int x)
 	{
 		int y;
@@ -78,13 +73,10 @@ namespace Ogre
 
 	OgreVideoManager::OgreVideoManager(int num_worker_threads) : TheoraVideoManager(num_worker_threads)
 	{
-
 		mPlugInName = "TheoraVideoPlugin";
 		mDictionaryName = mPlugInName;
 		mbInit=false;
 		mTechniqueLevel=mPassLevel=mStateLevel=0;
-
-		setLogFunction(ogrevideo_log);
 
 		initialise();
 	}
@@ -122,12 +114,12 @@ namespace Ogre
 	void OgreVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
 		std::string name=mInputFileName;
-		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_RGB);
+		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_BGRA,0,1);
 		int w=nextPow2(clip->getWidth()),h=nextPow2(clip->getHeight());
 
 		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
 		
-		if (t->getFormat() != PF_X8R8G8B8) ogrevideo_log("ERROR: Pixel format is not X8R8G8B8 which is what we requested!");
+		if (t->getFormat() != PF_X8R8G8B8) logMessage("ERROR: Pixel format is not X8R8G8B8 which is what was requested!");
 		// clear it to black
 
 		unsigned char* texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
@@ -153,9 +145,9 @@ namespace Ogre
 
 	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
 	{
-		ogrevideo_log("Destroying ogg_video texture on material: "+material_name);
+		logMessage("Destroying ogg_video texture on material: "+material_name);
 
-		//ogrevideo_log("Error destroying ogg_video texture, texture not found!");
+		//logMessage("Error destroying ogg_video texture, texture not found!");
 	}
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
@@ -164,6 +156,7 @@ namespace Ogre
 			update(0.3f);
 		else
 		    update(evt.timeSinceLastFrame);
+
 		// update playing videos
 		std::vector<TheoraVideoClip*>::iterator it;
 		TheoraVideoFrame* f;
@@ -172,25 +165,14 @@ namespace Ogre
 			f=(*it)->getNextFrame();
 			if (f)
 			{
-				//ogrevideo_log("decoded frame!");
-				int w=f->getWidth(),tw=nextPow2(f->getWidth()), h=f->getHeight(), s=f->getStride();
+				int w=f->getStride(),h=f->getHeight();
 				TexturePtr t=mTextures[(*it)->getName()];
 
 				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
-				unsigned char *data=f->getBuffer();
-				unsigned char *line_end,*img_end=data+s*h*3;
+				unsigned char *videoData=f->getBuffer();
 
-				for (;data!=img_end;texData+=(tw-s)*4)
-				{
-					for (line_end=data+s*3;data != line_end;texData+=4,data+=3)
-					{
-						texData[0]=data[2];
-						texData[1]=data[1];
-						texData[2]=data[0];
-						
-					}
-				}
-				
+				memcpy(texData,videoData,w*h*4);
+
 				t->getBuffer()->unlock();
 				(*it)->popFrame();
 			}
