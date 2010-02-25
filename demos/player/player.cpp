@@ -39,7 +39,31 @@ namespace Ogre
 
 		void frameStarted(const FrameEvent& evt)
 		{
-			return;
+			TheoraVideoClip* clip=getClip(VIDEO_FILE);
+			if (!mSeeking)
+			{
+				float ctime=clip->getTimePosition(),duration=clip->getDuration();
+				CEGUI::Window* wnd2=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+				wnd2->setProperty("ScrollPosition",StringConverter::toString(1024*(ctime/duration)));
+			}
+			else
+			{
+				CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
+				float dur=clip->getDuration();
+
+				CEGUI::String prop=wnd->getProperty("ScrollPosition");
+				int step=StringConverter::parseInt(prop.c_str());
+				if (abs(step-mSeekStep) > 10)
+				{
+					mSeekStep=step;
+					float seek_time=((float) step/1024)*dur;
+
+					clip->seek(seek_time);
+				}
+			}
+		}
+
+			/*
 			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("cFrame");
 			TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
 			TheoraVideoClip* clip=mgr->getVideoClipByName(VIDEO_FILE);
@@ -78,8 +102,9 @@ namespace Ogre
 					clip->seek(seek_time);
 				}
 			}
+			*/
 
-		}
+
 
 		bool OnPlayPause(const CEGUI::EventArgs& e)
 		{
@@ -168,6 +193,7 @@ namespace Ogre
 
 			mgr->setInputName(VIDEO_FILE);
 			mgr->createDefinedTexture("video_material");
+			getClip(VIDEO_FILE)->setAutoRestart(1);
 		//	mgr->createDefinedTexture("video_material_1");
 
 		//	TheoraVideoClip*c=mgr->getVideoClipByMaterialName("video_material");
