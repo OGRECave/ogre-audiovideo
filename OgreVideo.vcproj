@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="OgreVideoPlugin"
+	Name="OgreVideo"
 	ProjectGUID="{388E4B0F-0860-40C7-8530-FD6F79E7AB3E}"
 	RootNamespace="OgreVideo"
 	TargetFrameworkVersion="131072"
@@ -17,8 +17,201 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="bin/Debug"
-			IntermediateDirectory="bin/Debug"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+				ExcludedFromBuild="true"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\bin\Debug/TheoraVideo.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="include\;include\libtheoraplayer"
+				PreprocessorDefinitions="_WIN32;_DEBUG;THEORAVIDEO_PLUGIN_EXPORTS;THEORAVIDEO_STATIC"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile=".\..\obj\Debug/TheoraVideo.pch"
+				AssemblerListingLocation=".\..\obj\Debug/"
+				ObjectFile=".\..\obj\Debug/"
+				ProgramDataBaseFileName=".\..\obj\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ogremain_d.lib libtheoraplayer_static_d.lib libogg_static.lib libvorbis_static.lib libtheora_static.lib"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName)_d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="lib/"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="bin/Debug/Plugin_OgreVideo.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="lib/Plugin_OgreVideo_d.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+				ExcludedFromBuild="true"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\bin\Release/TheoraVideo.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="include\;include\libtheoraplayer"
+				PreprocessorDefinitions="_WIN32;NDEBUG;THEORAVIDEO_PLUGIN_EXPORTS;THEORAVIDEO_STATIC"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
+				AssemblerListingLocation=".\..\obj\Release/"
+				ObjectFile=".\..\obj\Release/"
+				ProgramDataBaseFileName=".\..\obj\Release/"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ogremain.lib libtheoraplayer_static.lib  libogg_static.lib libvorbis_static.lib libtheora_static.lib"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName).dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="lib/"
+				ModuleDefinitionFile=""
+				ProgramDatabaseFile="bin/Release/Plugin_OgreVideo.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="lib/Plugin_OgreVideo.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug_Static|Win32"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -78,11 +271,11 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ogremain_d.lib libtheoraplayer_d.lib"
-				OutputFile="bin/Debug/Plugin_OgreVideo_d.dll"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile="OgreVideo.def"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="bin/Debug/Plugin_OgreVideo.pdb"
 				RandomizedBaseAddress="1"
@@ -113,9 +306,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="bin/Release"
-			IntermediateDirectory="bin/Release"
+			Name="Release_Static|Win32"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -175,11 +368,204 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ogremain.lib libtheoraplayer.lib"
-				OutputFile="bin/Release/Plugin_OgreVideo.dll"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile="OgreVideo.def"
+				ModuleDefinitionFile=""
+				ProgramDatabaseFile="bin/Release/Plugin_OgreVideo.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="lib/Plugin_OgreVideo.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug_DynamicOggVorbis|Win32"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+				ExcludedFromBuild="true"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\bin\Debug/TheoraVideo.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="include\;include\libtheoraplayer"
+				PreprocessorDefinitions="_WIN32;_DEBUG;THEORAVIDEO_PLUGIN_EXPORTS;THEORAVIDEO_STATIC"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile=".\..\obj\Debug/TheoraVideo.pch"
+				AssemblerListingLocation=".\..\obj\Debug/"
+				ObjectFile=".\..\obj\Debug/"
+				ProgramDataBaseFileName=".\..\obj\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="4"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ogremain_d.lib libtheoraplayer_static_d.lib libogg.lib libvorbis.lib libtheora_static.lib"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName)_d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="lib/"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="bin/Debug/Plugin_OgreVideo.pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="lib/Plugin_OgreVideo_d.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_DynamicOggVorbis|Win32"
+			OutputDirectory="bin/$(ConfigurationName)"
+			IntermediateDirectory="bin/$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+				ExcludedFromBuild="true"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\bin\Release/TheoraVideo.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="include\;include\libtheoraplayer"
+				PreprocessorDefinitions="_WIN32;NDEBUG;THEORAVIDEO_PLUGIN_EXPORTS;THEORAVIDEO_STATIC"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
+				AssemblerListingLocation=".\..\obj\Release/"
+				ObjectFile=".\..\obj\Release/"
+				ProgramDataBaseFileName=".\..\obj\Release/"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ogremain.lib libtheoraplayer_static.lib libogg.lib libvorbis.lib libtheora_static.lib"
+				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName).dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="lib/"
+				ModuleDefinitionFile=""
 				ProgramDatabaseFile="bin/Release/Plugin_OgreVideo.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -244,10 +630,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\OgreVideo.def"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

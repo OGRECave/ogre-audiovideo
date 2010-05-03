@@ -28,6 +28,13 @@ http://www.gnu.org/copyleft/lesser.txt.
 #endif
 #include "OgreVideoManager.h"
 #include <stdio.h>
+
+#ifdef OGRE_MAC_FRAMEWORK
+#define OGREVIDEO_EXPORT extern "C"
+#else
+#define OGREVIDEO_EXPORT extern "C" __declspec(dllexport)
+#endif
+
 namespace Ogre
 {
 	OgreVideoManager* theoraVideoPlugin;
@@ -37,7 +44,7 @@ namespace Ogre
 		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
 	}
 
-	extern "C" void dllStartPlugin()
+	OGREVIDEO_EXPORT void dllStartPlugin()
 	{
 		TheoraVideoManager::setLogFunction(ogrevideo_log);
 		// Create our new External Texture Source PlugIn
@@ -48,7 +55,7 @@ namespace Ogre
 		Root::getSingleton().addFrameListener(theoraVideoPlugin);
 	}
 
-	extern "C" void dllStopPlugin()
+	OGREVIDEO_EXPORT void dllStopPlugin()
 	{
 		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
 		delete theoraVideoPlugin;
