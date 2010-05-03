@@ -54,9 +54,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\..\obj\Debug/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Debug/"
-				ObjectFile=".\..\obj\Debug/"
-				ProgramDataBaseFileName=".\..\obj\Debug/"
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -153,9 +153,9 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Release/"
-				ObjectFile=".\..\obj\Release/"
-				ProgramDataBaseFileName=".\..\obj\Release/"
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -212,7 +212,7 @@
 			Name="Debug_Static|Win32"
 			OutputDirectory="bin/$(ConfigurationName)"
 			IntermediateDirectory="bin/$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -247,9 +247,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\..\obj\Debug/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Debug/"
-				ObjectFile=".\..\obj\Debug/"
-				ProgramDataBaseFileName=".\..\obj\Debug/"
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -268,25 +268,11 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ogremain_d.lib libtheoraplayer_d.lib"
-				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName)_d.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile=""
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="bin/Debug/Plugin_OgreVideo.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="lib/Plugin_OgreVideo_d.lib"
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\Plugin_$(ProjectName)_d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -298,9 +284,6 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine=""
 			/>
@@ -309,7 +292,7 @@
 			Name="Release_Static|Win32"
 			OutputDirectory="bin/$(ConfigurationName)"
 			IntermediateDirectory="bin/$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -345,10 +328,10 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Release/"
-				ObjectFile=".\..\obj\Release/"
-				ProgramDataBaseFileName=".\..\obj\Release/"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 				CompileAs="0"
@@ -365,24 +348,11 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ogremain.lib libtheoraplayer.lib"
-				OutputFile="bin\$(ConfigurationName)\Plugin_$(ProjectName).dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib/"
-				ModuleDefinitionFile=""
-				ProgramDatabaseFile="bin/Release/Plugin_OgreVideo.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="lib/Plugin_OgreVideo.lib"
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\Plugin_$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -392,9 +362,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -440,9 +407,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile=".\..\obj\Debug/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Debug/"
-				ObjectFile=".\..\obj\Debug/"
-				ProgramDataBaseFileName=".\..\obj\Debug/"
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -539,9 +506,9 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\..\obj\Release/TheoraVideo.pch"
-				AssemblerListingLocation=".\..\obj\Release/"
-				ObjectFile=".\..\obj\Release/"
-				ProgramDataBaseFileName=".\..\obj\Release/"
+				AssemblerListingLocation="$(OutDir)\"
+				ObjectFile="$(OutDir)\"
+				ProgramDataBaseFileName="$(OutDir)\"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 				CompileAs="0"
