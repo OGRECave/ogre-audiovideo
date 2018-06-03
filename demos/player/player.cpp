@@ -19,56 +19,38 @@ namespace Ogre
 		bool mSeeking;
 		bool mPaused;
 		int mSeekStep;
+
+		OgreVideoManager mVidMgr;
 	public:
 		DemoApp()
 		{
 			mSeeking=mPaused=mShaders=0;
+			mVidMgr.initialise();
+			Root::getSingleton().addFrameListener(&mVidMgr);
 		}
 
-		void frameStarted(const FrameEvent& evt)
-		{
-			TheoraVideoClip* clip=getClip(VIDEO_FILE);
-			CEGUI::WindowManager* wm=CEGUI::WindowManager::getSingletonPtr();
-			if (!mSeeking)
-			{
-				float ctime=clip->getTimePosition(),duration=clip->getDuration();
-				CEGUI::Window* wnd2=wm->getWindow("seeker");
-				wnd2->setProperty("ScrollPosition",StringConverter::toString(1024*(ctime/duration)));
-			}
-			else
-			{
-				CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("seeker");
-				float dur=clip->getDuration();
+		bool keyPressed(const OgreBites::KeyboardEvent& e) {
+		    switch(e.keysym.sym)
+		    {
+		    case '\033':
+		        Root::getSingleton().queueEndRendering();
+		        break;
+		    case ' ':
+		        OnPlayPause();
+		        break;
+		    case 'g':
+		        OnGrey();
+		        break;
+		    case 's':
+		        OnShaders();
+		        mShaders ? OnYUV() : OnRGB();
+		        break;
+		    }
 
-				CEGUI::String prop=wnd->getProperty("ScrollPosition");
-				int step=StringConverter::parseInt(prop.c_str());
-				if (abs(step-mSeekStep) > 10)
-				{
-					mSeekStep=step;
-					float seek_time=((float) step/1024)*dur;
-
-					clip->seek(seek_time);
-				}
-			}
-
-			String s=StringConverter::toString(clip->getDuration());
-			String s2=StringConverter::toString(clip->getNumDroppedFrames());
-			wm->getWindow("cFrame")->setText("duration: "+s+" seconds");
-			wm->getWindow("droppedFrames")->setText("dropped frames: "+s2);
-
-			String np=StringConverter::toString(clip->getNumReadyFrames());
-			wm->getWindow("precached")->setText("Precached: "+np);
-
-
-			const RenderTarget::FrameStats& stats = Ogre::Root::getSingleton().getAutoCreatedWindow()->getStatistics();
-			wm->getWindow("fps")->setText("FPS: "+StringConverter::toString(stats.lastFPS));
-
+		    return true;
 		}
 
-
-
-
-		bool OnPlayPause(const CEGUI::EventArgs& e)
+		bool OnPlayPause()
 		{
 			TheoraVideoClip* clip=getClip(VIDEO_FILE);
 
@@ -85,54 +67,51 @@ namespace Ogre
 			return true;
 		}
 
-		bool OnSeekStart(const CEGUI::EventArgs& e)
+		bool OnSeekStart()
 		{
 			if (!mPaused) getClip(VIDEO_FILE)->pause();
 			mSeeking=true;
 			return true;
 		}
 
-		bool OnSeekEnd(const CEGUI::EventArgs& e)
+		bool OnSeekEnd()
 		{
 			if (!mPaused) getClip(VIDEO_FILE)->play();
 			mSeeking=false;
 			return true;
 		}
 
-		bool OnRGB(const CEGUI::EventArgs& e)
+		bool OnRGB()
 		{
-			getClip(VIDEO_FILE)->setOutputMode(TH_BGRA);
+			getClip(VIDEO_FILE)->setOutputMode(TH_RGBA);
 			return true;
 		}
 
-		bool OnYUV(const CEGUI::EventArgs& e)
+		bool OnYUV()
 		{
 			getClip(VIDEO_FILE)->setOutputMode(TH_YUVA);
 			return true;
 		}
 
-		bool OnGrey(const CEGUI::EventArgs& e)
+		bool OnGrey()
 		{
 			getClip(VIDEO_FILE)->setOutputMode(TH_GREY3A);
 			return true;
 		}
 
 
-		bool OnShaders(const CEGUI::EventArgs& e)
+		bool OnShaders()
 		{
 			
 			mShaders=!mShaders;
-			CEGUI::Window* wnd=CEGUI::WindowManager::getSingleton().getWindow("shaders_button");
 			MaterialPtr mat=MaterialManager::getSingleton().getByName("video_material");
 			Pass* pass=mat->getTechnique(0)->getPass(0);
 			if (mShaders)
 			{
-				wnd->setText("Shader yuv2rgb = on");
 				pass->setFragmentProgram("TheoraVideoPlugin/yuv2rgb");
 			}
 			else
 			{
-				wnd->setText("Shader yuv2rgb = off");
 				pass->setFragmentProgram("");
 			}
 			return true;
@@ -141,14 +120,6 @@ namespace Ogre
 
 		void init()
 		{
-			CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout((CEGUI::utf8*)"SimpleDemo.layout"); 
-			CEGUI::System::getSingleton().setGUISheet(sheet);
-
-			EVENT("rgb_button",DemoApp::OnRGB); EVENT("yuv_button",DemoApp::OnYUV); EVENT("grey_button",DemoApp::OnGrey);
-			EVENT("shaders_button",DemoApp::OnShaders); EVENT("Play/Pause",DemoApp::OnPlayPause);
-			EVENT_EX("seeker",DemoApp::OnSeekStart,CEGUI::Scrollbar::EventThumbTrackStarted);
-			EVENT_EX("seeker",DemoApp::OnSeekEnd,CEGUI::Scrollbar::EventThumbTrackEnded);
- 
 			createQuad("video_quad","video_material",-0.5,1,1,-0.94);
 
 			OgreVideoManager* mgr=(OgreVideoManager*) OgreVideoManager::getSingletonPtr();

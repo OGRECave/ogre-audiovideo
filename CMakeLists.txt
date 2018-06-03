@@ -22,6 +22,5 @@ target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/)
 target_link_libraries(Plugin_TheoraVideoSystem PUBLIC theoraplayer OgreMain)
 set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
-add_executable(Player demos/player/player.cpp)
-target_link_libraries(Player Plugin_TheoraVideoSystem ${OGRE_LIBRARIES})
-target_include_directories(Player PRIVATE demos/include/)
+add_executable(player demos/player/player.cpp)
+target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
