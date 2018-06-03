@@ -24,8 +24,6 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 
 namespace Ogre
 {
-	class TexturePtr;
-	
 	class _OgreTheoraExport OgreVideoManager : public ExternalTextureSource,
 											   public FrameListener,
 											   public TheoraVideoManager

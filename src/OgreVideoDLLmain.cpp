@@ -14,14 +14,9 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
   #include <Ogre/OgreExternalTextureSourceManager.h>
   #include <Ogre/OgreRoot.h>
 #endif
+#include "OgreLogManager.h"
 #include "OgreVideoManager.h"
 #include <stdio.h>
-
-#ifdef OGRE_MAC_FRAMEWORK
-#define OGREVIDEO_EXPORT extern "C"
-#else
-#define OGREVIDEO_EXPORT extern "C" __declspec(dllexport)
-#endif
 
 namespace Ogre
 {
@@ -32,7 +27,7 @@ namespace Ogre
 		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
 	}
 
-	OGREVIDEO_EXPORT void dllStartPlugin()
+	extern "C" void _OgreTheoraExport dllStartPlugin()
 	{
 		TheoraVideoManager::setLogFunction(ogrevideo_log);
 		// Create our new External Texture Source PlugIn
@@ -43,7 +38,7 @@ namespace Ogre
 		Root::getSingleton().addFrameListener(theoraVideoPlugin);
 	}
 
-	OGREVIDEO_EXPORT void dllStopPlugin()
+	extern "C" void _OgreTheoraExport dllStopPlugin()
 	{
 		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
 		delete theoraVideoPlugin;

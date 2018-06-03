@@ -61,8 +61,7 @@ namespace Ogre
 
 	OgreVideoManager::OgreVideoManager(int num_worker_threads) : TheoraVideoManager(num_worker_threads)
 	{
-		mPlugInName = "TheoraVideoPlugin";
-		mDictionaryName = mPlugInName;
+		mDictionaryName = "TheoraVideoPlugin";
 		mbInit=false;
 		mTechniqueLevel=mPassLevel=mStateLevel=0;
 
@@ -102,10 +101,10 @@ namespace Ogre
 	void OgreVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
 		std::string name=mInputFileName;
-		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_BGRA,0,1);
+		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_RGBA,0,1);
 		int w=nextPow2(clip->getWidth()),h=nextPow2(clip->getHeight());
 
-		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
+		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_BYTE_RGBA,TU_DYNAMIC_WRITE_ONLY);
 		
 		if (t->getFormat() != PF_X8R8G8B8) logMessage("ERROR: Pixel format is not X8R8G8B8 which is what was requested!");
 		// clear it to black
