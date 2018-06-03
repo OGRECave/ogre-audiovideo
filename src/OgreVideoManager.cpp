@@ -32,6 +32,7 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include <Ogre/OgreHardwarePixelBuffer.h>
 #endif
 
+#include "OgreExternalTextureSourceManager.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraTimer.h"
 #include <vector>
@@ -166,5 +167,31 @@ namespace Ogre
 		}
 		return true;
 	}
+
+    static void ogrevideo_log(std::string message)
+    {
+        Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
+    }
+
+    const String& OgreVideoPlugin::getName() const
+    {
+        static String name = "TheoraVideoPlugin";
+        return name;
+    }
+    void OgreVideoPlugin::initialise()
+    {
+        TheoraVideoManager::setLogFunction(ogrevideo_log);
+        // Create our new External Texture Source PlugIn
+        mVideoMgr = new OgreVideoManager();
+
+        // Register with Manager
+        ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",mVideoMgr);
+        Root::getSingleton().addFrameListener(mVideoMgr);
+    }
+    void OgreVideoPlugin::shutdown()
+    {
+        Root::getSingleton().removeFrameListener(mVideoMgr);
+        delete mVideoMgr;
+    }
 
 } // end namespace Ogre

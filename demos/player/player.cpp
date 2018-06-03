@@ -19,14 +19,10 @@ namespace Ogre
 		bool mSeeking;
 		bool mPaused;
 		int mSeekStep;
-
-		OgreVideoManager mVidMgr;
 	public:
 		DemoApp()
 		{
 			mSeeking=mPaused=mShaders=0;
-			mVidMgr.initialise();
-			Root::getSingleton().addFrameListener(&mVidMgr);
 		}
 
 		bool keyPressed(const OgreBites::KeyboardEvent& e) {

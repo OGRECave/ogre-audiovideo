@@ -7,40 +7,25 @@ This program is free software; you can redistribute it and/or modify it under
 the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 *************************************************************************************/
 
-#ifndef OGRE_MAC_FRAMEWORK
-  #include "OgreExternalTextureSourceManager.h"
-  #include "OgreRoot.h"
-#else
-  #include <Ogre/OgreExternalTextureSourceManager.h>
-  #include <Ogre/OgreRoot.h>
-#endif
-#include "OgreLogManager.h"
+#include "OgreRoot.h"
 #include "OgreVideoManager.h"
 #include <stdio.h>
 
 namespace Ogre
 {
-	OgreVideoManager* theoraVideoPlugin;
-
-	void ogrevideo_log(std::string message)
-	{
-		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
-	}
+#ifndef OGRE_STATIC_LIB
+    static OgreVideoPlugin* theoraVideoPlugin;
 
 	extern "C" void _OgreTheoraExport dllStartPlugin()
 	{
-		TheoraVideoManager::setLogFunction(ogrevideo_log);
-		// Create our new External Texture Source PlugIn
-		theoraVideoPlugin = new OgreVideoManager();
-
-		// Register with Manager
-		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",theoraVideoPlugin);
-		Root::getSingleton().addFrameListener(theoraVideoPlugin);
+	    theoraVideoPlugin = new OgreVideoPlugin();
+	    Root::getSingleton().installPlugin(theoraVideoPlugin);
 	}
 
 	extern "C" void _OgreTheoraExport dllStopPlugin()
 	{
-		Root::getSingleton().removeFrameListener(theoraVideoPlugin);
+	    Root::getSingleton().uninstallPlugin(theoraVideoPlugin);
 		delete theoraVideoPlugin;
 	}
+#endif
 }

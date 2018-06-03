@@ -66,6 +66,7 @@ namespace Ogre
 	{
 	private:
 		bool mShaders;
+        OgreVideoPlugin mPlugin;
 	public:
 
 		TheoraDemoApplication()
@@ -74,6 +75,11 @@ namespace Ogre
 
 		}
 
+		void createRoot()
+		{
+		    OgreBites::ApplicationContext::createRoot();
+            Root::getSingleton().installPlugin(&mPlugin);
+		}
 
 	protected:
 

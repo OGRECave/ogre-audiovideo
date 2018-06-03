@@ -19,6 +19,8 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #endif
 #include "OgreVideoExport.h"
 #include "TheoraVideoManager.h"
+#include "OgrePlugin.h"
+
 #include <string>
 #include <map>
 
@@ -69,6 +71,17 @@ namespace Ogre
         
 		TheoraVideoManager* getTheoraVideoManager();
 	};
+
+    class OgreVideoPlugin : public Plugin
+    {
+	    OgreVideoManager* mVideoMgr;
+    public:
+        const String& getName() const;
+        void install() {}
+        void uninstall() {}
+        void initialise();
+        void shutdown();
+    };
 }
 #endif
 
