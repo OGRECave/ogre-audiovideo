@@ -1,4 +1,6 @@
-This is the Ogre Theora Video plugin.
+# %Ogre Theora Video Plugin {#mainpage}
+
+This is the %Ogre Theora Video plugin. See @ref External-Texture-Sources.
 
 # Features
 
