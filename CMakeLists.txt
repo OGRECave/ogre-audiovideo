@@ -24,3 +24,5 @@ set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
 add_executable(player demos/player/player.cpp)
 target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
+
+file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})
