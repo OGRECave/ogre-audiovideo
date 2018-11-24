@@ -173,10 +173,10 @@ namespace Ogre
 				int w=f->getStride(),h=f->getHeight();
 				TexturePtr t=mTextures[(*it)->getName()];
 
-#ifdef OLD_OGRE
-				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
-#else
+#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
 				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(v1::HardwareBuffer::HBL_DISCARD);
+#else
+				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
 #endif
 				unsigned char *videoData=f->getBuffer();
 
