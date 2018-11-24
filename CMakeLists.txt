@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
 project(OgreVideo)
 
-find_package(OGRE 1.11 REQUIRED COMPONENTS Bites)
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+option(BUILD_DEMOS "Build demos (required Ogre Bites)" ON)
 
+find_package(OGRE3D)
 include(GenerateExportHeader)
 
 file(GLOB PLAYER_SRC theoraplayer/src/*cpp)
@@ -22,10 +24,14 @@ target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/)
 target_link_libraries(Plugin_TheoraVideoSystem PUBLIC theoraplayer OgreMain)
 set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
-add_executable(player demos/player/player.cpp)
-target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
-
-file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})
+if (BUILD_DEMOS)
+	find_package(OGRE REQUIRED COMPONENTS Bites)
+	
+	add_executable(player demos/player/player.cpp)
+	target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
+	
+	file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})
+endif (BUILD_DEMOS)
 
 # doxygen stuff
 find_package(Doxygen)
