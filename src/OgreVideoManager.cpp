@@ -37,6 +37,12 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "TheoraTimer.h"
 #include <vector>
 
+#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
+#include <OgreHlmsManager.h>
+#include <Hlms/Unlit/OgreHlmsUnlit.h>
+#include <Hlms/Unlit/OgreHlmsUnlitDatablock.h>
+#endif
+
 namespace Ogre
 {
 	int nextPow2(int x)
@@ -105,16 +111,27 @@ namespace Ogre
 		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_RGBA,0,1);
 		int w=nextPow2(clip->getWidth()),h=nextPow2(clip->getHeight());
 
-		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_BYTE_RGBA,TU_DYNAMIC_WRITE_ONLY);
+		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_X8R8G8B8,TU_DYNAMIC_WRITE_ONLY);
 		
 		if (t->getFormat() != PF_X8R8G8B8) logMessage("ERROR: Pixel format is not X8R8G8B8 which is what was requested!");
 		// clear it to black
 
+#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
+		unsigned char* texData=(unsigned char*) t->getBuffer()->lock(v1::HardwareBuffer::HBL_DISCARD);
+#else
 		unsigned char* texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+#endif
 		memset(texData,0,w*h*4);
 		t->getBuffer()->unlock();
 		mTextures[name]=t;
 
+#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
+		// set it in a datablock
+		HlmsUnlitDatablock* ogreDatablock = static_cast<Ogre::HlmsUnlitDatablock*>(
+			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
+		);
+		ogreDatablock->setTexture( 0, 0, t );
+#else
 		// attach it to a material
 		MaterialPtr material = MaterialManager::getSingleton().getByName(material_name);
 		TextureUnitState* ts = material->getTechnique(mTechniqueLevel)->getPass(mPassLevel)->getTextureUnitState(mStateLevel);
@@ -128,7 +145,7 @@ namespace Ogre
 		Matrix4 mat=Matrix4::IDENTITY;
 		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
 		ts->setTextureTransform(mat);
-
+#endif
 	}
 
 	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
@@ -156,7 +173,11 @@ namespace Ogre
 				int w=f->getStride(),h=f->getHeight();
 				TexturePtr t=mTextures[(*it)->getName()];
 
+#ifdef OLD_OGRE
 				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+#else
+				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(v1::HardwareBuffer::HBL_DISCARD);
+#endif
 				unsigned char *videoData=f->getBuffer();
 
 				memcpy(texData,videoData,w*h*4);
