@@ -1,10 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
 project(OgreVideo)
 
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-option(BUILD_DEMOS "Build demos (required Ogre Bites)" ON)
+find_package(OGRE 1.11 REQUIRED OPTIONAL COMPONENTS Bites)
 
-find_package(OGRE3D)
+option(BUILD_DEMOS "Build demos (required Ogre Bites)" ON)
 include(GenerateExportHeader)
 
 file(GLOB PLAYER_SRC theoraplayer/src/*cpp)
@@ -20,13 +19,18 @@ add_library(Plugin_TheoraVideoSystem SHARED
     src/OgreTheoraDataStream.cpp
     src/OgreVideoDLLmain.cpp
     src/OgreVideoManager.cpp)
-target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/)
+target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/ ${OGRE_INCLUDE_DIRS})
 target_link_libraries(Plugin_TheoraVideoSystem PUBLIC theoraplayer OgreMain)
 set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
+if (NOT OGRE_Bites_FOUND)
+	if (BUILD_DEMOS)
+		message(WARNING "NOT found OGRE Bites - disable build demos")
+	endif (BUILD_DEMOS)
+	set(BUILD_DEMOS OFF)
+endif (NOT OGRE_Bites_FOUND)
+
 if (BUILD_DEMOS)
-	find_package(OGRE REQUIRED COMPONENTS Bites)
-	
 	add_executable(player demos/player/player.cpp)
 	target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
 	
