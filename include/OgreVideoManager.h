@@ -32,6 +32,7 @@ namespace Ogre
 	{
 		std::map<std::string,TexturePtr> mTextures;
 		bool mbInit;
+		bool mbPaused;
 	public:
 		OgreVideoManager(int num_worker_threads=1);
 		~OgreVideoManager();
@@ -69,6 +70,8 @@ namespace Ogre
         bool setParameter(const String &name,const String &value);
         String getParameter(const String &name) const;
         
+		void pauseAllVideoClips();
+		void unpauseAllVideoClips();
 		TheoraVideoManager* getTheoraVideoManager();
 	};
 
