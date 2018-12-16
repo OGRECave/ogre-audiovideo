@@ -129,6 +129,12 @@ namespace Ogre
 			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
 		);
 		ogreDatablock->setTexture( 0, 0, t );
+		
+		// scale tex coords to fit the 0-1 uv range
+		Matrix4 mat = Matrix4::IDENTITY;
+		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
+		ogreDatablock->setAnimationMatrix( 0, mat );
+		ogreDatablock->setEnableAnimationMatrix( 0, true );
 #else
 		// attach it to a material
 		MaterialPtr material = MaterialManager::getSingleton().getByName(material_name);
