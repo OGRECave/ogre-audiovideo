@@ -71,6 +71,7 @@ namespace Ogre
 	{
 		mDictionaryName = "TheoraVideoPlugin";
 		mbInit=false;
+		mbPaused=false;
 		mTechniqueLevel=mPassLevel=mStateLevel=0;
 
 		initialise();
@@ -155,6 +156,9 @@ namespace Ogre
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
 	{
+		if (mbPaused)
+			return true;
+		
 		if (evt.timeSinceLastFrame > 0.3f)
 			update(0.3f);
 		else
@@ -183,6 +187,14 @@ namespace Ogre
 		return true;
 	}
 
+	void OgreVideoManager::pauseAllVideoClips() {
+		mbPaused = true;
+	}
+	
+	void OgreVideoManager::unpauseAllVideoClips() {
+		mbPaused = false;
+	}
+	
     static void ogrevideo_log(std::string message)
     {
         Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
