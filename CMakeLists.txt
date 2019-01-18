@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project(OgreVideo)
 
-find_package(OGRE 1.11 REQUIRED OPTIONAL COMPONENTS Bites)
+find_package(OGRE 1.11 REQUIRED OPTIONAL_COMPONENTS Bites)
 
 option(BUILD_DEMOS "Build demos (required Ogre Bites)" ON)
 include(GenerateExportHeader)
