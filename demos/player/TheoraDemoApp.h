@@ -17,6 +17,8 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "TheoraVideoManager.h"
 #include "TheoraVideoClip.h"
 
+#include "OgreOggSoundPlugin.h"
+
 #include <iostream>
 
 
@@ -66,7 +68,8 @@ namespace Ogre
 	{
 	private:
 		bool mShaders;
-        OgreVideoPlugin mPlugin;
+        OgreVideoPlugin mVideoPlugin;
+		OgreOggSound::OgreOggSoundPlugin mAudioPlugin;
 	public:
 
 		TheoraDemoApplication()
@@ -78,7 +81,8 @@ namespace Ogre
 		void createRoot()
 		{
 		    OgreBites::ApplicationContext::createRoot();
-            Root::getSingleton().installPlugin(&mPlugin);
+            Root::getSingleton().installPlugin(&mAudioPlugin);
+			Root::getSingleton().installPlugin(&mVideoPlugin);
 		}
 
 	protected:

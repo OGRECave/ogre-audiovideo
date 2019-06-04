@@ -12,22 +12,22 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
 
 if(BUILD_VIDEOPLUGIN)
-file(GLOB PLAYER_SRC theoraplayer/src/*cpp)
-add_library(theoraplayer STATIC ${PLAYER_SRC})
-target_include_directories(theoraplayer PUBLIC ${CMAKE_BINARY_DIR}/include/ theoraplayer/include)
-target_link_libraries(theoraplayer PRIVATE theoradec)
-set_property(TARGET theoraplayer PROPERTY POSITION_INDEPENDENT_CODE ON)
-generate_export_header(theoraplayer 
-    EXPORT_MACRO_NAME TheoraPlayerExport
-    EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/TheoraExport.h)
+  file(GLOB PLAYER_SRC theoraplayer/src/*cpp)
+  add_library(theoraplayer STATIC ${PLAYER_SRC})
+  target_include_directories(theoraplayer PUBLIC ${CMAKE_BINARY_DIR}/include/ theoraplayer/include)
+  target_link_libraries(theoraplayer PRIVATE theoradec)
+  set_property(TARGET theoraplayer PROPERTY POSITION_INDEPENDENT_CODE ON)
+  generate_export_header(theoraplayer 
+      EXPORT_MACRO_NAME TheoraPlayerExport
+      EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/TheoraExport.h)
 
-add_library(Plugin_TheoraVideoSystem SHARED
-    src/OgreTheoraDataStream.cpp
-    src/OgreVideoDLLmain.cpp
-    src/OgreVideoManager.cpp)
-target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/ ${OGRE_INCLUDE_DIRS})
-target_link_libraries(Plugin_TheoraVideoSystem PUBLIC theoraplayer OgreMain)
-set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
+  add_library(Plugin_TheoraVideoSystem SHARED
+      src/OgreTheoraDataStream.cpp
+      src/OgreVideoDLLmain.cpp
+      src/OgreVideoManager.cpp)
+  target_include_directories(Plugin_TheoraVideoSystem PUBLIC include/ ${OGRE_INCLUDE_DIRS})
+  target_link_libraries(Plugin_TheoraVideoSystem PUBLIC theoraplayer OgreMain)
+  set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
   install(TARGETS Plugin_TheoraVideoSystem LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
 endif()
@@ -45,7 +45,7 @@ endif (NOT OGRE_Bites_FOUND)
 
 if (BUILD_DEMOS)
 	add_executable(player demos/player/player.cpp)
-	target_link_libraries(player OgreBites Plugin_TheoraVideoSystem)
+  target_link_libraries(player OgreBites Plugin_TheoraVideoSystem Plugin_OggSound)
 	
 	file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})
 endif (BUILD_DEMOS)

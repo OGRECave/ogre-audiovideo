@@ -8,6 +8,8 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 *************************************************************************************/
 #include "TheoraDemoApp.h"
 
+#include "OgreOggSoundInterface.h"
+
 #define VIDEO_FILE "konqi.ogg"
 
 namespace Ogre
@@ -120,9 +122,23 @@ namespace Ogre
 
 			OgreVideoManager* mgr=(OgreVideoManager*) OgreVideoManager::getSingletonPtr();
 
+			mgr->setAudioInterfaceFactory(OgreOggSoundInterfaceFactory::getSingletonPtr());
+			OgreOggSound::OgreOggSoundManager::getSingleton().init();
+			OgreOggSound::OgreOggSoundManager::getSingleton().setSceneManager(SceneMgr);
+
 			mgr->setInputName(VIDEO_FILE);
 			mgr->createDefinedTexture("video_material");
-			getClip(VIDEO_FILE)->setAutoRestart(1);
+			auto clip = getClip(VIDEO_FILE);
+			clip->setAutoRestart(1);
+
+			if (clip->getAudioInterface())
+			{
+				auto sound = static_cast<OgreOggSoundInterface*>(clip->getAudioInterface())->ogreOggSoundObj;
+				SceneMgr->getRootSceneNode()->attachObject(sound);
+				sound->setPosition(Ogre::Vector3::ZERO);
+
+				sound->disable3D(true);
+			}
 		}
 	};
 
