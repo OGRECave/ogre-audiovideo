@@ -6,23 +6,49 @@ Copyright (c) 2008-2010 Kresimir Spes (kreso@cateia.com)
 This program is free software; you can redistribute it and/or modify it under
 the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 *************************************************************************************/
-#include "TheoraDemoApp.h"
+#include "OgreApplicationContext.h"
+#include "OgreExternalTextureSourceManager.h"
+#include "Ogre.h"
+
+#include "OgreVideoManager.h"
+#include "TheoraVideoManager.h"
+#include "TheoraVideoClip.h"
+
+#include "OgreOggSoundPlugin.h"
 
 #include "OgreOggSoundInterface.h"
+#include "OgreRectangle2D.h"
+
+#include <iostream>
 
 #define VIDEO_FILE "konqi.ogg"
 
 namespace Ogre
 {
 
-	class DemoApp : public TheoraDemoApp
+	static TheoraVideoClip* getClip(String name)
 	{
+		TheoraVideoManager* mgr = TheoraVideoManager::getSingletonPtr();
+		return mgr->getVideoClipByName(name);
+	}
+
+    static OgreOggSound::OgreOggISound* getSound(const String& name)
+    {
+        auto& mgr = OgreOggSound::OgreOggSoundManager::getSingleton();
+        return mgr.getSound(name);
+    }
+
+	class DemoApp : public OgreBites::ApplicationContext, public OgreBites::InputListener
+	{
+        OgreVideoPlugin mVideoPlugin;
+		OgreOggSound::OgreOggSoundPlugin mAudioPlugin;
+
 		bool mShaders;
 		bool mSeeking;
 		bool mPaused;
 		int mSeekStep;
 	public:
-		DemoApp()
+		DemoApp() : OgreBites::ApplicationContext("TheoraDemo")
 		{
 			mSeeking=mPaused=mShaders=0;
 		}
@@ -56,11 +82,13 @@ namespace Ogre
 			{
 				mPaused=1;
 				clip->pause();
+                getSound(VIDEO_FILE)->pause();
 			}
 			else
 			{
 				mPaused=0;
 				clip->play();
+                getSound(VIDEO_FILE)->play();
 			}
 			return true;
 		}
@@ -116,15 +144,43 @@ namespace Ogre
 		}
 
 
-		void init()
+		void createRoot()
 		{
-			createQuad("video_quad","video_material",-0.5,1,1,-0.94);
+		    OgreBites::ApplicationContext::createRoot();
+            mRoot->installPlugin(&mAudioPlugin);
+			mRoot->installPlugin(&mVideoPlugin);
+		}
+
+		void setup()
+		{
+		    OgreBites::ApplicationContext::setup();
+
+            addInputListener(this);
+
+		    Root* root = getRoot();
+		    SceneManager* scnMgr = root->createSceneManager();
+
+		    RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
+		    shadergen->addSceneManager(scnMgr);
+
+			Camera* cam = scnMgr->createCamera("myCam");
+			getRenderWindow()->addViewport(cam);
+            cam->getViewport()->setBackgroundColour(ColourValue(0.3,0.3,0.3));
+
+            auto rect = new Rectangle2D("video_quad", true);
+            rect->setCorners(-0.5,1,1,-0.94);
+            rect->setBoundingBox(AxisAlignedBox::BOX_INFINITE);
+            rect->setMaterial(MaterialManager::getSingleton().getByName("video_material"));
+
+            // and atach it to the root node
+            SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
+            node->attachObject(rect);
 
 			OgreVideoManager* mgr=(OgreVideoManager*) OgreVideoManager::getSingletonPtr();
 
 			mgr->setAudioInterfaceFactory(OgreOggSoundInterfaceFactory::getSingletonPtr());
 			OgreOggSound::OgreOggSoundManager::getSingleton().init();
-			OgreOggSound::OgreOggSoundManager::getSingleton().setSceneManager(SceneMgr);
+			OgreOggSound::OgreOggSoundManager::getSingleton().setSceneManager(scnMgr);
 
 			mgr->setInputName(VIDEO_FILE);
 			mgr->createDefinedTexture("video_material");
@@ -134,13 +190,41 @@ namespace Ogre
 			if (clip->getAudioInterface())
 			{
 				auto sound = static_cast<OgreOggSoundInterface*>(clip->getAudioInterface())->ogreOggSoundObj;
-				SceneMgr->getRootSceneNode()->attachObject(sound);
+				node->attachObject(sound);
 				sound->setPosition(Ogre::Vector3::ZERO);
 
 				sound->disable3D(true);
 			}
 		}
 	};
+}
 
-	TheoraDemoApp* start() { return new DemoApp(); }
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+
+INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+#else
+int main(int argc, char *argv[])
+#endif
+{
+
+	// Create application object
+	Ogre::DemoApp app;
+
+	try {
+		app.initApp();
+		app.getRoot()->startRendering();
+		app.closeApp();
+	} catch( Ogre::Exception& e ) {
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+#else
+		std::cerr << "An exception has occured: " <<
+			e.getFullDescription().c_str() << std::endl;
+#endif
+	}
+
+
+	return 0;
 }
