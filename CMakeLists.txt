@@ -12,7 +12,7 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
 
 if(BUILD_VIDEOPLUGIN)
-  find_path(THEORA_INCLUDE_DIRS NAMES theora\theoradec.h HINTS ${PC_THEORA_INCLUDE_DIRS} PATH_SUFFIXES theora)
+  find_path(THEORA_INCLUDE_DIRS NAMES theora/theoradec.h HINTS ${PC_THEORA_INCLUDE_DIRS} PATH_SUFFIXES theora)
   find_library(THEORADEC_LIBRARIES NAMES theoradec HINTS ${PC_THEORA_LIBRARY_DIRS})
   find_library(VORBIS_LIBRARIES NAMES vorbis HINTS ${PC_VORBIS_LIBRARY_DIRS})
 
@@ -43,7 +43,7 @@ if(BUILD_VIDEOPLUGIN)
   set_target_properties(Plugin_TheoraVideoSystem PROPERTIES PREFIX "")
 
   install(FILES ${PLUGIN_H} ${PLAYER_H} ${CMAKE_BINARY_DIR}/include/TheoraExport.h DESTINATION include/OGRE/Plugins/Theora)
-  install(TARGETS theoraplayer RUNTIME DESTINATION bin/)
+  install(TARGETS theoraplayer RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
   install(TARGETS Plugin_TheoraVideoSystem RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
 endif()
 
