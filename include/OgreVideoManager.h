@@ -75,7 +75,7 @@ namespace Ogre
 		TheoraVideoManager* getTheoraVideoManager();
 	};
 
-    class OgreVideoPlugin : public Plugin
+    class _OgreTheoraExport OgreVideoPlugin : public Plugin
     {
 	    OgreVideoManager* mVideoMgr;
     public:
