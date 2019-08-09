@@ -149,6 +149,13 @@ namespace Ogre
 		destroyVideoClip(it->second.clip); // OgreTheoraDataStream will be destroyed in TheoraVideoClip destructor
 		mClipsTextures.erase(it);
 	}
+	
+	void OgreVideoManager::destroyAllVideoTexture() {
+		for (std::map<String,ClipTexture>::iterator it=mClipsTextures.begin(); it!=mClipsTextures.end(); it++) {
+			destroyVideoClip(it->second.clip);
+		}
+		mClipsTextures.clear();
+	}
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
 	{
