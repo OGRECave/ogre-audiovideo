@@ -9,7 +9,9 @@ option(BUILD_AUDIOPLUGIN "Build the OggSound Audio plugin" ON)
 include(GenerateExportHeader)
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
-set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
+if(OGRE_PREFIX_DIR)
+  set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
+endif()
 
 if(BUILD_VIDEOPLUGIN)
   add_subdirectory(theoravideo)
