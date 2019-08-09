@@ -53,27 +53,12 @@ namespace Ogre
 		return y;
 	}
 
-	class ManualTimer : public TheoraTimer
-	{
-	public:
-		void update(float t)
-		{
-		
-		}
-
-		void setTime(float time)
-		{
-			mTime=time;
-		}
-	};
-
 	OgreVideoManager::OgreVideoManager(int num_worker_threads) : TheoraVideoManager(num_worker_threads)
 	{
 		mDictionaryName = "TheoraVideoPlugin";
 		mbInit=false;
 		mbPaused=false;
 		mTechniqueLevel=mPassLevel=mStateLevel=0;
-
 		initialise();
 	}
 
@@ -93,19 +78,8 @@ namespace Ogre
 	void OgreVideoManager::shutDown()
 	{
 		if (!mbInit) return;
-
 		mbInit=false;
 	}
-    
-    bool OgreVideoManager::setParameter(const String &name,const String &value)
-    {
-        return ExternalTextureSource::setParameter(name, value);
-    }
-    
-    String OgreVideoManager::getParameter(const String &name) const
-    {
-        return ExternalTextureSource::getParameter(name);
-    }
 
 	void OgreVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
@@ -156,8 +130,6 @@ namespace Ogre
 	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
 	{
 		logMessage("Destroying ogg_video texture on material: "+material_name);
-
-		//logMessage("Error destroying ogg_video texture, texture not found!");
 	}
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
@@ -168,7 +140,7 @@ namespace Ogre
 		if (evt.timeSinceLastFrame > 0.3f)
 			update(0.3f);
 		else
-		    update(evt.timeSinceLastFrame);
+			update(evt.timeSinceLastFrame);
 
 		// update playing videos
 		std::vector<TheoraVideoClip*>::iterator it;
@@ -201,30 +173,30 @@ namespace Ogre
 		mbPaused = false;
 	}
 	
-    static void ogrevideo_log(std::string message)
-    {
-        Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
-    }
+	static void ogrevideo_log(std::string message)
+	{
+		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
+	}
 
-    const String& OgreVideoPlugin::getName() const
-    {
-        static String name = "TheoraVideoPlugin";
-        return name;
-    }
-    void OgreVideoPlugin::initialise()
-    {
-        TheoraVideoManager::setLogFunction(ogrevideo_log);
-        // Create our new External Texture Source PlugIn
-        mVideoMgr = new OgreVideoManager();
+	const String& OgreVideoPlugin::getName() const
+	{
+		static String name = "TheoraVideoPlugin";
+		return name;
+	}
+	void OgreVideoPlugin::initialise()
+	{
+		TheoraVideoManager::setLogFunction(ogrevideo_log);
+		// Create our new External Texture Source PlugIn
+		mVideoMgr = new OgreVideoManager();
 
-        // Register with Manager
-        ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",mVideoMgr);
-        Root::getSingleton().addFrameListener(mVideoMgr);
-    }
-    void OgreVideoPlugin::shutdown()
-    {
-        Root::getSingleton().removeFrameListener(mVideoMgr);
-        delete mVideoMgr;
-    }
+		// Register with Manager
+		ExternalTextureSourceManager::getSingleton().setExternalTextureSource("ogg_video",mVideoMgr);
+		Root::getSingleton().addFrameListener(mVideoMgr);
+	}
+	void OgreVideoPlugin::shutdown()
+	{
+		Root::getSingleton().removeFrameListener(mVideoMgr);
+		delete mVideoMgr;
+	}
 
 } // end namespace Ogre
