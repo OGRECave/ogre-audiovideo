@@ -30,20 +30,10 @@ namespace Ogre
 											   public FrameListener,
 											   public TheoraVideoManager
 	{
-		std::map<std::string,TexturePtr> mTextures;
-		bool mbInit;
-		bool mbPaused;
 	public:
 		OgreVideoManager(int num_worker_threads=1);
 		~OgreVideoManager();
-
-		/**
-			@remarks
-				This function is called to init this plugin - do not call directly
-		*/
-		bool initialise();
-		void shutDown();
-
+		
 		/**
 			@remarks
 				Creates a texture into an already defined material
@@ -53,7 +43,7 @@ namespace Ogre
 				Material  you are attaching a movie to.
 		*/
 		void createDefinedTexture(const String& material_name,
-                                  const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+								  const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		
 		/**
 			@remarks
@@ -63,28 +53,37 @@ namespace Ogre
 				Material Name you are looking to remove a video clip from
 		*/
 		void destroyAdvancedTexture(const String& material_name,
-                                    const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-		bool frameStarted(const FrameEvent& evt);
-
-        bool setParameter(const String &name,const String &value);
-        String getParameter(const String &name) const;
-        
+									const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		
+		/// pause all video
 		void pauseAllVideoClips();
+		
+		/// unpause all video
 		void unpauseAllVideoClips();
-		TheoraVideoManager* getTheoraVideoManager();
+		
+	private:
+		std::map<std::string,TexturePtr> mTextures;
+		bool mbInit;
+		bool mbPaused;
+		
+		// This function is called on start new frame by Ogre - do not call directly
+		bool frameStarted(const FrameEvent& evt);
+		
+		// This function is called to init this plugin - do not call directly
+		bool initialise();
+		void shutDown();
 	};
-
-    class _OgreTheoraExport OgreVideoPlugin : public Plugin
-    {
-	    OgreVideoManager* mVideoMgr;
-    public:
-        const String& getName() const;
-        void install() {}
-        void uninstall() {}
-        void initialise();
-        void shutdown();
-    };
+	
+	class _OgreTheoraExport OgreVideoPlugin : public Plugin
+	{
+		OgreVideoManager* mVideoMgr;
+	public:
+		const String& getName() const;
+		void install() {}
+		void uninstall() {}
+		void initialise();
+		void shutdown();
+	};
 }
 #endif
 
