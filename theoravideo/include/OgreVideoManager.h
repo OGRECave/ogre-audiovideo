@@ -36,7 +36,7 @@ namespace Ogre
 		
 		/**
 			@remarks
-				Creates a texture into an already defined material
+				Creates video clip and a texture into an already defined material.
 				All setting should have been set before calling this.
 				Refer to base class ( ExternalTextureSource ) for details
 			@param material_name
@@ -44,6 +44,18 @@ namespace Ogre
 		*/
 		void createDefinedTexture(const String& material_name,
 								  const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		
+		/**
+			@remarks
+				Creates video clip and  a texture into an already defined material.
+			@param video_file_name
+				Video input file name.
+			@param material_name
+				Material  you are attaching a movie to.
+		*/
+		TheoraVideoClip* createVideoTexture(const String& video_file_name, const String& material_name,
+											const String& video_group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+											const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		
 		/**
 			@remarks
@@ -61,8 +73,20 @@ namespace Ogre
 		/// unpause all video
 		void unpauseAllVideoClips();
 		
+		/**
+			@remarks
+				Return video clip based on material name
+			@param material_name
+				Material Name you are looking to remove a video clip from
+		*/
+		TheoraVideoClip* getVideoClipByMaterialName(const String& material_name);
+		
 	private:
-		std::map<std::string,TexturePtr> mTextures;
+		struct ClipTexture {
+			TheoraVideoClip*  clip;
+			TexturePtr        texture;
+		};
+		std::map<String,ClipTexture> mClipsTextures;
 		bool mbInit;
 		bool mbPaused;
 		
