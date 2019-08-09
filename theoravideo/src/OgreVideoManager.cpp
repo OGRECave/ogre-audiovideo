@@ -177,7 +177,9 @@ namespace Ogre
 	{
 		Ogre::LogManager::getSingleton().logMessage("OgreVideo: "+message);
 	}
-
+	
+	OgreVideoManager* OgreVideoPlugin::mVideoMgr = 0;
+	
 	const String& OgreVideoPlugin::getName() const
 	{
 		static String name = "TheoraVideoPlugin";
@@ -185,6 +187,13 @@ namespace Ogre
 	}
 	void OgreVideoPlugin::initialise()
 	{
+		if (mVideoMgr) {
+			Ogre::LogManager::getSingleton().logMessage(
+				"WARNING: OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
+			);
+			return;
+		}
+		
 		TheoraVideoManager::setLogFunction(ogrevideo_log);
 		// Create our new External Texture Source PlugIn
 		mVideoMgr = new OgreVideoManager();
@@ -197,6 +206,7 @@ namespace Ogre
 	{
 		Root::getSingleton().removeFrameListener(mVideoMgr);
 		delete mVideoMgr;
+		mVideoMgr = 0;
 	}
 
 } // end namespace Ogre

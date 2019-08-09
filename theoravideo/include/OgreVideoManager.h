@@ -76,7 +76,7 @@ namespace Ogre
 	
 	class _OgreTheoraExport OgreVideoPlugin : public Plugin
 	{
-		OgreVideoManager* mVideoMgr;
+		static OgreVideoManager* mVideoMgr;
 	public:
 		const String& getName() const;
 		void install() {}
