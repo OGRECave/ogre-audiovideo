@@ -83,9 +83,22 @@ namespace Ogre
 
 	void OgreVideoManager::createDefinedTexture(const String& material_name,const String& group_name)
 	{
-		std::string name=mInputFileName;
-		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(mInputFileName,group_name),TH_RGBA,0,1);
-		int w=nextPow2(clip->getWidth()),h=nextPow2(clip->getHeight());
+		createVideoTexture(mInputFileName, material_name, group_name, group_name);
+	}
+	
+	TheoraVideoClip* OgreVideoManager::createVideoTexture(
+		const String& video_file_name, const String& material_name,
+		const String& video_group_name, const String& group_name
+	) {
+		const String& name = material_name;
+		
+		if (mClipsTextures.find(name) != mClipsTextures.end()) {
+			logMessage("ERROR: OgreVideo texture \"" + name + "\" exist, destroy old texture first.");
+			return NULL;
+		}
+		
+		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(video_file_name,video_group_name),TH_RGBA,0,1);
+		int w=nextPow2(clip->getWidth()), h=nextPow2(clip->getHeight());
 
 		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_BYTE_RGBA,TU_DYNAMIC_WRITE_ONLY);
 		
@@ -96,7 +109,7 @@ namespace Ogre
 
 		memset(texData,0,w*h*4);
 		t->getBuffer()->unlock();
-		mTextures[name]=t;
+		mClipsTextures[name]={clip,t};
 
 #if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
 		// set it in a datablock
@@ -125,11 +138,16 @@ namespace Ogre
 		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
 		ts->setTextureTransform(mat);
 #endif
+		return clip;
 	}
 
 	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
 	{
 		logMessage("Destroying ogg_video texture on material: "+material_name);
+		
+		std::map<String,ClipTexture>::iterator it = mClipsTextures.find(material_name);
+		destroyVideoClip(it->second.clip); // OgreTheoraDataStream will be destroyed in TheoraVideoClip destructor
+		mClipsTextures.erase(it);
 	}
 
 	bool OgreVideoManager::frameStarted(const FrameEvent& evt)
@@ -143,23 +161,21 @@ namespace Ogre
 			update(evt.timeSinceLastFrame);
 
 		// update playing videos
-		std::vector<TheoraVideoClip*>::iterator it;
 		TheoraVideoFrame* f;
-		for (it=mClips.begin();it!=mClips.end();it++)
+		for (std::map<String,ClipTexture>::iterator it=mClipsTextures.begin(); it!=mClipsTextures.end(); it++)
 		{
-			f=(*it)->getNextFrame();
+			f=it->second.clip->getNextFrame();
 			if (f)
 			{
 				int w=f->getStride(),h=f->getHeight();
-				TexturePtr t=mTextures[(*it)->getName()];
-
-				unsigned char *texData=(unsigned char*) t->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
+				
+				unsigned char *texData=(unsigned char*) it->second.texture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
 				unsigned char *videoData=f->getBuffer();
-
+				
 				memcpy(texData,videoData,w*h*4);
-
-				t->getBuffer()->unlock();
-				(*it)->popFrame();
+				
+				it->second.texture->getBuffer()->unlock();
+				it->second.clip->popFrame();
 			}
 		}
 		return true;
@@ -171,6 +187,14 @@ namespace Ogre
 	
 	void OgreVideoManager::unpauseAllVideoClips() {
 		mbPaused = false;
+	}
+	
+	TheoraVideoClip* OgreVideoManager::getVideoClipByMaterialName(const String& material_name) {
+		std::map<String,ClipTexture>::iterator it = mClipsTextures.find(material_name);
+		if (it != mClipsTextures.end())
+			return it->second.clip;
+		else
+			return NULL;
 	}
 	
 	static void ogrevideo_log(std::string message)
