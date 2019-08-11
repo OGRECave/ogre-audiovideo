@@ -150,7 +150,7 @@ namespace Ogre
 		mClipsTextures.erase(it);
 	}
 	
-	void OgreVideoManager::destroyAllVideoTexture() {
+	void OgreVideoManager::destroyAllVideoTextures() {
 		for (std::map<String,ClipTexture>::iterator it=mClipsTextures.begin(); it!=mClipsTextures.end(); it++) {
 			destroyVideoClip(it->second.clip);
 		}

@@ -68,7 +68,7 @@ namespace Ogre
 									const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		
 		/// destroy all video textures
-		void destroyAllVideoTexture();
+		void destroyAllVideoTextures();
 		
 		/// pause all video
 		void pauseAllVideoClips();
