@@ -1046,5 +1046,6 @@ namespace OgreOggSound
 		OgreOggListener *mListener;				// Listener object
 
 		friend class OgreOggSoundFactory;
+		friend class OgreOggISound;
 	};
 }

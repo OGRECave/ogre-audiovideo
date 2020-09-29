@@ -216,6 +216,7 @@ namespace OgreOggSound
 		{
 			Ogre::SceneManager* s = mListener->getSceneManager();
 			s->destroyAllMovableObjectsByType("OgreOggISound");
+			_destroyListener();
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -482,13 +483,7 @@ namespace OgreOggSound
 		if ( mListener ) return true;
 
 		// Create a listener
-		return ( (mListener = dynamic_cast<OgreOggListener*>(
-			#if OGRE_VERSION_MAJOR == 2
-				mSceneMgr->createMovableObject(OgreOggSoundFactory::FACTORY_TYPE_NAME, &(mSceneMgr->_getEntityMemoryManager(Ogre::SCENE_DYNAMIC)), 0)
-			#else
-				mSceneMgr->createMovableObject("OgreOggSoundListener", OgreOggSoundFactory::FACTORY_TYPE_NAME, 0)
-			#endif
-		)) != 0 );
+		return (mListener = _createListener()) != 0;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	const StringVector OgreOggSoundManager::getSoundList() const
@@ -2391,9 +2386,6 @@ namespace OgreOggSound
 
 		SoundMap::iterator i = mSoundMap.find(sound->getName());
 		mSoundMap.erase(i);
-
-		// Delete sound
-		OGRE_DELETE_T(sound, OgreOggISound, Ogre::MEMCATEGORY_GENERAL);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_destroySoundImpl(OgreOggISound* sound)

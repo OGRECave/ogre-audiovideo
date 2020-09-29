@@ -143,7 +143,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggISound::~OgreOggISound() 
 	{
-		mAudioStream.setNull();
+		OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::_getSharedProperties(BufferListPtr& buffers, float& length, ALenum& format) 
