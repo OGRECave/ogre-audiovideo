@@ -65,7 +65,7 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundDestroyed(this);
 	
 		_release();
-		if (mFormatData.mFormat) OGRE_FREE(mFormatData.mFormat, Ogre::MEMCATEGORY_GENERAL);
+		if (mFormatData.mFormat) OGRE_DELETE_T(mFormatData.mFormat, WaveHeader, Ogre::MEMCATEGORY_GENERAL);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStreamWavSound::_openImpl(Ogre::DataStreamPtr& fileStream)
