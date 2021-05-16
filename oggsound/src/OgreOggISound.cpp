@@ -118,7 +118,7 @@ namespace OgreOggSound
 	,mAudioOffset(0)
 	,mAudioEnd(0)
 	,mLoopOffset(0)
-	#if OGRE_VERSION_MAJOR == 1
+	#if OGRE_VERSION_MAJOR != 2
 	,mLocalTransformDirty(true)
 	#endif
 	,mDisable3D(false)
@@ -257,7 +257,7 @@ namespace OgreOggSound
 		mPosition.x = posx;
 		mPosition.y = posy;
 		mPosition.z = posz;	
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		mLocalTransformDirty = true;
 		#else
 		alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
@@ -267,7 +267,7 @@ namespace OgreOggSound
 	void OgreOggISound::setPosition(const Ogre::Vector3 &pos)
 	{
 		mPosition = pos;   
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		mLocalTransformDirty = true;
 		#else
 		alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
@@ -279,7 +279,7 @@ namespace OgreOggSound
 		mDirection.x = dirx;
 		mDirection.y = diry;
 		mDirection.z = dirz;
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		mLocalTransformDirty = true;
 		#else
 		alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
@@ -289,7 +289,7 @@ namespace OgreOggSound
 	void OgreOggISound::setDirection(const Ogre::Vector3 &dir)
 	{
 		mDirection = dir;  
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		mLocalTransformDirty = true;
 		#else
 		alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
@@ -687,7 +687,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::update(float fTime)
 	{
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		if (mLocalTransformDirty)
 		{
 			if (!mDisable3D && mParentNode)
@@ -745,7 +745,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::_notifyAttached(
 		Ogre::Node* node
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		, bool isTagPoint
 		#endif
 	)
@@ -753,7 +753,7 @@ namespace OgreOggSound
 		// Call base class notify
 		Ogre::MovableObject::_notifyAttached(
 			node
-			#if OGRE_VERSION_MAJOR == 1
+			#if OGRE_VERSION_MAJOR != 2
 			, isTagPoint
 			#endif
 		);
@@ -761,7 +761,7 @@ namespace OgreOggSound
 		// Immediately set position/orientation when attached
 		if (mParentNode)
 		{
-			#if OGRE_VERSION_MAJOR == 1
+			#if OGRE_VERSION_MAJOR != 2
 			mPosition = mParentNode->_getDerivedPosition();
 			#else
 			mPosition = mParentNode->_getDerivedPositionUpdated();
@@ -779,7 +779,7 @@ namespace OgreOggSound
 		return;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	#if OGRE_VERSION_MAJOR == 1
+	#if OGRE_VERSION_MAJOR != 2
 	void OgreOggISound::_notifyMoved(void) 
 	{ 
 		// Call base class notify
@@ -791,7 +791,7 @@ namespace OgreOggSound
 	void OgreOggISound::_updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {
 	}
 	#endif
-	#if OGRE_VERSION_MAJOR == 1 || OGRE_VERSION_MINOR == 0
+	#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 	{

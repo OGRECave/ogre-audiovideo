@@ -158,7 +158,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::update()
 	{
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		if(mLocalTransformDirty)
 		{
 			if ( mParentNode )
@@ -198,7 +198,7 @@ namespace OgreOggSound
 	{
 		return;
 	}
-	#if OGRE_VERSION_MAJOR == 1 || OGRE_VERSION_MINOR == 0
+	#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 	{
@@ -213,7 +213,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::_notifyAttached(
 		Ogre::Node* node
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		, bool isTagPoint
 		#endif
 	)
@@ -221,7 +221,7 @@ namespace OgreOggSound
 		// Call base class notify
 		Ogre::MovableObject::_notifyAttached(
 			node
-			#if OGRE_VERSION_MAJOR == 1
+			#if OGRE_VERSION_MAJOR != 2
 			, isTagPoint
 			#endif
 		);
@@ -229,7 +229,7 @@ namespace OgreOggSound
 		// Immediately set position/orientation when attached
 		if (mParentNode)
 		{
-			#if OGRE_VERSION_MAJOR == 1
+			#if OGRE_VERSION_MAJOR != 2
 			setPosition(mParentNode->_getDerivedPosition());
 			#else
 			setPosition(mParentNode->_getDerivedPositionUpdated());
@@ -240,7 +240,7 @@ namespace OgreOggSound
 		return;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	#if OGRE_VERSION_MAJOR == 1
+	#if OGRE_VERSION_MAJOR != 2
 	void OgreOggListener::_notifyMoved(void) 
 	{ 
 		// Call base class notify

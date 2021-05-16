@@ -36,6 +36,7 @@
 
 #include "OgreOggSoundPrereqs.h"
 #include <string>
+#include <deque>
 #include <vorbis/vorbisfile.h>
 #include "OgreOggSoundCallback.h"
 	
@@ -602,11 +603,11 @@ namespace OgreOggSound
 		 */
 		virtual void _notifyAttached(
 			Ogre::Node* node
-			#if OGRE_VERSION_MAJOR == 1
+			#if OGRE_VERSION_MAJOR != 2
 			, bool isTagPoint = false
 			#endif
 		);
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		/** Notifys object its been moved
 		@remarks
 			Overridden from MovableObject.
@@ -617,7 +618,7 @@ namespace OgreOggSound
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
 		#endif
-		#if OGRE_VERSION_MAJOR == 1 || OGRE_VERSION_MINOR == 0
+		#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
 		/** Renderable callback
 		@remarks
 			Overridden function from MovableObject.
@@ -708,7 +709,7 @@ namespace OgreOggSound
 		bool mGiveUpSource;				// Flag to indicate whether sound should release its source when stopped
 		bool mStream;					// Stream flag
 		bool mSourceRelative;			// Relative position flag
-		#if OGRE_VERSION_MAJOR == 1
+		#if OGRE_VERSION_MAJOR != 2
 		bool mLocalTransformDirty;		// Transformation update flag
 		#endif
 		bool mPlayPosChanged;			// Flag indicating playback position has changed
