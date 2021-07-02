@@ -448,7 +448,7 @@ namespace OgreOggSound
 		inline const Ogre::String& getName( void ) const { return mName; }
 		/** Gets the sounds file name
 		 */
-		virtual const Ogre::String& getFileName( void ) const { return mAudioStream.isNull() ? Ogre::BLANKSTRING : mAudioStream->getName(); }
+		virtual const Ogre::String& getFileName( void ) const { return mAudioStream ? Ogre::BLANKSTRING : mAudioStream->getName(); }
 		/** Gets the sounds priority
 		 */
 		inline Ogre::uint8 getPriority() const { return mPriority; }

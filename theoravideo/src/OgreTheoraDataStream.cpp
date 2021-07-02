@@ -23,10 +23,10 @@ namespace Ogre
 
 	OgreTheoraDataStream::~OgreTheoraDataStream()
 	{
-		if (!(mStream.isNull()))
+		if (!(mStream))
 		{
 			mStream->close();
-			mStream.setNull();
+			mStream.reset();
 		}
 	}
 

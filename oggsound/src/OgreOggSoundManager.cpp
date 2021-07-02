@@ -360,10 +360,10 @@ namespace OgreOggSound
 		// If no manager specified - grab first one 
 		if ( !scnMgr )
 		{
-			Ogre::SceneManagerEnumerator::SceneManagerIterator it=Ogre::Root::getSingletonPtr()->getSceneManagerIterator();
+			auto& inst = Ogre::Root::getSingletonPtr()->getSceneManagers();
 
-			if ( it.hasMoreElements() ) 
-				mSceneMgr = it.getNext(); 
+			if ( !inst.empty() )
+				mSceneMgr = inst.begin()->second;
 			else
 			{
 				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "No SceneManager's created - a valid SceneManager is required to create sounds", "OgreOggSoundManager::init()");
@@ -2699,13 +2699,13 @@ namespace OgreOggSound
 			else
 			{
 				OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND, "Unable to find Ogre::ResourceGroupManager", "OgreOggSoundManager::createSound()");
-				result.setNull();
+				result.reset();
 			}
 		}
 		catch (Ogre::Exception& e)
 		{
 			OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND, e.getFullDescription(), "OgreOggSoundManager::_createSoundImpl()");
-			result.setNull();
+			result.reset();
 		}
 
 		return result;
