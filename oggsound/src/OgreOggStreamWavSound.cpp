@@ -54,7 +54,7 @@ namespace OgreOggSound
 	, mStreamEOF(false)
 	, mLastOffset(0.f)
 	{																			   
-		mBuffers.bind(new BufferList(NUM_BUFFERS, AL_NONE));
+		mBuffers.reset(new BufferList(NUM_BUFFERS, AL_NONE));
 		mFormatData.mFormat=0;
 		mStream = true;	   
 	}
@@ -482,7 +482,7 @@ namespace OgreOggSound
 		mLoopOffset = startTime;
 
 		// Is sound ready?
-		if ( !mAudioStream.isNull() )
+		if ( !mAudioStream )
 		{
 			// Check valid loop point
 			if ( mLoopOffset>=mPlayTime ) 

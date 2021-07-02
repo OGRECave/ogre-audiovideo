@@ -56,7 +56,7 @@ namespace OgreOggSound
 	,mAudioName("")
 	{
 		mStream=false;														
-		mBuffers.bind(new BufferList(1, AL_NONE));
+		mBuffers.reset(new BufferList(1, AL_NONE));
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggStaticSound::~OgreOggStaticSound()
@@ -156,7 +156,7 @@ namespace OgreOggSound
 		ALuint src=AL_NONE;
 		setSource(src);
 		OgreOggSoundManager::getSingleton()._releaseSharedBuffer(mAudioName, (*mBuffers)[0]);
-		if ( !mAudioStream.isNull() ) ov_clear(&mOggStream);
+		if ( !mAudioStream ) ov_clear(&mOggStream);
 		mPlayPosChanged = false;
 		mPlayPos = 0.f;
 	}

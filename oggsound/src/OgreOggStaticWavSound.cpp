@@ -56,7 +56,7 @@ namespace OgreOggSound
 			mStream=false;
 			mFormatData.mFormat=0;
 			mBufferData.clear();											 
-			mBuffers.bind(new BufferList(1, AL_NONE));
+			mBuffers.reset(new BufferList(1, AL_NONE));
 		}
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggStaticWavSound::~OgreOggStaticWavSound()

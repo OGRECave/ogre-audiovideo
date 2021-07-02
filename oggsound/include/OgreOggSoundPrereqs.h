@@ -34,7 +34,7 @@
 */
 #pragma once 
 
-#include <OgreVector3.h>
+#include <Ogre.h>
 #include <OgreDataStream.h>
 #include <OgreMovableObject.h>
 #include <OgreLogManager.h>
@@ -49,7 +49,7 @@
  * 1 - Enable EFX suport
  */
 #	ifndef HAVE_EFX
-#		define HAVE_EFX 1
+#		define HAVE_EFX 0
 #	endif
 
 #	include "al.h"

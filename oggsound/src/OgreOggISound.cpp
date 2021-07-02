@@ -134,7 +134,7 @@ namespace OgreOggSound
 		mOggCallbacks.close_func= OOSStreamClose;
 		mOggCallbacks.seek_func	= OOSStreamSeek;
 		mOggCallbacks.tell_func	= OOSStreamTell;
-		mBuffers.setNull();
+		mBuffers.reset();
 		#if OGRE_VERSION_MAJOR == 2
 		setLocalAabb(Ogre::Aabb::BOX_NULL);
 		setQueryFlags(0);

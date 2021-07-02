@@ -167,7 +167,7 @@ namespace Ogre
 			getRenderWindow()->addViewport(cam);
             cam->getViewport()->setBackgroundColour(ColourValue(0.3,0.3,0.3));
 
-            auto rect = new Rectangle2D("video_quad", true);
+            auto rect = new Rectangle2D("video_quad", true, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
             rect->setCorners(-0.5,1,1,-0.94);
             rect->setBoundingBox(AxisAlignedBox::BOX_INFINITE);
             rect->setMaterial(MaterialManager::getSingleton().getByName("video_material"));

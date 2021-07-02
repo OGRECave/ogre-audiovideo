@@ -36,7 +36,7 @@
 #pragma once
 
 #include "OgreOggSoundPrereqs.h"
-#include <OgreVector3.h>
+#include <Ogre.h>
 #include <OgreMovableObject.h>
 
 #if OGGSOUND_THREADED
