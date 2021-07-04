@@ -10,15 +10,15 @@ include(GenerateExportHeader)
 
 SET(CMAKE_DEBUG_POSTFIX "_d")
 if(OGRE_PREFIX_DIR)
-  set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
+	set(CMAKE_INSTALL_PREFIX ${OGRE_PREFIX_DIR} CACHE PATH "plugin must end up in OGRE plugin path" FORCE)
 endif()
 
 if(BUILD_VIDEOPLUGIN)
-  add_subdirectory(theoravideo)
+	add_subdirectory(theoravideo)
 endif()
 
 if(BUILD_AUDIOPLUGIN)
-  add_subdirectory(oggsound)
+	add_subdirectory(oggsound)
 endif()
 
 if (NOT OGRE_Bites_FOUND)
@@ -28,9 +28,16 @@ if (NOT OGRE_Bites_FOUND)
 	set(BUILD_DEMOS OFF)
 endif (NOT OGRE_Bites_FOUND)
 
+if (NOT BUILD_VIDEOPLUGIN OR NOT BUILD_AUDIOPLUGIN)
+	if (BUILD_DEMOS)
+		message(WARNING "Building Demos require both audio and video plugins - disable build demos")
+	endif (BUILD_DEMOS)
+	set(BUILD_DEMOS OFF)
+endif (NOT BUILD_VIDEOPLUGIN OR NOT BUILD_AUDIOPLUGIN)
+
 if (BUILD_DEMOS)
 	add_executable(player demos/player/player.cpp)
-  target_link_libraries(player OgreBites Plugin_TheoraVideoSystem Plugin_OggSound)
+	target_link_libraries(player OgreBites Plugin_TheoraVideoSystem Plugin_OggSound)
 	target_include_directories(player PUBLIC ${OPENAL_INCLUDE_DIRS})
 
 	file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})

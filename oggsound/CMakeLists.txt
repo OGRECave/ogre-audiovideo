@@ -35,6 +35,7 @@ SET (SOURCE_FILES
 # Option.
 option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 option(USE_POCO "Use POCO Threads?" OFF)
+option(USE_EFX "Use EFX? Disable this if you are using OpenAl Soft" OFF)
 
 IF(OGGSOUND_THREADED)
   IF(USE_POCO)
@@ -56,6 +57,10 @@ IF(OGGSOUND_THREADED)
 	ENDIF()	 
 ELSE()
     ADD_DEFINITIONS(-DOGGSOUND_THREADED=0)
+ENDIF()
+
+IF(USE_EFX)
+	ADD_DEFINITIONS(-DHAVE_EFX=1)
 ENDIF()
 
 FIND_PACKAGE(PkgConfig QUIET)
