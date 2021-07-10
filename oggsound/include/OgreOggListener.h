@@ -48,7 +48,7 @@
 #	endif
 */
 //#	include <OgreThreadDefines.h>
-#	include "Threading/OgreThreadHeaders.h"
+//#	include "Threading/OgreThreadHeaders.h"
 #endif
 
 namespace OgreOggSound
@@ -222,7 +222,7 @@ namespace OgreOggSound
 #	endif
 */
 		//#define OGRE_STATIC_MUTEX(name) static std::recursive_mutex name
-		OGRE_STATIC_MUTEX(mMutex);
+		OGRE_WQ_MUTEX(mMutex);
 #endif
 
 		/**

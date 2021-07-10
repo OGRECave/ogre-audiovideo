@@ -55,7 +55,7 @@
 	OGRE_STATIC_MUTEX_INSTANCE(OgreOggSound::OgreOggSoundManager::mMutex);
 	OGRE_STATIC_MUTEX_INSTANCE(OgreOggSound::OgreOggSoundManager::mSoundMutex);
 	OGRE_STATIC_MUTEX_INSTANCE(OgreOggSound::OgreOggSoundManager::mResourceGroupNameMutex);
-	
+
 	bool OgreOggSound::OgreOggSoundManager::mShuttingDown = false;
 #endif
 
@@ -408,11 +408,22 @@ namespace OgreOggSound
 		Ogre::LogManager::getSingleton().logMessage("*** --- Using BOOST threads for streaming", Ogre::LML_NORMAL);
 #	endif
 */
-		#define OGRE_THREAD_CREATE(name, worker) boost::thread* name = OGRE_NEW_T(boost::thread, MEMCATEGORY_GENERAL)(worker)
+		//#define OGRE_THREAD_CREATE(name, worker) boost::thread* name = OGRE_NEW_T(boost::thread, MEMCATEGORY_GENERAL)(worker)
 		//mUpdateThread = OGRE_THREAD_CREATE(&OgreOggSoundManager::threadUpdate, this)
-		OGRE_THREAD_CREATE(tmp, std::bind(&OgreOggSoundManager::threadUpdate, this));
+		//OGRE_THREAD_CREATE(tmp, std::bind(&OgreOggSoundManager::threadUpdate, this));
+		OGRE_THREAD_CREATE(tmp, OgreOggSoundManager::threadUpdate);
 		mUpdateThread = tmp;
-		Ogre::LogManager::getSingleton().logMessage("*** --- Using threads for streaming", Ogre::LML_NORMAL);
+
+#	if OGRE_THREAD_PROVIDER == 1
+		Ogre::LogManager::getSingleton().logMessage("*** --- Using BOOST threads for streaming", Ogre::LML_NORMAL);
+#	elif OGRE_THREAD_PROVIDER == 2
+		Ogre::LogManager::getSingleton().logMessage("*** --- Using POCO threads for streaming", Ogre::LML_NORMAL);
+#	elif OGRE_THREAD_PROVIDER == 3
+		Ogre::LogManager::getSingleton().logMessage("*** --- Using TBB threads for streaming", Ogre::LML_NORMAL);
+#	elif OGRE_THREAD_PROVIDER == 4
+		Ogre::LogManager::getSingleton().logMessage("*** --- Using STD threads for streaming", Ogre::LML_NORMAL);
+#	endif
+
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -2969,11 +2980,15 @@ namespace OgreOggSound
 		// action is performed immediately and blocks main thread.
 		if ( mForceMutex || action.mImmediately )
 		{
+/*
 #ifdef POCO_THREAD
 			Poco::Mutex::ScopedLock l(mMutex);
 #else
 			boost::recursive_mutex::scoped_lock lock(mMutex);
 #endif
+*/
+			OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+
 			_performAction(action);
 			return;
 		}

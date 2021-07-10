@@ -56,7 +56,7 @@
 #		include <boost/thread/xtime.hpp>
 #	endif
 */
-#	include "Threading/OgreThreadHeaders.h"
+//#	include "Threading/OgreThreadHeaders.h"
 #endif
 
 namespace OgreOggSound
@@ -643,9 +643,9 @@ namespace OgreOggSound
 		static boost::recursive_mutex mResourceGroupNameMutex;
 #	endif
 */
-		OGRE_STATIC_MUTEX(mMutex);
-		OGRE_STATIC_MUTEX(mSoundMutex);
-		OGRE_STATIC_MUTEX(mResourceGroupNameMutex);
+		OGRE_WQ_MUTEX(mMutex);
+		OGRE_WQ_MUTEX(mSoundMutex);
+		OGRE_WQ_MUTEX(mResourceGroupNameMutex);
 
 		/** Pushes a sound action request onto the queue
 		@remarks
@@ -698,7 +698,7 @@ namespace OgreOggSound
 #endif
 */
 		static OGRE_THREAD_TYPE* mUpdateThread;
-		
+
 		static bool mShuttingDown;
 
 		/** Flag indicating that a mutex should be used whenever an action is requested.
@@ -741,7 +741,7 @@ namespace OgreOggSound
 #endif
 */
 					OGRE_LOCK_MUTEX_NAMED(OgreOggSoundManager::getSingletonPtr()->mMutex, lock);
-					
+
 					OgreOggSoundManager::getSingletonPtr()->_updateBuffers();
 					OgreOggSoundManager::getSingletonPtr()->_processQueuedSounds();
 				}
