@@ -164,7 +164,7 @@ namespace OgreOggSound
 	{
 		assert(mState != SS_DESTROYED);
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
 		SoundAction action;
 		action.mSound = mName;
 		action.mAction = LQ_PLAY;
@@ -180,7 +180,7 @@ namespace OgreOggSound
 	{
 		assert(mState != SS_DESTROYED);
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
 		SoundAction action;
 		action.mSound = mName;
 		action.mAction = LQ_STOP;
@@ -196,7 +196,7 @@ namespace OgreOggSound
 	{
 		assert(mState != SS_DESTROYED);
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
 		SoundAction action;
 		action.mSound = mName;
 		action.mAction = LQ_PAUSE;

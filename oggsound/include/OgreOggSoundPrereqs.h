@@ -120,8 +120,8 @@ namespace OgreOggSound
  * 0 - No multithreading
  * 1 - BOOST/POCO multithreaded
  */
+ /*
 #ifndef OGGSOUND_THREADED
-	#define OGGSOUND_THREADED 0
+	#define OGGSOUND_THREADED 1
 #endif
-
-
+*/

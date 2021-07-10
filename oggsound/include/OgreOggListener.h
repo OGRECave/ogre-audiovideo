@@ -39,12 +39,16 @@
 #include <Ogre.h>
 #include <OgreMovableObject.h>
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
+/*
 #	ifdef POCO_THREAD
 #		include "Poco/Mutex.h"
 #	else 
 #		include <boost/thread/recursive_mutex.hpp>
 #	endif
+*/
+//#	include <OgreThreadDefines.h>
+#	include "Threading/OgreThreadHeaders.h"
 #endif
 
 namespace OgreOggSound
@@ -209,12 +213,16 @@ namespace OgreOggSound
 		#endif
 	private:
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
+/*
 #	if POCO_THREAD
 		static Poco::Mutex mMutex;
 #	else
 		static boost::recursive_mutex mMutex;
 #	endif
+*/
+		//#define OGRE_STATIC_MUTEX(name) static std::recursive_mutex name
+		OGRE_STATIC_MUTEX(mMutex);
 #endif
 
 		/**

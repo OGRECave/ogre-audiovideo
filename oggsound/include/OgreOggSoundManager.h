@@ -43,7 +43,8 @@
 #include <map>
 #include <string>
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
+/*
 #	ifdef POCO_THREAD
 #		include "Poco/ScopedLock.h"
 #		include "Poco/Thread.h"
@@ -54,6 +55,8 @@
 #		include <boost/thread/recursive_mutex.hpp>
 #		include <boost/thread/xtime.hpp>
 #	endif
+*/
+#	include "Threading/OgreThreadHeaders.h"
 #endif
 
 namespace OgreOggSound
@@ -628,7 +631,8 @@ namespace OgreOggSound
 		 */
 #endif
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
+/*
 #	if POCO_THREAD
 		static Poco::Mutex mMutex;
 		static Poco::Mutex mSoundMutex;
@@ -638,6 +642,10 @@ namespace OgreOggSound
 		static boost::recursive_mutex mSoundMutex;
 		static boost::recursive_mutex mResourceGroupNameMutex;
 #	endif
+*/
+		OGRE_STATIC_MUTEX(mMutex);
+		OGRE_STATIC_MUTEX(mSoundMutex);
+		OGRE_STATIC_MUTEX(mResourceGroupNameMutex);
 
 		/** Pushes a sound action request onto the queue
 		@remarks
@@ -662,7 +670,7 @@ namespace OgreOggSound
 
 		LocklessQueue<OgreOggISound*>* mSoundsToDestroy;
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
 		/** Processes queued sound actions.
 		@remarks
 			Presently executes a maximum of 5 actions in a single iteration.
@@ -675,7 +683,7 @@ namespace OgreOggSound
 		void _updateBuffers();
 
 		LocklessQueue<SoundAction>* mActionsList;
-
+/*
 #ifdef POCO_THREAD
 		static Poco::Thread* mUpdateThread;
 		class Updater : public Poco::Runnable
@@ -688,6 +696,9 @@ namespace OgreOggSound
 #else
 		static boost::thread* mUpdateThread;
 #endif
+*/
+		static OGRE_THREAD_TYPE* mUpdateThread;
+		
 		static bool mShuttingDown;
 
 		/** Flag indicating that a mutex should be used whenever an action is requested.
@@ -722,19 +733,26 @@ namespace OgreOggSound
 			while(!mShuttingDown)
 			{	
 				{
+/*
 #ifdef POCO_THREAD
 					Poco::Mutex::ScopedLock l(OgreOggSoundManager::getSingletonPtr()->mMutex);
 #else
 					boost::recursive_mutex::scoped_lock lock(OgreOggSoundManager::getSingletonPtr()->mMutex);
 #endif
+*/
+					OGRE_LOCK_MUTEX_NAMED(OgreOggSoundManager::getSingletonPtr()->mMutex, lock);
+					
 					OgreOggSoundManager::getSingletonPtr()->_updateBuffers();
 					OgreOggSoundManager::getSingletonPtr()->_processQueuedSounds();
 				}
+/*
 #ifdef POCO_THREAD
 				Poco::Thread::sleep(10);
 #else
 				boost::this_thread::sleep(boost::posix_time::milliseconds(10));
 #endif
+*/
+				OGRE_THREAD_SLEEP(10);
 			}
 		}
 #endif

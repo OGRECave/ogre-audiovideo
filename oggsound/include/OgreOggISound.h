@@ -729,7 +729,7 @@ namespace OgreOggSound
 		ALfloat mPlayPos;				// Playback position in seconds
 		std::deque<float> mCuePoints;	// List of play position points
 
-#if OGGSOUND_THREADED
+#if OGRE_THREAD_PROVIDER
 		/** Returns flag indicating an imminent destruction call
 		@remarks
 			Multi-threaded calls are delayed, therefore its possible to cue a destruction 
