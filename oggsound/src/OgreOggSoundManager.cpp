@@ -521,7 +521,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 */
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		StringVector list;
@@ -770,7 +770,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
@@ -795,7 +795,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
@@ -997,7 +997,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock l(mResourceGroupNameMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mResourceGroupNameMutex, l);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mResourceGroupNameMutex, l);
 		#endif
 
 		mResourceGroupName = group;
@@ -1013,7 +1013,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock l(mResourceGroupNameMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mResourceGroupNameMutex, l);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mResourceGroupNameMutex, l);
 		#endif
 
 		return mResourceGroupName;
@@ -2193,7 +2193,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-	OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+	OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		// Destroy all sounds
 		StringVector soundList;
@@ -2206,7 +2206,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		// Get a list of all sound names
@@ -2265,7 +2265,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		if (mSoundMap.empty() ) return;
@@ -2418,7 +2418,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-	OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+	OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		// Delete sound buffer
 		ALuint src = sound->getSource();
@@ -2436,7 +2436,7 @@ namespace OgreOggSound
 				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
 		#	endif
 		*/
-		OGRE_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mSoundMutex, soundLock);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(sound->getName());
@@ -2467,7 +2467,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-	OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+	OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 
 		OGRE_DELETE_T(mListener, OgreOggListener, Ogre::MEMCATEGORY_GENERAL);
@@ -2987,7 +2987,7 @@ namespace OgreOggSound
 			boost::recursive_mutex::scoped_lock lock(mMutex);
 #endif
 */
-			OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+			OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 
 			_performAction(action);
 			return;

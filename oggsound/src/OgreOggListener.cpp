@@ -58,7 +58,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-		OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		mPosition.x = x;
 		mPosition.y = y;
@@ -76,7 +76,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-		OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+		OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		mPosition = pos;
 		alListener3f(AL_POSITION,pos.x,pos.y,pos.z);
@@ -119,7 +119,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-	OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+	OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		mOrientation[0] = x;
 		mOrientation[1] = y;
@@ -140,7 +140,7 @@ namespace OgreOggSound
 		boost::recursive_mutex::scoped_lock lock(mMutex);
 #	endif
 */
-	OGRE_LOCK_MUTEX_NAMED(mMutex, lock);
+	OGRE_WQ_LOCK_MUTEX_NAMED(mMutex, lock);
 #endif
 		#if OGRE_VERSION_MAJOR == 2
 		mOrient = q;

@@ -740,7 +740,7 @@ namespace OgreOggSound
 					boost::recursive_mutex::scoped_lock lock(OgreOggSoundManager::getSingletonPtr()->mMutex);
 #endif
 */
-					OGRE_LOCK_MUTEX_NAMED(OgreOggSoundManager::getSingletonPtr()->mMutex, lock);
+					OGRE_WQ_LOCK_MUTEX_NAMED(OgreOggSoundManager::getSingletonPtr()->mMutex, lock);
 
 					OgreOggSoundManager::getSingletonPtr()->_updateBuffers();
 					OgreOggSoundManager::getSingletonPtr()->_processQueuedSounds();
