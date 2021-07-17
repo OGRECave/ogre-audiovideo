@@ -215,7 +215,10 @@ namespace OgreOggSound
 		if ( mListener )
 		{
 			Ogre::SceneManager* s = mListener->getSceneManager();
-			s->destroyAllMovableObjectsByType("OgreOggISound");
+
+			if(s != nullptr && Ogre::Root::getSingletonPtr()->hasSceneManager(s->getName()))
+				s->destroyAllMovableObjectsByType("OgreOggISound");
+
 			_destroyListener();
 		}
 	}
