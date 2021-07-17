@@ -43,19 +43,6 @@
 #include <map>
 #include <string>
 
-#if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-#		include "Poco/ScopedLock.h"
-#		include "Poco/Thread.h"
-#		include "Poco/Mutex.h"
-#	else 
-#		include <boost/thread/thread.hpp>
-#		include <boost/function/function0.hpp>
-#		include <boost/thread/recursive_mutex.hpp>
-#		include <boost/thread/xtime.hpp>
-#	endif
-#endif
-
 namespace OgreOggSound
 {
 	typedef std::map<std::string, OgreOggISound*> SoundMap;
@@ -629,15 +616,9 @@ namespace OgreOggSound
 #endif
 
 #if OGGSOUND_THREADED
-#	if POCO_THREAD
-		static Poco::Mutex mMutex;
-		static Poco::Mutex mSoundMutex;
-		static Poco::Mutex mResourceGroupNameMutex;
-#	else
-		static boost::recursive_mutex mMutex;
-		static boost::recursive_mutex mSoundMutex;
-		static boost::recursive_mutex mResourceGroupNameMutex;
-#	endif
+		OGRE_WQ_MUTEX(mMutex);
+		OGRE_WQ_MUTEX(mSoundMutex);
+		OGRE_WQ_MUTEX(mResourceGroupNameMutex);
 
 		/** Pushes a sound action request onto the queue
 		@remarks
@@ -676,18 +657,7 @@ namespace OgreOggSound
 
 		LocklessQueue<SoundAction>* mActionsList;
 
-#ifdef POCO_THREAD
-		static Poco::Thread* mUpdateThread;
-		class Updater : public Poco::Runnable
-		{
-		public:
-			virtual void run();
-		};
-		friend class Updater;
-		static Updater* mUpdater;
-#else
-		static boost::thread* mUpdateThread;
-#endif
+		OGRE_THREAD_TYPE* mUpdateThread;
 		static bool mShuttingDown;
 
 		/** Flag indicating that a mutex should be used whenever an action is requested.
@@ -722,19 +692,11 @@ namespace OgreOggSound
 			while(!mShuttingDown)
 			{	
 				{
-#ifdef POCO_THREAD
-					Poco::Mutex::ScopedLock l(OgreOggSoundManager::getSingletonPtr()->mMutex);
-#else
-					boost::recursive_mutex::scoped_lock lock(OgreOggSoundManager::getSingletonPtr()->mMutex);
-#endif
+					OGRE_WQ_LOCK_MUTEX(OgreOggSoundManager::getSingletonPtr()->mMutex);
 					OgreOggSoundManager::getSingletonPtr()->_updateBuffers();
 					OgreOggSoundManager::getSingletonPtr()->_processQueuedSounds();
 				}
-#ifdef POCO_THREAD
-				Poco::Thread::sleep(10);
-#else
-				boost::this_thread::sleep(boost::posix_time::milliseconds(10));
-#endif
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
 		}
 #endif

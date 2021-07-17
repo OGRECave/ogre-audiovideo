@@ -36,19 +36,6 @@
 #include <string>
 
 #if OGGSOUND_THREADED
-#   ifdef POCO_THREAD
-		Poco::Thread* OgreOggSound::OgreOggSoundManager::mUpdateThread = 0;
-		OgreOggSound::OgreOggSoundManager::Updater* OgreOggSound::OgreOggSoundManager::mUpdater = 0;
-		void OgreOggSound::OgreOggSoundManager::Updater::run() { OgreOggSound::OgreOggSoundManager::threadUpdate(); }
-		Poco::Mutex OgreOggSound::OgreOggSoundManager::mMutex;
-		Poco::Mutex OgreOggSound::OgreOggSoundManager::mSoundMutex;
-		Poco::Mutex OgreOggSound::OgreOggSoundManager::mResourceGroupNameMutex;
-#   else
-		boost::thread *OgreOggSound::OgreOggSoundManager::mUpdateThread = 0;
-		boost::recursive_mutex OgreOggSound::OgreOggSoundManager::mMutex;
-		boost::recursive_mutex OgreOggSound::OgreOggSoundManager::mSoundMutex;
-		boost::recursive_mutex OgreOggSound::OgreOggSoundManager::mResourceGroupNameMutex;
-#	endif
 	bool OgreOggSound::OgreOggSoundManager::mShuttingDown = false;
 #endif
 
@@ -153,10 +140,6 @@ namespace OgreOggSound
 			OGRE_FREE(mUpdateThread, Ogre::MEMCATEGORY_GENERAL);
 			mUpdateThread = 0;
 			mShuttingDown=false;
-#ifdef POCO_THREAD
-			OGRE_FREE(mUpdater, Ogre::MEMCATEGORY_GENERAL);
-			mUpdater = 0;
-#endif
 		}
 		if ( mActionsList )
 		{
@@ -386,19 +369,14 @@ namespace OgreOggSound
 
 		mSoundsToDestroy = new LocklessQueue<OgreOggISound*>(100);
 #if OGGSOUND_THREADED
+		static_assert(OGRE_THREAD_SUPPORT, "Threading not supported by OGRE");
 		if (queueListSize)
 		{
 			mActionsList = new LocklessQueue<SoundAction>(queueListSize);
 		}
-#	ifdef POCO_THREAD
-		mUpdateThread = OGRE_NEW_T(Poco::Thread, Ogre::MEMCATEGORY_GENERAL)();
-		mUpdater = OGRE_NEW_T(Updater, Ogre::MEMCATEGORY_GENERAL)();
-		mUpdateThread->start(*mUpdater);
-		Ogre::LogManager::getSingleton().logMessage("*** --- Using POCO threads for streaming", Ogre::LML_NORMAL);
-#	else
-		mUpdateThread = OGRE_NEW_T(boost::thread, Ogre::MEMCATEGORY_GENERAL)(boost::function0<void>(&OgreOggSoundManager::threadUpdate, this));
-		Ogre::LogManager::getSingleton().logMessage("*** --- Using BOOST threads for streaming", Ogre::LML_NORMAL);
-#	endif	
+		OGRE_THREAD_CREATE(tmp, &OgreOggSoundManager::threadUpdate);
+		mUpdateThread = tmp;
+		Ogre::LogManager::getSingleton().logMessage("*** --- Using threads for streaming", Ogre::LML_NORMAL);
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -489,11 +467,7 @@ namespace OgreOggSound
 	const StringVector OgreOggSoundManager::getSoundList() const
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		StringVector list;
@@ -735,11 +709,7 @@ namespace OgreOggSound
 	OgreOggISound* OgreOggSoundManager::getSound(const std::string& name)
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
@@ -757,11 +727,7 @@ namespace OgreOggSound
 	bool OgreOggSoundManager::hasSound(const std::string& name)
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
@@ -956,11 +922,7 @@ namespace OgreOggSound
 	void OgreOggSoundManager::setResourceGroupName(const Ogre::String& group)
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock l(mResourceGroupNameMutex);
-		#else
-				boost::recursive_mutex::scoped_lock l(mResourceGroupNameMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
 		#endif
 
 		mResourceGroupName = group;
@@ -969,11 +931,7 @@ namespace OgreOggSound
 	Ogre::String OgreOggSoundManager::getResourceGroupName() const
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock l(mResourceGroupNameMutex);
-		#else
-				boost::recursive_mutex::scoped_lock l(mResourceGroupNameMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
 		#endif
 
 		return mResourceGroupName;
@@ -2146,21 +2104,13 @@ namespace OgreOggSound
 #if OGGSOUND_THREADED
 		/** Mutex lock to avoid potential thread crashes. 
 		*/
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		// Destroy all sounds
 		StringVector soundList;
 
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		// Get a list of all sound names
@@ -2212,11 +2162,7 @@ namespace OgreOggSound
 	void OgreOggSoundManager::_setGlobalPitchImpl()
 	{
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		if (mSoundMap.empty() ) return;
@@ -2362,11 +2308,7 @@ namespace OgreOggSound
 		if (!sound) return;
 
 #if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#	else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		// Delete sound buffer
 		ALuint src = sound->getSource();
@@ -2377,11 +2319,7 @@ namespace OgreOggSound
 
 		// Find sound in map
 		#if OGGSOUND_THREADED
-		#	ifdef POCO_THREAD
-				Poco::Mutex::ScopedLock soundLock(mSoundMutex);
-		#else
-				boost::recursive_mutex::scoped_lock soundLock(mSoundMutex);
-		#	endif
+			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
 		SoundMap::iterator i = mSoundMap.find(sound->getName());
@@ -2405,11 +2343,7 @@ namespace OgreOggSound
 		/** Dumb check to catch external destruction of sounds to avoid potential
 			thread crashes. (manager issued destruction sets this flag)
 		*/
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 
 		OGRE_DELETE_T(mListener, OgreOggListener, Ogre::MEMCATEGORY_GENERAL);
@@ -2922,11 +2856,7 @@ namespace OgreOggSound
 		// action is performed immediately and blocks main thread.
 		if ( mForceMutex || action.mImmediately )
 		{
-#ifdef POCO_THREAD
-			Poco::Mutex::ScopedLock l(mMutex);
-#else
-			boost::recursive_mutex::scoped_lock lock(mMutex);
-#endif
+			OGRE_WQ_LOCK_MUTEX(mMutex);
 			_performAction(action);
 			return;
 		}
