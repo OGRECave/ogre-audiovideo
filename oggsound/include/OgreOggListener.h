@@ -39,14 +39,6 @@
 #include <Ogre.h>
 #include <OgreMovableObject.h>
 
-#if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-#		include "Poco/Mutex.h"
-#	else 
-#		include <boost/thread/recursive_mutex.hpp>
-#	endif
-#endif
-
 namespace OgreOggSound
 {
 	//! Listener object (Users ears)
@@ -210,11 +202,7 @@ namespace OgreOggSound
 	private:
 
 #if OGGSOUND_THREADED
-#	if POCO_THREAD
-		static Poco::Mutex mMutex;
-#	else
-		static boost::recursive_mutex mMutex;
-#	endif
+		OGRE_WQ_MUTEX(mMutex);
 #endif
 
 		/**

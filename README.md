@@ -21,8 +21,7 @@ condenses the functionality down to a clean and simple OGRE-fied interface.
 * In memory and streaming support
 	* Load whole sound into memory
 	* Stream sound from a file
-* Optional multithreaded streaming 
-	* using BOOST Threads
+* Optional multithreaded streaming
 * Multichannel audio support
 * Full 2D/3D audio support
 	* spatialized sound support using mono sound files

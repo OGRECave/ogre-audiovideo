@@ -118,7 +118,7 @@ namespace OgreOggSound
 /**
  * Specifies whether to use threads for streaming
  * 0 - No multithreading
- * 1 - BOOST/POCO multithreaded
+ * 1 - OGRE-native multithreading
  */
 #ifndef OGGSOUND_THREADED
 	#define OGGSOUND_THREADED 0

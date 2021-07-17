@@ -36,23 +36,11 @@
 
 namespace OgreOggSound
 {
-#if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-	Poco::Mutex OgreOggSound::OgreOggListener::mMutex;
-#	else
-	boost::recursive_mutex OgreOggSound::OgreOggListener::mMutex;
-#	endif
-#endif
-
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::setPosition(ALfloat x, ALfloat y, ALfloat z)
 	{
 #if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#	else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		mPosition.x = x;
 		mPosition.y = y;
@@ -63,11 +51,7 @@ namespace OgreOggSound
 	void OgreOggListener::setPosition(const Ogre::Vector3 &pos)
 	{
 #if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#	else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		mPosition = pos;
 		alListener3f(AL_POSITION,pos.x,pos.y,pos.z);
@@ -76,13 +60,13 @@ namespace OgreOggSound
 	Ogre::Vector3 OgreOggListener::getPosition() const
 	{
 		Ogre::Vector3 result;
+		{
 #if OGGSOUND_THREADED
-		mMutex.lock();
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		result = mPosition;
-#if OGGSOUND_THREADED
-		mMutex.unlock();
-#endif
+		}
+
 		return result;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -103,11 +87,7 @@ namespace OgreOggSound
 	void OgreOggListener::setOrientation(ALfloat x,ALfloat y,ALfloat z,ALfloat upx,ALfloat upy,ALfloat upz)
 	{
 #if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#	else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		mOrientation[0] = x;
 		mOrientation[1] = y;
@@ -121,11 +101,7 @@ namespace OgreOggSound
 	void OgreOggListener::setOrientation(const Ogre::Quaternion &q)
 	{
 #if OGGSOUND_THREADED
-#	ifdef POCO_THREAD
-		Poco::Mutex::ScopedLock l(mMutex);
-#	else
-		boost::recursive_mutex::scoped_lock lock(mMutex);
-#	endif
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		#if OGRE_VERSION_MAJOR == 2
 		mOrient = q;
@@ -145,14 +121,12 @@ namespace OgreOggSound
 	Ogre::Vector3 OgreOggListener::getOrientation() const
 	{
 		Ogre::Vector3 result;
+		{
 #if OGGSOUND_THREADED
-		mMutex.lock();
+		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		result = Ogre::Vector3(mOrientation[0],mOrientation[1],mOrientation[2]);
-#if OGGSOUND_THREADED
-		mMutex.unlock();
-#endif
-
+		}
 		return result;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
