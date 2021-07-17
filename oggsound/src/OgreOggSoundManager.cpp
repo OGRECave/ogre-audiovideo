@@ -195,12 +195,13 @@ namespace OgreOggSound
 		alcCloseDevice(mDevice);
 		mDevice=0;
 
-		if ( mListener )
+		// trying to make sure the scene manager is still there
+		if ( mListener && !Ogre::Root::getSingleton().getSceneManagers().empty())
 		{
 			Ogre::SceneManager* s = mListener->getSceneManager();
 			s->destroyAllMovableObjectsByType("OgreOggISound");
-			_destroyListener();
 		}
+		_destroyListener();
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::init(	const std::string &deviceName, 
