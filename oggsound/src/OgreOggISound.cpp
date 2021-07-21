@@ -252,6 +252,11 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	bool OgreOggISound::is3Ddisabled()
+	{
+		return mDisable3D;
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setPosition(float posx,float posy, float posz)
 	{
 		mPosition.x = posx;
@@ -342,6 +347,11 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggISound::getMaxVolume()
+	{
+		return mMaxGain;
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setMinVolume(float minGain)
 	{
 		if(minGain < 0 || minGain > 1) return;
@@ -352,6 +362,11 @@ namespace OgreOggSound
 		{
 			alSourcef(mSource, AL_MIN_GAIN, mMinGain);		
 		}
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggISound::getMinVolume()
+	{
+		return mMinGain;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setConeAngles(float insideAngle, float outsideAngle)
@@ -369,6 +384,16 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggISound::getConeInsideAngle()
+	{
+		return mInnerConeAngle;
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggISound::getConeOutsideAngle()
+	{
+		return mOuterConeAngle;
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setOuterConeVolume(float gain)
 	{
 		if(gain < 0 || gain > 1)	return;
@@ -379,6 +404,11 @@ namespace OgreOggSound
 		{
 			alSourcef (mSource, AL_CONE_OUTER_GAIN, mOuterConeGain);
 		}
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggISound::getOuterConeVolume()
+	{
+		return mOuterConeGain;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setMaxDistance(float maxDistance)

@@ -183,6 +183,11 @@ namespace OgreOggSound
 				Boolean: true == loop
 		 */
 		inline void loop(bool loop) { mLoop = loop; }
+		/** Gets looping status.
+		@remarks
+			Gets whether the looping status is enabled
+		 */
+		inline bool isLooping() { return mLoop; }
 		/** Sets the start point of a loopable section of audio.
 		@remarks
 			(NOTE:- Streamed sounds ONLY)
@@ -237,6 +242,11 @@ namespace OgreOggSound
 			over speaker output.
 		 */
 		void disable3D(bool disable);
+		/** Queries switchable spatialisation for this sound.
+		@remarks
+			Get whether spatialisation is on/off for mono sounds (for stereo sounds the effect does not apply).
+		 */
+		bool is3Ddisabled();
 		/** Sets the position of the playback cursor in seconds
 		@param seconds
 			Play position in seconds 
@@ -333,20 +343,28 @@ namespace OgreOggSound
 		float getVolume() const;
 		/** Sets sounds maximum attenuation volume
 		@remarks
-			This value sets the maximum volume level of the sound when closest 
-			to the listener.
+			This value sets the maximum volume level of the sound when closest to the listener.
 			@param maxGain 
 				Volume scalar (0..1)
 		 */
 		void setMaxVolume(float maxGain);
+		/** Gets sounds maximum attenuation volume
+		@remarks
+			This function gets the maximum volume level of the sound when closest to the listener.
+		 */
+		float getMaxVolume();
 		/** Sets sounds minimum attenuation volume
 		@remarks
-			This value sets the minimum volume level of the sound when furthest
-			away from the listener.
+			This value sets the minimum volume level of the sound when furthest away from the listener.
 			@param
 				minGain Volume scalar (0..1)
 		 */
 		void setMinVolume(float minGain);
+		/** Gets sounds minimum attenuation volume
+		@remarks
+			This function gets the minimum volume level of the sound when furthest away from the listener.
+		 */
+		float getMinVolume();
 		/** Sets sounds cone angles
 		@remarks
 			This value sets the angles of the sound cone used by this sound.
@@ -356,6 +374,16 @@ namespace OgreOggSound
 				angle over which the volume is at minimum
 		 */
 		void setConeAngles(float insideAngle=360.f, float outsideAngle=360.f);
+		/** Gets sounds cone inside angle
+		@remarks
+			This function gets the inside angle (in degrees) of the sound cone used by this sound.
+		 */
+		float getConeInsideAngle();
+		/** Gets sounds cone outside angle
+		@remarks
+			This function gets the outside angle (in degrees) of the sound cone used by this sound.
+		 */
+		float getConeOutsideAngle();
 		/** Sets sounds outer cone volume
 		@remarks
 			This value sets the volume level heard at the outer cone angle.
@@ -364,10 +392,15 @@ namespace OgreOggSound
 				gain Volume scalar (0..1)
 		 */
 		void setOuterConeVolume(float gain=0.f);
+		/** Gets sounds outer cone volume
+		@remarks
+			This function gets the volume level heard at the outer cone angle.
+		 */
+		float getOuterConeVolume();
 		/** Sets sounds maximum distance
 		@remarks
-			This value sets the maximum distance at which attenuation is
-			stopped. Beyond this distance the volume remains constant.
+			This value sets the maximum distance at which attenuation is stopped.
+			Beyond this distance the volume remains constant.
 			@param maxDistance 
 				Distance.
 		*/
@@ -379,9 +412,8 @@ namespace OgreOggSound
 		const float getMaxDistance() const;
 		/** Sets sounds rolloff factor
 		@remarks
-			This value sets the rolloff factor applied to the attenuation 
-			of the volume over distance. Effectively scales the volume change
-			affect.
+			This value sets the rolloff factor applied to the attenuation of the volume over distance.
+			Effectively scales the volume change affect.
 			@param
 				rolloffFactor Factor (>0).
 		*/
@@ -393,8 +425,8 @@ namespace OgreOggSound
 		const float getRolloffFactor() const;
 		/** Sets sounds reference distance
 		@remarks
-			This value sets the half-volume distance. The distance at which the volume 
-			would reduce by half.
+			This value sets the half-volume distance.
+			The distance at which the volume would reduce by half.
 			@param referenceDistance 
 				distance (>0).
 		*/
@@ -418,8 +450,8 @@ namespace OgreOggSound
 		const float getPitch() const;	
 		/** Sets whether the positional information is relative to the listener
 		@remarks
-			This specifies whether the sound is attached to listener or in 
-			world-space. Default: world-space
+			This specifies whether the sound is attached to listener or in world-space.
+			Default: world-space
 			@param relative 
 				Boolean yes/no.
 		*/
@@ -454,16 +486,16 @@ namespace OgreOggSound
 		inline Ogre::uint8 getPriority() const { return mPriority; }
 		/** Sets the sounds priority
 		@remarks
-			This can be used to specify a priority to the sound which
-			will be checked when re-using sources. Higher priorities 
-			will tend to keep their sources.
+			This can be used to specify a priority to the sound which will be checked when re-using sources.
+			Higher priorities will tend to keep their sources.
 			@param priority 
 				(0..255)
 		 */
 		inline void setPriority(Ogre::uint8 priority) { mPriority=priority; }
 		/** Adds a time position in a sound as a cue point
 		@remarks
-			Allows the setting of a 'jump-to' point within an audio file. Returns the true on success. 
+			Allows the setting of a 'jump-to' point within an audio file.
+			Returns the true on success.
 			@param seconds
 				Cue point in seconds 
 		 */
@@ -509,8 +541,7 @@ namespace OgreOggSound
 		virtual float getBoundingRadius(void) const;
 		/** Gets the SceneManager pointer registered at creation.
 		@remarks
-			This will only be set if the sound was created through the plugin method
-			createMovableobject().
+			This will only be set if the sound was created through the plugin method createMovableobject().
 		*/
 		inline Ogre::SceneManager* getSceneManager() const { return mScnMan; }   
 
