@@ -834,14 +834,29 @@ namespace OgreOggSound
 		alDistanceModel(value);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	const ALenum OgreOggSoundManager::getDistanceModel() const
+	{
+		return alGetInteger(AL_DISTANCE_MODEL);
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::setSpeedOfSound(float speed)
 	{
 		alSpeedOfSound(speed);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggSoundManager::getSpeedOfSound()
+	{
+		return alGetFloat(AL_SPEED_OF_SOUND);
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::setDopplerFactor(float factor)
 	{
 		alDopplerFactor(factor);
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	float OgreOggSoundManager::getDopplerFactor()
+	{
+		return alGetFloat(AL_DOPPLER_FACTOR);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::update(float fTime)

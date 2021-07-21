@@ -315,28 +315,46 @@ namespace OgreOggSound
 		bool _registerSharedBuffer(const Ogre::String& sName, ALuint& buffer, OgreOggISound* parent=0);
 		/** Sets distance model.
 		@remarks
-			Sets the global distance attenuation algorithm used by all
-			sounds in the system.
-			@param value 
+			Sets the global distance attenuation algorithm used by all sounds in the system.
+			@param value
 				ALenum value of distance model.
 		 */
 		void setDistanceModel(ALenum value);
+		/** Gets the distance model.
+		@remarks
+			Gets the global distance attenuation algorithm used by all sounds in the system.
+			@param value
+				ALenum value of distance model.
+		 */
+		const ALenum getDistanceModel() const;
 		/** Sets doppler factor.
 		@remarks
-			Sets the global doppler factor which affects attenuation for
-			all sounds
-			@param factor 
+			Sets the global doppler factor which affects attenuation for all sounds
+			@param factor
 				Factor scale (>0).
 		 */
 		void setDopplerFactor(float factor=1.f);
+		/** Gets doppler factor.
+		@remarks
+			Gets the global doppler factor which affects attenuation for all sounds
+			@param factor
+				Factor scale (>0).
+		 */
+		float getDopplerFactor();
 		/** Sets speed of sound.
 		@remarks
-			Sets the global speed of sound used in the attenuation algorithm,
-			affects all sounds.
+			Sets the global speed of sound used in the attenuation algorithm, affects all sounds.
 			@param speed 
 				Speed (m/s).
 		 */
 		void setSpeedOfSound(float speed=363.f);
+		/** Gets speed of sound.
+		@remarks
+			Gets the global speed of sound used in the attenuation algorithm which affects all sounds.
+			@param speed
+				Speed (m/s).
+		 */
+		float getSpeedOfSound();
 		/** Fades master volume in/out
 		@remarks
 			Allows fading of in/out of alls sounds
@@ -413,9 +431,9 @@ namespace OgreOggSound
 		bool createEFXFilter(const std::string& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0);
 		/** Creates a specified EFX effect
 		@remarks
-			Creates a specified EFX effect if hardware supports it. Optional reverb
-			preset structure can be passed which will be applied to the effect. See
-			eax-util.h for list of presets.
+			Creates a specified EFX effect if hardware supports it.
+			Optional reverb preset structure can be passed which will be applied to the effect.
+			See eax-util.h for list of presets.
 			@param eName 
 				name for effect.
 			@param type 
@@ -452,7 +470,8 @@ namespace OgreOggSound
 		bool _setEFXSoundPropertiesImpl(OgreOggISound* sound=0, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Sets a specified paremeter on an effect
 		@remarks
-			Tries to set a parameter value on a specified effect. Returns true/false.
+			Tries to set a parameter value on a specified effect.
+			Returns true/false.
 			@param eName 
 				name of effect.
 			@param effectType 
@@ -465,7 +484,8 @@ namespace OgreOggSound
 		bool setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALfloat param);
 		/** Sets a specified paremeter on an effect
 		@remarks
-			Tries to set a parameter value on a specified effect. Returns true/false.
+			Tries to set a parameter value on a specified effect.
+			Returns true/false.
 			@param eName 
 				name of effect.
 			@param type 
@@ -478,7 +498,8 @@ namespace OgreOggSound
 		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALfloat* params=0);
 		/** Sets a specified paremeter on an effect
 		@remarks
-			Tries to set a parameter value on a specified effect. Returns true/false.
+			Tries to set a parameter value on a specified effect.
+			Returns true/false.
 			@param eName 
 				name of effect.
 			@param type 
@@ -491,7 +512,8 @@ namespace OgreOggSound
 		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALint param);
 		/** Sets a specified paremeter on an effect
 		@remarks
-			Tries to set a parameter value on a specified effect. Returns true/false.
+			Tries to set a parameter value on a specified effect.
+			Returns true/false.
 			@param eName 
 				name of effect.
 			@param type 
@@ -504,8 +526,7 @@ namespace OgreOggSound
 		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALint* params=0);
 		/** Gets the maximum number of Auxiliary Effect slots per source
 		@remarks
-			Determines how many simultaneous effects can be applied to
-			any one source object
+			Determines how many simultaneous effects can be applied to any one source object
 		 */
 		int getNumberOfSupportedEffectSlots();
 		/** Gets the number of currently created Auxiliary Effect slots
@@ -781,17 +802,14 @@ namespace OgreOggSound
 		void _destroyAllSoundsImpl();
 		/** Creates a pool of OpenAL sources for playback.
 		@remarks
-			Attempts to create a pool of source objects which allow
-			simultaneous audio playback. The number of sources will be
-			clamped to either the hardware maximum or [mMaxSources]
-			whichever comes first.
+			Attempts to create a pool of source objects which allow simultaneous audio playback.
+			The number of sources will be clamped to either the hardware maximum or [mMaxSources], whichever comes first.
 		 */
 		int _createSourcePool();
 		/** Gets a shared audio buffer
 		@remarks
 			Returns a previously loaded shared buffer reference if available.
-			NOTE:- Increments a reference count so releaseSharedBuffer() must be called
-			when buffer is no longer used.
+			NOTE:- Increments a reference count so releaseSharedBuffer() must be called when buffer is no longer used.
 			@param sName
 				Name of audio file
 		 */
@@ -803,14 +821,12 @@ namespace OgreOggSound
 		Ogre::DataStreamPtr _openStream(const Ogre::String& file) const;
 		/** Releases all sounds and buffers
 		@remarks
-			Release all sounds and their associated OpenAL objects
-			from the system.
+			Release all sounds and their associated OpenAL objects from the system.
 		 */
 		void _releaseAll();
 		/** Checks and Logs a supported feature list
 		@remarks
-			Queries OpenAL for various supported features and lists
-			them with the LogManager.
+			Queries OpenAL for various supported features and lists them with the LogManager.
 		 */
 		void _checkFeatureSupport();
 #if HAVE_EFX
