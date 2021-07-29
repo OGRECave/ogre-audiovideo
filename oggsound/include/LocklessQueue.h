@@ -32,7 +32,7 @@
 
 namespace OgreOggSound
 {
-	//! LocklessQueue template: as provid3ed by Lf3THn4D
+	//! LocklessQueue template: as provided by Lf3THn4D
 	/*!
 	* \tparam Type Object type to queue.
 	* This is a lockless queue system to pass
@@ -44,33 +44,33 @@ namespace OgreOggSound
 	class LocklessQueue
 	{
 	private:
-		//! buffer to keep the queue.
+		//! Buffer to keep the queue.
 		Type* m_buffer;
 
-		//! head of queue list.
+		//! Head of queue list.
 		size_t m_head;
 
-		//! tail of queue list.
+		//! Tail of queue list.
 		size_t m_tail;
 
-		//! size of buffer.
+		//! Size of buffer.
 		size_t m_size;
 
 	public:
-		//! constructor.
+		//! Constructor.
 		inline LocklessQueue(size_t size) :
 		m_head(0), m_tail(0), m_size(size + 1)
 		{
 			m_buffer = new Type[m_size];
 		}
 
-		//! destructor.
+		//! Destructor.
 		inline ~LocklessQueue()
 		{
 			delete [] m_buffer;
 		}
 
-		//! push object into the queue.
+		//! Push object into the queue.
 		inline bool push(const Type& obj)
 		{
 			size_t next_head = (m_head + 1) % m_size;
@@ -80,7 +80,7 @@ namespace OgreOggSound
 			return true;
 		}
 
-		//! query status.
+		//! Query status.
 		/**
 		@remarks
 			Added query function for quickly testing status (Ian Stangoe)
@@ -90,7 +90,7 @@ namespace OgreOggSound
 			return (m_head==m_tail);
 		}
 
-		//! pop object out from the queue.
+		//! Pop object out from the queue.
 		inline bool pop(Type& obj)
 		{
 			if (m_tail == m_head) return false;
