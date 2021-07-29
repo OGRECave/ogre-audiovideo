@@ -187,7 +187,7 @@ namespace OgreOggSound
 		 */
 		virtual void _notifyMoved(void);
 		#else
-		/** do nothing but need for derived from MovableObject
+		/** Does nothing but is need for being derived from MovableObject
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
 		#endif

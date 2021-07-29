@@ -89,7 +89,7 @@ namespace OgreOggSound
 		ALuint mBuffer;
 	};
 
-	//! Holds information about a EFX effect.
+	//! Holds information about an EFX effect.
 	struct efxProperty
 	{
 		Ogre::String mEffectName;
@@ -243,15 +243,15 @@ namespace OgreOggSound
 		/** Destroys a single sound.
 		@remarks
 			Destroys a single sound object.
-			@param name 
+			@param name
 				Sound name to destroy.
 		 */
 		void destroySound(const std::string& name="");
 		/** Destroys a single sound.
 		@remarks
 			Destroys a single sound object.
-			@param name 
-				Sound name to destroy.
+			@param sound
+				Sound to destroy.
 		 */
 		void destroySound(OgreOggISound* sound);
 		/** Destroys a temporary sound implementation
@@ -531,14 +531,12 @@ namespace OgreOggSound
 		int getNumberOfSupportedEffectSlots();
 		/** Gets the number of currently created Auxiliary Effect slots
 		@remarks
-			Returns number of slots craeted and available for effects/filters.
+			Returns number of slots created and available for effects/filters.
 		 */
 		int getNumberOfCreatedEffectSlots();
-		/** Creates a specified EFX filter
+		/** Creates an EFX slot
 		@remarks
-			Creates a specified EFX filter if hardware supports it.
-			@param eName 
-				name for filter. type see OpenAL docs for available filter types.
+			Creates an EFX slot if the hardware supports it.
 		 */
 		bool createEFXSlot();
 		/** Attaches an effect to a sound
@@ -556,7 +554,7 @@ namespace OgreOggSound
 		bool attachEffectToSound(const std::string& sName, ALuint slot, const Ogre::String& effect="", const Ogre::String& filter="");
 		/** Attaches a filter to a sound
 		@remarks
-			Currently sound must have a source attached prior to this call.
+			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
 			@param sName 
 				name of sound
 			@param filter 
@@ -565,7 +563,7 @@ namespace OgreOggSound
 		bool attachFilterToSound(const std::string& sName, const Ogre::String& filter="");
 		/** Detaches all effects from a sound
 		@remarks
-			Currently sound must have a source attached prior to this call.
+			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
 			@param sName 
 				name of sound
 			@param slotID 

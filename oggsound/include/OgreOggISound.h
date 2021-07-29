@@ -138,10 +138,10 @@ namespace OgreOggSound
 		{
 		public:
 
-			/** constructor 
+			/** Constructor
 			*/
 			SoundListener(){}
-			/** destructor 
+			/** Destructor
 			*/
 			virtual ~SoundListener(){}
 			/** Called when sound data has been loaded
@@ -426,7 +426,7 @@ namespace OgreOggSound
 		/** Sets sounds reference distance
 		@remarks
 			This value sets the half-volume distance.
-			The distance at which the volume would reduce by half.
+			The distance at which the volume would be reduced by half.
 			@param referenceDistance 
 				distance (>0).
 		*/
@@ -568,9 +568,7 @@ namespace OgreOggSound
 				Reference to an array of OpenAL buffers
 			@param length
 				Reference to an object to store audio length
-			@param buffer
-				Reference to an object to store loopOffset in bytes
-			@param buffer
+			@param format
 				Reference to an object to store buffer format
 		*/
 		void _getSharedProperties(BufferListPtr& buffers, float& length, ALenum& format); 

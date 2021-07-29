@@ -1664,7 +1664,7 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXFilter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXSlot() - No EFX support!");
 			return false;
 		}
 
