@@ -1217,6 +1217,7 @@ namespace OgreOggSound
 		return false;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+#	if HAVE_EFX == 1
 	void OgreOggSoundManager::setXRamBuffer(ALsizei numBuffers, ALuint* buffer)
 	{
 		if ( buffer && mEAXSetBufferMode )
@@ -1230,6 +1231,7 @@ namespace OgreOggSound
 		else if ( mode==mXRamHardware ) mCurrentXRamMode = mXRamHardware;
 		else if ( mode==mXRamAccessible ) mCurrentXRamMode = mXRamAccessible;
 	}
+#	endif
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALfloat param)
 	{
@@ -1590,7 +1592,11 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
+#	if HAVE_EFX == 1
 	bool OgreOggSoundManager::createEFXEffect(const std::string& eName, ALint effectType, EAXREVERBPROPERTIES* props)
+#	elif HAVE_EFX == 2
+	bool OgreOggSoundManager::createEFXEffect(const std::string& eName, ALint effectType, EFXEAXREVERBPROPERTIES* props)
+#	endif
 	{
 		if ( !hasEFXSupport() || eName.empty() || !isEffectSupported(effectType) )
 		{
@@ -1618,11 +1624,15 @@ namespace OgreOggSound
 			else
 			{
 				// Apply some preset reverb properties
-				if ( effectType==AL_EFFECT_EAXREVERB  && props )
+				if ( effectType==AL_EFFECT_EAXREVERB && props )
 				{
+#	if HAVE_EFX == 1
 					EFXEAXREVERBPROPERTIES eaxProps;
 					ConvertReverbParameters(props, &eaxProps);
 					_setEAXReverbProperties(&eaxProps, effect);
+#	elif HAVE_EFX == 2
+					_setEAXReverbProperties(props, effect);
+#	endif
 				}
 
 				// Add to list
@@ -1697,13 +1707,13 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSoundProperties() - Unable to set EFX sound properties!");
+				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEFXSoundProperties() - Unable to set EFX sound properties!");
 				return false;
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSoundProperties() - No source attached to sound!");
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEFXSoundProperties() - No source attached to sound!");
 			return false;
 		}
 	}
@@ -1796,8 +1806,17 @@ namespace OgreOggSound
 				alEffectf(uiEffect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, pEFXEAXReverb->flRoomRolloffFactor);
 				alEffecti(uiEffect, AL_EAXREVERB_DECAY_HFLIMIT, pEFXEAXReverb->iDecayHFLimit);
 			}
+
+			// Check that there weren't any errors
 			if (alGetError() == AL_NO_ERROR)
+			{
 				return true;
+			}
+			else
+			{
+				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEAXReverbProperties() - Failed to set EFXEAXReverb");
+				return false;
+			}
 		}
 
 		return false;
@@ -1962,7 +1981,7 @@ namespace OgreOggSound
 
 		// To determine which Filters are supported, generate a Filter Object, and try to set its type to
 		// the various Filter enum values
-		Ogre::LogManager::getSingleton().logMessage("*** --- FILTERS SUPPORTED: ");
+		Ogre::LogManager::getSingleton().logMessage("*** --- Filters supported:");
 
 		// Generate a Filter to use to determine what Filter Types are supported
 		alGenFilters(1, &uiFilters[0]);
@@ -1971,21 +1990,21 @@ namespace OgreOggSound
 			// Try setting the Filter type to known Filters
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 			if ( mEFXSupportList[AL_FILTER_LOWPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'Low Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Low Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'Low Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Low Pass' Support: NO");
 
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_HIGHPASS);
 			if ( mEFXSupportList[AL_FILTER_HIGHPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'High Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'High Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'High Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'High Pass' Support: NO");
 
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_BANDPASS);
 			if ( mEFXSupportList[AL_FILTER_BANDPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'Band Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Band Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- 'Band Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Band Pass' Support: NO");
 		}
 
 		// Delete Filter
@@ -2051,6 +2070,7 @@ namespace OgreOggSound
 		return false;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+#	if HAVE_EFX == 1
 	bool OgreOggSoundManager::_checkXRAMSupport()
 	{
 		// Check for X-RAM extension
@@ -2079,6 +2099,8 @@ namespace OgreOggSound
 		}
 		return false;
 	}
+#	endif
+
 #endif
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_destroyTemporarySound(OgreOggISound* sound)
@@ -2398,6 +2420,7 @@ namespace OgreOggSound
 		else
 			Ogre::LogManager::getSingleton().logMessage("*** --- EFX NOT Detected");
 
+#	if HAVE_EFX == 1
 		// XRAM
 		mXRamSupport = _checkXRAMSupport();
 		if (mXRamSupport)
@@ -2409,6 +2432,7 @@ namespace OgreOggSound
 		}
 		else
 			Ogre::LogManager::getSingleton().logMessage("*** --- XRAM NOT Detected");
+#	endif
 
 		// EAX
 		for(int version = 5; version >= 2; version--)
@@ -2493,7 +2517,7 @@ namespace OgreOggSound
 		{
 			SourceList::iterator iter=mEffectSlotList.begin();
 			for ( ; iter!=mEffectSlotList.end(); ++iter )
-			    alDeleteEffects( 1, &(*iter));
+			    alDeleteAuxiliaryEffectSlots( 1, &(*iter));
 			mEffectSlotList.clear();
 		}
 #endif

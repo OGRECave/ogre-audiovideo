@@ -32,19 +32,31 @@ set (SOURCE_FILES
     src/OgreOggStreamWavSound.cpp
 )
   
-# Option.
+# Options
 option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
-option(USE_EFX "Use EFX? Disable this if you are using OpenAl Soft" OFF)
 
-IF(OGGSOUND_THREADED)
+if(OGGSOUND_THREADED)
     add_definitions(-DOGGSOUND_THREADED=1)
-ELSE()
+else()
     add_definitions(-DOGGSOUND_THREADED=0)
-ENDIF()
+endif()
 
-IF(USE_EFX)
+# Type of EFX backend support
+set(USE_EFX 0 CACHE STRING
+       "Specifies whether EFX enhancements are supported
+       0 - EFX not supported
+       1 - Enable EFX support with Creative OpenAL SDK 1.1
+       2 - Enable EFX support with OpenAL Soft SDK"
+)
+set_property(CACHE USE_EFX PROPERTY STRINGS "0" "1" "2")
+
+if(USE_EFX EQUAL "0")
+	add_definitions(-DHAVE_EFX=0)
+elseif(USE_EFX EQUAL "1")
 	add_definitions(-DHAVE_EFX=1)
-ENDIF()
+elseif(USE_EFX EQUAL "2")
+	add_definitions(-DHAVE_EFX=2)
+endif()
 
 find_package(PkgConfig QUIET)
 
@@ -77,11 +89,11 @@ link_libraries(${OGRE_LIBRARIES}
                ${VORBISFILE_LIBRARIES})
 
 # Configure library
-IF(OGRE_STATIC)
+if(OGRE_STATIC)
     add_library(Plugin_OggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
-ELSE()
+else()
     add_library(Plugin_OggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
-ENDIF()
+endif()
 target_include_directories(Plugin_OggSound PUBLIC include)
 # Disable "lib" prefix and add a suffix with OGRE version
 set_target_properties(Plugin_OggSound PROPERTIES PREFIX "" VERSION ${OGRE_VERSION} SOVERSION ${OGRE_VERSION})

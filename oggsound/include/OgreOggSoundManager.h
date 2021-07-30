@@ -390,15 +390,18 @@ namespace OgreOggSound
 		 */
 		Ogre::String getResourceGroupName() const;
 #if HAVE_EFX
+#	if HAVE_EFX == 1
 		/** Returns XRAM support status.
 		 */
 		bool hasXRamSupport() { return mXRamSupport; }
+#	endif
 		/** Returns EFX support status.
 		 */
 		bool hasEFXSupport() { return mEFXSupport; }
 		/** Returns EAX support status.
 		 */
 		bool hasEAXSupport() { return mEAXSupport; }
+#	if HAVE_EFX == 1
 		/** Sets XRam buffers.
 		@remarks
 			Currently defaults to AL_STORAGE_AUTO.
@@ -410,6 +413,7 @@ namespace OgreOggSound
 			Options: AL_STORAGE_AUTOMATIC | AL_STORAGE_HARDWARE | AL_STORAGE_ACCESSIBLE
 		 */
 		void setXRamBufferMode(ALenum mode);
+#	endif
 		/** Sets the distance units of measurement for EFX effects.
 		@remarks
 			@param unit 
@@ -441,7 +445,11 @@ namespace OgreOggSound
 			@param props	
 				legacy structure describing a preset reverb effect.
 		 */
+#	if HAVE_EFX == 1
 		bool createEFXEffect(const std::string& eName, ALint type, EAXREVERBPROPERTIES* props=0);
+#	elif HAVE_EFX == 2
+		bool createEFXEffect(const std::string& eName, ALint type, EFXEAXREVERBPROPERTIES* props=0);
+#	endif
 		/** Sets extended properties on a specified sounds source
 		@remarks
 			Tries to set EFX extended source properties.
@@ -831,9 +839,11 @@ namespace OgreOggSound
 		/** Checks for EFX hardware support
 		 */
 		bool _checkEFXSupport();
+#if HAVE_EFX == 1
 		/** Checks for XRAM hardware support
 		 */
 		bool _checkXRAMSupport();
+#endif
 		/** Checks for EAX effect support
 		 */
 		void _determineAuxEffectSlots();
@@ -980,6 +990,7 @@ namespace OgreOggSound
 		LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf;
 		LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
+#	if HAVE_EFX == 1
 		/**	XRAM Support
 		*/
 		typedef ALboolean (__cdecl *LPEAXSETBUFFERMODE)(ALsizei n, ALuint *buffers, ALint value);
@@ -987,6 +998,7 @@ namespace OgreOggSound
 
 		LPEAXSETBUFFERMODE mEAXSetBufferMode;
 		LPEAXGETBUFFERMODE mEAXGetBufferMode;
+#	endif
 
 		/**	EAX Support
 		*/
