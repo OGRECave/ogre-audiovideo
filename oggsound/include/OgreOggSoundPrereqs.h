@@ -39,27 +39,33 @@
 #include <OgreMovableObject.h>
 #include <OgreLogManager.h>
 
-#   if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-
-#	pragma warning( disable : 4244 )
-
 /**
  * Specifies whether EFX enhancements are supported
  * 0 - EFX not supported
- * 1 - Enable EFX suport
+ * 1 - Enable EFX support with Creative OpenAL SDK 1.1
+ * 2 - Enable EFX support with OpenAL Soft SDK
  */
-#	ifndef HAVE_EFX
-#		define HAVE_EFX 0
-#	endif
+#ifndef HAVE_EFX
+#	define HAVE_EFX 2
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+
+#	pragma warning( disable : 4244 )
 
 #	include "al.h"
 #	include "alc.h"
-#	if HAVE_EFX
+
+#	if HAVE_EFX == 1
 #		include "efx.h"
 #		include "efx-util.h"
 #		include "efx-creative.h"
 #		include "xram.h"
+#	elif HAVE_EFX == 2
+#		include "efx.h"
+#		include "efx-presets.h"
 #	endif
+
 #	if OGRE_COMPILER == OGRE_COMPILER_MSVC
 #		ifdef OGGSOUND_EXPORT
 #			define _OGGSOUND_EXPORT __declspec(dllexport)
@@ -69,6 +75,7 @@
 #	else
 #		define _OGGSOUND_EXPORT
 #	endif
+
 #elif OGRE_COMPILER == OGRE_COMPILER_GNUC || OGRE_COMPILER == OGRE_COMPILER_CLANG
 #   if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #		include <al.h>
@@ -76,6 +83,10 @@
 #   else
 #		include <AL/al.h>
 #		include <AL/alc.h>
+#		if HAVE_EFX == 2
+#			include "AL/efx.h"
+#			include "AL/efx-presets.h"
+#		endif
 #	endif
 #	if defined(OGGSOUND_EXPORT) && OGRE_COMP_VER >= 400
 #		define _OGGSOUND_EXPORT __attribute__ ((visibility("default")))

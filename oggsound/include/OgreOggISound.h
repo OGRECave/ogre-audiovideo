@@ -495,7 +495,7 @@ namespace OgreOggSound
 		/** Adds a time position in a sound as a cue point
 		@remarks
 			Allows the setting of a 'jump-to' point within an audio file.
-			Returns the true on success.
+			Returns true on success.
 			@param seconds
 				Cue point in seconds 
 		 */
