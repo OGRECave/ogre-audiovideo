@@ -288,16 +288,17 @@ namespace OgreOggSound
 		bool deviceInList = false;
 		if(majorVersion >= 1 && minorVersion >= 1)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- AVAILABLE DEVICES --- ***");
+			Ogre::LogManager::getSingleton().logMessage("*** --- AVAILABLE DEVICES:");
 
 			// List devices in log and see if the sugested device is in the list
-			Ogre::StringVector deviceList = getDeviceList();
 			std::stringstream ss;
-			Ogre::StringVector::iterator deviceItr;
-			for(deviceItr = deviceList.begin(); deviceItr != deviceList.end() && (*deviceItr).compare("") != 0; ++deviceItr)
+
+			for(auto& device : getDeviceList())
 			{
-				deviceInList |= (*deviceItr).compare(deviceName) == 0;
-				ss << "*** --- " << (*deviceItr);
+				if(device == deviceName)
+					deviceInList = true;
+
+				ss << "*** --- + \"" << device << "\"";
 				Ogre::LogManager::getSingleton().logMessage(ss.str());
 				ss.clear(); ss.str("");
 			}
@@ -312,9 +313,9 @@ namespace OgreOggSound
 		}
 		
 		if (!deviceInList)
-			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: " + Ogre::String(alcGetString(mDevice, ALC_DEVICE_SPECIFIER))+" (Default device)");
+			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: \"" + Ogre::String(mDeviceStrings) + "\" (Default device)");
 		else
-			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: " + Ogre::String(alcGetString(mDevice, ALC_DEVICE_SPECIFIER)));
+			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: \"" + Ogre::String(deviceName) + "\"");
 
 		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL Device successfully created");
 
@@ -407,7 +408,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	const StringVector OgreOggSoundManager::getDeviceList() const
 	{
-		const ALCchar* deviceList = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);
+		const ALCchar* deviceList = mDeviceStrings;
 
 		Ogre::StringVector deviceVector;
 		/*
@@ -422,34 +423,7 @@ namespace OgreOggSound
 		*/
 		while(*deviceList != 0)
 		{
-			try
-			{
-				ALCdevice *device = alcOpenDevice(deviceList);
-				if (alcGetError(device)) throw std::string("Unable to open device");
-
-				if(device)
-				{
-					// Device seems to be valid
-					ALCcontext *context = alcCreateContext(device, NULL);
-					if (alcGetError(device)) throw std::string("Unable to create context");
-					if(context)
-					{
-						// Context seems to be valid
-						alcMakeContextCurrent(context);
-						if(alcGetError(device)) throw std::string("Unable to make context current");
-						deviceVector.push_back(alcGetString(device, ALC_DEVICE_SPECIFIER));
-						alcMakeContextCurrent(NULL);
-						if(alcGetError(device)) throw std::string("Unable to clear current context");
-						alcDestroyContext(context);
-						if(alcGetError(device)) throw std::string("Unable to destroy current context");
-					}
-					alcCloseDevice(device);
-				}
-			}
-			catch(...)
-			{
-				// Don't die here, we'll just skip this device.
-			}
+			deviceVector.push_back(deviceList);
 
 			deviceList += strlen(deviceList) + 1;
 		}
@@ -2455,7 +2429,15 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_enumDevices()
 	{
-		mDeviceStrings = const_cast<ALCchar*>(alcGetString(0,ALC_DEVICE_SPECIFIER));
+		// If possible use the Enumerate All Extension to get the extended device list
+		if(alcIsExtensionPresent(NULL, "ALC_ENUMERATE_ALL_EXT") == AL_TRUE)
+			mDeviceStrings = const_cast<ALCchar*>(alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER));
+		// Otherwise use the more basic Enumeration Extension
+		else if (alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE)
+			mDeviceStrings = const_cast<ALCchar*>(alcGetString(NULL, ALC_DEVICE_SPECIFIER));
+		// If the OpenAL version is prior to OpenAL 1.1, then there are no Enumeration Extensions
+		else
+			mDeviceStrings = NULL;
 	}					  
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_releaseAll()
