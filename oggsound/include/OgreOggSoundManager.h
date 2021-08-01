@@ -140,10 +140,10 @@ namespace OgreOggSound
 				Desired size of queue list (optional | Multi-threaded ONLY)
 		 */
 		bool init(const std::string &deviceName = "", unsigned int maxSources=100, unsigned int queueListSize=100, Ogre::SceneManager* sMan=0);
-		/** Gets the openal device ptr
+		/** Gets the OpenAL device pointer
 		*/
 		const ALCdevice* getOpenalDevice() { return mDevice; }
-		/** Gets the openal context ptr
+		/** Gets the OpenAL context pointer
 		*/
 		const ALCcontext* getOpenalContext() { return mContext; }
 		/** Sets the global volume for all sounds
@@ -883,7 +883,7 @@ namespace OgreOggSound
 		void _reactivateQueuedSoundsImpl();
 		/** Enumerates audio devices.
 		@remarks
-			Gets a list of audio device available.
+			Gets a list of audio devices available.
 		 */
 		void _enumDevices();
 		/** Creates a listener object.
