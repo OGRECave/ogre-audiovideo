@@ -520,7 +520,6 @@ namespace OgreOggSound
 			alSourcef (mSource, AL_PITCH, mPitch);
 			alSourcei (mSource, AL_SOURCE_RELATIVE, mSourceRelative);
 			alSourcei (mSource, AL_LOOPING, mStream ? AL_FALSE : mLoop);
-			alSourcei (mSource, AL_SOURCE_STATE, AL_INITIAL);
 			mInitialised = true;
 		}
 	}
