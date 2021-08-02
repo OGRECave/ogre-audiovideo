@@ -370,7 +370,7 @@ namespace OgreOggSound
 		OgreOggListener* getListener() { return mListener; }
 		/** Returns number of sources created.
 		 */
-		int getNumSources() const { return mNumSources; }
+		int getNumSources() const { return mSources.size(); }
 		/** Updates system.
 		@remarks
 			Iterates all sounds and updates them.
@@ -924,7 +924,7 @@ namespace OgreOggSound
 		bool mFadeVolume;						// Flag for fading
 
 		ALCchar* mDeviceStrings;				// List of available devices strings
-		unsigned int mNumSources;				// Number of sources available for sounds
+		SourceList mSources;					// List of created sources at initialisation
 		unsigned int mMaxSources;				// Maximum Number of sources to allocate
 
 		float mGlobalPitch;						// Global pitch modifier
