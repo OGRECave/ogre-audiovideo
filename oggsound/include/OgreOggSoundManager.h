@@ -43,6 +43,8 @@
 #include <map>
 #include <string>
 
+#include <iostream>
+
 namespace OgreOggSound
 {
 	typedef std::map<std::string, OgreOggISound*> SoundMap;
@@ -926,6 +928,7 @@ namespace OgreOggSound
 		ALCchar* mDeviceStrings;				// List of available devices strings
 		unsigned int mNumSources;				// Number of sources available for sounds
 		unsigned int mMaxSources;				// Maximum Number of sources to allocate
+		ALuint* mSources;						// Array of sources created by OpenAL
 
 		float mGlobalPitch;						// Global pitch modifier
 

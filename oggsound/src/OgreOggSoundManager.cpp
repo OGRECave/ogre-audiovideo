@@ -2449,27 +2449,25 @@ namespace OgreOggSound
 		mPausedSounds.clear();
 		mWaitingSounds.clear();
 		mActiveSounds.clear();
+		mSourcePool.clear();
 
 		stopAllSounds();
 		_destroyAllSoundsImpl();
 
-		// Delete sources
-		SourceList::iterator it = mSourcePool.begin();
-		while (it != mSourcePool.end())
-		{
 #if HAVE_EFX
-			if ( hasEFXSupport() )
+		if ( hasEFXSupport() )
+		{
+			// Remove filters/effects
+			for(size_t i = 0; i < mMaxSources; i++)
 			{
-				// Remove filters/effects
-				alSourcei(static_cast<ALuint>((*it)), AL_DIRECT_FILTER, AL_FILTER_NULL);
-				alSource3i(static_cast<ALuint>((*it)), AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
- 			}
-#endif
-			alDeleteSources(1,&(*it));
-			++it;
+				alSourcei(static_cast<ALuint>(mSources[i]), AL_DIRECT_FILTER, AL_FILTER_NULL);
+				alSource3i(static_cast<ALuint>(mSources[i]), AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+			}
 		}
+#endif
 
-		mSourcePool.clear();
+		// Delete sources
+		alDeleteSources(mMaxSources, mSources);
 
 #if HAVE_EFX
 		// clear EFX effect lists
@@ -2501,26 +2499,30 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	int OgreOggSoundManager::_createSourcePool()
 	{
-		ALuint source;
-		unsigned int numSources = 0;
+		mSources = new ALuint[mMaxSources];
 
-		while(alGetError() == AL_NO_ERROR && numSources < mMaxSources)
+		alGenSources(mMaxSources, mSources);
+
+		ALenum error = 0;
+		if ((error = alGetError()) != AL_NO_ERROR)
 		{
-			source = 0;
-			alGenSources(1,&source);
-			if(source != 0)
+			switch (error)
 			{
-				mSourcePool.push_back(source);
-				numSources++;
+			case AL_INVALID_VALUE:		{ LogManager::getSingleton().logMessage("Invalid Value when attempting to create OpenAL sources", Ogre::LML_CRITICAL);}		break;
+			case AL_INVALID_OPERATION:	{ LogManager::getSingleton().logMessage("Invalid Operation when attempting to create OpenAL sources", Ogre::LML_CRITICAL); }break;
+			case AL_OUT_OF_MEMORY:		{ LogManager::getSingleton().logMessage("Out of memory when attempting to create OpenAL sources", Ogre::LML_CRITICAL); }	break;
 			}
-			else
-			{
-				alGetError();
-				break;
-			}
-		}
 
-		return static_cast<int>(mSourcePool.size());
+			LogManager::getSingleton().logMessage("Unable initialize OpenAL sources", Ogre::LML_CRITICAL);
+			return 0;
+		}
+		else
+		{
+			for(size_t i = 0; i < mMaxSources; i++)
+				mSourcePool.push_back(mSources[i]);
+
+			return mMaxSources;
+		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_reactivateQueuedSoundsImpl()
