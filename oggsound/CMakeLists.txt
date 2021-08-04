@@ -1,5 +1,5 @@
 # define header and source files for the library
-SET (HEADER_FILES
+set (HEADER_FILES
 	include/LocklessQueue.h
     include/OgreOggISound.h
     include/OgreOggListener.h
@@ -17,7 +17,7 @@ SET (HEADER_FILES
     include/OgreOggStreamWavSound.h
 )
 
-SET (SOURCE_FILES
+set (SOURCE_FILES
 	src/OgreOggISound.cpp
     src/OgreOggListener.cpp
     src/OgreOggSoundFactory.cpp
@@ -37,56 +37,56 @@ option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 option(USE_EFX "Use EFX? Disable this if you are using OpenAl Soft" OFF)
 
 IF(OGGSOUND_THREADED)
-    ADD_DEFINITIONS(-DOGGSOUND_THREADED=1)
+    add_definitions(-DOGGSOUND_THREADED=1)
 ELSE()
-    ADD_DEFINITIONS(-DOGGSOUND_THREADED=0)
+    add_definitions(-DOGGSOUND_THREADED=0)
 ENDIF()
 
 IF(USE_EFX)
-	ADD_DEFINITIONS(-DHAVE_EFX=1)
+	add_definitions(-DHAVE_EFX=1)
 ENDIF()
 
-FIND_PACKAGE(PkgConfig QUIET)
+find_package(PkgConfig QUIET)
 
-PKG_CHECK_MODULES(PC_OPENAL QUIET openal)
-FIND_PATH(OPENAL_INCLUDE_DIRS NAMES al.h HINTS ${PC_OPENAL_INCLUDE_DIRS} PATH_SUFFIXES openal)
-FIND_LIBRARY(OPENAL_LIBRARIES NAMES openal HINTS ${PC_OPENAL_LIBRARY_DIRS})
+pkg_check_modules(PC_OPENAL QUIET openal)
+find_path(OPENAL_INCLUDE_DIRS NAMES al.h HINTS ${PC_OPENAL_INCLUDE_DIRS} PATH_SUFFIXES openal)
+find_library(OPENAL_LIBRARIES NAMES openal HINTS ${PC_OPENAL_LIBRARY_DIRS})
 
-PKG_CHECK_MODULES(PC_OGG QUIET ogg)
-FIND_PATH(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${PC_OGG_INCLUDE_DIRS} PATH_SUFFIXES ogg)
-FIND_LIBRARY(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
+pkg_check_modules(PC_OGG QUIET ogg)
+find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${PC_OGG_INCLUDE_DIRS} PATH_SUFFIXES ogg)
+find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
 
-PKG_CHECK_MODULES(PC_VORBISFILE QUIET vorbisfile)
-FIND_PATH(VORBIS_INCLUDE_DIRS NAMES vorbis/vorbisfile.h HINTS ${PC_VORBISFILE_INCLUDE_DIRS} PATH_SUFFIXES vorbisfile)
-FIND_LIBRARY(VORBISFILE_LIBRARIES NAMES vorbisfile HINTS ${PC_VORBISFILE_LIBRARY_DIRS})
+pkg_check_modules(PC_VORBISFILE QUIET vorbisfile)
+find_path(VORBIS_INCLUDE_DIRS NAMES vorbis/vorbisfile.h HINTS ${PC_VORBISFILE_INCLUDE_DIRS} PATH_SUFFIXES vorbisfile)
+find_library(VORBISFILE_LIBRARIES NAMES vorbisfile HINTS ${PC_VORBISFILE_LIBRARY_DIRS})
 
-INCLUDE_DIRECTORIES(include
+include_directories(include
                     ${OGRE_INCLUDE_DIRS}
                     ${OPENAL_INCLUDE_DIRS}
                     ${OGG_INCLUDE_DIRS}
                     ${VORBIS_INCLUDE_DIRS})
 
-LINK_DIRECTORIES(${OGRE_LIBRARY_DIRS}
+link_directories(${OGRE_LIBRARY_DIRS}
                  ${OPENAL_LIBRARY_DIRS}
                  ${OGG_LIBRARY_DIRS}
                  ${VORBISFILE_LIBRARIES})
 
-LINK_LIBRARIES(${OGRE_LIBRARIES}
+link_libraries(${OGRE_LIBRARIES}
                ${OPENAL_LIBRARIES}
                ${OGG_LIBRARIES}
                ${VORBISFILE_LIBRARIES})
 
 # Configure library
 IF(OGRE_STATIC)
-    ADD_LIBRARY(Plugin_OggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(Plugin_OggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
 ELSE()
-    ADD_LIBRARY(Plugin_OggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(Plugin_OggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
 ENDIF()
-TARGET_INCLUDE_DIRECTORIES(Plugin_OggSound PUBLIC include)
+target_include_directories(Plugin_OggSound PUBLIC include)
 # Disable "lib" prefix and add a suffix with OGRE version
-SET_TARGET_PROPERTIES(Plugin_OggSound PROPERTIES PREFIX "" VERSION ${OGRE_VERSION} SOVERSION ${OGRE_VERSION})
-TARGET_COMPILE_DEFINITIONS(Plugin_OggSound PRIVATE OGGSOUND_EXPORT)
+set_target_properties(Plugin_OggSound PROPERTIES PREFIX "" VERSION ${OGRE_VERSION} SOVERSION ${OGRE_VERSION})
+target_compile_definitions(Plugin_OggSound PRIVATE OGGSOUND_EXPORT)
 
-INSTALL(FILES ${HEADER_FILES} DESTINATION include/OGRE/Plugins/OggSound)
-INSTALL(TARGETS Plugin_OggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
-SET_PROPERTY(TARGET Plugin_OggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
+install(FILES ${HEADER_FILES} DESTINATION include/OGRE/Plugins/OggSound)
+install(TARGETS Plugin_OggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
+set_property(TARGET Plugin_OggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
