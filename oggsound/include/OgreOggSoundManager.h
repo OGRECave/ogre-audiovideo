@@ -532,11 +532,16 @@ namespace OgreOggSound
 				vector pointer of integer values to set.
 		 */
 		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALint* params=0);
-		/** Gets the maximum number of Auxiliary Effect slots per source
+		/** Gets the maximum number of Auxiliary Effect Slots detected for the OpenAL device on initialization
 		@remarks
-			Determines how many simultaneous effects can be applied to any one source object
+			Returns how many simultaneous effects can be applied at the same time to the Output Mix.
 		 */
-		int getNumberOfSupportedEffectSlots();
+		int getMaxAuxiliaryEffectSlots() { return mNumEffectSlots; };
+		/** Gets the maximum number of Auxiliary Effect Sends per source
+		@remarks
+			Returns how many simultaneous effects can be applied to any one source object.
+		 */
+		int getMaxAuxiliaryEffectSends() { return mNumSendsPerSource; };
 		/** Gets the number of currently created Auxiliary Effect slots
 		@remarks
 			Returns number of slots created and available for effects/filters.
