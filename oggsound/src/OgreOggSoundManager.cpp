@@ -1668,17 +1668,6 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	int OgreOggSoundManager::getNumberOfSupportedEffectSlots()
-	{
-		if ( !hasEFXSupport() ) return 0;
-
-		ALint auxSends=0;
-		alcGetIntegerv(mDevice, ALC_MAX_AUXILIARY_SENDS, 1, &auxSends);
-
-		return auxSends;
-	}
-
-	/*/////////////////////////////////////////////////////////////////*/
 	int OgreOggSoundManager::getNumberOfCreatedEffectSlots()
 	{
 		if ( mEffectSlotList.empty() ) return 0;
@@ -1877,8 +1866,8 @@ namespace OgreOggSound
 		ALuint		uiFilters[1] = { 0 };
 		Ogre::String msg="";
 
-		// To determine how many Auxiliary Effects Slots are available, create as many as possible (up to 128)
-		// until the call fails.
+		// To determine how many Auxiliary Effects Slots are available,
+		// create as many as possible (up to 128) until the call fails.
 		for (mNumEffectSlots = 0; mNumEffectSlots < 128; mNumEffectSlots++)
 		{
 			alGenAuxiliaryEffectSlots(1, &uiEffectSlots[mNumEffectSlots]);
@@ -1886,12 +1875,12 @@ namespace OgreOggSound
 				break;
 		}
 
-		msg="*** --- "+Ogre::StringConverter::toString(mNumEffectSlots)+ " Auxiliary Effect Slot(s)";
+		msg="*** --- " + Ogre::StringConverter::toString(mNumEffectSlots) + " Auxiliary Effect Slot(s)";
 		Ogre::LogManager::getSingleton().logMessage(msg);
 
 		// Retrieve the number of Auxiliary Effect Slots Sends available on each Source
 		alcGetIntegerv(mDevice, ALC_MAX_AUXILIARY_SENDS, 1, &mNumSendsPerSource);
-		msg="*** --- "+Ogre::StringConverter::toString(mNumSendsPerSource)+" Auxiliary Send(s) per Source";
+		msg="*** --- " + Ogre::StringConverter::toString(mNumSendsPerSource) + " Auxiliary Send(s) per Source";
 		Ogre::LogManager::getSingleton().logMessage(msg);
 
 		Ogre::LogManager::getSingleton().logMessage("*** --- Effects supported:");
@@ -2501,7 +2490,7 @@ namespace OgreOggSound
 		{
 			EffectList::iterator iter=mFilterList.begin();
 			for ( ; iter!=mFilterList.end(); ++iter )
-			    alDeleteEffects( 1, &iter->second);
+			    alDeleteFilters( 1, &iter->second);
 			mFilterList.clear();
 		}
 
