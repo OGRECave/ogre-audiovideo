@@ -423,16 +423,18 @@ namespace OgreOggSound
 		/** Creates a specified EFX filter
 		@remarks
 			Creates a specified EFX filter if hardware supports it.
-			@param eName 
-				name for filter.
-			@param type 
-				see OpenAL docs for available filters.
+			@param eName
+				name for the filter.
+			@param type
+				possible types: AL_FILTER_LOWPASS, AL_FILTER_HIGHPASS, AL_FILTER_BANDPASS.
 			@param gain
-				see OpenAL docs for available filters.
-			@param hfgain 
-				see OpenAL docs for available filters.
+				gain of the allowed frequency band. Range: [0.0, 1.0]
+			@param hfGain
+				desired gain for filtered high frequencies (only affects lowpass and bandpass filters). Range: [0.0, 1.0]
+			@param lfGain
+				desired gain for filtered low frequencies (only affects highpass and bandpass filters). Range: [0.0, 1.0]
 		 */
-		bool createEFXFilter(const std::string& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0);
+		bool createEFXFilter(const std::string& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0, ALfloat lfGain=1.0);
 		/** Creates a specified EFX effect
 		@remarks
 			Creates a specified EFX effect if hardware supports it.
@@ -443,7 +445,7 @@ namespace OgreOggSound
 			@param type 
 				see OpenAL docs for available effects.
 			@param props	
-				legacy structure describing a preset reverb effect.
+				legacy structure describing a preset reverb effect. (See efx-presets.h)
 		 */
 #	if HAVE_EFX == 1
 		bool createEFXEffect(const std::string& eName, ALint type, EAXREVERBPROPERTIES* props=0);
