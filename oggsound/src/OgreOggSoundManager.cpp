@@ -948,7 +948,6 @@ namespace OgreOggSound
 		}
 
 		private:
-
 			Ogre::Vector3 mListenerPos;
 	};
 	/*/////////////////////////////////////////////////////////////////*/
@@ -1555,7 +1554,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::createEFXFilter(const std::string& fName, ALint filterType, ALfloat gain, ALfloat hfGain)
+	bool OgreOggSoundManager::createEFXFilter(const std::string& fName, ALint filterType, ALfloat gain, ALfloat hfGain, ALfloat lfGain)
 	{
 		if ( !hasEFXSupport() || fName.empty() || !isEffectSupported(filterType) )
 		{
@@ -1572,21 +1571,47 @@ namespace OgreOggSound
 			return false;
 		}
 
-		if (alIsFilter(filter) && ((filterType==AL_FILTER_LOWPASS) || (filterType==AL_FILTER_HIGHPASS) || (filterType==AL_FILTER_BANDPASS) ))
+		if (alIsFilter(filter))
 		{
 			alFilteri(filter, AL_FILTER_TYPE, filterType);
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** Filter not supported!");
+				Ogre::LogManager::getSingleton().logMessage("*** Unable to set filter type!");
 				return false;
 			}
 			else
 			{
-				// Set properties
-				alFilterf(filter, AL_LOWPASS_GAIN, gain);
-				alFilterf(filter, AL_LOWPASS_GAINHF, hfGain);
-				mFilterList[fName]=filter;
+				switch(filterType)
+				{
+					case AL_FILTER_LOWPASS:
+						// Set lowpass filter properties
+						alFilterf(filter, AL_LOWPASS_GAIN, gain);
+						alFilterf(filter, AL_LOWPASS_GAINHF, hfGain);
+						mFilterList[fName]=filter;
+					break;
+					case AL_FILTER_HIGHPASS:
+						// Set highpass filter properties
+						alFilterf(filter, AL_LOWPASS_GAIN, gain);
+						alFilterf(filter, AL_HIGHPASS_GAINLF, lfGain);
+						mFilterList[fName]=filter;
+					break;
+					case AL_FILTER_BANDPASS:
+						// Set bandpass filter properties
+						alFilterf(filter, AL_LOWPASS_GAIN, gain);
+						alFilterf(filter, AL_BANDPASS_GAINLF, lfGain);
+						alFilterf(filter, AL_LOWPASS_GAINHF, hfGain);
+						mFilterList[fName]=filter;
+					break;
+					default:
+						Ogre::LogManager::getSingleton().logError("*** Unknown Filter Type");
+					break;
+				}
 			}
+		}
+		else
+		{
+			Ogre::LogManager::getSingleton().logMessage("*** Created filter is not valid!");
+			return false;
 		}
 		return true;
 	}
