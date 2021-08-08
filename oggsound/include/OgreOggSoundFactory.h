@@ -35,7 +35,7 @@
 #include <Ogre.h>
 #include "OgreOggSound.h"
 
-namespace OgreOggSound 
+namespace OgreOggSound
 {
 	//! MovableFactory for creating Sound instances 
 	class _OGGSOUND_EXPORT OgreOggSoundFactory : public Ogre::MovableObjectFactory
@@ -56,7 +56,6 @@ namespace OgreOggSound
 		static Ogre::String FACTORY_TYPE_NAME;
 
 		const Ogre::String& getType(void) const;
-
 	};
 }
 

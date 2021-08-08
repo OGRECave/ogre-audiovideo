@@ -45,8 +45,6 @@
 
 namespace OgreOggSound
 {
-	using namespace Ogre;
-
 	const Ogre::String OgreOggSoundManager::OGREOGGSOUND_VERSION_STRING = "OgreOggSound v1.28";
 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -201,16 +199,16 @@ namespace OgreOggSound
 		_destroyListener();
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::init(	const std::string &deviceName, 
-									unsigned int maxSources, 
-									unsigned int queueListSize, 
-									SceneManager* scnMgr)
+	bool OgreOggSoundManager::init(	const Ogre::String &deviceName,
+									unsigned int maxSources,
+									unsigned int queueListSize,
+									Ogre::SceneManager* scnMgr)
 	{
 		if (mDevice) return true;
 
 		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
 		Ogre::LogManager::getSingleton().logMessage("*** --- Initialising OgreOggSound --- ***", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*** ---     "+OGREOGGSOUND_VERSION_STRING+"    --- ***", Ogre::LML_NORMAL);
+		Ogre::LogManager::getSingleton().logMessage("*** ---     " + OGREOGGSOUND_VERSION_STRING + "    --- ***", Ogre::LML_NORMAL);
 		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
 
 		// Set source limit
@@ -233,13 +231,13 @@ namespace OgreOggSound
 		{
 			switch (error)
 			{
-			case AL_INVALID_NAME:		{ LogManager::getSingleton().logMessage("Invalid Name when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }		break;
-			case AL_INVALID_ENUM:		{ LogManager::getSingleton().logMessage("Invalid Enum when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }		break;
-			case AL_INVALID_VALUE:		{ LogManager::getSingleton().logMessage("Invalid Value when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL);}		break;
-			case AL_INVALID_OPERATION:	{ LogManager::getSingleton().logMessage("Invalid Operation when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }break;
-			case AL_OUT_OF_MEMORY:		{ LogManager::getSingleton().logMessage("Out of memory when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }	break;
+			case AL_INVALID_NAME:		{ Ogre::LogManager::getSingleton().logError("Invalid Name when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_ENUM:		{ Ogre::LogManager::getSingleton().logError("Invalid Enum when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_VALUE:		{ Ogre::LogManager::getSingleton().logError("Invalid Value when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_OPERATION:	{ Ogre::LogManager::getSingleton().logError("Invalid Operation when attempting: OpenAL Minor Version number"); } break;
+			case AL_OUT_OF_MEMORY:		{ Ogre::LogManager::getSingleton().logError("Out of memory when attempting: OpenAL Minor Version number"); }	break;
 			}
-			LogManager::getSingleton().logMessage("Unable to get OpenAL Minor Version number", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Minor Version number", Ogre::LML_CRITICAL);
 			return false;
 		}
 		alcGetError(NULL);
@@ -248,13 +246,13 @@ namespace OgreOggSound
 		{
 			switch (error)
 			{
-			case AL_INVALID_NAME:		{ LogManager::getSingleton().logMessage("Invalid Name when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }		break;
-			case AL_INVALID_ENUM:		{ LogManager::getSingleton().logMessage("Invalid Enum when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }		break;
-			case AL_INVALID_VALUE:		{ LogManager::getSingleton().logMessage("Invalid Value when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL);}		break;
-			case AL_INVALID_OPERATION:	{ LogManager::getSingleton().logMessage("Invalid Operation when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }break;
-			case AL_OUT_OF_MEMORY:		{ LogManager::getSingleton().logMessage("Out of memory when attempting: OpenAL Minor Version number", Ogre::LML_CRITICAL); }	break;
+			case AL_INVALID_NAME:		{ Ogre::LogManager::getSingleton().logError("Invalid Name when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_ENUM:		{ Ogre::LogManager::getSingleton().logError("Invalid Enum when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_VALUE:		{ Ogre::LogManager::getSingleton().logError("Invalid Value when attempting: OpenAL Minor Version number"); } break;
+			case AL_INVALID_OPERATION:	{ Ogre::LogManager::getSingleton().logError("Invalid Operation when attempting: OpenAL Minor Version number"); } break;
+			case AL_OUT_OF_MEMORY:		{ Ogre::LogManager::getSingleton().logError("Out of memory when attempting: OpenAL Minor Version number"); } break;
 			}
-			LogManager::getSingleton().logMessage("Unable to get OpenAL Major Version number", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Major Version number");
 			return false;
 		}
 #else
@@ -262,14 +260,14 @@ namespace OgreOggSound
         ALCenum error = alcGetError(device);
         if (error != ALC_NO_ERROR)
 		{
-			LogManager::getSingleton().logMessage("Unable to get OpenAL Minor Version number", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Minor Version number");
 			return false;
 		}
 		alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
 		error = alcGetError(device);
         if (error != ALC_NO_ERROR)
 		{
-			LogManager::getSingleton().logMessage("Unable to get OpenAL Major Version number", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logMessage("Unable to get OpenAL Major Version number", Ogre::LML_CRITICAL);
 			return false;
 		}
 		alcCloseDevice(device);
@@ -348,7 +346,7 @@ namespace OgreOggSound
 				mSceneMgr = inst.begin()->second;
 			else
 			{
-				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "No SceneManager's created - a valid SceneManager is required to create sounds", "OgreOggSoundManager::init()");
+				OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "No SceneManager's created - a valid SceneManager is required to create sounds", "OgreOggSoundManager::init()");
 				return false;
 			}
 		}
@@ -384,7 +382,7 @@ namespace OgreOggSound
 			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices NOT detected!", Ogre::LML_NORMAL);
 		else
 		{
-			LogManager::getSingleton().logMessage("*** --- Recording devices available:", Ogre::LML_NORMAL);
+			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices available:", Ogre::LML_NORMAL);
 			OgreOggSoundRecord* r=0;
 			if ( r=createRecorder() )
 			{
@@ -403,7 +401,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	const StringVector OgreOggSoundManager::getDeviceList() const
+	const Ogre::StringVector OgreOggSoundManager::getDeviceList() const
 	{
 		const ALCchar* deviceList = mDeviceStrings;
 
@@ -436,13 +434,13 @@ namespace OgreOggSound
 		return (mListener = _createListener()) != 0;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	const StringVector OgreOggSoundManager::getSoundList() const
+	const Ogre::StringVector OgreOggSoundManager::getSoundList() const
 	{
 		#if OGGSOUND_THREADED
 			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
 		#endif
 
-		StringVector list;
+		Ogre::StringVector list;
 		for ( SoundMap::const_iterator iter=mSoundMap.begin(); iter!=mSoundMap.end(); ++iter )
 			list.push_back((*iter).first);
 		return list;
@@ -461,14 +459,14 @@ namespace OgreOggSound
 		return vol;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	OgreOggISound* OgreOggSoundManager::_createSoundImpl(	SceneManager* scnMgr, 
-															const std::string& name, 
+	OgreOggISound* OgreOggSoundManager::_createSoundImpl(	Ogre::SceneManager* scnMgr,
+															const Ogre::String& name,
 															#if OGRE_VERSION_MAJOR == 2
 															Ogre::IdType id,
 															#endif
-															const std::string& file, 
-															bool stream, 
-															bool loop, 
+															const Ogre::String& file,
+															bool stream,
+															bool loop,
 															bool preBuffer,
 															bool immediate)
 	{
@@ -477,7 +475,7 @@ namespace OgreOggSound
 		// MUST be unique
 		if ( hasSound(name) )
 		{
-			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound with name: "+name+" already exists!";
+			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound with name: " + name + " already exists!";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 			return 0;
 		}
@@ -610,19 +608,19 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: "+name;
+			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: " + name;
 			Ogre::LogManager::getSingleton().logMessage(msg);
 			return 0;
 		}
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	OgreOggISound* OgreOggSoundManager::createSound(const std::string& name, 
-													const std::string& file, 
-													bool stream, 
-													bool loop, 
-													bool preBuffer, 
-													SceneManager* scnMgr,
+	OgreOggISound* OgreOggSoundManager::createSound(const Ogre::String& name,
+													const Ogre::String& file,
+													bool stream,
+													bool loop,
+													bool preBuffer,
+													Ogre::SceneManager* scnMgr,
 													bool immediate)
 	{
 		Ogre::NameValuePairList params;
@@ -642,7 +640,7 @@ namespace OgreOggSound
 				scnMgr = mSceneMgr;
 			else
 			{
-				OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, "No SceneManager defined!", "OgreOggSoundManager::createSound()");
+				OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No SceneManager defined!", "OgreOggSoundManager::createSound()");
 				return 0;
 			}
 		}
@@ -659,9 +657,9 @@ namespace OgreOggSound
 			#endif
 			);
 		}
-		catch (Exception& e)
+		catch (Ogre::Exception& e)
 		{
-			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, e.getFullDescription(), "OgreOggSoundManager::createSound()");
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription(), "OgreOggSoundManager::createSound()");
 		}
 		// create Movable Sound
 		return sound;
@@ -678,7 +676,7 @@ namespace OgreOggSound
 		return l;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	OgreOggISound* OgreOggSoundManager::getSound(const std::string& name)
+	OgreOggISound* OgreOggSoundManager::getSound(const Ogre::String& name)
 	{
 		#if OGGSOUND_THREADED
 			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
@@ -696,7 +694,7 @@ namespace OgreOggSound
 #endif
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::hasSound(const std::string& name)
+	bool OgreOggSoundManager::hasSound(const Ogre::String& name)
 	{
 		#if OGGSOUND_THREADED
 			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
@@ -1230,7 +1228,7 @@ namespace OgreOggSound
 	}
 #	endif
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALfloat param)
+	bool OgreOggSoundManager::setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALfloat param)
 	{
 		if ( !hasEFXSupport() && eName.empty() ) return false;
 
@@ -1252,7 +1250,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALfloat* params)
+	bool OgreOggSoundManager::setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALfloat* params)
 	{
 		if ( !hasEFXSupport() && eName.empty() || !params ) return false;
 
@@ -1274,7 +1272,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALint param)
+	bool OgreOggSoundManager::setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALint param)
 	{
 		if ( !hasEFXSupport() && eName.empty() ) return false;
 
@@ -1296,7 +1294,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALint* params)
+	bool OgreOggSoundManager::setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALint* params)
 	{
 		if ( !hasEFXSupport() && eName.empty() || !params ) return false;
 
@@ -1318,7 +1316,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::attachEffectToSound(const std::string& sName, ALuint slotID, const Ogre::String& effectName, const Ogre::String& filterName)
+	bool OgreOggSoundManager::attachEffectToSound(const Ogre::String& sName, ALuint slotID, const Ogre::String& effectName, const Ogre::String& filterName)
 	{
 		OgreOggISound* sound=0;
 		if ( !(sound = getSound(sName)) ) return false;
@@ -1342,7 +1340,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::attachFilterToSound(const std::string& sName, const Ogre::String& filterName)
+	bool OgreOggSoundManager::attachFilterToSound(const Ogre::String& sName, const Ogre::String& filterName)
 	{
 		OgreOggISound* sound=0;
 		if ( !(sound = getSound(sName)) ) return false;
@@ -1498,7 +1496,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::detachEffectFromSound(const std::string& sName, ALuint slotID)
+	bool OgreOggSoundManager::detachEffectFromSound(const Ogre::String& sName, ALuint slotID)
 	{
 		OgreOggISound* sound=0;
 		if ( !(sound = getSound(sName)) ) return false;
@@ -1525,7 +1523,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::detachFilterFromSound(const std::string& sName)
+	bool OgreOggSoundManager::detachFilterFromSound(const Ogre::String& sName)
 	{
 		OgreOggISound* sound=0;
 		if ( !(sound = getSound(sName)) ) return false;
@@ -1552,7 +1550,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::createEFXFilter(const std::string& fName, ALint filterType, ALfloat gain, ALfloat hfGain, ALfloat lfGain)
+	bool OgreOggSoundManager::createEFXFilter(const Ogre::String& fName, ALint filterType, ALfloat gain, ALfloat hfGain, ALfloat lfGain)
 	{
 		if ( !hasEFXSupport() || fName.empty() || !isEffectSupported(filterType) )
 		{
@@ -1616,9 +1614,9 @@ namespace OgreOggSound
 
 	/*/////////////////////////////////////////////////////////////////*/
 #	if HAVE_EFX == 1
-	bool OgreOggSoundManager::createEFXEffect(const std::string& eName, ALint effectType, EAXREVERBPROPERTIES* props)
+	bool OgreOggSoundManager::createEFXEffect(const Ogre::String& eName, ALint effectType, EAXREVERBPROPERTIES* props)
 #	elif HAVE_EFX == 2
-	bool OgreOggSoundManager::createEFXEffect(const std::string& eName, ALint effectType, EFXEAXREVERBPROPERTIES* props)
+	bool OgreOggSoundManager::createEFXEffect(const Ogre::String& eName, ALint effectType, EFXEAXREVERBPROPERTIES* props)
 #	endif
 	{
 		if ( !hasEFXSupport() || eName.empty() || !isEffectSupported(effectType) )
@@ -1730,7 +1728,7 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::setEFXSoundProperties(const std::string& sName, float airAbsorption, float roomRolloff, float coneOuterHF)
+	bool OgreOggSoundManager::setEFXSoundProperties(const Ogre::String& sName, float airAbsorption, float roomRolloff, float coneOuterHF)
 	{
 		OgreOggISound* sound=0;
 		if ( !(sound = getSound(sName)) ) return false;
@@ -1850,7 +1848,7 @@ namespace OgreOggSound
 		return true;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	ALuint OgreOggSoundManager::_getEFXFilter(const std::string& fName)
+	ALuint OgreOggSoundManager::_getEFXFilter(const Ogre::String& fName)
 	{
 		if ( mFilterList.empty() || !hasEFXSupport() || fName.empty() ) return AL_FILTER_NULL;
 
@@ -1862,7 +1860,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-	ALuint OgreOggSoundManager::_getEFXEffect(const std::string& eName)
+	ALuint OgreOggSoundManager::_getEFXEffect(const Ogre::String& eName)
 	{
 		if ( mEffectList.empty() || !hasEFXSupport() || eName.empty() ) return AL_EFFECT_NULL;
 
@@ -2130,7 +2128,7 @@ namespace OgreOggSound
 		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
 		// Destroy all sounds
-		StringVector soundList;
+		Ogre::StringVector soundList;
 
 		#if OGGSOUND_THREADED
 			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
@@ -2141,7 +2139,7 @@ namespace OgreOggSound
 			soundList.push_back(i->first);
 
 		// Destroy individually outside mSoundMap iteration
-		for ( StringVector::iterator i=soundList.begin(); i!=soundList.end(); ++i )
+		for ( Ogre::StringVector::iterator i=soundList.begin(); i!=soundList.end(); ++i )
 		{
 			OgreOggISound* sound=0;
 			if ( sound=getSound((*i)) ) 
@@ -2228,8 +2226,8 @@ namespace OgreOggSound
 		mPausedSounds.clear();
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggSoundManager::_loadSoundImpl(	OgreOggISound* sound, 
-												const String& file, 
+	void OgreOggSoundManager::_loadSoundImpl(	OgreOggISound* sound,
+												const Ogre::String& file,
 												bool prebuffer)
 	{
 		if ( !sound ) return;
@@ -2449,12 +2447,12 @@ namespace OgreOggSound
 		// EAX
 		for(int version = 5; version >= 2; version--)
 		{
-			Ogre::String eaxName="EAX"+Ogre::StringConverter::toString(version)+".0";
+			Ogre::String eaxName="EAX"+Ogre::StringConverter::toString(version) + ".0";
 			if(alIsExtensionPresent(eaxName.c_str()) == AL_TRUE)
 			{
 				mEAXSupport = true;
 				mEAXVersion = version;
-				eaxName="*** --- EAX "+Ogre::StringConverter::toString(version)+".0 Detected";
+				eaxName="*** --- EAX "+Ogre::StringConverter::toString(version) + ".0 Detected";
 				Ogre::LogManager::getSingleton().logMessage(eaxName);
 				break;
 			}
@@ -2557,9 +2555,9 @@ namespace OgreOggSound
 			{
 				switch (error)
 				{
-					case AL_INVALID_VALUE:		{ LogManager::getSingleton().logMessage("Invalid Value when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 		break;
-					case AL_INVALID_OPERATION:	{ LogManager::getSingleton().logMessage("Invalid Operation when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 	break;
-					case AL_OUT_OF_MEMORY:		{ LogManager::getSingleton().logMessage("Out of memory when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 		break;
+					case AL_INVALID_VALUE:		{ Ogre::LogManager::getSingleton().logMessage("Invalid Value when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 		break;
+					case AL_INVALID_OPERATION:	{ Ogre::LogManager::getSingleton().logMessage("Invalid Operation when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 	break;
+					case AL_OUT_OF_MEMORY:		{ Ogre::LogManager::getSingleton().logMessage("Out of memory when attempting to create more OpenAL sources", Ogre::LML_NORMAL);} 		break;
 				}
 
 				break;
@@ -2639,7 +2637,7 @@ namespace OgreOggSound
 #endif
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	sharedAudioBuffer* OgreOggSoundManager::_getSharedBuffer(const String& sName)
+	sharedAudioBuffer* OgreOggSoundManager::_getSharedBuffer(const Ogre::String& sName)
 	{
 		if ( sName.empty() ) return AL_NONE;
 
@@ -2676,20 +2674,20 @@ namespace OgreOggSound
 			}
 			else
 			{
-				OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND, "Unable to find Ogre::ResourceGroupManager", "OgreOggSoundManager::createSound()");
+				OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Unable to find Ogre::ResourceGroupManager", "OgreOggSoundManager::createSound()");
 				result.reset();
 			}
 		}
 		catch (Ogre::Exception& e)
 		{
-			OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND, e.getFullDescription(), "OgreOggSoundManager::_createSoundImpl()");
+			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, e.getFullDescription(), "OgreOggSoundManager::_createSoundImpl()");
 			result.reset();
 		}
 
 		return result;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::_releaseSharedBuffer(const String& sName, ALuint& buffer)
+	bool OgreOggSoundManager::_releaseSharedBuffer(const Ogre::String& sName, ALuint& buffer)
 	{
 		if ( sName.empty() ) return false;
 
@@ -2718,7 +2716,7 @@ namespace OgreOggSound
 		return false;
 	}	
 	/*/////////////////////////////////////////////////////////////////*/
-	bool OgreOggSoundManager::_registerSharedBuffer(const String& sName, ALuint& buffer, OgreOggISound* parent)
+	bool OgreOggSoundManager::_registerSharedBuffer(const Ogre::String& sName, ALuint& buffer, OgreOggISound* parent)
 	{
 		if ( sName.empty() ) return false;
 

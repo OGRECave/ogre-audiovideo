@@ -30,59 +30,59 @@
 
 #include "OgreOggSoundPlugin.h"
 
-using namespace Ogre;
-using namespace OgreOggSound;
-
-const String sPluginName = "OgreOggSound";
-
-//---------------------------------------------------------------------
-OgreOggSoundPlugin::OgreOggSoundPlugin() : 
- mOgreOggSoundFactory(0)
-,mOgreOggSoundManager(0)
+namespace OgreOggSound
 {
+	const Ogre::String sPluginName = "OgreOggSound";
 
-}
-//---------------------------------------------------------------------
-const String& OgreOggSoundPlugin::getName() const
-{
-	return sPluginName;
-}
-//---------------------------------------------------------------------
-void OgreOggSoundPlugin::install()
-{
-	if ( mOgreOggSoundFactory ) return;
+	//---------------------------------------------------------------------
+	OgreOggSoundPlugin::OgreOggSoundPlugin() :
+	 mOgreOggSoundFactory(0)
+	,mOgreOggSoundManager(0)
+	{
 
-	// Create new factory
-	mOgreOggSoundFactory = OGRE_NEW_T(OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL)();
+	}
+	//---------------------------------------------------------------------
+	const Ogre::String& OgreOggSoundPlugin::getName() const
+	{
+		return sPluginName;
+	}
+	//---------------------------------------------------------------------
+	void OgreOggSoundPlugin::install()
+	{
+		if ( mOgreOggSoundFactory ) return;
 
-	// Register
-	Root::getSingleton().addMovableObjectFactory(mOgreOggSoundFactory, true);
-}
-//---------------------------------------------------------------------
-void OgreOggSoundPlugin::initialise()
-{
-	if ( mOgreOggSoundManager ) return;
+		// Create new factory
+		mOgreOggSoundFactory = OGRE_NEW_T(OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL)();
 
-	//initialise OgreOggSoundManager here
-	mOgreOggSoundManager = OGRE_NEW_T(OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL)();
-}
-//---------------------------------------------------------------------
-void OgreOggSoundPlugin::shutdown()
-{
-	if ( !mOgreOggSoundManager ) return;
+		// Register
+		Ogre::Root::getSingleton().addMovableObjectFactory(mOgreOggSoundFactory, true);
+	}
+	//---------------------------------------------------------------------
+	void OgreOggSoundPlugin::initialise()
+	{
+		if ( mOgreOggSoundManager ) return;
 
-	// shutdown OgreOggSoundManager here
-	OGRE_DELETE_T(mOgreOggSoundManager, OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL);
-	mOgreOggSoundManager = 0;
-}
-//---------------------------------------------------------------------
-void OgreOggSoundPlugin::uninstall()
-{
-	if ( !mOgreOggSoundFactory ) return;
+		//initialise OgreOggSoundManager here
+		mOgreOggSoundManager = OGRE_NEW_T(OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL)();
+	}
+	//---------------------------------------------------------------------
+	void OgreOggSoundPlugin::shutdown()
+	{
+		if ( !mOgreOggSoundManager ) return;
 
-	// unregister
-	Root::getSingleton().removeMovableObjectFactory(mOgreOggSoundFactory);
+		// shutdown OgreOggSoundManager here
+		OGRE_DELETE_T(mOgreOggSoundManager, OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL);
+		mOgreOggSoundManager = 0;
+	}
+	//---------------------------------------------------------------------
+	void OgreOggSoundPlugin::uninstall()
+	{
+		if ( !mOgreOggSoundFactory ) return;
 
-	OGRE_DELETE_T(mOgreOggSoundFactory, OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL);
-	mOgreOggSoundFactory = 0;
+		// unregister
+		Ogre::Root::getSingleton().removeMovableObjectFactory(mOgreOggSoundFactory);
+
+		OGRE_DELETE_T(mOgreOggSoundFactory, OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL);
+		mOgreOggSoundFactory = 0;
+	}
 }

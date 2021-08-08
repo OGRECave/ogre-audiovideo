@@ -33,102 +33,103 @@
 #include "OgreOggSound.h"
 #include "OgreOggSoundFactory.h"
 
-using namespace Ogre;
-using namespace OgreOggSound;
+namespace OgreOggSound
+{
+	Ogre::String OgreOggSoundFactory::FACTORY_TYPE_NAME = "OgreOggISound";
 
-String OgreOggSoundFactory::FACTORY_TYPE_NAME = "OgreOggISound";
-//-----------------------------------------------------------------------
-const String& OgreOggSoundFactory::getType(void) const
-{
-	return FACTORY_TYPE_NAME;
-}
-//-----------------------------------------------------------------------
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR == 0
-MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, ObjectMemoryManager *objectMemoryManager, const NameValuePairList* params)
-#elif OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
-MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, ObjectMemoryManager *objectMemoryManager, SceneManager* manager, const NameValuePairList* params)
-#else
-MovableObject* OgreOggSoundFactory::createInstanceImpl(const String& name, const NameValuePairList* params)
-#endif
-{
-	String fileName;
-	#if OGRE_VERSION_MAJOR == 2
-	String reName = BLANKSTRING;
-	#else
-	String reName = name;
-	#endif
-	
-	if (params != 0)
+	//-----------------------------------------------------------------------
+	const Ogre::String& OgreOggSoundFactory::getType(void) const
 	{
-		bool loop = false;
-		bool stream = false;
-		bool preBuffer = false;
-		bool immediate = false;
-		SceneManager* scnMgr = 0;
-
-		NameValuePairList::const_iterator fileNameIterator = params->find("fileName");
-		if (fileNameIterator != params->end())
-		{
-			// Get filename
-			fileName = fileNameIterator->second;
-		}
-
-		NameValuePairList::const_iterator loopIterator = params->find("loop");
-		if (loopIterator != params->end())
-		{
-			// Get loop setting
-			loop = StringUtil::match(loopIterator->second,"true",false);
-		}
-
-		NameValuePairList::const_iterator streamIterator = params->find("stream");
-		if (streamIterator != params->end())
-		{
-			// Get stream flag
-			stream = StringUtil::match(streamIterator->second,"true",false);
-		}
-
-		NameValuePairList::const_iterator preBufferIterator = params->find("preBuffer");
-		if (preBufferIterator != params->end())
-		{
-			// Get prebuffer flag
-			preBuffer = StringUtil::match(preBufferIterator->second,"true",false);
-		}
-
-		NameValuePairList::const_iterator immediateIterator = params->find("immediate");
-		if (immediateIterator != params->end())
-		{
-			// Get prebuffer flag
-			immediate = StringUtil::match(immediateIterator->second,"true",false);
-		}
-
-		NameValuePairList::const_iterator sManIterator = params->find("sceneManagerName");
-		if (sManIterator != params->end())
-		{
-			// Get SceneManager name
-			scnMgr = Ogre::Root::getSingletonPtr()->getSceneManager(sManIterator->second);
-		}
-
-		NameValuePairList::const_iterator sNameIterator = params->find("name");
-		if (sNameIterator != params->end())
-		{
-			// Get sound name
-			reName = sNameIterator->second;
-		}
-		
-		// when no caption is set
-		if ( !scnMgr || reName == "" || fileName == "" )
-		{
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,
-				"'name & fileName & sceneManagerName' parameters required when constructing an OgreOggISound.",
-				"OgreOggSoundFactory::createInstance");
-		}
-
-		#if OGRE_VERSION_MAJOR == 2
-		return OgreOggSoundManager::getSingletonPtr()->_createSoundImpl(scnMgr, reName, id, fileName, stream, loop, preBuffer, immediate);
-		#else
-		return OgreOggSoundManager::getSingletonPtr()->_createSoundImpl(scnMgr, reName, fileName, stream, loop, preBuffer, immediate);
-		#endif
+		return FACTORY_TYPE_NAME;
 	}
+	//-----------------------------------------------------------------------
+	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR == 0
+	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, const Ogre::NameValuePairList* params)
+	#elif OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, Ogre::SceneManager* manager, const Ogre::NameValuePairList* params)
+	#else
+	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params)
+	#endif
+	{
+		Ogre::String fileName;
+		#if OGRE_VERSION_MAJOR == 2
+		Ogre::String reName = BLANKSTRING;
+		#else
+		Ogre::String reName = name;
+		#endif
 
-	return 0;
+		if (params != 0)
+		{
+			bool loop = false;
+			bool stream = false;
+			bool preBuffer = false;
+			bool immediate = false;
+			Ogre::SceneManager* scnMgr = 0;
+
+			Ogre::NameValuePairList::const_iterator fileNameIterator = params->find("fileName");
+			if (fileNameIterator != params->end())
+			{
+				// Get filename
+				fileName = fileNameIterator->second;
+			}
+
+			Ogre::NameValuePairList::const_iterator loopIterator = params->find("loop");
+			if (loopIterator != params->end())
+			{
+				// Get loop setting
+				loop = Ogre::StringUtil::match(loopIterator->second,"true",false);
+			}
+
+			Ogre::NameValuePairList::const_iterator streamIterator = params->find("stream");
+			if (streamIterator != params->end())
+			{
+				// Get stream flag
+				stream = Ogre::StringUtil::match(streamIterator->second,"true",false);
+			}
+
+			Ogre::NameValuePairList::const_iterator preBufferIterator = params->find("preBuffer");
+			if (preBufferIterator != params->end())
+			{
+				// Get prebuffer flag
+				preBuffer = Ogre::StringUtil::match(preBufferIterator->second,"true",false);
+			}
+
+			Ogre::NameValuePairList::const_iterator immediateIterator = params->find("immediate");
+			if (immediateIterator != params->end())
+			{
+				// Get prebuffer flag
+				immediate = Ogre::StringUtil::match(immediateIterator->second,"true",false);
+			}
+
+			Ogre::NameValuePairList::const_iterator sManIterator = params->find("sceneManagerName");
+			if (sManIterator != params->end())
+			{
+				// Get SceneManager name
+				scnMgr = Ogre::Root::getSingletonPtr()->getSceneManager(sManIterator->second);
+			}
+
+			Ogre::NameValuePairList::const_iterator sNameIterator = params->find("name");
+			if (sNameIterator != params->end())
+			{
+				// Get sound name
+				reName = sNameIterator->second;
+			}
+
+			// when no caption is set
+			if ( !scnMgr || reName == "" || fileName == "" )
+			{
+				OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,
+					"'name & fileName & sceneManagerName' parameters required when constructing an OgreOggISound.",
+					"OgreOggSoundFactory::createInstance");
+			}
+
+			#if OGRE_VERSION_MAJOR == 2
+			return OgreOggSoundManager::getSingletonPtr()->_createSoundImpl(scnMgr, reName, id, fileName, stream, loop, preBuffer, immediate);
+			#else
+			return OgreOggSoundManager::getSingletonPtr()->_createSoundImpl(scnMgr, reName, fileName, stream, loop, preBuffer, immediate);
+			#endif
+		}
+
+		return 0;
+	}
 }
