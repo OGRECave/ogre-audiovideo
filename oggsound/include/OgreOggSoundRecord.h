@@ -1,14 +1,12 @@
 /**
-* @file OgreOggSoundRecord.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE. 
 *
-* @section DESCRIPTION
-* 
-* Implements methods for recording audio 
+* DESCRIPTION: Implements methods for recording audio
 */
 
 #pragma once
@@ -110,8 +106,7 @@ namespace OgreOggSound
 		void _updateRecording();
 		/** Initialises a capture device ready to record audio data
 		@remarks
-		Gets a list of capture devices, initialises one, and opens output file
-		for writing to.
+		Gets a list of capture devices, initialises one, and opens output file for writing to.
 		*/
 		bool _openDevice();
 

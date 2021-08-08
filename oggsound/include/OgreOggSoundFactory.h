@@ -1,14 +1,12 @@
 /**
-* @file OgreOggSoundFactory.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE. 	 
 *
-* @section DESCRIPTION
-* 
-* Factory manager for creation of sound objects
+* DESCRIPTION: Factory manager for creation of sound objects
 */
 
 #ifndef __OGREOGGSOUNDFactory_H__
