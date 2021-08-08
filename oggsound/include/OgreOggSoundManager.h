@@ -37,12 +37,11 @@
 #include "LocklessQueue.h"
 
 #include <map>
-#include <string>
 
 namespace OgreOggSound
 {
-	typedef std::map<std::string, OgreOggISound*> SoundMap;
-	typedef std::map<std::string, ALuint> EffectList;
+	typedef std::map<Ogre::String, OgreOggISound*> SoundMap;
+	typedef std::map<Ogre::String, ALuint> EffectList;
 	typedef std::map<ALenum, bool> FeatureList;
 	typedef std::list<OgreOggISound*> ActiveList;
 	typedef std::deque<ALuint> SourceList;
@@ -183,14 +182,14 @@ namespace OgreOggSound
 				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.
 				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
-		OgreOggISound* createSound(const std::string& name,const std::string& file, bool stream = false, bool loop = false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
+		OgreOggISound* createSound(const Ogre::String& name,const Ogre::String& file, bool stream = false, bool loop = false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
 		/** Gets a named sound.
 		@remarks
 			Returns a named sound object if defined, NULL otherwise.
 			@param name 
 				Sound name.
 		 */
-		OgreOggISound *getSound(const std::string& name);
+		OgreOggISound *getSound(const Ogre::String& name);
 		/** Gets list of created sounds.
 		@remarks
 			Returns a vector of sound name strings.
@@ -202,7 +201,7 @@ namespace OgreOggSound
 			@param name 
 				Sound name.
 		 */
-		bool hasSound(const std::string& name);
+		bool hasSound(const Ogre::String& name);
 		/** Sets the pitch of all sounds.
 		@remarks
 			Sets the pitch modifier applied to all sounds.
@@ -244,7 +243,7 @@ namespace OgreOggSound
 			@param name
 				Sound name to destroy.
 		 */
-		void destroySound(const std::string& name="");
+		void destroySound(const Ogre::String& name="");
 		/** Destroys a single sound.
 		@remarks
 			Destroys a single sound object.
@@ -434,7 +433,7 @@ namespace OgreOggSound
 			@param lfGain
 				desired gain for filtered low frequencies (only affects highpass and bandpass filters). Range: [0.0, 1.0]
 		 */
-		bool createEFXFilter(const std::string& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0, ALfloat lfGain=1.0);
+		bool createEFXFilter(const Ogre::String& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0, ALfloat lfGain=1.0);
 		/** Creates a specified EFX effect
 		@remarks
 			Creates a specified EFX effect if hardware supports it.
@@ -448,9 +447,9 @@ namespace OgreOggSound
 				legacy structure describing a preset reverb effect. (See efx-presets.h)
 		 */
 #	if HAVE_EFX == 1
-		bool createEFXEffect(const std::string& eName, ALint type, EAXREVERBPROPERTIES* props=0);
+		bool createEFXEffect(const Ogre::String& eName, ALint type, EAXREVERBPROPERTIES* props=0);
 #	elif HAVE_EFX == 2
-		bool createEFXEffect(const std::string& eName, ALint type, EFXEAXREVERBPROPERTIES* props=0);
+		bool createEFXEffect(const Ogre::String& eName, ALint type, EFXEAXREVERBPROPERTIES* props=0);
 #	endif
 		/** Sets extended properties on a specified sounds source
 		@remarks
@@ -464,7 +463,7 @@ namespace OgreOggSound
 			@param coneOuterHF 
 				cone outer gain factor for High frequencies.
 		 */
-		bool setEFXSoundProperties(const std::string& sName, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
+		bool setEFXSoundProperties(const Ogre::String& sName, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Sets extended properties on a specified sounds source
 		@remarks
 			Tries to set EFX extended source properties.
@@ -491,7 +490,7 @@ namespace OgreOggSound
 			@param param 
 				float value to set.
 		 */
-		bool setEFXEffectParameter(const std::string& eName, ALint effectType, ALenum attrib, ALfloat param);
+		bool setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALfloat param);
 		/** Sets a specified paremeter on an effect
 		@remarks
 			Tries to set a parameter value on a specified effect.
@@ -505,7 +504,7 @@ namespace OgreOggSound
 			@param params 
 				vector pointer of float values to set.
 		 */
-		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALfloat* params=0);
+		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALfloat* params=0);
 		/** Sets a specified paremeter on an effect
 		@remarks
 			Tries to set a parameter value on a specified effect.
@@ -519,7 +518,7 @@ namespace OgreOggSound
 			@param param 
 				integer value to set.
 		 */
-		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALint param);
+		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALint param);
 		/** Sets a specified paremeter on an effect
 		@remarks
 			Tries to set a parameter value on a specified effect.
@@ -533,7 +532,7 @@ namespace OgreOggSound
 			@param params 
 				vector pointer of integer values to set.
 		 */
-		bool setEFXEffectParameter(const std::string& eName, ALint type, ALenum attrib, ALint* params=0);
+		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALint* params=0);
 		/** Gets the maximum number of Auxiliary Effect Slots detected for the OpenAL device on initialization
 		@remarks
 			Returns how many simultaneous effects can be applied at the same time to the Output Mix.
@@ -566,7 +565,7 @@ namespace OgreOggSound
 			@param filter 
 				name of filter as defined when created
 		 */
-		bool attachEffectToSound(const std::string& sName, ALuint slot, const Ogre::String& effect="", const Ogre::String& filter="");
+		bool attachEffectToSound(const Ogre::String& sName, ALuint slot, const Ogre::String& effect="", const Ogre::String& filter="");
 		/** Attaches a filter to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
@@ -575,7 +574,7 @@ namespace OgreOggSound
 			@param filter 
 				name of filter as defined when created
 		 */
-		bool attachFilterToSound(const std::string& sName, const Ogre::String& filter="");
+		bool attachFilterToSound(const Ogre::String& sName, const Ogre::String& filter="");
 		/** Detaches all effects from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
@@ -584,14 +583,14 @@ namespace OgreOggSound
 			@param slotID 
 				slot ID
 		 */
-		bool detachEffectFromSound(const std::string& sName, ALuint slotID);
+		bool detachEffectFromSound(const Ogre::String& sName, ALuint slotID);
 		/** Detaches all filters from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sName 
 				name of sound
 		 */
-		bool detachFilterFromSound(const std::string& sName);
+		bool detachFilterFromSound(const Ogre::String& sName);
 		/** Attaches an effect to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
@@ -638,15 +637,15 @@ namespace OgreOggSound
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		/** Creates recording class to manage device recording
+		 */
 		OgreOggSoundRecord* createRecorder();
-		/** Gets recording device
+		/** Gets recording class created to manage device recording
 		 */
 		OgreOggSoundRecord* getRecorder() { return mRecorder; }
 		/** Returns whether a capture device is available
 		 */
 		bool isRecordingAvailable() const;
-		/** Creates a recordable object
-		 */
 #endif
 
 #if OGGSOUND_THREADED
@@ -758,11 +757,11 @@ namespace OgreOggSound
 		
 		OgreOggISound* _createSoundImpl(
 			Ogre::SceneManager* scnMgr,
-			const std::string& name,
+			const Ogre::String& name,
 			#if OGRE_VERSION_MAJOR == 2
 			Ogre::IdType id,
 			#endif
-			const std::string& file,
+			const Ogre::String& file,
 			bool stream    = false,
 			bool loop      = false,
 			bool preBuffer = false,
@@ -861,12 +860,12 @@ namespace OgreOggSound
 		@param fName 
 			name of filter as defined when created.
 		 */
-		ALuint _getEFXFilter(const std::string& fName);
+		ALuint _getEFXFilter(const Ogre::String& fName);
 		/** Gets a specified EFX Effect
 		@param eName 
 			name of effect as defined when created.
 		 */
-		ALuint _getEFXEffect(const std::string& eName);
+		ALuint _getEFXEffect(const Ogre::String& eName);
 		/** Gets a specified EFX Effect slot
 		@param slotID 
 			index of auxiliary effect slot

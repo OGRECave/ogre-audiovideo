@@ -198,7 +198,7 @@ namespace OgreOggSound
 			}
 			else			
 			{
-				Ogre::LogManager::getSingleton().logMessage("**** OgreOggStreamWavSound::open() ERROR - loop time invalid! ****", Ogre::LML_NORMAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::open() - Loop time invalid!", Ogre::LML_NORMAL);
 				mLoopOffset=0.f;
 			}
 		}
@@ -485,7 +485,7 @@ namespace OgreOggSound
 			// Check valid loop point
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logMessage("**** OgreOggStreamWavSound::setLoopOffset() ERROR - loop time invalid! ****", Ogre::LML_CRITICAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::setLoopOffset() - Loop time invalid!", Ogre::LML_CRITICAL);
 				return;
 			}
 
@@ -626,7 +626,7 @@ namespace OgreOggSound
 			// Any problems?
 			if ( alGetError() ) 
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** Unable to unqueue buffers");
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::_dequeue() - Unable to unqueue buffers");
 			}
 		}
 	}
@@ -660,7 +660,7 @@ namespace OgreOggSound
 		alSourcePlay(mSource);
 		if ( alGetError() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("Unable to play sound");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::_playImpl() - Unable to play sound");
 			return;
 		}
 

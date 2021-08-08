@@ -33,27 +33,27 @@
 #include "OgreOggSound.h"
 #include "OgreOggSoundPlugin.h"
 
-using namespace Ogre;
-using namespace OgreOggSound;
-
-OgreOggSoundPlugin* mOgreOggSoundPlugin;
-
-//----------------------------------------------------------------------------------
-// register SecureArchive with Archive Manager
-//----------------------------------------------------------------------------------
-extern "C" void _OGGSOUND_EXPORT dllStartPlugin( void )
+namespace OgreOggSound
 {
-	// Create new plugin
-	mOgreOggSoundPlugin = OGRE_NEW_T(OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL)();
+	OgreOggSoundPlugin* mOgreOggSoundPlugin;
 
-	// Register
-	Root::getSingleton().installPlugin(mOgreOggSoundPlugin);
-}
+	//----------------------------------------------------------------------------------
+	// register SecureArchive with Archive Manager
+	//----------------------------------------------------------------------------------
+	extern "C" void _OGGSOUND_EXPORT dllStartPlugin( void )
+	{
+		// Create new plugin
+		mOgreOggSoundPlugin = OGRE_NEW_T(OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL)();
 
-extern "C" void _OGGSOUND_EXPORT dllStopPlugin( void )
-{
-	Root::getSingleton().uninstallPlugin(mOgreOggSoundPlugin);
+		// Register
+		Ogre::Root::getSingleton().installPlugin(mOgreOggSoundPlugin);
+	}
 
-	OGRE_DELETE_T(mOgreOggSoundPlugin, OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL);
-	mOgreOggSoundPlugin = 0;
+	extern "C" void _OGGSOUND_EXPORT dllStopPlugin( void )
+	{
+		Ogre::Root::getSingleton().uninstallPlugin(mOgreOggSoundPlugin);
+
+		OGRE_DELETE_T(mOgreOggSoundPlugin, OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL);
+		mOgreOggSoundPlugin = 0;
+	}
 }

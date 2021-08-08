@@ -35,7 +35,6 @@
 
 namespace OgreOggSound
 {
-
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggStaticSound::OgreOggStaticSound(
 		const Ogre::String& name, Ogre::SceneManager* scnMgr
@@ -244,7 +243,7 @@ namespace OgreOggSound
 			break;
 		default:
 			// Couldn't determine buffer format so log the error and default to mono
-			Ogre::LogManager::getSingleton().logMessage("!!WARNING!! Could not determine buffer format!  Defaulting to MONO");
+			Ogre::LogManager::getSingleton().logMessage("!!WARNING!! Could not determine buffer format! Defaulting to MONO");
 
 			mFormat = AL_FORMAT_MONO16;
 			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))

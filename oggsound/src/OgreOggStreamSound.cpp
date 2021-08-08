@@ -108,7 +108,7 @@ namespace OgreOggSound
 		{
 			if ( mLoopOffset>=mPlayTime )
 			{
-				Ogre::LogManager::getSingleton().logMessage("**** OgreOggStreamSound::open() ERROR - loop time invalid! ****", Ogre::LML_CRITICAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::open() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}
@@ -140,7 +140,7 @@ namespace OgreOggSound
 		if ( !mAudioStream )
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logMessage("**** OgreOggStreamSound::setLoopOffset() ERROR - loop time invalid! ****", Ogre::LML_CRITICAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::setLoopOffset() - Loop time invalid!");
 				// Invalid - cancel loop point
 				mLoopOffset=0.f;
 			}
@@ -223,7 +223,7 @@ namespace OgreOggSound
 			break;
 		default:
 			// Couldn't determine buffer format so log the error and default to mono
-			Ogre::LogManager::getSingleton().logMessage("!!WARNING!! Could not determine buffer format!  Defaulting to MONO");
+			Ogre::LogManager::getSingleton().logMessage("!!WARNING!! Could not determine buffer format! Defaulting to MONO");
 
 			mFormat = AL_FORMAT_MONO16;
 			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
@@ -375,7 +375,7 @@ namespace OgreOggSound
 				{
 					if ( ov_time_seek(&mOggStream, 0 + mLoopOffset)!= 0 )
 					{
-						Ogre::LogManager::getSingleton().logMessage("***--- OgreOggStream::_stream() - ERROR looping stream, ogg file NOT seekable!");
+						Ogre::LogManager::getSingleton().logError("*** OgreOggStream::_stream() - Looping stream, ogg file NOT seekable!");
 						break;
 					}
 				}
@@ -443,7 +443,8 @@ namespace OgreOggSound
 			alSourceUnqueueBuffers(mSource, 1, &buffer);
 
 			// Any problems?
-			if ( alGetError()!=AL_NO_ERROR ) Ogre::LogManager::getSingleton().logMessage("*** Unable to unqueue buffers");
+			if ( alGetError()!=AL_NO_ERROR )
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
 		}
 	}		 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -539,7 +540,7 @@ namespace OgreOggSound
 		alSourcePlay(mSource);
 		if ( alGetError() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("Unable to play sound");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::_playImpl() - Unable to play sound");
 			return;
 		}
 		// Set play flag

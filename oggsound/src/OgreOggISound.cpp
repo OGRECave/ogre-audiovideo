@@ -607,7 +607,7 @@ namespace OgreOggSound
 		alSourcef(mSource, AL_SEC_OFFSET, mPlayPos);
 		if (alGetError())
 		{
-			Ogre::LogManager::getSingleton().logMessage("***--- OgreOggISound::_recoverPlayPosition() - Unable to set play position", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("*** OgreOggISound::_recoverPlayPosition() - Unable to set play position");
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -631,7 +631,7 @@ namespace OgreOggSound
 			alSourcef(mSource, AL_SEC_OFFSET, seconds);
 			if (alGetError())
 			{
-				Ogre::LogManager::getSingleton().logMessage("***--- OgreOggISound::setPlayPosition() - Error setting play position", Ogre::LML_CRITICAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggISound::setPlayPosition() - Error setting play position");
 			}
 			// Reset flag
 			mPlayPosChanged = false;
@@ -656,7 +656,7 @@ namespace OgreOggSound
 		alGetSourcef(mSource, AL_SEC_OFFSET, &offset);
 		if (alGetError())
 		{
-			Ogre::LogManager::getSingleton().logMessage("***--- OgreOggISound::setPlayPosition() - Error getting play position", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("*** OgreOggISound::setPlayPosition() - Error getting play position");
 			return -1.f;
 		}
 			

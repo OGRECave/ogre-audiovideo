@@ -42,9 +42,7 @@ namespace OgreOggSound
 	//! Plugin instance for the MovableText 
 	class OgreOggSoundPlugin : public Ogre::Plugin
 	{
-
 	public:
-
 		OgreOggSoundPlugin();
 
         /** Get the name of the plugin.

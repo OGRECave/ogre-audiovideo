@@ -68,9 +68,10 @@ namespace OgreOggSound
 	//! Captures audio data
 	/**
 	@remarks
-		This class can be used to capture audio data to an external file, WAV file ONLY.
-		Use control panel --> Sound and Audio devices applet to select input type and volume.
-		NOTE:- default file properties are - Frequency: 44.1Khz, Format: 16-bit stereo, Buffer Size: 8820 bytes.
+		This class can be used to capture audio data to an external file, WAV file ONLY.\n
+		Use control panel --> Sound and Audio devices applet to select input type and volume.\n
+		This class shoud be instantiated by using the OgreOggSound::OgreOggSoundManager::createRecorder() function.\n
+		NOTE: Default file properties are - Frequency: 44.1Khz, Format: 16-bit stereo, Buffer Size: 8820 bytes.
 	*/
 	class _OGGSOUND_EXPORT OgreOggSoundRecord
 	{
