@@ -1,9 +1,7 @@
 /**
-* @file LocklessQueue.h
 * @author  Ian Stangoe
-* @version 1.14
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
@@ -23,7 +21,7 @@
 * You should have received a copy of the GNU Lesser General Public License	 
 * along with OgreOggSound.  If not, see <http://www.gnu.org/licenses/>.	 
 *
-* @section DESCRIPTION
+* DESCRIPTION:
 * 
 * Template class for a lockless queue system to pass items from one thread to another.
 * Only 1 thread can push and 1 thread can pop it. 

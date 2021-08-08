@@ -1,14 +1,12 @@
 /**
-* @file OgreOggSoundCallback.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.  
 *
-* @section DESCRIPTION
-* 
-* Callbacks for detecting various states
+* DESCRIPTION: Callbacks for detecting various states
 */
 
 #ifndef _OGREOGGSOUND_CALLBACK_H_
@@ -45,8 +41,8 @@ namespace OgreOggSound
 	//! Callbacks for sound states.
 	/** Template class for implementing callbacks which can be attached to sounds.
 	@remarks
-		Allows member functions to be used as callbacks. Amended from OgreAL, 
-		originally written by CaseyB.
+		Allows member functions to be used as callbacks.
+		Amended from OgreAL, originally written by CaseyB.
 	**/
 	class _OGGSOUND_EXPORT OOSCallback
 	{

@@ -1,14 +1,12 @@
 /**
-* @file OgreOggSoundListener.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE. 
 *
-* @section DESCRIPTION
-* 
-* Listener object (The users 'ears')
+* DESCRIPTION: Listener object (The users 'ears')
 */
 
 #pragma once
@@ -125,7 +121,7 @@ namespace OgreOggSound
 		Ogre::Vector3 getOrientation() const;
 		/** Sets sounds velocity.
 		@param
-			vel 3D x/y/z velocity
+			velx/vely/velz componentes of 3D vector velocity
 		 */
 		void setVelocity(float velx, float vely, float velz);
 		/** Sets sounds velocity.

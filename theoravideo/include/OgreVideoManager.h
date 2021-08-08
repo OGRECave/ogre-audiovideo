@@ -40,7 +40,9 @@ namespace Ogre
 				All setting should have been set before calling this.
 				Refer to base class ( ExternalTextureSource ) for details
 			@param material_name
-				Material  you are attaching a movie to.
+				Material you are attaching a movie to.
+			@param group_name
+				Resource group where the texture is registered
 		*/
 		void createDefinedTexture(const String& material_name,
 								  const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -51,7 +53,11 @@ namespace Ogre
 			@param video_file_name
 				Video input file name.
 			@param material_name
-				Material  you are attaching a movie to.
+				Material you are attaching a movie to.
+			@param video_group_name
+				Resource group where the video file is registered
+			@param group_name
+				Resource group where the texture is registered
 		*/
 		TheoraVideoClip* createVideoTexture(const String& video_file_name, const String& material_name,
 											const String& video_group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -63,9 +69,11 @@ namespace Ogre
 				you should use destroyVideoClip()
 			@param material_name
 				Material Name you are looking to remove a video clip from
+			@param group_name
+				Resource group where the texture is registered
 		*/
 		void destroyAdvancedTexture(const String& material_name,
-									const String& groupName = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+									const String& group_name = ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 		
 		/// destroy all video textures
 		void destroyAllVideoTextures();

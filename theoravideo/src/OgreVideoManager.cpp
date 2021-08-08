@@ -141,7 +141,7 @@ namespace Ogre
 		return clip;
 	}
 
-	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& groupName)
+	void OgreVideoManager::destroyAdvancedTexture(const String& material_name,const String& group_name)
 	{
 		logMessage("Destroying ogg_video texture on material: "+material_name);
 		

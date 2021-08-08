@@ -1,14 +1,12 @@
 /**
-* @file OgreOggStaticWavSound.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.  
 *
-* @section DESCRIPTION
-* 
-* Implements methods for creating/using a static wav sound
+* DESCRIPTION: Implements methods for creating/using a static wav sound
 */
 
 #pragma once
@@ -80,6 +76,12 @@ namespace OgreOggSound
 
 		/**
 		 * Constructor
+		@remarks
+			Creates a static sound object for playing audio from a WAV file.
+			@param name
+				Unique name for sound.
+			@param scnMgr
+				SceneManager which created this sound (if the sound was created through the plugin method createMovableobject()).
 		 */
 		OgreOggStaticWavSound(
 			const Ogre::String& name, Ogre::SceneManager* scnMgr
@@ -98,15 +100,17 @@ namespace OgreOggSound
 		void release();	
 		/** Opens audio file.
 		@remarks
-			Opens a specified file and checks validity. Reads first chunks
-			of audio data into buffers.
-			@param
-				file path string
+			Opens a specified file and checks validity.
+			Reads first chunks of audio data into buffers.
+			@param fileStream
+				file stream pointer
 		 */
 		void _openImpl(Ogre::DataStreamPtr& fileStream);
 		/** Opens audio file.
 		@remarks
 			Uses a shared buffer.
+			@param fName
+				audio file name
 			@param buffer
 				shared buffer reference
 		 */

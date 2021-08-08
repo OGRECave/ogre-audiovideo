@@ -1,14 +1,12 @@
 /**
-* @file OgreOggSoundManager.h
 * @author  Ian Stangoe
-* @version v1.26
 *
-* @section LICENSE
+* LICENSE:
 * 
 * This source file is part of OgreOggSound, an OpenAL wrapper library for   
 * use with the Ogre Rendering Engine.										 
 *                                                                           
-* Copyright (c) 2013 Ian Stangoe
+* Copyright (c) 2017 Ian Stangoe
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +26,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.  
 *
-* @section DESCRIPTION
-* 
-* Manages the audio library
+* DESCRIPTION: Manages the audio library
 */
 
 #pragma once
@@ -138,8 +134,10 @@ namespace OgreOggSound
 				maximum number of sources to allocate (optional)
 			@param queueListSize
 				Desired size of queue list (optional | Multi-threaded ONLY)
+			@param scnMgr
+				SceneManager to use in order create sounds (If no manager specified, uses the first one)
 		 */
-		bool init(const std::string &deviceName = "", unsigned int maxSources=100, unsigned int queueListSize=100, Ogre::SceneManager* sMan=0);
+		bool init(const std::string &deviceName = "", unsigned int maxSources=100, unsigned int queueListSize=100, Ogre::SceneManager* scnMgr=0);
 		/** Gets the OpenAL device pointer
 		*/
 		const ALCdevice* getOpenalDevice() { return mDevice; }
@@ -172,7 +170,7 @@ namespace OgreOggSound
 			@param name 
 				Unique name of sound
 			@param file 
-				Audio file path string or "BUFFER" for memory buffer sound (@ref OgreBufferStreamSound)
+				Audio file path string or "BUFFER" for memory buffer sound (@ref OgreOggStreamBufferSound)
 			@param stream 
 				Flag indicating if the sound sound be streamed.
 			@param loop 
@@ -181,9 +179,9 @@ namespace OgreOggSound
 				Flag indicating if a source should be attached at creation.
 			@param scnMgr
 				Pointer to SceneManager this sound belongs - 0 defaults to first SceneManager defined.
-			@param immediately
-				Optional flag to indicate creation should occur immediately and not be passed to background thread
-				for queueing. Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
+			@param immediate
+				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.
+				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
 		OgreOggISound* createSound(const std::string& name,const std::string& file, bool stream = false, bool loop = false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
 		/** Gets a named sound.
@@ -311,6 +309,8 @@ namespace OgreOggSound
 				Name of audio file
 			@param buffer
 				OpenAL buffer ID holding audio data
+			@param parent
+				Sound from where to copy the properties: Buffers, PlayTime, Format
 		 */
 		bool _registerSharedBuffer(const Ogre::String& sName, ALuint& buffer, OgreOggISound* parent=0);
 		/** Sets distance model.
@@ -744,13 +744,16 @@ namespace OgreOggSound
 			@param name 
 				Unique name of sound
 			@param file 
-				Audio file path string or "BUFFER" for memory buffer sound (@ref OgreBufferStreamSound)
+				Audio file path string or "BUFFER" for memory buffer sound (@ref OgreOggStreamBufferSound)
 			@param stream 
 				Flag indicating if the sound sound be streamed.
 			@param loop 
 				Flag indicating if the file should loop.
 			@param preBuffer 
 				Flag indicating if a source should be attached at creation.
+			@param immediate
+				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.
+				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
 		
 		OgreOggISound* _createSoundImpl(
