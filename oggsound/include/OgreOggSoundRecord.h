@@ -35,53 +35,61 @@
 
 #include <fstream>
 
+// WAVE Format documentation:
+// http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+
+// Format Codes (only PCM supported)
+#define WAVE_FORMAT_PCM			0x0001	// PCM
+#define WAVE_FORMAT_IEEE_FLOAT	0x0003	// IEEE float
+#define WAVE_FORMAT_ALAW		0x0006	// 8-bit ITU-T G.711 A-law
+#define WAVE_FORMAT_MULAW		0x0007	// 8-bit ITU-T G.711 µ-law
+#define WAVE_FORMAT_EXTENSIBLE	0xFFFE	// Determined by SubFormat
+
 namespace OgreOggSound
 {
-	//! WAVE file format structure
-	struct wFormat
-	{
-		unsigned short 
-			nChannels,
-			wBitsPerSample,
-			nBlockAlign,
-			wFormatTag,
-			cbSize;
-		
-		unsigned int
-			nSamplesPerSec,
-			nAvgBytesPerSec;
-	};
+	// https://en.cppreference.com/w/cpp/language/types
+	// https://en.cppreference.com/w/cpp/types/integer
+	typedef char CHAR;				// 8-bit char
+	typedef unsigned short WORD;	// 16-bit int
+	typedef unsigned int  DWORD;	// 32-bit int
 
 	//! WAVE file header information
 	struct WAVEHEADER
 	{
-		char			szRIFF[4];
-		int				lRIFFSize;
-		char			szWave[4];
-		char			szFmt[4];
-		int				lFmtSize;
-		wFormat			wfex;
-		char			szData[4];
-		int				lDataSize;
+		CHAR	cRIFF[4];	// The 'RIFF' chunk descriptor
+		DWORD	dwRIFFSize;	// RIFF Chunk Size
+		CHAR	cWave[4];	// Type: WAVE
+		CHAR	cFmt[4];	// The 'fmt_' subchunk
+		DWORD	dwFmtSize;	// fmt_ subchunk Size
+
+		//! WAVE file format structure
+		struct wFormat
+		{
+			WORD 	wFormatTag;			// Format category (WAVE_FORMAT_*)
+			WORD 	wChannels;			// Number of channels
+			DWORD 	dwSamplesPerSec;	// Sampling rate
+			DWORD 	dwAvgBytesPerSec;	// For buffer estimation
+			WORD 	wBlockAlign;		// Data block size
+			WORD 	wBitsPerSample; 	// Sample size
+		} wfex;
+
+		CHAR	cData[4];	// The 'data' subchunk
+		DWORD	dwDataSize;	// data subchunk size
 	};
 
 	//! Captures audio data
 	/**
 	@remarks
 		This class can be used to capture audio data to an external file, WAV file ONLY.\n
-		Use control panel --> Sound and Audio devices applet to select input type and volume.\n
-		This class shoud be instantiated by using the OgreOggSound::OgreOggSoundManager::createRecorder() function.\n
-		NOTE: Default file properties are - Frequency: 44.1Khz, Format: 16-bit stereo, Buffer Size: 8820 bytes.
+		Use control panel --> Sound and Audio devices applet to select input type and volume.
+	@par
+		Default file properties are - Frequency: 44.1Khz, Format: 16-bit stereo, Buffer Size: 8820 bytes.
+	@note
+		This class should be instantiated by using the OgreOggSoundManager::createRecorder() function.
 	*/
 	class _OGGSOUND_EXPORT OgreOggSoundRecord
 	{
-	
-	public:
-
-		typedef std::vector<Ogre::String> RecordDeviceList;
-
 	private:
-
 		ALCdevice*			mDevice;
 		ALCcontext*			mContext;
 		ALCdevice*			mCaptureDevice;
@@ -92,7 +100,6 @@ namespace OgreOggSound
 		WAVEHEADER			mWaveHeader;
 		ALint				mDataSize;
 		ALint				mSize;
-		RecordDeviceList	mDeviceList;
 		Ogre::String		mOutputFile;
 		Ogre::String		mDeviceName;
 		ALCuint				mFreq;
@@ -107,23 +114,23 @@ namespace OgreOggSound
 		void _updateRecording();
 		/** Initialises a capture device ready to record audio data
 		@remarks
-		Gets a list of capture devices, initialises one, and opens output file for writing to.
+			Gets a list of capture devices, initialises one, and opens output file for writing to.
 		*/
 		bool _openDevice();
 
 	public:
-
+		/** Creates an instance of the class used to manage sound recording with OpenAL.
+		@note
+			This class is intended to be instanced by calling OgreOggSoundManager::createRecorder().
+		 */
 		OgreOggSoundRecord(ALCdevice& alDevice);
-		/** Gets a list of strings describing the capture devices
-		*/
-		const RecordDeviceList& getCaptureDeviceList();
 		/** Creates a capture object
 		*/
 		bool initCaptureDevice(const Ogre::String& devName="", const Ogre::String& fileName="output.wav", ALCuint freq=44100, ALCenum format=AL_FORMAT_STEREO16, ALsizei bufferSize=8820);
 		/** Starts a recording from a capture device
 		*/
 		void startRecording();
-		/** Returns whether a capture device is available
+		/** Returns whether the ALC_EXT_CAPTURE extension is available for the OpenAL implementation being used
 		*/
 		bool isCaptureAvailable();
 		/** Stops recording from the capture device
@@ -136,6 +143,4 @@ namespace OgreOggSound
 		// Manager friend
 		friend class OgreOggSoundManager;
 	};
-
 }
-
