@@ -45,6 +45,7 @@ namespace OgreOggSound
 	typedef std::map<ALenum, bool> FeatureList;
 	typedef std::list<OgreOggISound*> ActiveList;
 	typedef std::deque<ALuint> SourceList;
+	typedef std::vector<Ogre::String> RecordDeviceList;
 	
 	class OgreOggISound;
 
@@ -116,9 +117,9 @@ namespace OgreOggSound
 		~OgreOggSoundManager();
 		/** Creates a listener object for the system
 		@remarks
-			Only needed when clearScene or similar is used which destroys listener object automatically 
-			without the manager knowing. You can therefore use this function to recreate a listener
-			object for the system.
+			Only needed when SceneManager->clearScene() or similar is used, 
+			which destroys the listener object automatically without the manager knowing. 
+			You can therefore use this function to recreate a listener object for the system.
 		 */
 		bool createListener();
 		/** Initialises the audio device.
@@ -636,7 +637,6 @@ namespace OgreOggSound
 		bool isEffectSupported(ALint effectID);
 #endif
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		/** Creates recording class to manage device recording
 		 */
 		OgreOggSoundRecord* createRecorder();
@@ -646,7 +646,9 @@ namespace OgreOggSound
 		/** Returns whether a capture device is available
 		 */
 		bool isRecordingAvailable() const;
-#endif
+		/** Gets a list of strings with the names of the available capture devices
+		*/
+		const RecordDeviceList& getCaptureDeviceList();
 
 #if OGGSOUND_THREADED
 		OGRE_WQ_MUTEX(mMutex);
@@ -673,7 +675,6 @@ namespace OgreOggSound
 #endif
  
 	private:
-
 		LocklessQueue<OgreOggISound*>* mSoundsToDestroy;
 
 #if OGGSOUND_THREADED
@@ -839,11 +840,16 @@ namespace OgreOggSound
 			Release all sounds and their associated OpenAL objects from the system.
 		 */
 		void _releaseAll();
-		/** Checks and Logs a supported feature list
+		/** Checks and Logs a list of supported features
 		@remarks
 			Queries OpenAL for various supported features and lists them with the LogManager.
 		 */
 		void _checkFeatureSupport();
+		/** Checks and Logs a list of supported extensions
+		@remarks
+			Queries OpenAL for the supported extentions and lists them with the LogManager.
+		 */
+		void _checkExtensionSupport();
 #if HAVE_EFX
 		/** Checks for EFX hardware support
 		 */
@@ -948,7 +954,8 @@ namespace OgreOggSound
 
 		float mGlobalPitch;						// Global pitch modifier
 
-		OgreOggSoundRecord* mRecorder;			// recorder object
+		OgreOggSoundRecord* mRecorder;			// Recorder object
+		RecordDeviceList	mRecordDeviceList;	// List of available capture devices
 
 		//! sorts sound list by distance
 		struct _sortNearToFar;

@@ -61,10 +61,10 @@ namespace OgreOggSound
 		alcGetIntegerv(mCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &mSamplesAvailable);
 
 		// When we have enough data to fill our BUFFERSIZE byte buffer, grab the samples
-		if (mSamplesAvailable > (mBufferSize / mWaveHeader.wfex.nBlockAlign))
+		if (mSamplesAvailable > (mBufferSize / mWaveHeader.wfex.wBlockAlign))
 		{
 			// Consume Samples
-			alcCaptureSamples(mCaptureDevice, mBuffer, mBufferSize / mWaveHeader.wfex.nBlockAlign);
+			alcCaptureSamples(mCaptureDevice, mBuffer, mBufferSize / mWaveHeader.wfex.wBlockAlign);
 
 			// Write the audio data to a file
 			mFile.write(mBuffer, mBufferSize);
@@ -72,23 +72,6 @@ namespace OgreOggSound
 			// Record total amount of data recorded
 			mDataSize += mBufferSize;
 		}
-	}
-
-	/*/////////////////////////////////////////////////////////////////*/
-	const OgreOggSoundRecord::RecordDeviceList& OgreOggSoundRecord::getCaptureDeviceList()
-	{
-		mDeviceList.clear();
-		// Get list of available Capture Devices
-		const ALchar *pDeviceList = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
-		if (pDeviceList)
-		{
-			while (*pDeviceList)
-			{
-				mDeviceList.push_back(Ogre::String(pDeviceList));
-				pDeviceList += strlen(pDeviceList) + 1;
-			}
-		}
-		return mDeviceList;
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -140,20 +123,19 @@ namespace OgreOggSound
 			if ( mFile.is_open() )
 			{
 				// Prepare a WAVE file header for the captured data
-				sprintf(mWaveHeader.szRIFF, "RIFF");
-				mWaveHeader.lRIFFSize = 0;
-				sprintf(mWaveHeader.szWave, "WAVE");
-				sprintf(mWaveHeader.szFmt, "fmt ");
-				mWaveHeader.lFmtSize = sizeof(wFormat);
-				mWaveHeader.wfex.nChannels = mNumChannels;
+				sprintf(mWaveHeader.cRIFF, "RIFF");
+				mWaveHeader.dwRIFFSize = 0;
+				sprintf(mWaveHeader.cWave, "WAVE");
+				sprintf(mWaveHeader.cFmt, "fmt ");
+				mWaveHeader.dwFmtSize = sizeof(mWaveHeader.wfex);
+				mWaveHeader.wfex.wFormatTag = WAVE_FORMAT_PCM;
+				mWaveHeader.wfex.wChannels = mNumChannels;
+				mWaveHeader.wfex.dwSamplesPerSec = mFreq;
 				mWaveHeader.wfex.wBitsPerSample = mBitsPerSample;
-				mWaveHeader.wfex.wFormatTag = 0x0001;
-				mWaveHeader.wfex.nSamplesPerSec = mFreq;
-				mWaveHeader.wfex.nBlockAlign = mWaveHeader.wfex.nChannels * mWaveHeader.wfex.wBitsPerSample / 8;
-				mWaveHeader.wfex.nAvgBytesPerSec = mWaveHeader.wfex.nSamplesPerSec * mWaveHeader.wfex.nBlockAlign;
-				mWaveHeader.wfex.cbSize = 0;
-				sprintf(mWaveHeader.szData, "data");
-				mWaveHeader.lDataSize = 0;
+				mWaveHeader.wfex.wBlockAlign = mWaveHeader.wfex.wChannels * mWaveHeader.wfex.wBitsPerSample / 8;
+				mWaveHeader.wfex.dwAvgBytesPerSec = mWaveHeader.wfex.dwSamplesPerSec * mWaveHeader.wfex.wBlockAlign;
+				sprintf(mWaveHeader.cData, "data");
+				mWaveHeader.dwDataSize = 0;
 
 				mFile.write(reinterpret_cast<char*>(&mWaveHeader), sizeof(WAVEHEADER));
 
@@ -206,27 +188,27 @@ namespace OgreOggSound
 			alcGetIntegerv(mCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &mSamplesAvailable);
 			while (mSamplesAvailable)
 			{
-				if (mSamplesAvailable > (mBufferSize / mWaveHeader.wfex.nBlockAlign))
+				if (mSamplesAvailable > (mBufferSize / mWaveHeader.wfex.wBlockAlign))
 				{
-					alcCaptureSamples(mCaptureDevice, mBuffer, mBufferSize / mWaveHeader.wfex.nBlockAlign);
+					alcCaptureSamples(mCaptureDevice, mBuffer, mBufferSize / mWaveHeader.wfex.wBlockAlign);
 					mFile.write(mBuffer, mBufferSize);
-					mSamplesAvailable -= (mBufferSize / mWaveHeader.wfex.nBlockAlign);
+					mSamplesAvailable -= (mBufferSize / mWaveHeader.wfex.wBlockAlign);
 					mDataSize += mBufferSize;
 				}
 				else
 				{
 					alcCaptureSamples(mCaptureDevice, mBuffer, mSamplesAvailable);
-					mFile.write(mBuffer, mSamplesAvailable * mWaveHeader.wfex.nBlockAlign);
-					mDataSize += mSamplesAvailable * mWaveHeader.wfex.nBlockAlign;
+					mFile.write(mBuffer, mSamplesAvailable * mWaveHeader.wfex.wBlockAlign);
+					mDataSize += mSamplesAvailable * mWaveHeader.wfex.wBlockAlign;
 					mSamplesAvailable = 0;
 				}
 			}
 
 			// Fill in Size information in Wave Header
-			mFile.seekp(4);
+			mFile.seekp(sizeof(mWaveHeader.cRIFF));
 			mSize = mDataSize + sizeof(WAVEHEADER) - 8;
 			mFile.write(reinterpret_cast<char*>(&mSize), 4);
-			mFile.seekp(42);
+			mFile.seekp(sizeof(WAVEHEADER) - 4);
 			mFile.write(reinterpret_cast<char*>(&mDataSize), 4);
 			mFile.close();
 		}

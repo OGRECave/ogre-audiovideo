@@ -36,7 +36,7 @@
 #include <OgreLogManager.h>
 
 /**
- * Specifies whether EFX enhancements are supported
+ * HAVE_EFX: Specifies whether EFX enhancements are supported
  * 0 - EFX not supported
  * 1 - Enable EFX support with Creative OpenAL SDK 1.1
  * 2 - Enable EFX support with OpenAL Soft SDK

@@ -335,6 +335,8 @@ namespace OgreOggSound
 			return false;
 		}
 
+		_checkExtensionSupport();
+
 		_checkFeatureSupport();
 
 		// If no manager specified - grab first one 
@@ -376,23 +378,17 @@ namespace OgreOggSound
 		Ogre::LogManager::getSingleton().logMessage("*** --- Using threads for streaming", Ogre::LML_NORMAL);
 #endif
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		// Recording
 		if (alcIsExtensionPresent(mDevice, "ALC_EXT_CAPTURE") == AL_FALSE)
 			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices NOT detected!", Ogre::LML_NORMAL);
 		else
 		{
 			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices available:", Ogre::LML_NORMAL);
-			OgreOggSoundRecord* r=0;
-			if ( r=createRecorder() )
-			{
-				OgreOggSoundRecord::RecordDeviceList list=r->getCaptureDeviceList();
-				for ( OgreOggSoundRecord::RecordDeviceList::iterator iter=list.begin(); iter!=list.end(); ++iter )
-					Ogre::LogManager::getSingleton().logMessage("*** --- + '" + (*iter) + "'", Ogre::LML_NORMAL);
-				OGRE_DELETE_T(r, OgreOggSoundRecord, Ogre::MEMCATEGORY_GENERAL);
-			}
+
+			for(auto recordDevice : getCaptureDeviceList())
+				Ogre::LogManager::getSingleton().logMessage("*** --- + '" + recordDevice + "'", Ogre::LML_NORMAL);
 		}
-#endif
+
 		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
 		Ogre::LogManager::getSingleton().logMessage("*** ---  OgreOggSound Initialised --- ***", Ogre::LML_NORMAL);
 		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
@@ -1181,7 +1177,6 @@ namespace OgreOggSound
 
 		return false;
 	}	 	
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::isRecordingAvailable() const
@@ -1194,12 +1189,34 @@ namespace OgreOggSound
 	OgreOggSoundRecord* OgreOggSoundManager::createRecorder()
 	{
 		if ( mDevice )
-			return (OGRE_NEW_T(OgreOggSoundRecord, Ogre::MEMCATEGORY_GENERAL)(*mDevice));
+		{
+			mRecorder = OGRE_NEW_T(OgreOggSoundRecord, Ogre::MEMCATEGORY_GENERAL)(*mDevice);
+			return mRecorder;
+		}
 		else
+		{
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createRecorder() - Cowardly refusing to create a Recorder without a recording device!");
 			return 0;
+		}
 	}
 
-#endif																				  	
+	/*/////////////////////////////////////////////////////////////////*/
+	const RecordDeviceList& OgreOggSoundManager::getCaptureDeviceList()
+	{
+		mRecordDeviceList.clear();
+		// Get list of available Capture Devices
+		const ALchar *pDeviceList = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
+		if (pDeviceList)
+		{
+			while (*pDeviceList)
+			{
+				mRecordDeviceList.push_back(Ogre::String(pDeviceList));
+				pDeviceList += strlen(pDeviceList) + 1;
+			}
+		}
+		return mRecordDeviceList;
+	}
+
 #if HAVE_EFX
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::isEffectSupported(ALint effectID)
@@ -1573,6 +1590,8 @@ namespace OgreOggSound
 			if (alGetError() != AL_NO_ERROR)
 			{
 				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unable to set filter type!");
+				// Destroy invalid filter we just created
+				alDeleteFilters( 1, &filter);
 				return false;
 			}
 			else
@@ -1607,6 +1626,9 @@ namespace OgreOggSound
 		else
 		{
 			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Created filter is not valid!");
+			// Destroy invalid filter we just created
+			alDeleteFilters( 1, &filter);
+
 			return false;
 		}
 		return true;
@@ -1640,6 +1662,9 @@ namespace OgreOggSound
 			if (alGetError() != AL_NO_ERROR)
 			{
 				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Effect not supported!");
+				// Destroy invalid effect we just created
+				alDeleteEffects(1, &effect);
+
 				return false;
 			}
 			else
@@ -2458,6 +2483,28 @@ namespace OgreOggSound
 			}
 		}
 #endif
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	void OgreOggSoundManager::_checkExtensionSupport()
+	{
+		const ALCchar* extensionList = alcGetString(mDevice, ALC_EXTENSIONS);
+
+		// Unofficial OpenAL extension repository: https://github.com/openalext/openalext
+		// OpenAL Soft extensions: https://openal-soft.org/openal-extensions/
+
+		// List of extensions in log
+		std::stringstream ss;
+
+		while(*extensionList != 0)
+		{
+			ss << extensionList;
+
+			extensionList += strlen(extensionList) + 1;
+		}
+
+		// Supported Extensions Info
+		Ogre::LogManager::getSingleton().logMessage("*** --- Supported Extensions: " + ss.str());
+
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_enumDevices()
