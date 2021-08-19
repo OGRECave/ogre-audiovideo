@@ -267,7 +267,7 @@ namespace OgreOggSound
 		error = alcGetError(device);
         if (error != ALC_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logMessage("Unable to get OpenAL Major Version number", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Major Version number");
 			return false;
 		}
 		alcCloseDevice(device);
@@ -303,7 +303,7 @@ namespace OgreOggSound
 		mDevice = alcOpenDevice(deviceInList ? deviceName.c_str() : NULL);
 		if (!mDevice)
 		{
-			Ogre::LogManager::getSingletonPtr()->logMessage("OgreOggSoundManager::init() ERROR - Unable to open audio device", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingletonPtr()->logError("OgreOggSoundManager::init() - Unable to open audio device");
 			return false;
 		}
 		
@@ -323,7 +323,7 @@ namespace OgreOggSound
 		mContext = alcCreateContext(mDevice, attribs);
 		if (!mContext)
 		{
-			Ogre::LogManager::getSingletonPtr()->logMessage("OgreOggSoundManager::init() ERROR - Unable to create a context", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingletonPtr()->logError("OgreOggSoundManager::init() - Unable to create a context");
 			return false;
 		}
 
@@ -331,7 +331,7 @@ namespace OgreOggSound
 
 		if (!alcMakeContextCurrent(mContext))
 		{
-			Ogre::LogManager::getSingletonPtr()->logMessage("OgreOggSoundManager::init() ERROR - Unable to set context", Ogre::LML_CRITICAL);
+			Ogre::LogManager::getSingletonPtr()->logError("OgreOggSoundManager::init() - Unable to set context");
 			return false;
 		}
 
@@ -1554,7 +1554,7 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() || fName.empty() || !isEffectSupported(filterType) )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXFilter() - Unsupported filter!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unsupported filter!");
 			return false;
 		}
 
@@ -1563,7 +1563,7 @@ namespace OgreOggSound
 		alGenFilters(1, &filter);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** Cannot create EFX Filter!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Cannot create EFX Filter!");
 			return false;
 		}
 
@@ -1572,7 +1572,7 @@ namespace OgreOggSound
 			alFilteri(filter, AL_FILTER_TYPE, filterType);
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** Unable to set filter type!");
+				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unable to set filter type!");
 				return false;
 			}
 			else
@@ -1599,14 +1599,14 @@ namespace OgreOggSound
 						mFilterList[fName]=filter;
 					break;
 					default:
-						Ogre::LogManager::getSingleton().logError("*** Unknown Filter Type");
+						Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unknown Filter Type");
 					break;
 				}
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** Created filter is not valid!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Created filter is not valid!");
 			return false;
 		}
 		return true;
@@ -1621,7 +1621,7 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() || eName.empty() || !isEffectSupported(effectType) )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXEffect() - Unsupported effect!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Unsupported effect!");
 			return false;
 		}
 
@@ -1630,7 +1630,7 @@ namespace OgreOggSound
 		alGenEffects(1, &effect);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** Cannot create EFX effect!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Cannot create EFX effect!");
 			return false;
 		}
 
@@ -1639,7 +1639,7 @@ namespace OgreOggSound
 			alEffecti(effect, AL_EFFECT_TYPE, effectType);
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** Effect not supported!");
+				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Effect not supported!");
 				return false;
 			}
 			else
@@ -1677,7 +1677,7 @@ namespace OgreOggSound
 		alGenAuxiliaryEffectSlots(1, &slot);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** Cannot create Auxiliary effect slot!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXSlot() - Cannot create Auxiliary effect slot!");
 			return false;
 		}
 		else
@@ -1723,7 +1723,7 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEFXSoundProperties() - No source attached to sound!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_setEFXSoundProperties() - No source attached to sound!");
 			return false;
 		}
 	}
@@ -1824,7 +1824,7 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEAXReverbProperties() - Failed to set EFXEAXReverb");
+				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_setEAXReverbProperties() - Failed to set EFXEAXReverb");
 				return false;
 			}
 		}
@@ -1842,7 +1842,7 @@ namespace OgreOggSound
 		alAuxiliaryEffectSloti(slot, AL_EFFECTSLOT_EFFECT, effect);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** Cannot attach effect to slot!");
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_attachEffectToSlot() - Cannot attach effect to slot!");
 			return false;
 		}
 		return true;
@@ -2259,7 +2259,7 @@ namespace OgreOggSound
 			if ( !_requestSoundSource(sound) )
 			{
 				Ogre::String msg="*** OgreOggSoundManager::createSound() - Failed to preBuffer sound: "+sound->getName();
-				Ogre::LogManager::getSingleton().logMessage(msg);
+				Ogre::LogManager::getSingleton().logError(msg);
 			}
 		}
 	}
