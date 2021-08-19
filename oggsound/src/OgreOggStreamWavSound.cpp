@@ -198,7 +198,7 @@ namespace OgreOggSound
 			}
 			else			
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::open() - Loop time invalid!", Ogre::LML_NORMAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::open() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}
@@ -485,7 +485,7 @@ namespace OgreOggSound
 			// Check valid loop point
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::setLoopOffset() - Loop time invalid!", Ogre::LML_CRITICAL);
+				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::setLoopOffset() - Loop time invalid!");
 				return;
 			}
 
