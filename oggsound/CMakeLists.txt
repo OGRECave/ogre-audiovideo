@@ -32,13 +32,22 @@ set (SOURCE_FILES
     src/OgreOggStreamWavSound.cpp
 )
   
-# Options
+# Threading support
 option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
 if(OGGSOUND_THREADED)
     add_definitions(-DOGGSOUND_THREADED=1)
 else()
     add_definitions(-DOGGSOUND_THREADED=0)
+endif()
+
+# OpenAL Soft Extensions
+option(HAVE_ALEXT "Enable OpenAL Soft Extensions (alext.h)" OFF)
+
+if(HAVE_ALEXT)
+    add_definitions(-DHAVE_ALEXT=1)
+else()
+    add_definitions(-DHAVE_ALEXT=0)
 endif()
 
 # Type of EFX backend support

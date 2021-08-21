@@ -99,6 +99,10 @@ namespace OgreOggSound
 		else if ( mFormat==AL_FORMAT_STEREO8 )	{ mNumChannels=2; mBitsPerSample=8; }
 		else if ( mFormat==AL_FORMAT_MONO16 )	{ mNumChannels=1; mBitsPerSample=16;}
 		else if ( mFormat==AL_FORMAT_STEREO16 )	{ mNumChannels=2; mBitsPerSample=16;}
+#if HAVE_ALEXT == 1
+		else if ( mFormat==AL_FORMAT_MONO_FLOAT32 )		{ mNumChannels=1; mBitsPerSample=32;}
+		else if ( mFormat==AL_FORMAT_STEREO_FLOAT32 )	{ mNumChannels=2; mBitsPerSample=32;}
+#endif
 
 		// Selected device
 		mDeviceName = deviceName;
@@ -128,7 +132,11 @@ namespace OgreOggSound
 				sprintf(mWaveHeader.cWave, "WAVE");
 				sprintf(mWaveHeader.cFmt, "fmt ");
 				mWaveHeader.dwFmtSize = sizeof(mWaveHeader.wfex);
+#if HAVE_ALEXT == 1
+				mWaveHeader.wfex.wFormatTag = (mBitsPerSample == 32 ? WAVE_FORMAT_IEEE_FLOAT : WAVE_FORMAT_PCM);
+#else
 				mWaveHeader.wfex.wFormatTag = WAVE_FORMAT_PCM;
+#endif
 				mWaveHeader.wfex.wChannels = mNumChannels;
 				mWaveHeader.wfex.dwSamplesPerSec = mFreq;
 				mWaveHeader.wfex.wBitsPerSample = mBitsPerSample;
@@ -145,9 +153,11 @@ namespace OgreOggSound
 				return true;
 			}
 
-			Ogre::LogManager::getSingleton().logError("*** --- Unable to open recording file: " + mOutputFile);
+			Ogre::LogManager::getSingleton().logError("*** --- OgreOggSoundRecord::initCaptureDevice() - Unable to open recording file: " + mOutputFile);
 			return false;
 		}
+
+		Ogre::LogManager::getSingleton().logError("*** --- OgreOggSoundRecord::initCaptureDevice() - Unable to open recording device: " + mDeviceName);
 
 		return false;
 	}

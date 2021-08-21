@@ -36,6 +36,24 @@
 #include <OgreLogManager.h>
 
 /**
+ * OGGSOUND_THREADED: Specifies whether to use threads for streaming
+ * 0 - No multithreading
+ * 1 - OGRE-native multithreading
+ */
+#ifndef OGGSOUND_THREADED
+	#define OGGSOUND_THREADED 0
+#endif
+
+/**
+ * HAVE_ALEXT: Specifies whether OpenAL Soft enhancements are supported
+ * 0 - Not using OpenAL Soft
+ * 1 - using OpenAL Soft (alext.h available)
+ */
+#ifndef HAVE_ALEXT
+#	define HAVE_ALEXT 1
+#endif
+
+/**
  * HAVE_EFX: Specifies whether EFX enhancements are supported
  * 0 - EFX not supported
  * 1 - Enable EFX support with Creative OpenAL SDK 1.1
@@ -49,17 +67,20 @@
 
 #	pragma warning( disable : 4244 )
 
-#	include "al.h"
-#	include "alc.h"
+#	include <al.h>
+#	include <alc.h>
+#	if HAVE_ALEXT == 1
+#		include <alext.h>
+#	endif
 
 #	if HAVE_EFX == 1
-#		include "efx.h"
-#		include "efx-util.h"
-#		include "efx-creative.h"
-#		include "xram.h"
+#		include <efx.h>
+#		include <efx-util.h>
+#		include <efx-creative.h>
+#		include <xram.h>
 #	elif HAVE_EFX == 2
-#		include "efx.h"
-#		include "efx-presets.h"
+#		include <efx.h>
+#		include <efx-presets.h>
 #	endif
 
 #	if OGRE_COMPILER == OGRE_COMPILER_MSVC
@@ -76,12 +97,18 @@
 #   if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #		include <al.h>
 #		include <alc.h>
+#		if HAVE_ALEXT == 1
+#			include <AL/alext.h>
+#		endif
 #   else
 #		include <AL/al.h>
 #		include <AL/alc.h>
+#		if HAVE_ALEXT == 1
+#			include <AL/alext.h>
+#		endif
 #		if HAVE_EFX == 2
-#			include "AL/efx.h"
-#			include "AL/efx-presets.h"
+#			include <AL/efx.h>
+#			include <AL/efx-presets.h>
 #		endif
 #	endif
 #	if defined(OGGSOUND_EXPORT) && OGRE_COMP_VER >= 400
@@ -121,14 +148,3 @@ namespace OgreOggSound
 
 	typedef std::map<std::string, sharedAudioBuffer*> SharedBufferList;
 };
-
-/**
- * Specifies whether to use threads for streaming
- * 0 - No multithreading
- * 1 - OGRE-native multithreading
- */
-#ifndef OGGSOUND_THREADED
-	#define OGGSOUND_THREADED 0
-#endif
-
-

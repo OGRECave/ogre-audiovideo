@@ -140,10 +140,28 @@ namespace OgreOggSound
 		bool init(const std::string &deviceName = "", unsigned int maxSources=100, unsigned int queueListSize=100, Ogre::SceneManager* scnMgr=0);
 		/** Gets the OpenAL device pointer
 		*/
-		const ALCdevice* getOpenalDevice() { return mDevice; }
+		const ALCdevice* getOpenALDevice() { return mDevice; }
 		/** Gets the OpenAL context pointer
 		*/
-		const ALCcontext* getOpenalContext() { return mContext; }
+		const ALCcontext* getOpenALContext() { return mContext; }
+#if HAVE_ALEXT == 1
+		/** Pauses the OpenAL device
+		@remarks
+			This function allows applications to pause a playback device. 
+			The main purpose of this is to silence output, stop processing, and allow the audio hardware to go into a low-power mode. 
+			On a mobile device, for instance, apps may want to silence output and not waste battery life with unneeded processing when in the background.
+		@note
+			Uses the ALC_SOFT_pause_device extension which is available in OpenAL Soft (https://openal-soft.org/openal-extensions/SOFT_pause_device.txt)
+		*/
+		void pauseOpenALDevice();
+		/** Resumes previously paused OpenAL device
+		@remarks
+			This function allows applications to resume a paused playback device. 
+		@note
+			Uses the ALC_SOFT_pause_device extension which is available in OpenAL Soft (https://openal-soft.org/openal-extensions/SOFT_pause_device.txt)
+		*/
+		void resumeOpenALDevice();
+#endif
 		/** Sets the global volume for all sounds
 			@param vol 
 				global attenuation for all sounds.
@@ -455,40 +473,27 @@ namespace OgreOggSound
 		/** Sets extended properties on a specified sounds source
 		@remarks
 			Tries to set EFX extended source properties.
-			@param sName 
+			@param sName
 				name of sound.
-			@param airAbsorption 
+			@param airAbsorption
 				absorption factor for air.
-			@param roomRolloff 
+			@param roomRolloff
 				room rolloff factor.
-			@param coneOuterHF 
+			@param coneOuterHF
 				cone outer gain factor for High frequencies.
 		 */
 		bool setEFXSoundProperties(const Ogre::String& sName, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
-		/** Sets extended properties on a specified sounds source
-		@remarks
-			Tries to set EFX extended source properties.
-			@param sound
-				name of sound.
-			@param airAbsorption 
-				absorption factor for air.
-			@param roomRolloff 
-				room rolloff factor.
-			@param coneOuterHF 
-				cone outer gain factor for High frequencies.
-		 */
-		bool _setEFXSoundPropertiesImpl(OgreOggISound* sound=0, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Sets a specified paremeter on an effect
 		@remarks
 			Tries to set a parameter value on a specified effect.
 			Returns true/false.
-			@param eName 
+			@param eName
 				name of effect.
-			@param effectType 
+			@param effectType
 				see OpenAL docs for available effects.
-			@param attrib 
+			@param attrib
 				parameter value to alter.
-			@param param 
+			@param param
 				float value to set.
 		 */
 		bool setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALfloat param);
@@ -559,32 +564,32 @@ namespace OgreOggSound
 			Currently sound must have a source attached prior to this call.
 			@param sName 
 				name of sound
-			@param slot 
-				slot ID
+			@param slotID
+				ID of the EFX slot where the sound will be attached along with the effect
 			@param effect 
 				name of effect as defined when created
-			@param filter 
+			@param filter
 				name of filter as defined when created
 		 */
-		bool attachEffectToSound(const Ogre::String& sName, ALuint slot, const Ogre::String& effect="", const Ogre::String& filter="");
-		/** Attaches a filter to a sound
-		@remarks
-			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
-			@param sName 
-				name of sound
-			@param filter 
-				name of filter as defined when created
-		 */
-		bool attachFilterToSound(const Ogre::String& sName, const Ogre::String& filter="");
+		bool attachEffectToSound(const Ogre::String& sName, ALuint slotID, const Ogre::String& effect="", const Ogre::String& filter="");
 		/** Detaches all effects from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
 			@param sName 
 				name of sound
-			@param slotID 
-				slot ID
+			@param slotID
+				ID of the EFX slot where the sound was attached in the call to attachEffectToSound()
 		 */
 		bool detachEffectFromSound(const Ogre::String& sName, ALuint slotID);
+		/** Attaches a filter to a sound
+		@remarks
+			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
+			@param sName 
+				name of sound
+			@param filter
+				name of filter as defined when created
+		 */
+		bool attachFilterToSound(const Ogre::String& sName, const Ogre::String& filter="");
 		/** Detaches all filters from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
@@ -592,35 +597,39 @@ namespace OgreOggSound
 				name of sound
 		 */
 		bool detachFilterFromSound(const Ogre::String& sName);
+		/** Sets extended properties on a specified sounds source
+		@remarks
+			Tries to set EFX extended source properties.
+			@param sound
+				name of sound.
+			@param airAbsorption
+				absorption factor for air.
+			@param roomRolloff
+				room rolloff factor.
+			@param coneOuterHF
+				cone outer gain factor for High frequencies.
+		 */
+		bool _setEFXSoundPropertiesImpl(OgreOggISound* sound=0, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Attaches an effect to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
-			@param sound 
+			@param sound
 				sound pointer
-			@param slot 
+			@param slot
 				slot ID
 			@param effect 
 				name of effect as defined when created
-			@param filter 
+			@param filter
 				name of filter as defined when created
 		 */
 		bool _attachEffectToSoundImpl(OgreOggISound* sound=0, ALuint slot=255, const Ogre::String& effect="", const Ogre::String& filter="");
 		/** Attaches a filter to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
-			@param sound 
-				sound pointer
-			@param filter 
-				name of filter as defined when created
-		 */
-		bool _attachFilterToSoundImpl(OgreOggISound* sound=0, const Ogre::String& filter="");
-		/** Detaches all effects from a sound
-		@remarks
-			Currently sound must have a source attached prior to this call.
 			@param sound
 				sound pointer
-			@param slotID 
-				slot ID
+			@param filter
+				name of filter as defined when created
 		 */
 		bool _detachEffectFromSoundImpl(OgreOggISound* sound=0, ALuint slotID=255);
 		/** Detaches all filters from a sound
@@ -629,9 +638,18 @@ namespace OgreOggSound
 			@param sound
 				sound pointer
 		 */
+		bool _attachFilterToSoundImpl(OgreOggISound* sound=0, const Ogre::String& filter="");
+		/** Detaches all effects from a sound
+		@remarks
+			Currently sound must have a source attached prior to this call.
+			@param sound
+				sound pointer
+			@param slotID
+				slot ID
+		 */
 		bool _detachFilterFromSoundImpl(OgreOggISound* sound=0);
 		/** Returns whether a specified effect is supported
-			@param effectID 
+			@param effectID
 				OpenAL effect/filter id. (AL_EFFECT... | AL_FILTER...)
 		 */
 		bool isEffectSupported(ALint effectID);
