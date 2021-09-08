@@ -45,6 +45,7 @@ namespace OgreOggSound
 	typedef std::map<ALenum, bool> FeatureList;
 	typedef std::list<OgreOggISound*> ActiveList;
 	typedef std::deque<ALuint> SourceList;
+	typedef std::multimap<ALuint, ALuint> SlotMultiMap;
 	typedef std::vector<Ogre::String> RecordDeviceList;
 	
 	class OgreOggISound;
@@ -595,6 +596,38 @@ namespace OgreOggSound
 				Name of sound
 		 */
 		bool detachFilterFromSound(const Ogre::String& sName);
+#if HAVE_ALEXT == 1
+		/** Concatenates the output of a specified EFX Slot to the input of another
+		@remarks
+			This function provides a method to reroute the output of an auxiliary effect slot to the input of another auxiliary effect slot.\n
+			By default, an effect slot's output is added to the main output along side other effect slots and each source's direct path.\n
+			This makes it impossible to, for example, apply an equalizer effect to the output of a chorus effect since the chorus and equalizer effects are processed separately.\n
+			Retargeting an effect slot's output to another effect slot allows chaining multiple effects to create results that aren't possible with standard EFX.
+			@param srcSlotID
+				Slot ID of the source EFX effect slot.
+			@param dstSlotID
+				Slot ID of destination EFX effect slot.
+		@note
+			This function uses the extension AL_SOFT_effect_target which is only available through OpenAL Soft.\n
+			Each effect slot can only have one target (though an effect slot can act as the target for multiple other effect slots and sources).\n
+			It's an error to create a circular chain.
+		 */
+		bool concatenateEFXEffectSlots(ALuint srcSlotID, ALuint dstSlotID);
+		/** Helper function used to release Auxiliary Effect Slots
+		@remarks
+			When two Auxiliary Effect Slots are concatenated by concatenateEFXEffectSlots() the order of slot deletion becomes important.\n
+			To solve this a Multi Map registers the concatenated pairs, which end up forming trees.\n
+			The deletion of the Auxiliary Effect Slots begins with the tree leaves, to process in that order we use DFS (Depth First Search).\n
+			This function implements the algorithm recursively.
+			@param slot
+				Slot to process
+			@param effectSlotMultiMap
+				Multi Map that containts the source slot <---> dest slot pairs
+		@note
+			This function is for internal use only.
+		 */
+		void _delConcatenatedEFXEffectSlots(ALuint slot, std::multimap<ALuint, ALuint> *effectSlotMultiMap);
+#endif
 		/** Sets extended properties on a specified sounds source
 		@remarks
 			Tries to set EFX extended source properties.
@@ -1039,6 +1072,7 @@ namespace OgreOggSound
 		EffectList mFilterList;					// List of EFX filters
 		EffectList mEffectList;					// List of EFX effects
 		SourceList mEffectSlotList;				// List of EFX effect slots
+		SlotMultiMap mEffectSlotMultiMap;		// Multi Map of EFX effect slots (used for effect slot concatenation)
 
 		ALint mNumEffectSlots;					// Number of effect slots available
 		ALint mNumSendsPerSource;				// Number of aux sends per source
