@@ -202,7 +202,7 @@ namespace OgreOggSound
 				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.\n
 				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
-		OgreOggISound* createSound(const Ogre::String& name,const Ogre::String& file, bool stream = false, bool loop = false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
+		OgreOggISound* createSound(const Ogre::String& name,const Ogre::String& file, bool stream=false, bool loop=false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
 		/** Gets a named sound.
 		@remarks
 			Returns a named sound object if defined, NULL otherwise.
