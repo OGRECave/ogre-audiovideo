@@ -81,90 +81,84 @@ namespace OgreOggSound
 		mAudioStream->read(mFormatData.mFormat, sizeof(WaveHeader));
 
 		// Valid 'RIFF'?
-		if ( mFormatData.mFormat->mRIFF[0]=='R' && mFormatData.mFormat->mRIFF[1]=='I' && mFormatData.mFormat->mRIFF[2]=='F' && mFormatData.mFormat->mRIFF[3]=='F' )
+		if ( strncmp(mFormatData.mFormat->mRIFF, "RIFF", 4) != 0 )
 		{
-			// Valid 'WAVE'?
-			if ( mFormatData.mFormat->mWAVE[0]=='W' && mFormatData.mFormat->mWAVE[1]=='A' && mFormatData.mFormat->mWAVE[2]=='V' && mFormatData.mFormat->mWAVE[3]=='E' )
+			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, fileStream->getName() + " - Not a valid RIFF file!", "OgreOggStreamWavSound::_openImpl()");
+		}
+
+		// Valid 'WAVE'?
+		if ( strncmp(mFormatData.mFormat->mWAVE, "WAVE", 4) != 0 )
+		{
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - Not a valid WAVE file!", "OgreOggStreamWavSound::_openImpl()");
+		}
+
+		// Valid 'fmt '?
+		if ( strncmp(mFormatData.mFormat->mFMT, "fmt", 3) != 0 )
+		{
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - Invalid Format!", "OgreOggStreamWavSound::_openImpl()");
+		}
+
+		// mFormatData.mFormat: Should be 16 unless compressed ( compressed NOT supported )
+		if ( !mFormatData.mFormat->mHeaderSize>=16 )
+		{
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - Compressed WAV NOT supported!", "OgreOggStreamWavSound::_openImpl()");
+		}
+
+		// PCM == 1
+		if ( (mFormatData.mFormat->mFormatTag != 0x0001) && (mFormatData.mFormat->mFormatTag != 0xFFFE) )
+		{
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - WAV file NOT in PCM format!", "OgreOggStreamWavSound::_openImpl()");
+		}
+
+		// Samples check..
+		if ( (mFormatData.mFormat->mBitsPerSample!=16) && (mFormatData.mFormat->mBitsPerSample!=8) )
+		{
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - BitsPerSample NOT 8/16, unsupported format!", "OgreOggStreamWavWavSound::_openImpl()");
+		}
+
+		// Calculate extra WAV header info
+		int extraBytes = mFormatData.mFormat->mHeaderSize - (sizeof(WaveHeader) - 20);
+
+		// If WAVEFORMATEXTENSIBLE read attributes
+		if (mFormatData.mFormat->mFormatTag==0xFFFE)
+		{
+			extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mSamples, 2));
+			extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mChannelMask, 2));
+			extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mSubFormat, 16));
+		}
+
+		// Skip
+		mAudioStream->skip(extraBytes);
+
+		do
+		{
+			// Read in chunk header
+			mAudioStream->read(&c, sizeof(ChunkHeader));
+
+			// 'data' chunk...
+			if ( strncmp(c.chunkID, "data", 4) == 0 )
 			{
-				// Valid 'fmt '?
-				if ( mFormatData.mFormat->mFMT[0]=='f' && mFormatData.mFormat->mFMT[1]=='m' && mFormatData.mFormat->mFMT[2]=='t' && mFormatData.mFormat->mFMT[3]==' ' )
-				{
-					// Should be 16 unless compressed ( compressed NOT supported )
-					if ( mFormatData.mFormat->mHeaderSize>=16 )
-					{
-						// PCM == 1
-						if (mFormatData.mFormat->mFormatTag==0x0001 || mFormatData.mFormat->mFormatTag==0xFFFE)
-						{
-							// Samples check..
-							if ( (mFormatData.mFormat->mBitsPerSample!=16) && (mFormatData.mFormat->mBitsPerSample!=8) )
-							{
-								OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "BitsPerSample NOT 8/16!", "OgreOggStreamWavWavSound::_openImpl()");
-							}
+				// Store byte offset of start of audio data
+				mAudioOffset = static_cast<unsigned int>(mAudioStream->tell());
 
-							// Calculate extra WAV header info
-							int extraBytes = mFormatData.mFormat->mHeaderSize - (sizeof(WaveHeader) - 20);
+				// Check data size
+				int fileCheck = c.length % mFormatData.mFormat->mBlockAlign;
 
-							// If WAVEFORMATEXTENSIBLE read attributes
-							if (mFormatData.mFormat->mFormatTag==0xFFFE)
-							{
-								extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mSamples, 2));
-								extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mChannelMask, 2));
-								extraBytes-=static_cast<int>(mAudioStream->read(&mFormatData.mSubFormat, 16));
-							}
-		
-							// Skip
-							mAudioStream->skip(extraBytes);
+				// Store end pos
+				mAudioEnd = mAudioOffset+(c.length-fileCheck);
 
-							do
-							{
-								// Read in chunk header
-								mAudioStream->read(&c, sizeof(ChunkHeader));
-
-								// 'data' chunk...
-								if ( c.chunkID[0]=='d' && c.chunkID[1]=='a' && c.chunkID[2]=='t' && c.chunkID[3]=='a' )
-								{
-									// Store byte offset of start of audio data
-									mAudioOffset = static_cast<unsigned int>(mAudioStream->tell());
-
-									// Check data size
-									int fileCheck = c.length % mFormatData.mFormat->mBlockAlign;
-
-									// Store end pos
-									mAudioEnd = mAudioOffset+(c.length-fileCheck);
-
-									// Jump out
-									break;
-								}
-								// Unsupported chunk...
-								else
-									mAudioStream->skip(c.length);
-							}
-							while ( mAudioStream->eof() || c.chunkID[0]!='d' || c.chunkID[1]!='a' || c.chunkID[2]!='t' || c.chunkID[3]!='a' );							
-						}
-						else 
-						{
-							OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Compressed wav NOT supported", "OgreOggStreamWavWavSound::_openImpl()");
-						}
-					}
-					else
-					{
-						OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Wav NOT PCM", "OgreOggStreamWavWavSound::_openImpl()");
-					}
-				}
-				else
-				{
-					OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Invalid format", "OgreOggStreamWavWavSound::_openImpl()");
-				}
+				// Jump out
+				break;
 			}
-			else
-			{
-				OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Not a valid WAVE file", "OgreOggStreamWavWavSound::_openImpl()");
+			// Skip unsupported chunk...
+			else {
+				if( (mAudioStream->tell() / sizeof(ChunkHeader)) % 100000 == 0)
+					Ogre::LogManager::getSingleton().logMessage("*** OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
+
+				mAudioStream->skip(c.length);
 			}
 		}
-		else
-		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Not a valid RIFF file!", "OgreOggStreamWavSound::_openImpl()");
-		}
+		while ( mAudioStream->eof() || ( strncmp(c.chunkID, "data", 4) != 0 ));
 
 		// Create OpenAL buffer
 		alGetError();							   
