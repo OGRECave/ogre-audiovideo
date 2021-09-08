@@ -1902,6 +1902,86 @@ namespace OgreOggSound
 		return static_cast<int>(mEffectSlotList.size());
 	}
 
+#if HAVE_ALEXT == 1
+	/*/////////////////////////////////////////////////////////////////*/
+	bool OgreOggSoundManager::concatenateEFXEffectSlots(ALuint srcSlotID, ALuint dstSlotID)
+	{
+		if ( mEffectSlotList.empty() ) {
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - No EFX slots created yet!");
+			return false;
+		}
+
+		if ( srcSlotID == dstSlotID )
+		{
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Won't concatenate a slot to itself!");
+			return false;
+		}
+
+		if (alIsExtensionPresent("AL_SOFT_effect_target") == AL_FALSE)
+		{
+			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Extension AL_SOFT_effect_target not detected! ***");
+			return false;
+		}
+
+		ALuint srcSlot;
+		ALuint dstSlot;
+
+		// Get effect from their slot IDs
+		srcSlot	= _getEFXSlot(srcSlotID);
+		dstSlot	= _getEFXSlot(dstSlotID);
+
+		/*
+		Docs:
+		 - https://openal-soft.org/openal-extensions/SOFT_effect_target.txt
+		 - https://github.com/kcat/openal-soft/issues/57
+
+		alAuxiliaryEffectSloti(): The output of srcSlot is added to the input of dstSlot.
+		So if srcSlot has an echo effect loaded, and dstSlot has a reverb effect, the echoes will be used as input to the reverb 
+		(a source would not need to send to dstSlot explicitly, just to srcSlot is enough).
+		Some things to note:
+		 - Each effect slot can only have one target (though an effect slot can act as the target for multiple other effect slots and sources).
+		 - You can't delete an effect slot that is currently the target of another.
+		 - It's an error to create a circular chain.
+		*/
+		alAuxiliaryEffectSloti(srcSlot, AL_EFFECTSLOT_TARGET_SOFT, dstSlot);
+
+		if (alGetError() != AL_NO_ERROR)
+		{
+			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Cannot concatenate Auxiliary effect slots!");
+			return false;
+		}
+		else
+		{
+			// Due to the fact that you can't delete an effect slot that is currently the target of another, it is necessary to maintain an accounting of the slot concatenations.
+			// Otherwise it won't be possible to correctly release the auxiliary slots on termination of the plugin
+			mEffectSlotMultiMap.insert(std::pair<ALuint, ALuint>(dstSlot, srcSlot));
+		}
+
+		return true;
+	}
+
+	/*/////////////////////////////////////////////////////////////////*/
+	void OgreOggSoundManager::_delConcatenatedEFXEffectSlots(ALuint slot, std::multimap<ALuint, ALuint> *effectSlotMultiMap)
+	{
+		// Go through each of the tree nodes and recursively call this function on the children
+		std::pair <std::multimap<ALuint, ALuint>::iterator, std::multimap<ALuint, ALuint>::iterator> ret;
+		ret = effectSlotMultiMap->equal_range(slot);
+		for (std::multimap<ALuint, ALuint>::iterator it=ret.first; it!=ret.second; ++it)
+			_delConcatenatedEFXEffectSlots(it->second, effectSlotMultiMap);
+
+		alDeleteAuxiliaryEffectSlots(1, &slot);
+
+		// Find slot in mEffectSlotList and remove it
+		for (SourceList::iterator it = mEffectSlotList.begin(); it != mEffectSlotList.end(); ++it)
+		{
+			if(*it == slot) {
+				mEffectSlotList.erase(it);
+				break;
+			}
+		}
+	}
+#endif
+
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::setEFXSoundProperties(const Ogre::String& sName, float airAbsorption, float roomRolloff, float coneOuterHF)
 	{
@@ -2708,6 +2788,30 @@ namespace OgreOggSound
 			    alDeleteEffects( 1, &iter->second);
 			mEffectList.clear();
 		}
+
+#if HAVE_ALEXT == 1
+		// In order to properly release the concatenated effect slots it is neccesary to delete them in order
+
+		// Obtain the roots of the trees registered in the mEffectSlotMultiMap
+		// Create a set with all the slots that are parents of someone and another set with all the slots that are children
+		std::set<ALuint> sources, dests;
+		for (std::multimap<ALuint, ALuint>::iterator it=mEffectSlotMultiMap.begin(); it!=mEffectSlotMultiMap.end(); ++it)
+		{
+			sources.insert(it->first);
+			dests.insert(it->second);
+		}
+
+		// Get all the elements that are parents and take out all the elements that are children (that should leave only the roots)
+		std::vector<ALuint> roots;
+		roots.resize(sources.size());
+		std::vector<ALuint>::iterator diff = std::set_difference (sources.begin(), sources.end(), dests.begin(), dests.end(), roots.begin());
+		roots.resize(diff-roots.begin());
+
+		for(auto root : roots)
+			_delConcatenatedEFXEffectSlots(root, &mEffectSlotMultiMap);
+
+		mEffectSlotMultiMap.clear();
+#endif
 
 		if ( !mEffectSlotList.empty() )
 		{
