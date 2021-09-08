@@ -43,7 +43,6 @@
 
 namespace OgreOggSound
 {
-
 	//! CHUNK header information
 	// Chunk section within a wav file ('data'/'fact'/'cue' etc..)
 	typedef struct
@@ -235,7 +234,11 @@ namespace OgreOggSound
 			Switch's spatialisation on/off for mono sounds, no-effect for stereo sounds.
 		@note
 			If disabling spatialisation, reference distance is set to 1 and Positon is set to ZERO, 
+<<<<<<< HEAD
 			so may need resetting should spatialisation be re-enabled later.\n
+=======
+			so may need resetting should spatialisation be re-enabled later. 
+>>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 			Note also that node inherited positioning/orientation is disabled in this mode,
 			however manual positioning/orientation is still available allowing some control over speaker output.
 		 */
@@ -278,12 +281,13 @@ namespace OgreOggSound
 		inline bool isRelativeToListener() const { return mSourceRelative; }
 		/** Sets whether source is given up when stopped.
 		@remarks
-			This flag indicates that the sound should immediately give up its source if finished playing
-			or manually stopped. Useful for infrequent sounds or sounds which only play once. Allows other
-			sounds immediate access to a playable source object.
+			This flag indicates that the sound should immediately give up its source if finished playing or manually stopped.
+			Useful for infrequent sounds or sounds which only play once.
+			Allows other sounds immediate access to a playable source object.
 			@param giveup 
 				If true, releases source immediately (default: false)
 		 */
+<<<<<<< HEAD
 		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource = giveup; }
 		/** Sets sounds position.
 		@param posx 
@@ -292,46 +296,82 @@ namespace OgreOggSound
 			y position
 		@param posz 
 			z position
+=======
+		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource=giveup; }
+		/** Sets the sounds position.
+		@remarks
+			Sets the 3D position of the sound. This is a manual method,
+			if attached to a SceneNode this will automatically be handled 
+			for you.
+			@param posx
+				x position
+			@param posy
+				y position
+			@param posz
+				z position
+>>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 		 */
 		void setPosition(float posx,float posy, float posz);
-		/** Sets sounds position.
-		@param pos 
-			3D vector position
+		/** Sets the sounds position.
+		@remarks
+			Sets the 3D position of the sound. This is a manual method,
+			if attached to a SceneNode this will automatically be handled 
+			for you.
+			@param pos
+				3D vector position
 		 */
 		void setPosition(const Ogre::Vector3 &pos);
-		/** Sets sounds direction.
-		@param dirx 
-			x coord
-		@param diry 
-			y coord
-		@param dirz 
-			z coord
+		/** Sets the sounds direction.
+		@remarks
+			Sets the 3D direction of the sound. This is a manual method,
+			if attached to a SceneNode this will automatically be handled 
+			for you.
+			@param dirx
+				x coord
+			@param diry
+				y coord
+			@param dirz
+				z coord
 		 */
 		void setDirection(float dirx, float diry, float dirz);
-		/** Sets sounds direction.
-		@param dir 
-			3D vector direction
+		/** Sets the sounds direction.
+		@remarks
+			Sets the 3D direction of the sound. This is a manual method,
+			if attached to a SceneNode this will automatically be handled 
+			for you.
+			@param dir
+				3D vector direction
 		 */
 		void setDirection(const Ogre::Vector3 &dir);
-		/** Sets sounds velocity.
-		@param velx 
-			x velocity
-		@param vely 
-			y velocity
-		@param velz 
-			z velocity
+		/** Sets the sounds velocity.
+		@remarks
+			Sets the 3D velocity of the sound.
+		@note
+			Even if attached to a SceneNode this will *NOT* automatically be handled for you, 
+			unlike the position and direction
+			@param velx
+				x velocity
+			@param vely
+				y velocity
+			@param velz
+				z velocity
 		 */
 		void setVelocity(float velx, float vely, float velz);
-		/** Sets sounds velocity.
-		@param vel 
-			3D vector velocity
+		/** Sets the sounds velocity.
+		@remarks
+			Sets the 3D velocity of the sound.
+		@note
+			Even if attached to a SceneNode this will *NOT* automatically be handled for you, 
+			unlike the position and direction
+			@param vel
+				3D vector velocity
 		 */
 		void setVelocity(const Ogre::Vector3 &vel);
 		/** Sets sounds volume
 		@remarks
 			Sets sounds current gain value (0..1).
-		@param gain 
-			volume scalar.
+			@param gain
+				volume scalar.
 		 */
 		void setVolume(float gain);
 		/** Gets sounds volume
@@ -342,7 +382,7 @@ namespace OgreOggSound
 		/** Sets sounds maximum attenuation volume
 		@remarks
 			This value sets the maximum volume level of the sound when closest to the listener.
-			@param maxGain 
+			@param maxGain
 				Volume scalar (0..1)
 		 */
 		void setMaxVolume(float maxGain);
@@ -366,10 +406,17 @@ namespace OgreOggSound
 		/** Sets sounds cone angles
 		@remarks
 			This value sets the angles of the sound cone used by this sound.
+<<<<<<< HEAD
 			@param insideAngle 
 				Angle over which the volume is at maximum (in degrees)
 			@param outsideAngle 
 				Angle over which the volume is at minimum (in degrees)
+=======
+			@param insideAngle
+				angle over which the volume is at maximum
+			@param outsideAngle
+				angle over which the volume is at minimum
+>>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 		 */
 		void setConeAngles(float insideAngle=360.f, float outsideAngle=360.f);
 		/** Gets sounds cone inside angle
@@ -454,7 +501,7 @@ namespace OgreOggSound
 				Boolean yes/no.
 		*/
 		void setRelativeToListener(bool relative);
-		/** Gets sounds position
+		/** Gets the sounds position
 		*/
 		inline const Ogre::Vector3& getPosition() const {return mPosition;}
 		/** Gets the sounds direction
@@ -549,7 +596,11 @@ namespace OgreOggSound
 			@param listener
 				Listener object pointer.
 		*/
+<<<<<<< HEAD
 		inline void setListener(SoundListener* listener) { mSoundListener = listener; }
+=======
+		inline void setListener(SoundListener* listener) { mSoundListener=listener; }
+>>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 
 		/** Sets properties of a shared resource.
 		@remarks
@@ -641,7 +692,7 @@ namespace OgreOggSound
 		 */
 		virtual void _notifyMoved(void);
 		#else
-		/** do nothing but need for derived from MovableObject
+		/** Does nothing, but needed for being derived from MovableObject
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
 		#endif
@@ -760,20 +811,20 @@ namespace OgreOggSound
 		/** Returns flag indicating an imminent destruction call
 		@remarks
 			Multi-threaded calls are delayed, therefore its possible to cue a destruction 
-			then subsequently request a handle to the same sound object, which would yeild 
-			a valid pointer but could potentially invalidate itself at any moment.. For now
-			this flag will be used to assess the validation a subsequent get() call to 
-			prevent, as much as possible, this occurence.
+			then subsequently request a handle to the same sound object, which would yield 
+			a valid pointer but could potentially invalidate itself at any moment...
+			For now this flag will be used to assess the validation a subsequent get() call 
+			to prevent, as much as possible, this occurence.
 		*/
 		inline bool _isDestroying() const { return mAwaitingDestruction!=0; }
 
 		/** Sets flag indicating an imminent destruction call
 		@remarks
 			Multi-threaded calls are delayed, therefore its possible to cue a destruction 
-			then subsequently request a handle to the same sound object, which would yeild 
-			a valid pointer but could potentially invalidate itself at any moment.. For now
-			this flag will be used to assess the validation of a subsequent getSound() call to 
-			prevent, as much as possible, this occurence.
+			then subsequently request a handle to the same sound object, which would yield 
+			a valid pointer but could potentially invalidate itself at any moment...
+			For now this flag will be used to assess the validation of a subsequent getSound() call 
+			to prevent, as much as possible, this occurence.
 		*/
 		inline void _notifyDestroying()  { mAwaitingDestruction=2; }
 #endif

@@ -72,7 +72,8 @@ namespace OgreOggSound
 			@param startTime
 				Position in seconds to offset the loop point.
 		@note
-			The sound will start playback from the beginning of the audio data but upon looping, if set, it will loop back to the new offset position.
+			The sound will start playback from the beginning of the audio data but upon looping, 
+			if set, it will loop back to the new offset position.
 		 */
 		void setLoopOffset(float startTime);
 		/** Returns whether sound is mono
@@ -106,8 +107,8 @@ namespace OgreOggSound
 		void release();	
 		/** Opens audio file.
 		@remarks
-			Opens a specified file and checks validity. Reads first chunks
-			of audio data into buffers.
+			Opens a specified file and checks validity.
+			Reads first chunks of audio data into buffers.
 			@param fileStream
 				File stream pointer
 		 */
@@ -125,9 +126,8 @@ namespace OgreOggSound
 		void _pauseImpl();
 		/** Plays the sound.
 		@remarks
-			Begins playback of all buffers queued on the source. If a
-			source hasn't been setup yet it is requested and initialised
-			within this call.
+			Begins playback of all buffers queued on the source. 
+			If a source hasn't been setup yet it is requested and initialised within this call.
 		 */
 		void _playImpl();	
 		/** Loads data from the stream into a buffer.

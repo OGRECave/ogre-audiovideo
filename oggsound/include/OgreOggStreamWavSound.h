@@ -65,13 +65,13 @@ namespace OgreOggSound
 		void setSource(ALuint& src);	
 		/** Sets the start point of a loopable section of audio.
 		@remarks
-			Allows user to define any start point for a loopable sound, by default this would be 0, or the 
-			entire audio data, but this function can be used to offset the start of the loop. 
+			Allows user to define any start point for a loopable sound, by default this would be 0, 
+			or the entire audio data, but this function can be used to offset the start of the loop. 
 			@param startTime
 				Position in seconds to offset the loop point.
 		@note
-			The sound will start playback from the beginning of the audio data but upon looping, if set, 
-			it will loop back to the new offset position.
+			The sound will start playback from the beginning of the audio data but upon looping, 
+			if set, it will loop back to the new offset position.
 		 */
 		void setLoopOffset(float startTime);
 		/** Returns whether sound is mono
@@ -105,8 +105,8 @@ namespace OgreOggSound
 		void release();	
 		/** Opens audio file.
 		@remarks
-			Opens a specified file and checks validity. Reads first chunks
-			of audio data into buffers.
+			Opens a specified file and checks validity. 
+			Reads first chunks of audio data into buffers.
 			@param fileStream
 				File stream pointer
 		 */
@@ -124,8 +124,8 @@ namespace OgreOggSound
 		void _pauseImpl();
 		/** Plays the sound.
 		@remarks
-			Begins playback of all buffers queued on the source. If a
-			source hasn't been setup yet it is requested and initialised
+			Begins playback of all buffers queued on the source. 
+			If a source hasn't been setup yet it is requested and initialised
 			within this call.
 		 */
 		void _playImpl();	
