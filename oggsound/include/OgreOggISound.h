@@ -186,13 +186,15 @@ namespace OgreOggSound
 		inline bool isLooping() { return mLoop; }
 		/** Sets the start point of a loopable section of audio.
 		@remarks
-			(NOTE:- Streamed sounds ONLY)
-			Allows user to define any start point for a loopable sound, by default this would be 0, or the 
-			entire audio data, but this function can be used to offset the start of the loop. NOTE:- the sound
-			will start playback from the beginning of the audio data but upon looping, if set, it will loop
-			back to the new offset position.
+			Allows user to define any start point for a loopable sound, by default this would be 0, 
+			or the entire audio data, but this function can be used to offset the start of the loop. 
 			@param startTime
 				Position in seconds to offset the loop point.
+		@note
+			The sound will start playback from the beginning of the audio data but upon looping, 
+			if set, it will loop back to the new offset position.
+		@note
+			(Streamed sounds ONLY)
 		 */
 		virtual void setLoopOffset(float startTime) {}
 		/** Gets the start point of a loopable section of audio in seconds.
@@ -231,11 +233,11 @@ namespace OgreOggSound
 		/** Allows switchable spatialisation for this sound.
 		@remarks
 			Switch's spatialisation on/off for mono sounds, no-effect for stereo sounds.
-			NOTE:- If disabling spatialisation, reference distance is set to 1 and Positon is set to ZERO, so 
-			may need resetting should spatialisation be re-enabled later. 
+		@note
+			If disabling spatialisation, reference distance is set to 1 and Positon is set to ZERO, 
+			so may need resetting should spatialisation be re-enabled later.\n
 			Note also that node inherited positioning/orientation is disabled in this mode,
-			however manual positioning/orientation is still available allowing some control
-			over speaker output.
+			however manual positioning/orientation is still available allowing some control over speaker output.
 		 */
 		void disable3D(bool disable);
 		/** Queries switchable spatialisation for this sound.
@@ -280,9 +282,9 @@ namespace OgreOggSound
 			or manually stopped. Useful for infrequent sounds or sounds which only play once. Allows other
 			sounds immediate access to a playable source object.
 			@param giveup 
-				true = release source immediately
+				If true, releases source immediately (default: false)
 		 */
-		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource=giveup; }
+		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource = giveup; }
 		/** Sets sounds position.
 		@param posx 
 			x position
@@ -352,8 +354,8 @@ namespace OgreOggSound
 		/** Sets sounds minimum attenuation volume
 		@remarks
 			This value sets the minimum volume level of the sound when furthest away from the listener.
-			@param
-				minGain Volume scalar (0..1)
+			@param minGain
+				Volume scalar (0..1)
 		 */
 		void setMinVolume(float minGain);
 		/** Gets sounds minimum attenuation volume
@@ -365,9 +367,9 @@ namespace OgreOggSound
 		@remarks
 			This value sets the angles of the sound cone used by this sound.
 			@param insideAngle 
-				angle over which the volume is at maximum
+				Angle over which the volume is at maximum (in degrees)
 			@param outsideAngle 
-				angle over which the volume is at minimum
+				Angle over which the volume is at minimum (in degrees)
 		 */
 		void setConeAngles(float insideAngle=360.f, float outsideAngle=360.f);
 		/** Gets sounds cone inside angle
@@ -384,8 +386,8 @@ namespace OgreOggSound
 		@remarks
 			This value sets the volume level heard at the outer cone angle.
 			Usually 0 so no sound heard when not within sound cone.
-			@param
-				gain Volume scalar (0..1)
+			@param gain
+				Volume scalar (0..1)
 		 */
 		void setOuterConeVolume(float gain=0.f);
 		/** Gets sounds outer cone volume
@@ -410,8 +412,8 @@ namespace OgreOggSound
 		@remarks
 			This value sets the rolloff factor applied to the attenuation of the volume over distance.
 			Effectively scales the volume change affect.
-			@param
-				rolloffFactor Factor (>0).
+			@param rolloffFactor
+				Factor (>0).
 		*/
 		void setRolloffFactor(float rolloffFactor);
 		/** Gets sounds rolloff factor
@@ -424,7 +426,7 @@ namespace OgreOggSound
 			This value sets the half-volume distance.
 			The distance at which the volume would be reduced by half.
 			@param referenceDistance 
-				distance (>0).
+				Distance (>0).
 		*/
 		void setReferenceDistance(float referenceDistance);
 		/** Gets sounds reference distance
@@ -485,7 +487,7 @@ namespace OgreOggSound
 			This can be used to specify a priority to the sound which will be checked when re-using sources.
 			Higher priorities will tend to keep their sources.
 			@param priority 
-				(0..255)
+				Priority (between 0..255)
 		 */
 		inline void setPriority(Ogre::uint8 priority) { mPriority=priority; }
 		/** Adds a time position in a sound as a cue point
@@ -504,12 +506,12 @@ namespace OgreOggSound
 		inline void clearCuePoints() { mCuePoints.clear(); }
 		/** Shifts the play position to a previously set cue point position.
 		@param index
-			position in cue point list to apply
+			Position in cue point list to apply
 		 */
 		void setCuePoint(unsigned short index);
 		/** Gets a previously set cue point by index
 		@param index
-			position in cue point list to get
+			Position in cue point list to get
 		 */
 		float getCuePoint(unsigned short index);
 		/** Returns number of cue points
@@ -544,10 +546,10 @@ namespace OgreOggSound
 		/** Sets a listener object to be notified of events.
 		@remarks
 			Allows state changes to be signaled to an interested party.
-			@param l
+			@param listener
 				Listener object pointer.
 		*/
-		inline void setListener(SoundListener* l) { mSoundListener=l; }
+		inline void setListener(SoundListener* listener) { mSoundListener = listener; }
 
 		/** Sets properties of a shared resource.
 		@remarks

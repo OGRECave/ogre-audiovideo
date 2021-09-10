@@ -89,8 +89,8 @@ namespace OgreOggSound
 			Sets the 3D position of the listener. This is a manual method,
 			if attached to a SceneNode this will automatically be handled 
 			for you.
-			@param
-				pos Vector position.
+			@param pos
+				Vector position.
 		*/
 		void setPosition(const Ogre::Vector3 &pos);
 		/** Gets the position of the listener.
@@ -112,8 +112,8 @@ namespace OgreOggSound
 			Sets the 3D orientation of the listener. This is a manual method,
 			if attached to a SceneNode this will automatically be handled 
 			for you.
-			@param
-				q Orientation quaternion.
+			@param q
+				Orientation quaternion.
 		 */
 		void setOrientation(const Ogre::Quaternion &q);
 		/** Gets the orientation of the listener.
@@ -125,8 +125,8 @@ namespace OgreOggSound
 		 */
 		void setVelocity(float velx, float vely, float velz);
 		/** Sets sounds velocity.
-		@param
-			vel 3D vector velocity
+		@param vel
+			3D vector velocity
 		 */
 		void setVelocity(const Ogre::Vector3 &vel);
 		/** Updates the listener.

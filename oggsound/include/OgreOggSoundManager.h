@@ -131,7 +131,7 @@ namespace OgreOggSound
 			@param deviceName
 				Audio device string to open, will use default device if not found.
 			@param maxSources
-				maximum number of sources to allocate (optional)
+				Maximum number of sources to allocate (optional)
 			@param queueListSize
 				Desired size of queue list (optional | Multi-threaded ONLY)
 			@param scnMgr
@@ -164,7 +164,7 @@ namespace OgreOggSound
 #endif
 		/** Sets the global volume for all sounds
 			@param vol 
-				global attenuation for all sounds.
+				Global attenuation for all sounds.
 		 */
 		void setMasterVolume(ALfloat vol);
 		/** Sets the default SceneManager for creation of sound objects
@@ -198,7 +198,7 @@ namespace OgreOggSound
 			@param scnMgr
 				Pointer to SceneManager this sound belongs - 0 defaults to first SceneManager defined.
 			@param immediate
-				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.
+				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.\n
 				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
 		OgreOggISound* createSound(const Ogre::String& name,const Ogre::String& file, bool stream = false, bool loop = false, bool preBuffer=false, Ogre::SceneManager* scnMgr=0, bool immediate=false);
@@ -225,7 +225,7 @@ namespace OgreOggSound
 		@remarks
 			Sets the pitch modifier applied to all sounds.
 			@param pitch
-				new pitch for all sounds (positive value)
+				New pitch for all sounds (positive value)
 		 */
 		void setGlobalPitch(float pitch);
 		/** Gets the current global pitch.
@@ -286,18 +286,17 @@ namespace OgreOggSound
 		void _destroyTemporarySound(OgreOggISound* sound);
 		/** Requests a free source object.
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE
-			Retrieves a free source object and attaches it to the
-			specified sound object. Internally checks for any currently
-			available sources, then checks stopped sounds and finally
-			prioritised sounds.
+			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
+			Retrieves a free source object and attaches it to the specified sound object. 
+			Internally checks for any currently available sources, 
+			then checks stopped sounds and finally prioritised sounds.
 			@param sound 
 				Sound pointer.
 		 */
 		bool _requestSoundSource(OgreOggISound* sound=0);
 		/** Release a sounds source.
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE
+			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
 			Releases a specified sounds source object back to the system,
 			allowing it to be re-used by another sound.
 			@param sound 
@@ -306,23 +305,22 @@ namespace OgreOggSound
 		bool _releaseSoundSource(OgreOggISound* sound=0);
 		/** Releases a shared audio buffer
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE
+			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
 			Each shared audio buffer is reference counted so destruction is handled correctly,
-			this function merely decrements the reference count, only destroying when no sounds
-			are referencing buffer.
+			this function merely decrements the reference count, 
+			only destroying when no sounds are referencing buffer.
 			@param sName
 				Name of audio file
 			@param buffer
-				buffer id
+				Buffer ID
 		*/
 		bool _releaseSharedBuffer(const Ogre::String& sName, ALuint& buffer);
 		/** Registers a shared audio buffer
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE
-			Its possible to share audio buffer data among many sources so this function
-			registers an audio buffer as 'sharable', meaning if a the same audio file is
-			created more then once, it will simply use the original buffer data instead of
-			creating/loading the same data again.
+			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
+			Its possible to share audio buffer data among many sources so this function registers an audio buffer as 'sharable', 
+			meaning if a the same audio file is created more then once, 
+			it will simply use the original buffer data instead of creating/loading the same data again.
 			@param sName
 				Name of audio file
 			@param buffer
@@ -435,7 +433,7 @@ namespace OgreOggSound
 		/** Sets the distance units of measurement for EFX effects.
 		@remarks
 			@param unit 
-				units(meters).
+				Units (meters).
 		 */
 		void setEFXDistanceUnits(float unit=3.3f);
 		/** Creates a specified EFX filter
@@ -444,13 +442,13 @@ namespace OgreOggSound
 			@param eName
 				name for the filter.
 			@param type
-				possible types: AL_FILTER_LOWPASS, AL_FILTER_HIGHPASS, AL_FILTER_BANDPASS.
+				Possible types: AL_FILTER_LOWPASS, AL_FILTER_HIGHPASS, AL_FILTER_BANDPASS.
 			@param gain
-				gain of the allowed frequency band. Range: [0.0, 1.0]
+				Gain of the allowed frequency band. Range: [0.0, 1.0]
 			@param hfGain
-				desired gain for filtered high frequencies (only affects lowpass and bandpass filters). Range: [0.0, 1.0]
+				Desired gain for filtered high frequencies (only affects lowpass and bandpass filters). Range: [0.0, 1.0]
 			@param lfGain
-				desired gain for filtered low frequencies (only affects highpass and bandpass filters). Range: [0.0, 1.0]
+				Desired gain for filtered low frequencies (only affects highpass and bandpass filters). Range: [0.0, 1.0]
 		 */
 		bool createEFXFilter(const Ogre::String& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0, ALfloat lfGain=1.0);
 		/** Creates a specified EFX effect
@@ -458,12 +456,12 @@ namespace OgreOggSound
 			Creates a specified EFX effect if hardware supports it.
 			Optional reverb preset structure can be passed which will be applied to the effect.
 			See eax-util.h for list of presets.
-			@param eName 
-				name for effect.
-			@param type 
-				see OpenAL docs for available effects.
-			@param props	
-				legacy structure describing a preset reverb effect. (See efx-presets.h)
+			@param eName
+				Name for effect.
+			@param type
+				See OpenAL docs for available effects.
+			@param props
+				Legacy structure describing a preset reverb effect. (See efx-presets.h)
 		 */
 #	if HAVE_EFX == 1
 		bool createEFXEffect(const Ogre::String& eName, ALint type, EAXREVERBPROPERTIES* props=0);
@@ -474,13 +472,13 @@ namespace OgreOggSound
 		@remarks
 			Tries to set EFX extended source properties.
 			@param sName
-				name of sound.
+				Name of sound.
 			@param airAbsorption
-				absorption factor for air.
+				Absorption factor for air.
 			@param roomRolloff
-				room rolloff factor.
+				Room rolloff factor.
 			@param coneOuterHF
-				cone outer gain factor for High frequencies.
+				Cone outer gain factor for High frequencies.
 		 */
 		bool setEFXSoundProperties(const Ogre::String& sName, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Sets a specified paremeter on an effect
@@ -488,13 +486,13 @@ namespace OgreOggSound
 			Tries to set a parameter value on a specified effect.
 			Returns true/false.
 			@param eName
-				name of effect.
+				Name of effect.
 			@param effectType
-				see OpenAL docs for available effects.
+				See OpenAL docs for available effects.
 			@param attrib
-				parameter value to alter.
+				Parameter value to alter.
 			@param param
-				float value to set.
+				Float value to set.
 		 */
 		bool setEFXEffectParameter(const Ogre::String& eName, ALint effectType, ALenum attrib, ALfloat param);
 		/** Sets a specified paremeter on an effect
@@ -502,13 +500,13 @@ namespace OgreOggSound
 			Tries to set a parameter value on a specified effect.
 			Returns true/false.
 			@param eName 
-				name of effect.
+				Name of effect.
 			@param type 
-				see OpenAL docs for available effects.
+				See OpenAL docs for available effects.
 			@param attrib 
-				parameter value to alter.
+				Parameter value to alter.
 			@param params 
-				vector pointer of float values to set.
+				Vector pointer of float values to set.
 		 */
 		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALfloat* params=0);
 		/** Sets a specified paremeter on an effect
@@ -516,13 +514,13 @@ namespace OgreOggSound
 			Tries to set a parameter value on a specified effect.
 			Returns true/false.
 			@param eName 
-				name of effect.
+				Name of effect.
 			@param type 
-				see OpenAL docs for available effects.
+				See OpenAL docs for available effects.
 			@param attrib 
-				parameter value to alter.
+				Parameter value to alter.
 			@param param 
-				integer value to set.
+				Integer value to set.
 		 */
 		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALint param);
 		/** Sets a specified paremeter on an effect
@@ -530,13 +528,13 @@ namespace OgreOggSound
 			Tries to set a parameter value on a specified effect.
 			Returns true/false.
 			@param eName 
-				name of effect.
+				Name of effect.
 			@param type 
-				see OpenAL docs for available effects.
+				See OpenAL docs for available effects.
 			@param attrib 
-				parameter value to alter.
+				Parameter value to alter.
 			@param params 
-				vector pointer of integer values to set.
+				Vector pointer of integer values to set.
 		 */
 		bool setEFXEffectParameter(const Ogre::String& eName, ALint type, ALenum attrib, ALint* params=0);
 		/** Gets the maximum number of Auxiliary Effect Slots detected for the OpenAL device on initialization
@@ -563,20 +561,20 @@ namespace OgreOggSound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sName 
-				name of sound
+				Name of sound
 			@param slotID
 				ID of the EFX slot where the sound will be attached along with the effect
 			@param effect 
-				name of effect as defined when created
+				Name of effect as defined when created
 			@param filter
-				name of filter as defined when created
+				Name of filter as defined when created
 		 */
 		bool attachEffectToSound(const Ogre::String& sName, ALuint slotID, const Ogre::String& effect="", const Ogre::String& filter="");
 		/** Detaches all effects from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
 			@param sName 
-				name of sound
+				Name of sound
 			@param slotID
 				ID of the EFX slot where the sound was attached in the call to attachEffectToSound()
 		 */
@@ -585,67 +583,67 @@ namespace OgreOggSound
 		@remarks
 			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
 			@param sName 
-				name of sound
+				Name of sound
 			@param filter
-				name of filter as defined when created
+				Name of filter as defined when created
 		 */
 		bool attachFilterToSound(const Ogre::String& sName, const Ogre::String& filter="");
 		/** Detaches all filters from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sName 
-				name of sound
+				Name of sound
 		 */
 		bool detachFilterFromSound(const Ogre::String& sName);
 		/** Sets extended properties on a specified sounds source
 		@remarks
 			Tries to set EFX extended source properties.
 			@param sound
-				name of sound.
+				Name of sound.
 			@param airAbsorption
-				absorption factor for air.
+				Absorption factor for air.
 			@param roomRolloff
-				room rolloff factor.
+				Room rolloff factor.
 			@param coneOuterHF
-				cone outer gain factor for High frequencies.
+				Cone outer gain factor for High frequencies.
 		 */
 		bool _setEFXSoundPropertiesImpl(OgreOggISound* sound=0, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Attaches an effect to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sound
-				sound pointer
+				Sound pointer
 			@param slot
-				slot ID
+				Slot ID
 			@param effect 
-				name of effect as defined when created
+				Name of effect as defined when created
 			@param filter
-				name of filter as defined when created
+				Name of filter as defined when created
 		 */
 		bool _attachEffectToSoundImpl(OgreOggISound* sound=0, ALuint slot=255, const Ogre::String& effect="", const Ogre::String& filter="");
-		/** Attaches a filter to a sound
-		@remarks
-			Currently sound must have a source attached prior to this call.
-			@param sound
-				sound pointer
-			@param filter
-				name of filter as defined when created
-		 */
-		bool _detachEffectFromSoundImpl(OgreOggISound* sound=0, ALuint slotID=255);
-		/** Detaches all filters from a sound
-		@remarks
-			Currently sound must have a source attached prior to this call.
-			@param sound
-				sound pointer
-		 */
-		bool _attachFilterToSoundImpl(OgreOggISound* sound=0, const Ogre::String& filter="");
 		/** Detaches all effects from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sound
-				sound pointer
+				Sound pointer
 			@param slotID
-				slot ID
+				Slot ID
+		 */
+		bool _detachEffectFromSoundImpl(OgreOggISound* sound=0, ALuint slotID=255);
+		/** Attaches a filter to a sound
+		@remarks
+			Currently sound must have a source attached prior to this call.
+			@param sound
+				Sound pointer
+			@param filter
+				Name of filter as defined when created
+		 */
+		bool _attachFilterToSoundImpl(OgreOggISound* sound=0, const Ogre::String& filter="");
+		/** Detaches all filters from a sound
+		@remarks
+			Currently sound must have a source attached prior to this call.
+			@param sound
+				Sound pointer
 		 */
 		bool _detachFilterFromSoundImpl(OgreOggISound* sound=0);
 		/** Returns whether a specified effect is supported
@@ -758,7 +756,7 @@ namespace OgreOggSound
 			parameters this function will create a static/streamed sound.
 			Each sound must have a unique name within the manager.
 			@param scnMgr
-				pointer to creator
+				Pointer to creator
 			@param name 
 				Unique name of sound
 			@param file 
@@ -770,7 +768,7 @@ namespace OgreOggSound
 			@param preBuffer 
 				Flag indicating if a source should be attached at creation.
 			@param immediate
-				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.
+				Optional flag to indicate creation should occur immediately and not be passed to background thread for queueing.\n
 				Can be used to overcome the random creation time which might not be acceptable (MULTI-THREADED ONLY)
 		 */
 		
@@ -789,9 +787,9 @@ namespace OgreOggSound
 		
 		/** Implementation of sound loading
 		@param sound
-			sound pointer.
+			Sound pointer.
 		@param file
-			name of sound file.
+			Name of sound file.
 		@param prebuffer
 			Prebuffer flag.
 		*/
@@ -882,31 +880,31 @@ namespace OgreOggSound
 		void _determineAuxEffectSlots();
 		/** Gets a specified EFX filter
 		@param fName 
-			name of filter as defined when created.
+			Name of filter as defined when created.
 		 */
 		ALuint _getEFXFilter(const Ogre::String& fName);
 		/** Gets a specified EFX Effect
 		@param eName 
-			name of effect as defined when created.
+			Name of effect as defined when created.
 		 */
 		ALuint _getEFXEffect(const Ogre::String& eName);
 		/** Gets a specified EFX Effect slot
 		@param slotID 
-			index of auxiliary effect slot
+			Index of auxiliary effect slot
 		 */
 		ALuint _getEFXSlot(int slotID=0);
 		/** Sets EAX reverb properties using a specified present
 		@param pEFXEAXReverb 
-			pointer to converted EFXEAXREVERBPROPERTIES structure object
+			Pointer to converted EFXEAXREVERBPROPERTIES structure object
 		@param uiEffect 
-			effect ID
+			Effect ID
 		 */
 		bool _setEAXReverbProperties(EFXEAXREVERBPROPERTIES *pEFXEAXReverb, ALuint uiEffect);
 		/** Attaches a created effect to an Auxiliary slot
 		@param slot 
-			slot ID
+			Slot ID
 		@param effect 
-			effect ID
+			Effect ID
 		 */
 		bool _attachEffectToSlot(ALuint slot, ALuint effect);
 #endif
@@ -915,13 +913,10 @@ namespace OgreOggSound
 		void _reactivateQueuedSounds();
 		/** Re-activates any sounds which had their source stolen, implementation methods.
 		@remarks
-			When all sources are in use the sounds begin to give up
-			their source objects to higher priority sounds. When this
-			happens the lower priority sound is queued ready to re-play
-			when a source becomes available again, this function checks
-			this queue and tries to re-play those sounds. Only affects
-			sounds which were originally playing when forced to give up
-			their source object.
+			When all sources are in use, the sounds begin to give up their source objects to higher priority sounds.\n
+			When this happens the lower priority sound is queued ready to re-play when a source becomes available again, 
+			this function checks this queue and tries to re-play those sounds.\n
+			Only affects sounds which were originally playing when forced to give up their source object.
 		 */
 		void _reactivateQueuedSoundsImpl();
 		/** Enumerates audio devices.

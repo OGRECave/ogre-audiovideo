@@ -56,8 +56,8 @@ namespace OgreOggSound
 		@remarks
 			Sets the source object this sound will use to queue buffers onto
 			for playback. Also handles refilling buffers and queuing up.
-			@param
-				src Source id.
+			@param src
+				OpenAL Source ID.
 		 */
 		void setSource(ALuint& src);
 		/** Returns whether sound is mono
@@ -95,7 +95,7 @@ namespace OgreOggSound
 			Opens a specified file and checks validity.
 			Reads first chunks of audio data into buffers.
 			@param fileStream
-				file stream pointer
+				File stream pointer
 		 */
 		void _openImpl(Ogre::DataStreamPtr& fileStream) {}
 		/** Stops playing sound.
