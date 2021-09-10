@@ -53,16 +53,16 @@ namespace OgreOggSound
 		/** Sets the loop status.
 		@remarks
 			Immediately sets the loop status if a source is associated
-			@param
-				loop true=loop
+			@param loop
+				Loop if true
 		 */
 		void loop(bool loop);
 		/** Sets the source to use for playback.
 		@remarks
 			Sets the source object this sound will use to queue buffers onto
 			for playback. Also handles refilling buffers and queuing up.
-			@param
-				src Source id.
+			@param src
+				OpenAL Source ID.
 		 */
 		void setSource(ALuint& src);	
 		/** Returns whether sound is mono
@@ -103,16 +103,16 @@ namespace OgreOggSound
 			Opens a specified file and checks validity.
 			Reads first chunks of audio data into buffers.
 			@param fileStream
-				file stream pointer
+				File stream pointer
 		 */
 		void _openImpl(Ogre::DataStreamPtr& fileStream);
 		/** Opens audio file.
 		@remarks
 			Uses a shared buffer.
 			@param fName
-				audio file name
+				Audio file name
 			@param buffer
-				shared buffer reference
+				Shared buffer reference
 		 */
 		void _openImpl(const Ogre::String& fName, sharedAudioBuffer* buffer);
 		/** Stops playing sound.

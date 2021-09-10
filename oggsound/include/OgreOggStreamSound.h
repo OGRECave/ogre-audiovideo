@@ -61,18 +61,18 @@ namespace OgreOggSound
 		@remarks
 			Sets the source object this sound will use to queue buffers onto
 			for playback. Also handles refilling buffers and queuing up.
-			@param
-				src Source id.
+			@param src
+				OpenAL Source ID.
 		 */
 		void setSource(ALuint& src);	
 		/** Sets the start point of a loopable section of audio.
 		@remarks
-			Allows user to define any start point for a loopable sound, by default this would be 0, or the 
-			entire audio data, but this function can be used to offset the start of the loop. NOTE:- the sound
-			will start playback from the beginning of the audio data but upon looping, if set, it will loop
-			back to the new offset position.
+			Allows user to define any start point for a loopable sound, by default this would be 0, 
+			or the entire audio data, but this function can be used to offset the start of the loop. 
 			@param startTime
 				Position in seconds to offset the loop point.
+		@note
+			The sound will start playback from the beginning of the audio data but upon looping, if set, it will loop back to the new offset position.
 		 */
 		void setLoopOffset(float startTime);
 		/** Returns whether sound is mono
@@ -109,7 +109,7 @@ namespace OgreOggSound
 			Opens a specified file and checks validity. Reads first chunks
 			of audio data into buffers.
 			@param fileStream
-				file stream pointer
+				File stream pointer
 		 */
 		void _openImpl(Ogre::DataStreamPtr& fileStream);
 		/** Stops playing sound.
@@ -134,8 +134,8 @@ namespace OgreOggSound
 		@remarks
 			Reads a specified chunk of data from the file stream into a
 			designated buffer object.
-			@param
-				buffer id to load data into.
+			@param buffer
+				OpenAL buffer ID to load data into.
 		 */
 		bool _stream(ALuint buffer);
 		/** Updates the data buffers with sound information.
