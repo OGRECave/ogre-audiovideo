@@ -2,8 +2,8 @@ var class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound =
 [
     [ "OgreOggStaticWavSound", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#ac5819996f9699f2407cd1ec7338ad18c", null ],
     [ "~OgreOggStaticWavSound", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#a420a1ee52f3dded6e4ebd9a028572358", null ],
-    [ "_openImpl", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#a0a4c42620ca8fb9943ede460b759e6cc", null ],
     [ "_openImpl", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#ae10b993ef46048be10f370bba484b80a", null ],
+    [ "_openImpl", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#a0a4c42620ca8fb9943ede460b759e6cc", null ],
     [ "_pauseImpl", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#aad694ccaf7d43a6c00dda62c87db51e6", null ],
     [ "_playImpl", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#a91d3fce470e9a50d1cf4e0ff445e3583", null ],
     [ "_prebuffer", "class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html#aa15738584ba2fe4c3bc7c51480f7118a", null ],

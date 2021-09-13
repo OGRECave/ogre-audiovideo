@@ -20,8 +20,7 @@ var namespace_ogre_ogg_sound =
     [ "sharedAudioBuffer", "struct_ogre_ogg_sound_1_1shared_audio_buffer.html", "struct_ogre_ogg_sound_1_1shared_audio_buffer" ],
     [ "SOggFile", "struct_ogre_ogg_sound_1_1_s_ogg_file.html", "struct_ogre_ogg_sound_1_1_s_ogg_file" ],
     [ "SoundAction", "struct_ogre_ogg_sound_1_1_sound_action.html", "struct_ogre_ogg_sound_1_1_sound_action" ],
-    [ "WaveHeader", "struct_ogre_ogg_sound_1_1_wave_header.html", "struct_ogre_ogg_sound_1_1_wave_header" ],
     [ "WAVEHEADER", "struct_ogre_ogg_sound_1_1_w_a_v_e_h_e_a_d_e_r.html", "struct_ogre_ogg_sound_1_1_w_a_v_e_h_e_a_d_e_r" ],
-    [ "WavFormatData", "struct_ogre_ogg_sound_1_1_wav_format_data.html", "struct_ogre_ogg_sound_1_1_wav_format_data" ],
-    [ "wFormat", "struct_ogre_ogg_sound_1_1w_format.html", "struct_ogre_ogg_sound_1_1w_format" ]
+    [ "WaveHeader", "struct_ogre_ogg_sound_1_1_wave_header.html", "struct_ogre_ogg_sound_1_1_wave_header" ],
+    [ "WavFormatData", "struct_ogre_ogg_sound_1_1_wav_format_data.html", "struct_ogre_ogg_sound_1_1_wav_format_data" ]
 ];

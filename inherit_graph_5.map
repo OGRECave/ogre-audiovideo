@@ -1,3 +1,12 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$struct_ogre_ogg_sound_1_1c_sound.html" title="Holds information about a create sound request. " alt="" coords="5,5,168,32"/>
+<area shape="rect" id="node1" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_animable_object.html" title=" " alt="" coords="5,143,156,170"/>
+<area shape="rect" id="node2" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_movable_object.html" title=" " alt="" coords="204,169,347,195"/>
+<area shape="rect" id="node3" href="$class_ogre_ogg_sound_1_1_ogre_ogg_i_sound.html" title="A single sound object." alt="" coords="398,143,609,170"/>
+<area shape="rect" id="node9" href="$class_ogre_ogg_sound_1_1_ogre_ogg_listener.html" title="Listener object (Users ears)" alt="" coords="395,194,612,221"/>
+<area shape="rect" id="node4" href="$class_ogre_ogg_sound_1_1_ogre_ogg_static_sound.html" title="A single static buffer sound (OGG)" alt="" coords="664,5,869,47"/>
+<area shape="rect" id="node5" href="$class_ogre_ogg_sound_1_1_ogre_ogg_static_wav_sound.html" title="A single static buffer sound (WAV)" alt="" coords="664,71,869,112"/>
+<area shape="rect" id="node6" href="$class_ogre_ogg_sound_1_1_ogre_ogg_stream_buffer_sound.html" title="A single streaming sound (OGG)" alt="" coords="660,136,873,177"/>
+<area shape="rect" id="node7" href="$class_ogre_ogg_sound_1_1_ogre_ogg_stream_sound.html" title="A single streaming sound (OGG)" alt="" coords="660,201,873,243"/>
+<area shape="rect" id="node8" href="$class_ogre_ogg_sound_1_1_ogre_ogg_stream_wav_sound.html" title="A single streaming sound (WAV)" alt="" coords="660,267,873,308"/>
+<area shape="rect" id="node10" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_shadow_caster.html" title=" " alt="" coords="9,194,152,221"/>
 </map>

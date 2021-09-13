@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$struct_ogre_ogg_sound_1_1_chunk_header.html" title="CHUNK header information. " alt="" coords="5,5,204,32"/>
+<area shape="rect" id="node1" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_plugin.html" title=" " alt="" coords="5,35,100,61"/>
+<area shape="rect" id="node2" href="$class_ogre_1_1_ogre_video_plugin.html" title=" " alt="" coords="175,5,329,32"/>
+<area shape="rect" id="node3" href="$class_ogre_ogg_sound_1_1_ogre_ogg_sound_plugin.html" title="Plugin instance for the MovableText." alt="" coords="148,57,356,98"/>
 </map>

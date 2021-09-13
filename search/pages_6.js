@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['hardware_20buffers',['Hardware Buffers',['https://ogrecave.github.io/ogre/api/1.12/_hardware-_buffers.html',1,'']]],
-  ['high_2dlevel_20programs',['High-level Programs',['https://ogrecave.github.io/ogre/api/1.12/_high-level-_programs.html',1,'']]],
-  ['hlms_3a_20high_20level_20material_20system',['HLMS: High Level Material System',['https://ogrecave.github.io/ogre/api/1.12/hlms.html',1,'']]]
+  ['guide_20to_20building_20ogre_24928',['Guide to building OGRE',['https://ogrecave.github.io/ogre/api/latest/building-ogre.html',1,'']]],
+  ['gpu_20program_20scripts_24929',['GPU Program Scripts',['https://ogrecave.github.io/ogre/api/latest/_high-level-_programs.html',1,'']]]
 ];
