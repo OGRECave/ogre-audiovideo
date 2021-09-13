@@ -1,11 +1,9 @@
 var class_ogre_ogg_sound_1_1_ogre_ogg_sound_record =
 [
-    [ "RecordDeviceList", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#adb62d0e162f382738333fd62d8dc1b1e", null ],
     [ "OgreOggSoundRecord", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#adcf7335b9a7ffd1c24cf81ed3a82ab78", null ],
     [ "~OgreOggSoundRecord", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a93b4da23d48b80f9a30ece19f837a58f", null ],
     [ "_openDevice", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#ae10444189272077a84a3dacfdc9a9983", null ],
     [ "_updateRecording", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#abdfd8c6d68f46c9b3b010712e1f80e46", null ],
-    [ "getCaptureDeviceList", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a1e33c8d3507f77567389151c29ec79b9", null ],
     [ "initCaptureDevice", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a5f78e8de781d8b2f2c3e7b81f0cc8af1", null ],
     [ "isCaptureAvailable", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a4a29814e2242ea1560c3815283ad33b2", null ],
     [ "startRecording", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a802b31d8a6c8ecf69903e64cb80701af", null ],
@@ -19,7 +17,6 @@ var class_ogre_ogg_sound_1_1_ogre_ogg_sound_record =
     [ "mDataSize", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a39b9611fa322c07b89343157a4a8746f", null ],
     [ "mDefaultCaptureDevice", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a8f7601c463021307765ac96c6b00e363", null ],
     [ "mDevice", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#ad3e91850766dc4a0012f3e3186cbfdf7", null ],
-    [ "mDeviceList", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a803d459b68a17954a34c42f055857703", null ],
     [ "mDeviceName", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#acc1a3290ebeb121273ea99eb27a02f05", null ],
     [ "mFile", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#af67e48835a99a62f0b66fdf368e7c404", null ],
     [ "mFormat", "class_ogre_ogg_sound_1_1_ogre_ogg_sound_record.html#a4b2644c3a5ea4ae7ebf9afd4af625089", null ],

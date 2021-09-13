@@ -1,3 +1,4 @@
 <map id="OgreOggSound::OgreOggSoundManager" name="OgreOggSound::OgreOggSoundManager">
-<area shape="rect" id="node2" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_singleton.html" title="Ogre::Singleton\&lt; OgreOgg\lSoundManager \&gt;" alt="" coords="21,5,197,47"/>
+<area shape="rect" id="node1" title="Sound Manager: Manages all sounds for an application." alt="" coords="5,95,213,136"/>
+<area shape="rect" id="node2" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_singleton.html" title=" " alt="" coords="21,5,197,47"/>
 </map>

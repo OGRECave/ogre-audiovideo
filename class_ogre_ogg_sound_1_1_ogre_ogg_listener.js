@@ -1,9 +1,9 @@
 var class_ogre_ogg_sound_1_1_ogre_ogg_listener =
 [
     [ "OgreOggListener", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#aee1739a008ac71e5610726a9b2844856", null ],
-    [ "_notifyAttached", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a19f33897640a703100c04e93fedbdca1", null ],
+    [ "_notifyAttached", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a972bc53647a87a731ed9de94cd5b3cc3", null ],
+    [ "_notifyMoved", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a3164d1268af45468d4e4d72c3371dba0", null ],
     [ "_updateRenderQueue", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a6007a8256afb6f422a9f77091b6f5c21", null ],
-    [ "_updateRenderQueue", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#ad1570ae8ea75f4909f6e9b6edda5e647", null ],
     [ "getBoundingBox", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#af41f19bf47dcf6147e2fef43f6168f11", null ],
     [ "getBoundingRadius", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a037b9e48a5c92136fc699c6f3ab3af37", null ],
     [ "getMovableType", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a35b3b3de2dbb10737f331a904f921c4c", null ],
@@ -14,8 +14,9 @@ var class_ogre_ogg_sound_1_1_ogre_ogg_listener =
     [ "setOrientation", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a40e2cca3485483b4a9e83d5cbd5cd353", null ],
     [ "setPosition", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a6e2a9e6d271f856caac36d8c1f0286bc", null ],
     [ "setPosition", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a3840a2d197d5cadda6122069fad99486", null ],
-    [ "setVelocity", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a0fed536784d4edcc16d8caea76b53b5d", null ],
+    [ "setSceneManager", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a7cc6b532ce27b03a7b2a75886ea2ac19", null ],
     [ "setVelocity", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a2c8c3ce6fd5951bf51b1cd1b3d8e823e", null ],
+    [ "setVelocity", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a0fed536784d4edcc16d8caea76b53b5d", null ],
     [ "update", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a65d7c3761c07578920995852f489a340", null ],
     [ "visitRenderables", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#a7e6a0f5eb9087b8de951bdeca8971860", null ],
     [ "mLocalTransformDirty", "class_ogre_ogg_sound_1_1_ogre_ogg_listener.html#adab00c19277fd0d70fef6e0961874463", null ],

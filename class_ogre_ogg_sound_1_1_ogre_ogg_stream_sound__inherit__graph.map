@@ -1,7 +1,7 @@
 <map id="OgreOggSound::OgreOggStreamSound" name="OgreOggSound::OgreOggStreamSound">
-<area shape="rect" id="node2" href="$class_ogre_ogg_sound_1_1_ogre_ogg_i_sound.html" title="A single sound object. " alt="" coords="143,169,355,196"/>
-<area shape="rect" id="node3" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_movable_object.html" title="Ogre::MovableObject" alt="" coords="177,95,322,121"/>
-<area shape="rect" id="node4" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_shadow_caster.html" title="Ogre::ShadowCaster" alt="" coords="5,13,149,39"/>
-<area shape="rect" id="node5" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_animable_object.html" title="Ogre::AnimableObject" alt="" coords="174,13,325,39"/>
-<area shape="rect" id="node6" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_allocated_object.html" title="Ogre::AllocatedObject\l\&lt; Category \&gt;" alt="" coords="349,5,499,47"/>
+<area shape="rect" id="node1" title="A single streaming sound (OGG)" alt="" coords="55,229,269,271"/>
+<area shape="rect" id="node2" href="$class_ogre_ogg_sound_1_1_ogre_ogg_i_sound.html" title="A single sound object." alt="" coords="57,155,267,181"/>
+<area shape="rect" id="node3" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_movable_object.html" title=" " alt="" coords="91,80,233,107"/>
+<area shape="rect" id="node4" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_shadow_caster.html" title=" " alt="" coords="5,5,148,32"/>
+<area shape="rect" id="node5" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_animable_object.html" title=" " alt="" coords="172,5,323,32"/>
 </map>

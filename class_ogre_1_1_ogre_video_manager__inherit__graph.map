@@ -1,5 +1,7 @@
 <map id="Ogre::OgreVideoManager" name="Ogre::OgreVideoManager">
-<area shape="rect" id="node2" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_external_texture_source.html" title="Ogre::ExternalTextureSource" alt="" coords="5,80,196,107"/>
-<area shape="rect" id="node3" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_string_interface.html" title="Ogre::StringInterface" alt="" coords="29,5,172,32"/>
-<area shape="rect" id="node4" href="/usr/local/share/OGRE/docs/api/Ogre.tag$class_ogre_1_1_frame_listener.html" title="Ogre::FrameListener" alt="" coords="221,80,362,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="207,155,376,181"/>
+<area shape="rect" id="node2" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_external_texture_source.html" title=" " alt="" coords="5,80,196,107"/>
+<area shape="rect" id="node3" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_string_interface.html" title=" " alt="" coords="30,5,171,32"/>
+<area shape="rect" id="node4" href="D:/OGRE2/Built/ogre-1.12.12/Docs/api/Ogre.tag$class_ogre_1_1_frame_listener.html" title=" " alt="" coords="221,80,362,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="386,80,530,107"/>
 </map>
