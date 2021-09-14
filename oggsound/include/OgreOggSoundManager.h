@@ -111,21 +111,20 @@ namespace OgreOggSound
 		OgreOggSoundManager();
 		/** Destroys this manager.
 		@remarks
-			Destroys all sound objects and thread if defined. Cleans up
-			all OpenAL objects, buffers and devices and closes down the
-			audio device.
+			Destroys all sound objects and thread if defined.\n
+			Cleans up all OpenAL objects, buffers and devices and closes down the audio device.
 		 */
 		~OgreOggSoundManager();
 		/** Creates a listener object for the system
 		@remarks
 			Only needed when SceneManager->clearScene() or similar is used, 
-			which destroys the listener object automatically without the manager knowing. 
+			which destroys the listener object automatically without the manager knowing.\n
 			You can therefore use this function to recreate a listener object for the system.
 		 */
 		bool createListener();
 		/** Initialises the audio device.
 		@remarks
-			Attempts to initialise the audio device for sound playback.
+			Attempts to initialise the audio device for sound playback.\n
 			Internally some logging is done to list features supported as
 			well as creating a pool of sources from which sounds can be
 			attached and played.
@@ -148,8 +147,8 @@ namespace OgreOggSound
 #if HAVE_ALEXT == 1
 		/** Pauses the OpenAL device
 		@remarks
-			This function allows applications to pause a playback device. 
-			The main purpose of this is to silence output, stop processing, and allow the audio hardware to go into a low-power mode. 
+			This function allows applications to pause a playback device.\n
+			The main purpose of this is to silence output, stop processing, and allow the audio hardware to go into a low-power mode.\n
 			On a mobile device, for instance, apps may want to silence output and not waste battery life with unneeded processing when in the background.
 		@note
 			Uses the ALC_SOFT_pause_device extension which is available in OpenAL Soft (https://openal-soft.org/openal-extensions/SOFT_pause_device.txt)
@@ -183,8 +182,8 @@ namespace OgreOggSound
 		/** Creates a single sound object.
 		@remarks
 			Plugin specific version of createSound, uses createMovableObject() to instantiate
-			a sound automatically registered with the supplied SceneManager, allows OGRE to automatically
-			cleanup/manage this sound.
+			a sound automatically registered with the supplied SceneManager, 
+			allows OGRE to automatically cleanup/manage this sound.\n
 			Each sound must have a unique name within the manager.
 			@param name 
 				Unique name of sound
@@ -246,7 +245,8 @@ namespace OgreOggSound
 		inline void unmuteAllSounds() { setMasterVolume(mOrigVolume); }
 		/** Add single sound to list of sounds resumed on resumeAllPausedSounds call.
 		@remarks
-			Do not pause sound or check play/pause state. Only add to list of sounds to resume.
+			Do not pause sound or check play/pause state.\n
+			Only add to list of sounds to resume.
 			@param sound 
 				Sound pointer.
 		 */
@@ -287,26 +287,27 @@ namespace OgreOggSound
 		void _destroyTemporarySound(OgreOggISound* sound);
 		/** Requests a free source object.
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
-			Retrieves a free source object and attaches it to the specified sound object. 
+			Retrieves a free source object and attaches it to the specified sound object.\n
 			Internally checks for any currently available sources, 
 			then checks stopped sounds and finally prioritised sounds.
 			@param sound 
 				Sound pointer.
+		@note
+			Internal function - SHOULD NOT BE CALLED BY USER CODE.\n
 		 */
 		bool _requestSoundSource(OgreOggISound* sound=0);
 		/** Release a sounds source.
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
 			Releases a specified sounds source object back to the system,
 			allowing it to be re-used by another sound.
 			@param sound 
 				Sound pointer.
+		@note
+			Internal function - SHOULD NOT BE CALLED BY USER CODE.\n
 		 */
 		bool _releaseSoundSource(OgreOggISound* sound=0);
 		/** Releases a shared audio buffer
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
 			Each shared audio buffer is reference counted so destruction is handled correctly,
 			this function merely decrements the reference count, 
 			only destroying when no sounds are referencing buffer.
@@ -314,11 +315,12 @@ namespace OgreOggSound
 				Name of audio file
 			@param buffer
 				Buffer ID
+		@note
+			Internal function - SHOULD NOT BE CALLED BY USER CODE.\n
 		*/
 		bool _releaseSharedBuffer(const Ogre::String& sName, ALuint& buffer);
 		/** Registers a shared audio buffer
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE\n
 			Its possible to share audio buffer data among many sources so this function registers an audio buffer as 'sharable', 
 			meaning if a the same audio file is created more then once, 
 			it will simply use the original buffer data instead of creating/loading the same data again.
@@ -328,6 +330,8 @@ namespace OgreOggSound
 				OpenAL buffer ID holding audio data
 			@param parent
 				Sound from where to copy the properties: Buffers, PlayTime, Format
+		@note
+			Internal function - SHOULD NOT BE CALLED BY USER CODE.\n
 		 */
 		bool _registerSharedBuffer(const Ogre::String& sName, ALuint& buffer, OgreOggISound* parent=0);
 		/** Sets distance model.
@@ -397,7 +401,7 @@ namespace OgreOggSound
 		void update(float fTime=0.f);
 		/** Sets a resource group name to search for all sounds first.
 		@remarks
-			A speed improvement to skip the cost of searching all resource locations/groups when creating sounds.
+			A speed improvement to skip the cost of searching all resource locations/groups when creating sounds.\n
 			Will default to searching all groups if sound is not found.
 			@param group
 				Name of OGRE ResourceGroup.
@@ -616,8 +620,8 @@ namespace OgreOggSound
 		/** Helper function used to release Auxiliary Effect Slots
 		@remarks
 			When two Auxiliary Effect Slots are concatenated by concatenateEFXEffectSlots() the order of slot deletion becomes important.\n
-			To solve this a Multi Map registers the concatenated pairs, which end up forming trees.\n
-			The deletion of the Auxiliary Effect Slots begins with the tree leaves, to process in that order we use DFS (Depth First Search).\n
+			To solve this a Multi Map registers the concatenated pairs, which end up forming a forest of trees.\n
+			The deletion of the Auxiliary Effect Slots should begin with the tree leaves, to delete in that order we use DFS (Depth First Search).\n
 			This function implements the algorithm recursively.
 			@param slot
 				Slot to process
@@ -706,13 +710,14 @@ namespace OgreOggSound
 
 		/** Pushes a sound action request onto the queue
 		@remarks
-			Internal function - SHOULD NOT BE CALLED BY USER CODE!
 			Sound actions are queued through the manager to be operated on in an efficient and
 			non-blocking manner, this function adds a request to the list to be processed.
 			@param sound
 				Sound object to perform action upon
 			@param action
 				Action to perform.
+		@note
+			Internal function - SHOULD NOT BE CALLED BY USER CODE.\n
 		*/
 		void _requestSoundAction(const SoundAction& action);
 		/** Sets the mForceMutex flag for switching between non-blocking/blocking action calls.
@@ -746,10 +751,11 @@ namespace OgreOggSound
 		/** Flag indicating that a mutex should be used whenever an action is requested.
 		@remarks
 			In certain instances user may require that an action is performed inline,
-			rather then the default: queued and performed asynchronously. This global flag
-			will affect all subsequent asynchronous calls to execute immediately, with the
-			disadvantage that it will block the main thread. NOTE:- this doesn't affect
-			buffer updates, which will still be handled asynchronously.
+			rather then the default: queued and performed asynchronously.\n
+			This global flag will affect all subsequent asynchronous calls to execute immediately, 
+			with the disadvantage that it will block the main thread. 
+		@note
+			This doesn't affect buffer updates, which will still be handled asynchronously.
 		*/
 		bool mForceMutex;			 
 									
@@ -761,14 +767,12 @@ namespace OgreOggSound
 
 		/** Threaded function for streaming updates
 		@remarks
-			Optional threading function specified in OgreOggPreReqs.h.
-			Implemented to handle updating of streamed audio buffers
-			independently of main game thread, unthreaded streaming
-			would be disrupted by any pauses or large frame lags, due to
-			the fact that OpenAL itself runs in its own thread. If the audio
-			buffers aren't constantly re-filled the sound will be automatically
-			stopped by OpenAL. Static sounds do not suffer this problem because all the
-			audio data is preloaded into memory.
+			Optional threading function specified in OgreOggPreReqs.h.\n
+			Implemented to handle updating of streamed audio buffers independently of main game thread, 
+			unthreaded streaming would be disrupted by any pauses or large frame lags, 
+			due to the fact that OpenAL itself runs in its own thread.\n
+			If the audio buffers aren't constantly re-filled the sound will be automatically stopped by OpenAL.\n
+			Static sounds do not suffer this problem because all the audio data is preloaded into memory.
 		 */
 		static void threadUpdate()
 		{
@@ -786,7 +790,7 @@ namespace OgreOggSound
 		/** Creates a single sound object (implementation).
 		@remarks
 			Creates and inits a single sound object, depending on passed
-			parameters this function will create a static/streamed sound.
+			parameters this function will create a static/streamed sound.\n
 			Each sound must have a unique name within the manager.
 			@param scnMgr
 				Pointer to creator
@@ -867,16 +871,17 @@ namespace OgreOggSound
 		void _destroyAllSoundsImpl();
 		/** Creates a pool of OpenAL sources for playback.
 		@remarks
-			Attempts to create a pool of source objects which allow simultaneous audio playback.
+			Attempts to create a pool of source objects which allow simultaneous audio playback.\n
 			The number of sources will be clamped to either the hardware maximum or [mMaxSources], whichever comes first.
 		 */
 		int _createSourcePool();
 		/** Gets a shared audio buffer
 		@remarks
-			Returns a previously loaded shared buffer reference if available.
-			NOTE:- Increments a reference count so releaseSharedBuffer() must be called when buffer is no longer used.
+			Returns a previously loaded shared buffer reference if available.\n
 			@param sName
 				Name of audio file
+		@note
+			Increments a reference count so releaseSharedBuffer() must be called when buffer is no longer used.
 		 */
 		sharedAudioBuffer* _getSharedBuffer(const Ogre::String& sName);
 		/** Opens the specified file as a new data stream.

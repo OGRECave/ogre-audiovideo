@@ -244,7 +244,7 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references   
 #---------------------------------------------------------------------------
-TAGFILES               = ${OGRE_CONFIG_DIR}/docs/api/Ogre.tag=https://ogrecave.github.io/ogre/api/latest/
+TAGFILES               = ${OGRE_CONFIG_DIR}/../Docs/api/Ogre.tag=https://ogrecave.github.io/ogre/api/latest/
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
