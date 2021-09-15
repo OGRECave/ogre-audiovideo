@@ -234,11 +234,7 @@ namespace OgreOggSound
 			Switch's spatialisation on/off for mono sounds, no-effect for stereo sounds.
 		@note
 			If disabling spatialisation, reference distance is set to 1 and Positon is set to ZERO, 
-<<<<<<< HEAD
 			so may need resetting should spatialisation be re-enabled later.\n
-=======
-			so may need resetting should spatialisation be re-enabled later. 
->>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 			Note also that node inherited positioning/orientation is disabled in this mode,
 			however manual positioning/orientation is still available allowing some control over speaker output.
 		 */
@@ -287,16 +283,6 @@ namespace OgreOggSound
 			@param giveup 
 				If true, releases source immediately (default: false)
 		 */
-<<<<<<< HEAD
-		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource = giveup; }
-		/** Sets sounds position.
-		@param posx 
-			x position
-		@param posy
-			y position
-		@param posz 
-			z position
-=======
 		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource=giveup; }
 		/** Sets the sounds position.
 		@remarks
@@ -309,7 +295,6 @@ namespace OgreOggSound
 				y position
 			@param posz
 				z position
->>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 		 */
 		void setPosition(float posx,float posy, float posz);
 		/** Sets the sounds position.
@@ -406,17 +391,10 @@ namespace OgreOggSound
 		/** Sets sounds cone angles
 		@remarks
 			This value sets the angles of the sound cone used by this sound.
-<<<<<<< HEAD
 			@param insideAngle 
 				Angle over which the volume is at maximum (in degrees)
 			@param outsideAngle 
 				Angle over which the volume is at minimum (in degrees)
-=======
-			@param insideAngle
-				angle over which the volume is at maximum
-			@param outsideAngle
-				angle over which the volume is at minimum
->>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 		 */
 		void setConeAngles(float insideAngle=360.f, float outsideAngle=360.f);
 		/** Gets sounds cone inside angle
@@ -596,11 +574,7 @@ namespace OgreOggSound
 			@param listener
 				Listener object pointer.
 		*/
-<<<<<<< HEAD
 		inline void setListener(SoundListener* listener) { mSoundListener = listener; }
-=======
-		inline void setListener(SoundListener* listener) { mSoundListener=listener; }
->>>>>>> 6eb8799 (Improve descriptions in OgreOggISound)
 
 		/** Sets properties of a shared resource.
 		@remarks

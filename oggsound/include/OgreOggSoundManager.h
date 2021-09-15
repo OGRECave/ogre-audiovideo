@@ -94,6 +94,7 @@ namespace OgreOggSound
 		float mAirAbsorption;
 		float mRolloff;
 		float mConeHF;
+		ALuint mSend;
 		ALuint mSlotID;
 	};
 
@@ -440,7 +441,7 @@ namespace OgreOggSound
 			@param unit 
 				Units (meters).
 		 */
-		void setEFXDistanceUnits(float unit=3.3f);
+		bool setEFXDistanceUnits(float unit=3.3f);
 		/** Creates a specified EFX filter
 		@remarks
 			Creates a specified EFX filter if hardware supports it.
@@ -458,15 +459,15 @@ namespace OgreOggSound
 		bool createEFXFilter(const Ogre::String& eName, ALint type, ALfloat gain=1.0, ALfloat hfGain=1.0, ALfloat lfGain=1.0);
 		/** Creates a specified EFX effect
 		@remarks
-			Creates a specified EFX effect if hardware supports it.
-			Optional reverb preset structure can be passed which will be applied to the effect.
-			See eax-util.h for list of presets.
+			Creates a specified EFX effect if the hardware (or software in the case of OpenAL Soft) supports it.\n
+			Optional reverb preset structure can be passed which will be applied to the effect.\n
+			See eax-util.h (efx-presets.h for OpenAL Soft) for a list of presets.
 			@param eName
 				Name for effect.
 			@param type
 				See OpenAL docs for available effects.
 			@param props
-				Legacy structure describing a preset reverb effect. (See efx-presets.h)
+				Legacy structure describing a preset reverb effect.
 		 */
 #	if HAVE_EFX == 1
 		bool createEFXEffect(const Ogre::String& eName, ALint type, EAXREVERBPROPERTIES* props=0);
@@ -557,60 +558,90 @@ namespace OgreOggSound
 			Returns number of slots created and available for effects/filters.
 		 */
 		int getNumberOfCreatedEffectSlots();
-		/** Creates an EFX slot
+		/** Creates an Auxiliary Effect slot
 		@remarks
-			Creates an EFX slot if the hardware supports it.
+			Creates an Auxiliary Effect slot if the hardware (or software in the case of OpenAL Soft) supports it.
 		 */
 		bool createEFXSlot();
-		/** Attaches an effect to a sound
+		/** Sets the gain of a specific Auxiliary Effect slot
+		@remarks
+			Allows the application to control the output level of an Auxiliary Effect Slot.
+			@param slotID
+				ID of the Auxiliary Effect slot
+			@param gain
+				Output level for the Auxiliary Effect Slot (a value between 0 and 1).
+		 */
+		bool setEFXSlotGain(ALuint slotID, float gain);
+		/** Gets the gain of a specific Auxiliary Effect slot
+		@remarks
+			Retrieves the value of the gain that was set for the Auxiliary Effect Slot.
+			@param slotID
+				ID of the Auxiliary Effect slot
+		@note
+			Returns -1 if there is an error.
+		 */
+		float getEFXSlotGain(ALuint slotID);
+		/** Attaches a created effect to an Auxiliary Effect slot. (Does nothing without EAX or EFX support)
+			@param slotID
+				ID of the Auxiliary Effect slot to where the effect will be attached
+			@param effect
+				Name of the effect to attach to the slot
+		 */
+		bool attachEffectToSlot(const Ogre::String& effect, ALuint slotID);
+		/** Detaches an effect from an Auxiliary Effect slot
+			@param slotID
+				ID of the Auxiliary Effect slot from where the effect should be detached
+		 */
+		bool detachEffectFromSlot(ALuint slotID);
+		/** Attaches an Auxiliary Effect slot to a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
 			@param sName 
 				Name of sound
+			@param send
+				Number of the Auxiliary Effect send where the Auxiliary Effect slot should be attached to (0 ... Max Sends)
 			@param slotID
-				ID of the EFX slot where the sound will be attached along with the effect
-			@param effect 
-				Name of effect as defined when created
+				ID of the Auxiliary Effect slot to attach to the Auxiliary Effect send
 			@param filter
-				Name of filter as defined when created
+				Name of filter to attach to the send path (wet signal)
 		 */
-		bool attachEffectToSound(const Ogre::String& sName, ALuint slotID, const Ogre::String& effect="", const Ogre::String& filter="");
-		/** Detaches all effects from a sound
+		bool attachEffectToSound(const Ogre::String& sName, ALuint send, ALuint slotID, const Ogre::String& filter="");
+		/** Detaches an Auxiliary Effect slot from sound
 		@remarks
-			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
-			@param sName 
+			Currently sound must have a source attached prior to this call.
+			@param sName
 				Name of sound
-			@param slotID
-				ID of the EFX slot where the sound was attached in the call to attachEffectToSound()
+			@param send
+				Number of the Auxiliary Effect send where the Auxiliary Effect slot was attached to
 		 */
-		bool detachEffectFromSound(const Ogre::String& sName, ALuint slotID);
-		/** Attaches a filter to a sound
+		bool detachEffectFromSound(const Ogre::String& sName, ALuint send);
+		/** Attaches a filter to the direct path (dry signal) of a sound
 		@remarks
-			Currently sound must have a source attached prior to this call. (Does nothing without EAX or EFX support)
-			@param sName 
+			Currently sound must have a source attached prior to this call.
+			@param sName
 				Name of sound
 			@param filter
 				Name of filter as defined when created
 		 */
 		bool attachFilterToSound(const Ogre::String& sName, const Ogre::String& filter="");
-		/** Detaches all filters from a sound
+		/** Detaches all filters from the direct path (dry signal) of a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
-			@param sName 
+			@param sName
 				Name of sound
 		 */
 		bool detachFilterFromSound(const Ogre::String& sName);
 #if HAVE_ALEXT == 1
-		/** Concatenates the output of a specified EFX Slot to the input of another
+		/** Concatenates the output of a specified Auxiliary Effect slot to the input of another
 		@remarks
 			This function provides a method to reroute the output of an auxiliary effect slot to the input of another auxiliary effect slot.\n
 			By default, an effect slot's output is added to the main output along side other effect slots and each source's direct path.\n
 			This makes it impossible to, for example, apply an equalizer effect to the output of a chorus effect since the chorus and equalizer effects are processed separately.\n
 			Retargeting an effect slot's output to another effect slot allows chaining multiple effects to create results that aren't possible with standard EFX.
 			@param srcSlotID
-				Slot ID of the source EFX effect slot.
+				Slot ID of the source Auxiliary Effect effect slot.
 			@param dstSlotID
-				Slot ID of destination EFX effect slot.
+				Slot ID of destination Auxiliary Effect effect slot.
 		@note
 			This function uses the extension AL_SOFT_effect_target which is only available through OpenAL Soft.\n
 			Each effect slot can only have one target (though an effect slot can act as the target for multiple other effect slots and sources).\n
@@ -647,17 +678,18 @@ namespace OgreOggSound
 		bool _setEFXSoundPropertiesImpl(OgreOggISound* sound=0, float airAbsorption=0.f, float roomRolloff=0.f, float coneOuterHF=0.f);
 		/** Attaches an effect to a sound
 		@remarks
-			Currently sound must have a source attached prior to this call.
+			Currently sound must have a source attached prior to this call.\n
+			It is expected that an Effect has already been attached to the Auxiliary Effect slot.
 			@param sound
 				Sound pointer
-			@param slot
-				Slot ID
-			@param effect 
-				Name of effect as defined when created
+			@param send
+				Number of the Auxiliary Effect send where the Auxiliary Effect slot should be attached to (0 ... Max Sends)
+			@param slotID
+				ID of the Auxiliary Effect slot to attach to the Auxiliary Effect send
 			@param filter
-				Name of filter as defined when created
+				Name of filter to attach to the send path (wet signal)
 		 */
-		bool _attachEffectToSoundImpl(OgreOggISound* sound=0, ALuint slot=255, const Ogre::String& effect="", const Ogre::String& filter="");
+		bool _attachEffectToSoundImpl(OgreOggISound* sound, ALuint send, ALuint slotID, const Ogre::String& filter);
 		/** Detaches all effects from a sound
 		@remarks
 			Currently sound must have a source attached prior to this call.
@@ -938,13 +970,6 @@ namespace OgreOggSound
 			Effect ID
 		 */
 		bool _setEAXReverbProperties(EFXEAXREVERBPROPERTIES *pEFXEAXReverb, ALuint uiEffect);
-		/** Attaches a created effect to an Auxiliary slot
-		@param slot 
-			Slot ID
-		@param effect 
-			Effect ID
-		 */
-		bool _attachEffectToSlot(ALuint slot, ALuint effect);
 #endif
 		/** Re-activates any sounds which had their source stolen.
 		 */
