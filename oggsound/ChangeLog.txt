@@ -1,3 +1,31 @@
+
+* version 1.29
+
+
+* version 1.28
+
+	* Features:
+		* Use OgreThreads for threading
+		* Get more detailed device descriptions
+		* Add EFX Support for OpenAL Soft
+		* Add support for EFX highpass and bandpass filters
+		* Add support for OpenAL Soft extentions (IEEE_FLOAT recording support and ALC_SOFT_pause_device)
+
+	* Documentation:
+		* API Description corrections
+
+	* Bugfixes:
+		* Release all sound sources when finalizing the Plugin
+		* Remove erroneous initialization parameter
+		* API correction regarding EFX Effect Slots
+		* Assortment of fixes regarding OgreOggSoundRecord class (now recording works both in linux and windows)
+
+	* Improvements:
+		* Improve log messaging consistency and use logError where appropiate
+		* Correct deprecation warnings
+		* Extend the API to be more symmetric (Add several missing getters for parameters that were being set)
+
+
 * version 1.26 (Potentially unstable multi-threaded version)
 
 	* Added patches to fix a number of multi-threaded issues discovered by shenjoku:
@@ -6,6 +34,7 @@
 		* http://www.ogre3d.org/addonforums/viewtopic.php?f=19&t=30240
 		* http://www.ogre3d.org/addonforums/viewtopic.php?f=19&t=30246
 		* http://www.ogre3d.org/addonforums/viewtopic.php?f=19&t=30244
+
 
 * version 1.25
 
@@ -16,7 +45,7 @@
 	* Changed device list query to return all devices
 	
 	* Added Context/Device getters
-	
+
 
 * version 1.24
 
@@ -34,6 +63,7 @@
 	
 	* Updated oggvorbis to 1.3.3
 
+
 * version 1.23
 
 	* Fixed ambiguous mName member variable in OgreOggISound 
@@ -49,11 +79,13 @@
 
 	* Fixed 64-bit WAVE bug detailed here: http://www.ogre3d.org/addonforums/viewtopic.php?f=19&t=30027
 
+
 * Version 1.22
 	
 	* Added support for OGRE 1.8 (singleton rename)
 
 	* Fixed crash when unloading/reloading OgreOggSound plugin
+
 
 * Version 1.21
 
@@ -82,6 +114,7 @@
 			* stop()
 			* pause()
 
+
 * version 1.19
 
 	* Added patch from torrque to add mingw support.
@@ -107,7 +140,6 @@
 
 	* Fixed POCO compile errors
  
-
 
 * version 1.18
 
@@ -366,8 +398,6 @@
 		* use OgreOggSoundManager::setMasterVolume() & OgreOggSound::getMasterVolume() instead.
 
 
-
-
 * version 1.07
 
 	* Cleaned out some unused ogg file pointers
@@ -381,7 +411,6 @@
 	* Added missing subclass call in _notifyMoved() methods of OgreOggIsound/Listener classes
 	
 	* Added closing/opening of ogg file in stop() when using non-seekable ogg's, should reset play cursor to beginning, however will cause delay whilst re-opening file..
-
 
 
 * version 1.06
@@ -419,6 +448,7 @@
 	
 	* Added cue point list to sounds
 
+
 * version 1.05
 
 	* Started porting to linux by wrapping unsupported code in #ifndef LINUX 
@@ -430,16 +460,18 @@
 
 	* added getSoundList() to SoundManager, returns a StringVector of all defined sounds.
 
-* version 1.04
 
+* version 1.04
 
 	* Fixed crash with streamed sounds and soundData NULL
 
 	* Removed OgreOggSoundRecord::setRecordingProperties() and added functionality to OgreOggSoundRecord::initCaptureDevice().
 
+
 * version 1.03
 
 	* Bug fix in OgreOggSoundRecord destructor crash
+
 
 * version 1.02
 
@@ -450,13 +482,16 @@
 		* query support functions
 		NOTE:- Use sound/audio device control panel to select input setting and capture volume.
 
+
 * version 1.01
 
 	* Added buffer sharing for static sounds
 
+
 * version 1.0
 
 	* Official stable release 
+
 
 * version 0.94
 
@@ -474,6 +509,7 @@
 
 	* Fixed random crash on shutdown in streamed sounds
 
+
 * version 0.93
 
 	* Added automatic pause/restart on fade
@@ -490,9 +526,11 @@
 
 	* Fixed crash at maximum sources.
 
+
 * version 0.92
 
 	* Moved MUTEX from update function into reactivateSounds() - caused major performance issues.
+
 
 * version 0.91
 	
@@ -512,11 +550,13 @@
 
 	* Updated docs
 
+
 * version 0.9
 	
 	* Added multichannel support for ogg/wav files.
 
 	* Improved buffer size management.
+
 
 * version 0.89
 
@@ -536,6 +576,7 @@
 
 	* Fixed unqueue bug in streamed sounds
 
+
 * version 0.88
 
 	* Added XRAM support for hardware buffers
@@ -544,10 +585,12 @@
 
 	* Cleaned up and enhanced supported features checks.
 
+
 * version 0.87
 
 	* Added loop callback triggers
 		slightly inaccurate for streaming sounds, should be more reliable for static sounds.
+
 
 * version 0.86
 	
@@ -557,6 +600,7 @@
 
 	* Added enable/disable of callbacks
 
+
 * version 0.85
 
 	* Fixed crash caused by non-SceneNode derived positioning in OgreOggISound / OgreOggListener.
@@ -564,19 +608,23 @@
 	* Fixed updating bug in fading where the volume would never stop being set once started. 
           Also ammended startFade() to pick up current sound volume to fade in/out from.
 
+
 * version 0.84
 
 	* Added setMasterVolume()/getMasterVolume() for global attenuation of sounds.
 
+
 * Version 0.83
 
 	* Fixed bug with streaming sounds and DataStreamPointer causing open() to fail.
+
 
 * Version 0.82
 
 	* Added OGRE resource management support
 		Audio files must now be specified through OGRE's resource management system,
 		allows audio files to be stored and accessed within .zip files etc..
+
 
 * Version 0.8
 
@@ -589,7 +637,8 @@
 	* _getDeviceList() made public, was used internally but is now a useful public 
 	  function for geting a human readable list of audio deivce strings.
 
+
 * Version 0.7
 
-	* Added ancillary OgreOggSoundManager functions for stopping/pausing/resuming
-	  ALL playing sounds.
+	* Added ancillary OgreOggSoundManager functions for stopping/pausing/resuming ALL playing sounds.
+

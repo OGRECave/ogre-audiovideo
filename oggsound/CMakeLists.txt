@@ -42,13 +42,18 @@ else()
 endif()
 
 # OpenAL Soft Extensions
-option(HAVE_ALEXT "Enable OpenAL Soft Extensions (alext.h)" OFF)
+#option(HAVE_ALEXT "Enable OpenAL Soft Extensions (alext.h)" OFF)
 
-if(HAVE_ALEXT)
-    add_definitions(-DHAVE_ALEXT=1)
-else()
-    add_definitions(-DHAVE_ALEXT=0)
-endif()
+#if(HAVE_ALEXT)
+#    add_definitions(-DHAVE_ALEXT=1)
+#else()
+#    add_definitions(-DHAVE_ALEXT=0)
+#endif()
+
+INCLUDE (CheckIncludeFiles)
+
+CHECK_INCLUDE_FILES (alext.h HAVE_ALEXT)
+
 
 # Type of EFX backend support
 set(USE_EFX 0 CACHE STRING
