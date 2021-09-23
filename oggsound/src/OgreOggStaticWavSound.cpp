@@ -166,7 +166,7 @@ namespace OgreOggSound
 			// Skip unsupported chunk...
 			else {
 				if( (mAudioStream->tell() / sizeof(ChunkHeader)) % 100000 == 0)
-					Ogre::LogManager::getSingleton().logMessage("*** OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
+					Ogre::LogManager::getSingleton().logMessage("OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
 
 				mAudioStream->skip(c.length);
 			}
@@ -342,7 +342,7 @@ namespace OgreOggSound
 		default:
 			{
 				// Error message
-				Ogre::LogManager::getSingleton().logMessage("*** --- Unable to determine number of channels: defaulting to 16-bit stereo");
+				Ogre::LogManager::getSingleton().logMessage("Unable to determine number of channels: defaulting to 16-bit stereo");
 
 				// 16-bit stereo
 				mFormat = AL_FORMAT_STEREO16;

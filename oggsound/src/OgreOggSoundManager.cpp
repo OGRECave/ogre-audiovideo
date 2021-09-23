@@ -274,7 +274,7 @@ namespace OgreOggSound
 		}
 		alcCloseDevice(device);
 #endif
-		//Ogre::LogManager::getSingleton().logMessage(Ogre::String("*** --- OpenAL version " + Ogre::StringConverter::toString(majorVersion) + "." + Ogre::StringConverter::toString(minorVersion)));
+		//Ogre::LogManager::getSingleton().logMessage(Ogre::String("OpenAL version " + Ogre::StringConverter::toString(majorVersion) + "." + Ogre::StringConverter::toString(minorVersion)));
 
 		/*
 		** OpenAL versions prior to 1.0 DO NOT support device enumeration, so we
@@ -284,7 +284,7 @@ namespace OgreOggSound
 		bool deviceInList = false;
 		if(majorVersion >= 1 && minorVersion >= 1)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- Playback devices available:");
+			Ogre::LogManager::getSingleton().logMessage("Playback devices available:");
 
 			// List devices in log and see if the sugested device is in the list
 			std::stringstream ss;
@@ -294,7 +294,7 @@ namespace OgreOggSound
 				if(device == deviceName)
 					deviceInList = true;
 
-				ss << "*** --- + \"" << device << "\"";
+				ss << " * \"" << device << "\"";
 				Ogre::LogManager::getSingleton().logMessage(ss.str());
 				ss.clear(); ss.str("");
 			}
@@ -309,11 +309,11 @@ namespace OgreOggSound
 		}
 		
 		if (!deviceInList)
-			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: \"" + Ogre::String(mDeviceStrings) + "\" (Default device)");
+			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(mDeviceStrings) + "\" (Default device)");
 		else
-			Ogre::LogManager::getSingleton().logMessage("*** --- Choosing: \"" + Ogre::String(deviceName) + "\"");
+			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(deviceName) + "\"");
 
-		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL Device successfully created");
+		Ogre::LogManager::getSingleton().logMessage("OpenAL Device successfully created");
 
 #if HAVE_EFX
         ALint attribs[2] = {ALC_MAX_AUXILIARY_SENDS, 4};
@@ -328,7 +328,7 @@ namespace OgreOggSound
 			return false;
 		}
 
-		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL Context successfully created");
+		Ogre::LogManager::getSingleton().logMessage("OpenAL Context successfully created");
 
 		if (!alcMakeContextCurrent(mContext))
 		{
@@ -336,9 +336,9 @@ namespace OgreOggSound
 			return false;
 		}
 
-		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL vendor string: \"" + Ogre::String(alGetString(AL_VENDOR)) + "\"");
-		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL renderer string: \"" + Ogre::String(alGetString(AL_RENDERER)) + "\"");
-		Ogre::LogManager::getSingleton().logMessage("*** --- OpenAL version string: \"" + Ogre::String(alGetString(AL_VERSION)) + "\"");
+		Ogre::LogManager::getSingleton().logMessage("OpenAL vendor string: \"" + Ogre::String(alGetString(AL_VENDOR)) + "\"");
+		Ogre::LogManager::getSingleton().logMessage("OpenAL renderer string: \"" + Ogre::String(alGetString(AL_RENDERER)) + "\"");
+		Ogre::LogManager::getSingleton().logMessage("OpenAL version string: \"" + Ogre::String(alGetString(AL_VERSION)) + "\"");
 
 		_checkExtensionSupport();
 
@@ -368,7 +368,7 @@ namespace OgreOggSound
 
 		_createSourcePool();
 
-		Ogre::LogManager::getSingleton().logMessage(Ogre::String("*** --- Created " + Ogre::StringConverter::toString(getNumSources()) + " sources for simultaneous sounds"));
+		Ogre::LogManager::getSingleton().logMessage(Ogre::String("Created " + Ogre::StringConverter::toString(getNumSources()) + " sources for simultaneous sounds"));
 
 		mSoundsToDestroy = new LocklessQueue<OgreOggISound*>(100);
 #if OGGSOUND_THREADED
@@ -379,18 +379,18 @@ namespace OgreOggSound
 		}
 		OGRE_THREAD_CREATE(tmp, &OgreOggSoundManager::threadUpdate);
 		mUpdateThread = tmp;
-		Ogre::LogManager::getSingleton().logMessage("*** --- Using threads for streaming", Ogre::LML_NORMAL);
+		Ogre::LogManager::getSingleton().logMessage("Using threads for streaming", Ogre::LML_NORMAL);
 #endif
 
 		// Recording
 		if (alcIsExtensionPresent(mDevice, "ALC_EXT_CAPTURE") == AL_FALSE)
-			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices NOT detected!", Ogre::LML_NORMAL);
+			Ogre::LogManager::getSingleton().logMessage("Recording devices NOT detected!", Ogre::LML_NORMAL);
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- Recording devices available:", Ogre::LML_NORMAL);
+			Ogre::LogManager::getSingleton().logMessage("Recording devices available:", Ogre::LML_NORMAL);
 
 			for(auto recordDevice : getCaptureDeviceList())
-				Ogre::LogManager::getSingleton().logMessage("*** --- + '" + recordDevice + "'", Ogre::LML_NORMAL);
+				Ogre::LogManager::getSingleton().logMessage(" * '" + recordDevice + "'", Ogre::LML_NORMAL);
 		}
 
 		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
@@ -413,10 +413,10 @@ namespace OgreOggSound
 
 				alcDevicePauseSOFT(mDevice);
 				if ( alGetError() != AL_NO_ERROR )
-					Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::pauseOpenalDevice() - Unable to pause device!");
+					Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::pauseOpenalDevice() - Unable to pause device!");
 			}
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::pauseOpenalDevice() - ALC_SOFT_pause_device extension not found!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::pauseOpenalDevice() - ALC_SOFT_pause_device extension not found!");
 		}
 	}
 
@@ -432,10 +432,10 @@ namespace OgreOggSound
 
 				alcDeviceResumeSOFT(mDevice);
 				if ( alGetError() != AL_NO_ERROR )
-					Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::resumeOpenALDevice() - Unable to resume device!");
+					Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::resumeOpenALDevice() - Unable to resume device!");
 			}
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::pauseOpenalDevice() - ALC_SOFT_pause_device extension not found!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::pauseOpenalDevice() - ALC_SOFT_pause_device extension not found!");
 		}
 	}
 #endif
@@ -571,7 +571,7 @@ namespace OgreOggSound
 		// MUST be unique
 		if ( hasSound(name) )
 		{
-			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound with name: " + name + " already exists!";
+			Ogre::String msg="OgreOggSoundManager::createSound() - Sound with name: " + name + " already exists!";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 			return 0;
 		}
@@ -704,7 +704,7 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::String msg="*** OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: " + name;
+			Ogre::String msg="OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: " + name;
 			Ogre::LogManager::getSingleton().logMessage(msg);
 			return 0;
 		}
@@ -1261,7 +1261,7 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createRecorder() - Cowardly refusing to create a Recorder without a recording device!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createRecorder() - Cowardly refusing to create a Recorder without a recording device!");
 			return 0;
 		}
 	}
@@ -1290,7 +1290,7 @@ namespace OgreOggSound
 		if ( mEFXSupportList.find(effectID) != mEFXSupportList.end() )
 			return mEFXSupportList[effectID];
 		else
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::isEffectSupported() - Invalid effectID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::isEffectSupported() - Invalid effectID!");
 
 		return false;
 	}
@@ -1318,13 +1318,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
 			return false;
 		}
 
@@ -1337,7 +1337,7 @@ namespace OgreOggSound
 			alEffecti(effectType, attrib, static_cast<ALint>(param));
 			if ( alGetError()!=AL_NO_ERROR )
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameter!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameter!");
 				return false;
 			}
 		}
@@ -1350,19 +1350,19 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
 			return false;
 		}
 
 		if ( params == nullptr )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - NULL pointer params!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - NULL pointer params!");
 			return false;
 		}
 
@@ -1377,7 +1377,7 @@ namespace OgreOggSound
 
 			if ( alGetError()!=AL_NO_ERROR )
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameters!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameters!");
 				return false;
 			}
 		}
@@ -1390,13 +1390,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
 			return false;
 		}
 
@@ -1411,7 +1411,7 @@ namespace OgreOggSound
 
 			if ( alGetError()!=AL_NO_ERROR )
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameter!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameter!");
 				return false;
 			}
 		}
@@ -1424,19 +1424,19 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - Empty effect name!");
 			return false;
 		}
 
 		if ( !params )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXEffectParameter() - NULL pointer params!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXEffectParameter() - NULL pointer params!");
 			return false;
 		}
 
@@ -1451,7 +1451,7 @@ namespace OgreOggSound
 
 			if ( alGetError()!=AL_NO_ERROR )
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameters!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXEffectParameter() - Unable to change effect parameters!");
 				return false;
 			}
 		}
@@ -1466,7 +1466,7 @@ namespace OgreOggSound
 
 		if ( !(sound = getSound(sName)) )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::attachEffectToSound() - Unable to find sound: " + sName);
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::attachEffectToSound() - Unable to find sound: " + sName);
 			return false;
 		}
 
@@ -1493,25 +1493,25 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - No EFX support!");
 			return false;
 		}
 
 		if ( !sound )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_attachEffectToSoundImpl() - NULL pointer sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_attachEffectToSoundImpl() - NULL pointer sound!");
 			return false;
 		}
 
 		if ( send > getMaxAuxiliaryEffectSends() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - Invalid send number!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - Invalid send number!");
 			return false;
 		}
 
 		if ( slotID > getNumberOfCreatedEffectSlots() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - Invalid slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - Invalid slotID!");
 			return false;
 		}
 
@@ -1524,7 +1524,7 @@ namespace OgreOggSound
 
 		if ( slot == AL_NONE )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - Unable to retrieve slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - Unable to retrieve slotID!");
 			return false;
 		}
 
@@ -1542,13 +1542,13 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - Unable to attach effect to source!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - Unable to attach effect to source!");
 				return false;
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachEffectToSoundImpl() - Sound has no source!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachEffectToSoundImpl() - Sound has no source!");
 			return false;
 		}
 	}
@@ -1583,13 +1583,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachFilterToSoundImpl() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachFilterToSoundImpl() - No EFX support!");
 			return false;
 		}
 
 		if ( !sound )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_attachFilterToSoundImpl() - NULL pointer sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_attachFilterToSoundImpl() - NULL pointer sound!");
 			return false;
 		}
 
@@ -1611,13 +1611,13 @@ namespace OgreOggSound
 				}
 				else
 				{
-					Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachFilterToSoundImpl() - Unable to attach filter to source!");
+					Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachFilterToSoundImpl() - Unable to attach filter to source!");
 					return false;
 				}
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_attachFilterToSoundImpl() - Sound has no source!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_attachFilterToSoundImpl() - Sound has no source!");
 				return false;
 			}
 		}
@@ -1656,19 +1656,19 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachEffectFromSoundImpl() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachEffectFromSoundImpl() - No EFX support!");
 			return false;
 		}
 
 		if ( !sound )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_detachEffectFromSoundImpl() - NULL pointer sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_detachEffectFromSoundImpl() - NULL pointer sound!");
 			return false;
 		}
 
 		if ( send > getMaxAuxiliaryEffectSends() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachEffectFromSoundImpl() - Invalid send number!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachEffectFromSoundImpl() - Invalid send number!");
 			return false;
 		}
 
@@ -1686,13 +1686,13 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachEffectFromSoundImpl() - Unable to detach effect from source!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachEffectFromSoundImpl() - Unable to detach effect from source!");
 				return false;
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachEffectFromSoundImpl() - Sound has no source!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachEffectFromSoundImpl() - Sound has no source!");
 			return false;
 		}
 	}
@@ -1730,13 +1730,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachFilterFromSoundImpl() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachFilterFromSoundImpl() - No EFX support!");
 			return false;
 		}
 
 		if ( !sound )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_detachFilterFromSoundImpl() - NULL pointer sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_detachFilterFromSoundImpl() - NULL pointer sound!");
 			return false;
 		}
 
@@ -1746,13 +1746,13 @@ namespace OgreOggSound
 			alSourcei(src, AL_DIRECT_FILTER, AL_FILTER_NULL);
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachFilterFromSoundImpl() - Unable to detach filter from source!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachFilterFromSoundImpl() - Unable to detach filter from source!");
 				return false;
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_detachFilterFromSoundImpl() - Sound has no source!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_detachFilterFromSoundImpl() - Sound has no source!");
 			return false;
 		}
 
@@ -1764,25 +1764,25 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXFilter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createEFXFilter() - No EFX support!");
 			return false;
 		}
 
 		if ( fName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Empty filter name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Empty filter name!");
 			return false;
 		}
 
 		if ( !isEffectSupported(filterType) )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unsupported filter!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Unsupported filter!");
 			return false;
 		}
 
 		if ( mFilterList.find(fName) != mFilterList.end() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Filter with name \"" + fName + "\" already exists!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Filter with name \"" + fName + "\" already exists!");
 			return false;
 		}
 
@@ -1791,7 +1791,7 @@ namespace OgreOggSound
 		alGenFilters(1, &filter);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Cannot create EFX Filter!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Cannot create EFX Filter!");
 			return false;
 		}
 
@@ -1803,7 +1803,7 @@ namespace OgreOggSound
 
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unable to set filter type!");
+				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Unable to set filter type!");
 				// Destroy invalid filter we just created
 				alDeleteFilters( 1, &filter);
 				return false;
@@ -1832,14 +1832,14 @@ namespace OgreOggSound
 						mFilterList[fName]=filter;
 					break;
 					default:
-						Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Unknown Filter Type");
+						Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Unknown Filter Type");
 					break;
 				}
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXFilter() - Created filter is not valid!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXFilter() - Created filter is not valid!");
 			// Destroy invalid filter we just created
 			alDeleteFilters( 1, &filter);
 
@@ -1857,25 +1857,25 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXEffect() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createEFXEffect() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXEffect() - Empty effect name!");
 			return false;
 		}
 
 		if ( !isEffectSupported(effectType) )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Unsupported effect!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXEffect() - Unsupported effect!");
 			return false;
 		}
 
 		if ( mEffectList.find(eName) != mEffectList.end() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Effect with name \"" + eName + "\" already exists!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXEffect() - Effect with name \"" + eName + "\" already exists!");
 			return false;
 		}
 
@@ -1884,7 +1884,7 @@ namespace OgreOggSound
 		alGenEffects(1, &effect);
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Cannot create EFX effect!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXEffect() - Cannot create EFX effect!");
 			return false;
 		}
 
@@ -1893,7 +1893,7 @@ namespace OgreOggSound
 			alEffecti(effect, AL_EFFECT_TYPE, effectType);
 			if (alGetError() != AL_NO_ERROR)
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXEffect() - Effect not supported!");
+				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXEffect() - Effect not supported!");
 				// Destroy invalid effect we just created
 				alDeleteEffects(1, &effect);
 
@@ -1984,7 +1984,7 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_setEAXReverbProperties() - Failed to set EFXEAXReverb");
+				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_setEAXReverbProperties() - Failed to set EFXEAXReverb");
 				return false;
 			}
 		}
@@ -1997,7 +1997,7 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::createEFXSlot() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createEFXSlot() - No EFX support!");
 			return false;
 		}
 
@@ -2007,7 +2007,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::createEFXSlot() - Cannot create Auxiliary Effect slot!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createEFXSlot() - Cannot create Auxiliary Effect slot!");
 			return false;
 		}
 		else
@@ -2031,19 +2031,19 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSlotGain() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXSlotGain() - No EFX support!");
 			return false;
 		}
 
 		if ( gain < 0 || gain > 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSlotGain() - Invalid value for gain!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXSlotGain() - Invalid value for gain!");
 			return false;
 		}
 
 		if ( slotID > getNumberOfCreatedEffectSlots() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSlotGain() - Invalid slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXSlotGain() - Invalid slotID!");
 			return false;
 		}
 
@@ -2051,7 +2051,7 @@ namespace OgreOggSound
 
 		if ( slot == AL_NONE )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSlotGain() - Unable to retrieve slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXSlotGain() - Unable to retrieve slotID!");
 			return false;
 		}
 
@@ -2059,7 +2059,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXSlotGain() - Cannot set Auxiliary Effect slot gain!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXSlotGain() - Cannot set Auxiliary Effect slot gain!");
 			return false;
 		}
 
@@ -2071,13 +2071,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::getEFXSlotGain() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::getEFXSlotGain() - No EFX support!");
 			return -1;
 		}
 
 		if ( slotID > getNumberOfCreatedEffectSlots() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::getEFXSlotGain() - Invalid slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::getEFXSlotGain() - Invalid slotID!");
 			return -1;
 		}
 
@@ -2085,7 +2085,7 @@ namespace OgreOggSound
 
 		if ( slot == AL_NONE )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::getEFXSlotGain() - Unable to retrieve slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::getEFXSlotGain() - Unable to retrieve slotID!");
 			return -1;
 		}
 
@@ -2095,7 +2095,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::getEFXSlotGain() - Cannot retrieve Auxiliary Effect slot gain!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::getEFXSlotGain() - Cannot retrieve Auxiliary Effect slot gain!");
 			return -1;
 		}
 
@@ -2107,13 +2107,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::attachEffectToSlot() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::attachEffectToSlot() - No EFX support!");
 			return false;
 		}
 
 		if ( slotID > getNumberOfCreatedEffectSlots() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::attachEffectToSlot() - Invalid slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::attachEffectToSlot() - Invalid slotID!");
 			return false;
 		}
 
@@ -2126,13 +2126,13 @@ namespace OgreOggSound
 
 		if ( slot == AL_NONE )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::attachEffectToSlot() - Unable to retrieve slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::attachEffectToSlot() - Unable to retrieve slotID!");
 			return false;
 		}
 
 		if ( effect == AL_EFFECT_NULL )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::attachEffectToSlot() - Unable to retrieve effect: " + effectName);
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::attachEffectToSlot() - Unable to retrieve effect: " + effectName);
 			return false;
 		}
 
@@ -2143,7 +2143,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::attachEffectToSlot() - Cannot attach effect to slot!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::attachEffectToSlot() - Cannot attach effect to slot!");
 			return false;
 		}
 		return true;
@@ -2154,13 +2154,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::detachEffectFromSlot() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::detachEffectFromSlot() - No EFX support!");
 			return false;
 		}
 
 		if ( slotID > getNumberOfCreatedEffectSlots() - 1 )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::detachEffectFromSlot() - Invalid slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::detachEffectFromSlot() - Invalid slotID!");
 			return false;
 		}
 
@@ -2171,7 +2171,7 @@ namespace OgreOggSound
 
 		if ( slot == AL_NONE )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::detachEffectFromSlot() - Unable to retrieve slotID!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::detachEffectFromSlot() - Unable to retrieve slotID!");
 			return false;
 		}
 
@@ -2183,7 +2183,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::detachEffectFromSlot() - Cannot detach effect from slot!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::detachEffectFromSlot() - Cannot detach effect from slot!");
 			return false;
 		}
 		return true;
@@ -2194,19 +2194,19 @@ namespace OgreOggSound
 	bool OgreOggSoundManager::concatenateEFXEffectSlots(ALuint srcSlotID, ALuint dstSlotID)
 	{
 		if ( mEffectSlotList.empty() ) {
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - No EFX slots created yet!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::concatenateEFXEffectSlots() - No EFX slots created yet!");
 			return false;
 		}
 
 		if ( srcSlotID == dstSlotID )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Won't concatenate a slot to itself!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::concatenateEFXEffectSlots() - Won't concatenate a slot to itself!");
 			return false;
 		}
 
 		if (alIsExtensionPresent("AL_SOFT_effect_target") == AL_FALSE)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Extension AL_SOFT_effect_target not detected! ***");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::concatenateEFXEffectSlots() - Extension AL_SOFT_effect_target not detected! ***");
 			return false;
 		}
 
@@ -2234,7 +2234,7 @@ namespace OgreOggSound
 
 		if (alGetError() != AL_NO_ERROR)
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::concatenateEFXEffectSlots() - Cannot concatenate Auxiliary Effect slots!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::concatenateEFXEffectSlots() - Cannot concatenate Auxiliary Effect slots!");
 			return false;
 		}
 		else
@@ -2303,13 +2303,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_setEFXSoundPropertiesImpl() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_setEFXSoundPropertiesImpl() - No EFX support!");
 			return false;
 		}
 
 		if ( !sound )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_setEFXSoundPropertiesImpl() - NULL pointer sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_setEFXSoundPropertiesImpl() - NULL pointer sound!");
 			return false;
 		}
 
@@ -2329,13 +2329,13 @@ namespace OgreOggSound
 			}
 			else
 			{
-				Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXSoundProperties() - Unable to set EFX sound properties!");
+				Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXSoundProperties() - Unable to set EFX sound properties!");
 				return false;
 			}
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXSoundProperties() - No source attached to sound!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXSoundProperties() - No source attached to sound!");
 			return false;
 		}
 	}
@@ -2345,13 +2345,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXDistanceUnits() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXDistanceUnits() - No EFX support!");
 			return false;
 		}
 
 		if ( units <= 0 )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::setEFXDistanceUnits() - Invalid units value: " + Ogre::StringConverter::toString(units));
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::setEFXDistanceUnits() - Invalid units value: " + Ogre::StringConverter::toString(units));
 			return false;
 		}
 
@@ -2365,7 +2365,7 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::setEFXDistanceUnits() - Unable to set Listener distance units!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::setEFXDistanceUnits() - Unable to set Listener distance units!");
 			return false;
 		}
 	}
@@ -2375,7 +2375,7 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_getEFXFilter() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_getEFXFilter() - No EFX support!");
 			return false;
 		}
 
@@ -2384,14 +2384,14 @@ namespace OgreOggSound
 
 		if ( mFilterList.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXFilter() - No EFX filters have been created!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXFilter() - No EFX filters have been created!");
 			return AL_FILTER_NULL;
 		}
 
 		EffectList::iterator filter=mFilterList.find(fName);
 		if ( filter==mFilterList.end() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXFilter() - Filter with name \"" + fName + "\" not found!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXFilter() - Filter with name \"" + fName + "\" not found!");
 			return AL_FILTER_NULL;
 		}
 		else
@@ -2403,26 +2403,26 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_getEFXEffect() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_getEFXEffect() - No EFX support!");
 			return false;
 		}
 
 		if ( eName.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXEffect() - Empty effect name!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXEffect() - Empty effect name!");
 			return AL_EFFECT_NULL;
 		}
 
 		if ( mEffectList.empty() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXEffect() - No EFX effects have been created!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXEffect() - No EFX effects have been created!");
 			return AL_EFFECT_NULL;
 		}
 
 		EffectList::iterator effect = mEffectList.find(eName);
 		if ( effect == mEffectList.end() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXEffect() - Effect with name \"" + eName + "\" not found!");
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXEffect() - Effect with name \"" + eName + "\" not found!");
 			return AL_EFFECT_NULL;
 		}
 		else
@@ -2434,13 +2434,13 @@ namespace OgreOggSound
 	{
 		if ( !hasEFXSupport() )
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** OgreOggSoundManager::_getEFXSlot() - No EFX support!");
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::_getEFXSlot() - No EFX support!");
 			return false;
 		}
 
 		if ( mEffectSlotList.empty() || ( slotID >= static_cast<int>(mEffectSlotList.size()) ) )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggSoundManager::_getEFXSlot() - Unable to retrieve slot: " + Ogre::StringConverter::toString(slotID));
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXSlot() - Unable to retrieve slot: " + Ogre::StringConverter::toString(slotID));
 			return AL_NONE;
 		}
 
@@ -2464,102 +2464,102 @@ namespace OgreOggSound
 				break;
 		}
 
-		msg="*** --- " + Ogre::StringConverter::toString(mNumEffectSlots) + " Auxiliary Effect Slot(s)";
+		msg=Ogre::StringConverter::toString(mNumEffectSlots) + " Auxiliary Effect Slot(s)";
 		Ogre::LogManager::getSingleton().logMessage(msg);
 
 		// Retrieve the number of Auxiliary Effect Slots Sends available on each Source
 		alcGetIntegerv(mDevice, ALC_MAX_AUXILIARY_SENDS, 1, &mNumSendsPerSource);
-		msg="*** --- " + Ogre::StringConverter::toString(mNumSendsPerSource) + " Auxiliary Send(s) per Source";
+		msg=Ogre::StringConverter::toString(mNumSendsPerSource) + " Auxiliary Send(s) per Source";
 		Ogre::LogManager::getSingleton().logMessage(msg);
 
-		Ogre::LogManager::getSingleton().logMessage("*** --- Effects supported:");
+		Ogre::LogManager::getSingleton().logMessage("Effects supported:");
 		alGenEffects(1, &uiEffects[0]);
 		if (alGetError() == AL_NO_ERROR)
 		{
 			// Try setting Effect Type to known Effects
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_REVERB);
 			if ( mEFXSupportList[AL_EFFECT_REVERB] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Reverb' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Reverb' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Reverb' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Reverb' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
 			if ( mEFXSupportList[AL_EFFECT_EAXREVERB] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'EAX Reverb' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'EAX Reverb' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'EAX Reverb' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'EAX Reverb' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_CHORUS);
 			if ( mEFXSupportList[AL_EFFECT_CHORUS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Chorus' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Chorus' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Chorus' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Chorus' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_DISTORTION);
 			if ( mEFXSupportList[AL_EFFECT_DISTORTION] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Distortion' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Distortion' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Distortion' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Distortion' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_ECHO);
 			if ( mEFXSupportList[AL_EFFECT_ECHO] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Echo' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Echo' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Echo' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Echo' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_FLANGER);
 			if ( mEFXSupportList[AL_EFFECT_FLANGER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Flanger' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Flanger' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Flanger' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Flanger' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_FREQUENCY_SHIFTER);
 			if ( mEFXSupportList[AL_EFFECT_FREQUENCY_SHIFTER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Frequency shifter' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Frequency shifter' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Frequency shifter' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Frequency shifter' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_VOCAL_MORPHER);
 			if ( mEFXSupportList[AL_EFFECT_VOCAL_MORPHER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Vocal Morpher' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Vocal Morpher' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Vocal Morpher' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Vocal Morpher' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_PITCH_SHIFTER);
 			if ( mEFXSupportList[AL_EFFECT_PITCH_SHIFTER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Pitch shifter' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Pitch shifter' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Pitch shifter' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Pitch shifter' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_RING_MODULATOR);
 			if ( mEFXSupportList[AL_EFFECT_RING_MODULATOR] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Ring modulator' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Ring modulator' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Ring modulator' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Ring modulator' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_AUTOWAH);
 			if ( mEFXSupportList[AL_EFFECT_AUTOWAH] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Autowah' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Autowah' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Autowah' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Autowah' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_COMPRESSOR);
 			if ( mEFXSupportList[AL_EFFECT_COMPRESSOR] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Compressor' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Compressor' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Compressor' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Compressor' Support: NO");
 
 			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_EQUALIZER);
 			if ( mEFXSupportList[AL_EFFECT_EQUALIZER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Equalizer' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Equalizer' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Equalizer' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Equalizer' Support: NO");
 		}
 
 
 		// To determine which Filters are supported, generate a Filter Object, and try to set its type to
 		// the various Filter enum values
-		Ogre::LogManager::getSingleton().logMessage("*** --- Filters supported:");
+		Ogre::LogManager::getSingleton().logMessage("Filters supported:");
 
 		// Generate a Filter to use to determine what Filter Types are supported
 		alGenFilters(1, &uiFilters[0]);
@@ -2568,21 +2568,21 @@ namespace OgreOggSound
 			// Try setting the Filter type to known Filters
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 			if ( mEFXSupportList[AL_FILTER_LOWPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Low Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Low Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Low Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Low Pass' Support: NO");
 
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_HIGHPASS);
 			if ( mEFXSupportList[AL_FILTER_HIGHPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'High Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'High Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'High Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'High Pass' Support: NO");
 
 			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_BANDPASS);
 			if ( mEFXSupportList[AL_FILTER_BANDPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Band Pass' Support: YES");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Band Pass' Support: YES");
 			else
-				Ogre::LogManager::getSingleton().logMessage("*** --- + 'Band Pass' Support: NO");
+				Ogre::LogManager::getSingleton().logMessage(" * 'Band Pass' Support: NO");
 		}
 
 		// Delete Filter
@@ -2836,7 +2836,7 @@ namespace OgreOggSound
 		{
 			if ( !_requestSoundSource(sound) )
 			{
-				Ogre::String msg="*** OgreOggSoundManager::createSound() - Failed to preBuffer sound: "+sound->getName();
+				Ogre::String msg="OgreOggSoundManager::createSound() - Failed to preBuffer sound: "+sound->getName();
 				Ogre::LogManager::getSingleton().logError(msg);
 			}
 		}
@@ -2964,42 +2964,42 @@ namespace OgreOggSound
 	{
 		Ogre::String msg="";
 		// Supported Formats Info
-		Ogre::LogManager::getSingleton().logMessage("*** --- Supported formats:");
+		Ogre::LogManager::getSingleton().logMessage("Supported formats:");
 		ALenum eBufferFormat = 0;
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_MONO16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_MONO16 -- Monophonic Sound";
+			msg=" * AL_FORMAT_MONO16 -- Monophonic Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_STEREO16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_STEREO16 -- Stereo Sound";
+			msg=" * AL_FORMAT_STEREO16 -- Stereo Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_QUAD16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_QUAD16 -- 4 Channel Sound";
+			msg=" * AL_FORMAT_QUAD16 -- 4 Channel Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_51CHN16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_51CHN16 -- 5.1 Surround Sound";
+			msg=" * AL_FORMAT_51CHN16 -- 5.1 Surround Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_61CHN16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_61CHN16 -- 6.1 Surround Sound";
+			msg=" * AL_FORMAT_61CHN16 -- 6.1 Surround Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_71CHN16");
 		if(eBufferFormat)
 		{
-			msg="*** --- + AL_FORMAT_71CHN16 -- 7.1 Surround Sound";
+			msg=" * AL_FORMAT_71CHN16 -- 7.1 Surround Sound";
 			Ogre::LogManager::getSingleton().logMessage(msg);
 		}
 
@@ -3008,11 +3008,11 @@ namespace OgreOggSound
 		mEFXSupport = _checkEFXSupport();
 		if (mEFXSupport)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- EFX Detected");
+			Ogre::LogManager::getSingleton().logMessage("EFX Detected");
 			_determineAuxEffectSlots();
 		}
 		else
-			Ogre::LogManager::getSingleton().logMessage("*** --- EFX NOT Detected");
+			Ogre::LogManager::getSingleton().logMessage("EFX NOT Detected");
 
 #	if HAVE_EFX == 1
 		// XRAM
@@ -3020,12 +3020,12 @@ namespace OgreOggSound
 		if (mXRamSupport)
 		{
 			// Log message
-			Ogre::LogManager::getSingleton().logMessage("*** --- X-RAM Detected");
-			Ogre::LogManager::getSingleton().logMessage("*** --- X-RAM Size(MB): " + Ogre::StringConverter::toString(mXRamSizeMB) +
+			Ogre::LogManager::getSingleton().logMessage("X-RAM Detected");
+			Ogre::LogManager::getSingleton().logMessage("X-RAM Size(MB): " + Ogre::StringConverter::toString(mXRamSizeMB) +
 				" Free(MB):" + Ogre::StringConverter::toString(mXRamFreeMB));
 		}
 		else
-			Ogre::LogManager::getSingleton().logMessage("*** --- XRAM NOT Detected");
+			Ogre::LogManager::getSingleton().logMessage("XRAM NOT Detected");
 #	endif
 
 		// EAX
@@ -3036,7 +3036,7 @@ namespace OgreOggSound
 			{
 				mEAXSupport = true;
 				mEAXVersion = version;
-				eaxName="*** --- EAX "+Ogre::StringConverter::toString(version) + ".0 Detected";
+				eaxName="EAX "+Ogre::StringConverter::toString(version) + ".0 Detected";
 				Ogre::LogManager::getSingleton().logMessage(eaxName);
 				break;
 			}
@@ -3063,7 +3063,7 @@ namespace OgreOggSound
 		}
 
 		// Supported Extensions Info
-		Ogre::LogManager::getSingleton().logMessage("*** --- Supported Extensions: " + ss.str());
+		Ogre::LogManager::getSingleton().logMessage("Supported Extensions: " + ss.str());
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
