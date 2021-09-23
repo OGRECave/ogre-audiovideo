@@ -79,7 +79,7 @@ namespace OgreOggSound
 	{
 		if (alcIsExtensionPresent(mDevice, "ALC_EXT_CAPTURE") == AL_FALSE)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- No Capture Extension detected! --- ***");
+			Ogre::LogManager::getSingleton().logMessage("No Capture Extension detected!");
 			return false;
 		}
 		return true;
@@ -153,11 +153,11 @@ namespace OgreOggSound
 				return true;
 			}
 
-			Ogre::LogManager::getSingleton().logError("*** --- OgreOggSoundRecord::initCaptureDevice() - Unable to open recording file: " + mOutputFile);
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundRecord::initCaptureDevice() - Unable to open recording file: " + mOutputFile);
 			return false;
 		}
 
-		Ogre::LogManager::getSingleton().logError("*** --- OgreOggSoundRecord::initCaptureDevice() - Unable to open recording device: " + mDeviceName);
+		Ogre::LogManager::getSingleton().logError("OgreOggSoundRecord::initCaptureDevice() - Unable to open recording device: " + mDeviceName);
 
 		return false;
 	}

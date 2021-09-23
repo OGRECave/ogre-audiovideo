@@ -108,7 +108,7 @@ namespace OgreOggSound
 		{
 			if ( mLoopOffset>=mPlayTime )
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::open() - Loop time invalid!");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::open() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}
@@ -140,7 +140,7 @@ namespace OgreOggSound
 		if ( !mAudioStream )
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::setLoopOffset() - Loop time invalid!");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::setLoopOffset() - Loop time invalid!");
 				// Invalid - cancel loop point
 				mLoopOffset=0.f;
 			}
@@ -157,7 +157,7 @@ namespace OgreOggSound
 	{
 		if (!mVorbisInfo)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- No vorbis info!");
+			Ogre::LogManager::getSingleton().logMessage("No vorbis info!");
 			return false;
 		}
 
@@ -375,7 +375,7 @@ namespace OgreOggSound
 				{
 					if ( ov_time_seek(&mOggStream, 0 + mLoopOffset)!= 0 )
 					{
-						Ogre::LogManager::getSingleton().logError("*** OgreOggStream::_stream() - Looping stream, ogg file NOT seekable!");
+						Ogre::LogManager::getSingleton().logError("OgreOggStream::_stream() - Looping stream, ogg file NOT seekable!");
 						break;
 					}
 				}
@@ -444,7 +444,7 @@ namespace OgreOggSound
 
 			// Any problems?
 			if ( alGetError()!=AL_NO_ERROR )
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
 		}
 	}		 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -540,7 +540,7 @@ namespace OgreOggSound
 		alSourcePlay(mSource);
 		if ( alGetError() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggStreamSound::_playImpl() - Unable to play sound");
+			Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::_playImpl() - Unable to play sound");
 			return;
 		}
 		// Set play flag

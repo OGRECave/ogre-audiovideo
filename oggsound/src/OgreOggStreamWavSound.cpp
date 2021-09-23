@@ -153,7 +153,7 @@ namespace OgreOggSound
 			// Skip unsupported chunk...
 			else {
 				if( (mAudioStream->tell() / sizeof(ChunkHeader)) % 100000 == 0)
-					Ogre::LogManager::getSingleton().logMessage("*** OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
+					Ogre::LogManager::getSingleton().logMessage("OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
 
 				mAudioStream->skip(c.length);
 			}
@@ -192,7 +192,7 @@ namespace OgreOggSound
 			}
 			else			
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::open() - Loop time invalid!");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::open() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}
@@ -318,7 +318,7 @@ namespace OgreOggSound
 		default:
 			{
 				// Error message
-				Ogre::LogManager::getSingleton().logMessage("*** --- Unable to determine number of channels: defaulting to 16-bit stereo");
+				Ogre::LogManager::getSingleton().logMessage("Unable to determine number of channels: defaulting to 16-bit stereo");
 
 				// 16-bit stereo
 				mFormat = AL_FORMAT_STEREO16;
@@ -479,7 +479,7 @@ namespace OgreOggSound
 			// Check valid loop point
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::setLoopOffset() - Loop time invalid!");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::setLoopOffset() - Loop time invalid!");
 				return;
 			}
 
@@ -620,7 +620,7 @@ namespace OgreOggSound
 			// Any problems?
 			if ( alGetError() ) 
 			{
-				Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::_dequeue() - Unable to unqueue buffers");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::_dequeue() - Unable to unqueue buffers");
 			}
 		}
 	}
@@ -654,7 +654,7 @@ namespace OgreOggSound
 		alSourcePlay(mSource);
 		if ( alGetError() )
 		{
-			Ogre::LogManager::getSingleton().logError("*** OgreOggStreamWavSound::_playImpl() - Unable to play sound");
+			Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::_playImpl() - Unable to play sound");
 			return;
 		}
 

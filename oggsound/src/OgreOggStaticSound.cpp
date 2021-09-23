@@ -177,7 +177,7 @@ namespace OgreOggSound
 	{
 		if (!mVorbisInfo)
 		{
-			Ogre::LogManager::getSingleton().logMessage("*** --- No vorbis info!");
+			Ogre::LogManager::getSingleton().logMessage("No vorbis info!");
 			return false;
 		}
 
