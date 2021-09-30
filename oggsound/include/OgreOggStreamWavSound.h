@@ -46,7 +46,7 @@ namespace OgreOggSound
 	*/
 	class _OGGSOUND_EXPORT OgreOggStreamWavSound : public OgreOggISound
 	{
-
+	public:
 		/** Sets the position of the playback cursor in seconds
 		@param seconds
 			Play position in seconds 
@@ -62,7 +62,14 @@ namespace OgreOggSound
 			@param src
 				OpenAL Source ID.
 		 */
-		void setSource(ALuint& src);	
+		void setSource(ALuint& src);
+		/** Sets looping status.
+		@remarks
+			Sets wheter the sound should loop
+			@param loop
+				If true, then sound will loop
+		 */
+		void loop(bool loop) { mLoop = loop; };
 		/** Sets the start point of a loopable section of audio.
 		@remarks
 			Allows user to define any start point for a loopable sound, by default this would be 0, 
@@ -79,7 +86,6 @@ namespace OgreOggSound
 		bool isMono();
 
 	protected:	
-
 		/** Constructor
 		@remarks
 			Creates a streamed sound object for playing audio directly from a WAV file stream.

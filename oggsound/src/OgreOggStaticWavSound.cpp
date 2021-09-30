@@ -67,7 +67,7 @@ namespace OgreOggSound
 		if (mFormatData.mFormat) OGRE_FREE(mFormatData.mFormat, Ogre::MEMCATEGORY_GENERAL);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_openImpl(Ogre::DataStreamPtr& fileStream)
+	void OgreOggStaticWavSound::_openImpl(Ogre::DataStreamPtr& fileStream)
 	{
 		// WAVE descriptor vars
 		char*			sound_buffer=0;
@@ -176,7 +176,7 @@ namespace OgreOggSound
 		// Create OpenAL buffer
 		alGetError();
 		alGenBuffers(1, &(*mBuffers)[0]);
-		if ( alGetError()!=AL_NO_ERROR )
+		if ( alGetError() != AL_NO_ERROR )
 		{
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Unable to create OpenAL buffer.", "OgreOggStaticWavSound::_openImpl()");
 			return;
@@ -211,7 +211,7 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundLoaded(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/	  
-	void	OgreOggStaticWavSound::_openImpl(const Ogre::String& fName, sharedAudioBuffer* buffer)
+	void OgreOggStaticWavSound::_openImpl(const Ogre::String& fName, sharedAudioBuffer* buffer)
 	{
 		if ( !buffer ) return;
 
@@ -225,14 +225,14 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundLoaded(this);
 	}   
 	/*/////////////////////////////////////////////////////////////////*/
-	bool	OgreOggStaticWavSound::isMono() 
+	bool OgreOggStaticWavSound::isMono()
 	{
 		if ( !mInitialised ) return false;
 
 		return ( (mFormat==AL_FORMAT_MONO16) || (mFormat==AL_FORMAT_MONO8) );
 	}					   
 	/*/////////////////////////////////////////////////////////////////*/
-	bool	OgreOggStaticWavSound::_queryBufferInfo()
+	bool OgreOggStaticWavSound::_queryBufferInfo()
 	{
 		if ( !mFormatData.mFormat ) return false;
 
@@ -358,7 +358,7 @@ namespace OgreOggSound
 		return true;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_release()
+	void OgreOggStaticWavSound::_release()
 	{
 		ALuint src=AL_NONE;
 		setSource(src);
@@ -367,7 +367,7 @@ namespace OgreOggSound
 		mPlayPos = 0.f;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_prebuffer()
+	void OgreOggStaticWavSound::_prebuffer()
 	{
 		if (mSource==AL_NONE) return;
 
@@ -375,7 +375,7 @@ namespace OgreOggSound
 		alSourcei(mSource, AL_BUFFER, (*mBuffers)[0]);
 	}					
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::setSource(ALuint& src)
+	void OgreOggStaticWavSound::setSource(ALuint& src)
 	{
 		if (src!=AL_NONE)
 		{
@@ -408,7 +408,7 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_pauseImpl()
+	void OgreOggStaticWavSound::_pauseImpl()
 	{
 		assert(mState != SS_DESTROYED);
 
@@ -421,7 +421,7 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundPaused(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_playImpl()
+	void OgreOggStaticWavSound::_playImpl()
 	{
 		assert(mState != SS_DESTROYED);
 
@@ -443,7 +443,7 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundPlayed(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_stopImpl()
+	void OgreOggStaticWavSound::_stopImpl()
 	{
 		assert(mState != SS_DESTROYED);
 
@@ -467,17 +467,27 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundStopped(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::loop(bool loop)
+	void OgreOggStaticWavSound::loop(bool loop)
 	{
-		OgreOggISound::loop(loop);
+		mLoop = loop;
+
+		if(loop)
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::loop() : TRUE");
+		else
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::loop() : FALSE");
 
 		if(mSource != AL_NONE)
 		{
-			alSourcei(mSource,AL_LOOPING, loop);
+			alSourcei(mSource, AL_LOOPING, loop);
+
+			if ( alGetError() != AL_NO_ERROR )
+				Ogre::LogManager::getSingleton().logError("OgreOggStaticWavSound::loop() - Unable to set looping status!");
 		}
+		else
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::loop() - No source attached to sound!");
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void	OgreOggStaticWavSound::_updateAudioBuffers()
+	void OgreOggStaticWavSound::_updateAudioBuffers()
 	{
 		if (!isPlaying())
 			return;
