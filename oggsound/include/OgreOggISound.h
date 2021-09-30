@@ -172,15 +172,16 @@ namespace OgreOggSound
 		/** Stops sound.
 		 */
 		void stop(bool immediate=false);
-		/** Sets looping status.
+		/** Sets the loop status.
 		@remarks
+			Sets wheter the sound should loop
 			@param loop
-				Boolean: true == loop
+				If true, then sound will loop
 		 */
-		inline void loop(bool loop) { mLoop = loop; }
+		virtual void loop(bool loop) = 0;
 		/** Gets looping status.
 		@remarks
-			Gets whether the looping status is enabled
+			Gets whether the looping status is enabled for this sound
 		 */
 		inline bool isLooping() { return mLoop; }
 		/** Sets the start point of a loopable section of audio.

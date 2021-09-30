@@ -47,14 +47,12 @@ namespace OgreOggSound
 	 */
 	class _OGGSOUND_EXPORT OgreOggStaticWavSound : public OgreOggISound
 	{
-
 	public:
-
 		/** Sets the loop status.
 		@remarks
 			Immediately sets the loop status if a source is associated
 			@param loop
-				Loop if true
+				If true, then sound will loop
 		 */
 		void loop(bool loop);
 		/** Sets the source to use for playback.
@@ -73,7 +71,6 @@ namespace OgreOggSound
 		virtual const Ogre::String& getFileName( void ) const { return mAudioName; }
 
 	protected:	
-
 		/**
 		 * Constructor
 		@remarks

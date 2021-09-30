@@ -443,7 +443,7 @@ namespace OgreOggSound
 			alSourceUnqueueBuffers(mSource, 1, &buffer);
 
 			// Any problems?
-			if ( alGetError()!=AL_NO_ERROR )
+			if ( alGetError() != AL_NO_ERROR )
 				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
 		}
 	}		 

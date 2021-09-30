@@ -41,9 +41,14 @@ namespace OgreOggSound
 	*/
 	class _OGGSOUND_EXPORT OgreOggStreamBufferSound : public OgreOggISound
 	{
-
 	public:
-
+		/** Sets looping status.
+		@remarks
+			Sets wheter the sound should loop
+			@param loop
+				If true, then sound will loop
+		 */
+		void loop(bool loop) { mLoop = loop; };
 		/** Sets the position of the playback cursor in seconds
 		@param seconds
 			Play position in seconds 
@@ -71,7 +76,6 @@ namespace OgreOggSound
 		void insertData(char* data, size_t dataLen, bool start = true);
 
 	protected:
-
 		/** Constructor
 		@remarks
 			Creates a streamed sound object for playing audio directly from a file stream.

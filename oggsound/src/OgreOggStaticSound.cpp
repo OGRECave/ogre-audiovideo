@@ -352,12 +352,22 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStaticSound::loop(bool loop)
 	{
-		OgreOggISound::loop(loop);
+		mLoop = loop;
+
+		if(loop)
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() : TRUE");
+		else
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() : FALSE");
 
 		if(mSource != AL_NONE)
 		{
-			alSourcei(mSource,AL_LOOPING, loop);
+			alSourcei(mSource, AL_LOOPING, loop);
+
+			if ( alGetError() != AL_NO_ERROR )
+				Ogre::LogManager::getSingleton().logError("OgreOggStaticSound::loop() - Unable to set looping status!");
 		}
+		else
+			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() - No source attached to sound!");
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStaticSound::_updateAudioBuffers()
