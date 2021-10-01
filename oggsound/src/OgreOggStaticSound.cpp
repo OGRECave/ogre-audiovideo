@@ -354,11 +354,6 @@ namespace OgreOggSound
 	{
 		mLoop = loop;
 
-		if(loop)
-			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() : TRUE");
-		else
-			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() : FALSE");
-
 		if(mSource != AL_NONE)
 		{
 			alSourcei(mSource, AL_LOOPING, loop);

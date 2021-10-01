@@ -68,6 +68,9 @@ namespace OgreOggSound
 			Sets wheter the sound should loop
 			@param loop
 				If true, then sound will loop
+		@note
+			Bear in mind that this being a streamed sound, 
+			the option is not applied immediately but has a delay given by the buffer size.
 		 */
 		void loop(bool loop) { mLoop = loop; };
 		/** Sets the start point of a loopable section of audio.
