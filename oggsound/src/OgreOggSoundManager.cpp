@@ -571,12 +571,11 @@ namespace OgreOggSound
 		// MUST be unique
 		if ( hasSound(name) )
 		{
-			Ogre::String msg="OgreOggSoundManager::createSound() - Sound with name: " + name + " already exists!";
-			Ogre::LogManager::getSingleton().logMessage(msg);
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createSound() - Sound with name: " + name + " already exists!");
 			return 0;
 		}
 
-		if		( file == "BUFFER" )
+		if ( file == "BUFFER" )
 		{
 			sound = OGRE_NEW_T(OgreOggStreamBufferSound, Ogre::MEMCATEGORY_GENERAL)(
 				name, scnMgr
@@ -593,7 +592,7 @@ namespace OgreOggSound
 			#endif
 
 			// Add to list
-			mSoundMap[name]=sound;
+			mSoundMap[name] = sound;
 
 			#if OGGSOUND_THREADED
 				mSoundMutex.unlock();
@@ -601,7 +600,7 @@ namespace OgreOggSound
 
 			return sound;
 		}
-		else if	( file.find(".ogg")!=file.npos || file.find(".OGG")!=file.npos )
+		else if	( file.find(".ogg") != file.npos || file.find(".OGG") != file.npos )
 		{
 			if(stream)
 				sound = OGRE_NEW_T(OgreOggStreamSound, Ogre::MEMCATEGORY_GENERAL)(
@@ -629,14 +628,13 @@ namespace OgreOggSound
 			#endif
 
 			// Add to list
-			mSoundMap[name]=sound;
+			mSoundMap[name] = sound;
 
 			#if OGGSOUND_THREADED
 				mSoundMutex.unlock();
 			#endif
 
 #if OGGSOUND_THREADED
-
 			SoundAction action;
 			cSound* c		= OGRE_NEW_T(cSound, Ogre::MEMCATEGORY_GENERAL);
 			c->mFileName	= file;
@@ -652,7 +650,7 @@ namespace OgreOggSound
 #endif
 			return sound;
 		}
-		else if	( file.find(".wav")!=file.npos || file.find(".WAV")!=file.npos )
+		else if	( file.find(".wav") != file.npos || file.find(".WAV") != file.npos )
 		{
 			if(stream)
 				sound = OGRE_NEW_T(OgreOggStreamWavSound, Ogre::MEMCATEGORY_GENERAL)(
@@ -680,7 +678,7 @@ namespace OgreOggSound
 			#endif
 
 			// Add to list
-			mSoundMap[name]=sound;
+			mSoundMap[name] = sound;
 
 			#if OGGSOUND_THREADED
 				mSoundMutex.unlock();
@@ -704,8 +702,7 @@ namespace OgreOggSound
 		}
 		else
 		{
-			Ogre::String msg="OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: " + name;
-			Ogre::LogManager::getSingleton().logMessage(msg);
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::createSound() - Sound does not have (.ogg | .wav) extension: " + file);
 			return 0;
 		}
 	}
@@ -2453,7 +2450,6 @@ namespace OgreOggSound
 		ALuint		uiEffectSlots[128] = { 0 };
 		ALuint		uiEffects[1] = { 0 };
 		ALuint		uiFilters[1] = { 0 };
-		Ogre::String msg="";
 
 		// To determine how many Auxiliary Effects Slots are available,
 		// create as many as possible (up to 128) until the call fails.
@@ -2464,13 +2460,11 @@ namespace OgreOggSound
 				break;
 		}
 
-		msg=Ogre::StringConverter::toString(mNumEffectSlots) + " Auxiliary Effect Slot(s)";
-		Ogre::LogManager::getSingleton().logMessage(msg);
+		Ogre::LogManager::getSingleton().logMessage(Ogre::StringConverter::toString(mNumEffectSlots) + " Auxiliary Effect Slot(s)");
 
 		// Retrieve the number of Auxiliary Effect Slots Sends available on each Source
 		alcGetIntegerv(mDevice, ALC_MAX_AUXILIARY_SENDS, 1, &mNumSendsPerSource);
-		msg=Ogre::StringConverter::toString(mNumSendsPerSource) + " Auxiliary Send(s) per Source";
-		Ogre::LogManager::getSingleton().logMessage(msg);
+		Ogre::LogManager::getSingleton().logMessage(Ogre::StringConverter::toString(mNumSendsPerSource) + " Auxiliary Send(s) per Source");
 
 		Ogre::LogManager::getSingleton().logMessage("Effects supported:");
 		alGenEffects(1, &uiEffects[0]);
@@ -2819,6 +2813,7 @@ namespace OgreOggSound
 		if (!buffer)
 		{
 		    Ogre::DataStreamPtr stream = _openStream(file);
+
 			// Load audio file
 			sound->_openImpl(stream);
 		}
@@ -2836,8 +2831,7 @@ namespace OgreOggSound
 		{
 			if ( !_requestSoundSource(sound) )
 			{
-				Ogre::String msg="OgreOggSoundManager::createSound() - Failed to preBuffer sound: "+sound->getName();
-				Ogre::LogManager::getSingleton().logError(msg);
+				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createSound() - Failed to preBuffer sound: " + sound->getName());
 			}
 		}
 	}
@@ -2962,46 +2956,33 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_checkFeatureSupport()
 	{
-		Ogre::String msg="";
 		// Supported Formats Info
 		Ogre::LogManager::getSingleton().logMessage("Supported formats:");
 		ALenum eBufferFormat = 0;
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_MONO16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_MONO16 -- Monophonic Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_MONO16 -- Monophonic Sound");
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_STEREO16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_STEREO16 -- Stereo Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_STEREO16 -- Stereo Sound");
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_QUAD16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_QUAD16 -- 4 Channel Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_QUAD16 -- 4 Channel Sound");
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_51CHN16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_51CHN16 -- 5.1 Surround Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_51CHN16 -- 5.1 Surround Sound");
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_61CHN16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_61CHN16 -- 6.1 Surround Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_61CHN16 -- 6.1 Surround Sound");
+
 		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_71CHN16");
 		if(eBufferFormat)
-		{
-			msg=" * AL_FORMAT_71CHN16 -- 7.1 Surround Sound";
-			Ogre::LogManager::getSingleton().logMessage(msg);
-		}
+			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_71CHN16 -- 7.1 Surround Sound");
 
 #if HAVE_EFX
 		// EFX
@@ -3311,13 +3292,13 @@ namespace OgreOggSound
 			}
 			else
 			{
-				OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Unable to find Ogre::ResourceGroupManager", "OgreOggSoundManager::createSound()");
+				OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Unable to find Ogre::ResourceGroupManager", "OgreOggSoundManager::_openStream()");
 				result.reset();
 			}
 		}
 		catch (Ogre::Exception& e)
 		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, e.getFullDescription(), "OgreOggSoundManager::_createSoundImpl()");
+			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, e.getFullDescription(), "OgreOggSoundManager::_openStream()");
 			result.reset();
 		}
 

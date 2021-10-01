@@ -113,7 +113,7 @@ namespace OgreOggSound
 		// Samples check..
 		if ( (mFormatData.mFormat->mBitsPerSample!=16) && (mFormatData.mFormat->mBitsPerSample!=8) )
 		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - BitsPerSample NOT 8/16, unsupported format!", "OgreOggStreamWavWavSound::_openImpl()");
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, fileStream->getName() + " - BitsPerSample NOT 8/16, unsupported format!", "OgreOggStreamWavSound::_openImpl()");
 		}
 
 		// Calculate extra WAV header info
@@ -169,7 +169,7 @@ namespace OgreOggSound
 		// Check format support
 		if (!_queryBufferInfo())
 		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Format NOT supported", "OgreOggStreamWavWavSound::_openImpl()");
+			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Format NOT supported", "OgreOggStreamWavSound::_openImpl()");
 		}
 
 		// Calculate length in seconds
@@ -192,7 +192,7 @@ namespace OgreOggSound
 			}
 			else			
 			{
-				Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::open() - Loop time invalid!");
+				Ogre::LogManager::getSingleton().logError("OgreOggStreamWavSound::_openImpl() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}

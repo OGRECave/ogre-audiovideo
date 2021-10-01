@@ -166,7 +166,7 @@ namespace OgreOggSound
 			// Skip unsupported chunk...
 			else {
 				if( (mAudioStream->tell() / sizeof(ChunkHeader)) % 100000 == 0)
-					Ogre::LogManager::getSingleton().logMessage("OgreOggStreamWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
+					Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::_openImpl() - Looking for 'data' chunk in: " + fileStream->getName());
 
 				mAudioStream->skip(c.length);
 			}
@@ -470,11 +470,6 @@ namespace OgreOggSound
 	void OgreOggStaticWavSound::loop(bool loop)
 	{
 		mLoop = loop;
-
-		if(loop)
-			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::loop() : TRUE");
-		else
-			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticWavSound::loop() : FALSE");
 
 		if(mSource != AL_NONE)
 		{
