@@ -478,12 +478,12 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::StringVector OgreOggSoundManager::getSoundList() const
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
 		Ogre::StringVector list;
-		for ( SoundMap::const_iterator iter=mSoundMap.begin(); iter!=mSoundMap.end(); ++iter )
+		for ( SoundMap::const_iterator iter = mSoundMap.begin(); iter != mSoundMap.end(); ++iter )
 			list.push_back((*iter).first);
 		return list;
 	}
@@ -530,7 +530,6 @@ namespace OgreOggSound
 			else
 			{
 				OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No SceneManager defined!", "OgreOggSoundManager::createSound()");
-				return 0;
 			}
 		}
 
@@ -548,8 +547,13 @@ namespace OgreOggSound
 		}
 		catch (Ogre::Exception& e)
 		{
+			// If the sound creation generated an exception, then erase the sound from the soundmap
+			SoundMap::iterator i = mSoundMap.find(name);
+			mSoundMap.erase(i);
+
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, e.getFullDescription(), "OgreOggSoundManager::createSound()");
 		}
+
 		// create Movable Sound
 		return sound;
 	}
@@ -721,9 +725,9 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggISound* OgreOggSoundManager::getSound(const Ogre::String& name)
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
 		if(i == mSoundMap.end()) return 0;
@@ -740,9 +744,9 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::hasSound(const Ogre::String& name)
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
 		SoundMap::iterator i = mSoundMap.find(name);
 		if(i == mSoundMap.end())
@@ -838,8 +842,11 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::destroySound(const Ogre::String& sName)
 	{
-		OgreOggISound* sound=0;
-		if ( !(sound = getSound(sName)) ) return;
+		OgreOggISound* sound = 0;
+
+		if ( !(sound = getSound(sName)) )
+			return;
+
 		_destroySoundImpl(sound);
 	}
 
@@ -891,14 +898,14 @@ namespace OgreOggSound
 	void OgreOggSoundManager::update(float fTime)
 	{
 #if OGGSOUND_THREADED == 0
-		static float rTime=0.f;
+		static float rTime = 0.f;
 	
 		if ( !mActiveSounds.empty() )
 		{
 			// Update ALL active sounds
 			ActiveList::const_iterator i=mActiveSounds.begin(); 
 			ActiveList::const_iterator end(mActiveSounds.end()); 
-			while ( i!=end )
+			while ( i != end )
 			{
 				(*i)->update(fTime);
 				(*i)->_updateAudioBuffers();
@@ -912,13 +919,13 @@ namespace OgreOggSound
 		mListener->update();
 
 		// Limit re-activation
-		if ( (rTime+=fTime) > 0.05 )
+		if ( (rTime += fTime) > 0.05 )
 		{
 			// try to reactivate any
 			_reactivateQueuedSounds();
 
 			// Reset timer
-			rTime=0.f;
+			rTime = 0.f;
 		}
 
 #endif
@@ -949,8 +956,8 @@ namespace OgreOggSound
 		{
 			if (!mSoundsToDestroy->empty() )
 			{
-				OgreOggISound* s=0;
-				int count=0;
+				OgreOggISound* s = 0;
+				int count = 0;
 				do
 				{
 					if ( mSoundsToDestroy->pop(s) )
@@ -967,9 +974,9 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::setResourceGroupName(const Ogre::String& group)
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
+#endif
 
 		mResourceGroupName = group;
 	}
@@ -977,9 +984,9 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	Ogre::String OgreOggSoundManager::getResourceGroupName() const
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mResourceGroupNameMutex);
+#endif
 
 		return mResourceGroupName;
 	}
@@ -1216,7 +1223,7 @@ namespace OgreOggSound
 	{
 		if (!sound) return false;
 
-		if (sound->getSource()==AL_NONE) return true;
+		if (sound->getSource() == AL_NONE) return true;
 
 		// Get source
 		ALuint src = sound->getSource();
@@ -1233,11 +1240,11 @@ namespace OgreOggSound
 			mSourcePool.push_back(src);
 
 			// Remove from actives list
-			ActiveList::iterator iter=mActiveSounds.begin(); 
-			while ( iter!=mActiveSounds.end() )
+			ActiveList::iterator iter = mActiveSounds.begin();
+			while ( iter != mActiveSounds.end() )
 			{
 				// Find sound in actives list
-				if ( (*iter)==sound )
+				if ( (*iter) == sound )
 					iter = mActiveSounds.erase(iter);
 				else
 					++iter;
@@ -2693,22 +2700,23 @@ namespace OgreOggSound
 		*/
 		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
+
 		// Destroy all sounds
 		Ogre::StringVector soundList;
 
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
 		// Get a list of all sound names
-		for ( SoundMap::iterator i=mSoundMap.begin(); i!=mSoundMap.end(); ++i )
+		for ( SoundMap::iterator i = mSoundMap.begin(); i != mSoundMap.end(); ++i )
 			soundList.push_back(i->first);
 
 		// Destroy individually outside mSoundMap iteration
-		for ( Ogre::StringVector::iterator i=soundList.begin(); i!=soundList.end(); ++i )
+		for ( Ogre::StringVector::iterator i = soundList.begin(); i != soundList.end(); ++i )
 		{
 			OgreOggISound* sound=0;
-			if ( sound=getSound((*i)) ) 
+			if ( sound = getSound((*i)) )
 				_destroySoundImpl(sound);
 		}
 		soundList.clear();
@@ -2750,14 +2758,14 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_setGlobalPitchImpl()
 	{
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
-		if (mSoundMap.empty() ) return;
+		if ( mSoundMap.empty() ) return;
 
 		// Affect all sounds
-		for (SoundMap::const_iterator iter=mSoundMap.begin(); iter!=mSoundMap.end(); ++iter)
+		for (SoundMap::const_iterator iter = mSoundMap.begin(); iter != mSoundMap.end(); ++iter)
 			iter->second->setPitch(mGlobalPitch);
 	}
 
@@ -2831,7 +2839,7 @@ namespace OgreOggSound
 		{
 			if ( !_requestSoundSource(sound) )
 			{
-				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createSound() - Failed to preBuffer sound: " + sound->getName());
+				Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_loadSoundImpl() - Failed to preBuffer sound: " + sound->getName());
 			}
 		}
 	}
@@ -2905,18 +2913,19 @@ namespace OgreOggSound
 #if OGGSOUND_THREADED
 		OGRE_WQ_LOCK_MUTEX(mMutex);
 #endif
+
 		// Delete sound buffer
 		ALuint src = sound->getSource();
-		if ( src!=AL_NONE ) _releaseSoundSource(sound);
+		if ( src != AL_NONE ) _releaseSoundSource(sound);
 
 		// Remove references from lists
 		_removeFromLists(sound);
 
-		// Find sound in map
-		#if OGGSOUND_THREADED
-			OGRE_WQ_LOCK_MUTEX(mSoundMutex);
-		#endif
+#if OGGSOUND_THREADED
+		OGRE_WQ_LOCK_MUTEX(mSoundMutex);
+#endif
 
+		// Find sound in map and remove it
 		SoundMap::iterator i = mSoundMap.find(sound->getName());
 		mSoundMap.erase(i);
 	}

@@ -870,9 +870,10 @@ namespace OgreOggSound
 				Sound object to destroy.
 		 */
 		void _destroySoundImpl(OgreOggISound* sound=0);
-		/** Destroys a single sound.
+		/** Release sound source and remove sound
 		@remarks
-			Destroys a single sound object.
+			Releases sound source and removes sound from OgreOggSoundManager internal sound registry.\n
+			So another sound with the same name can be created next time.
 			@param sound
 				Sound to destroy.
 		 */
