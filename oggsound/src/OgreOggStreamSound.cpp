@@ -87,6 +87,12 @@ namespace OgreOggSound
 		mVorbisInfo = ov_info(&mOggStream, -1);
 		mVorbisComment = ov_comment(&mOggStream, -1);
 
+		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioStream->getName() + "': Loading OGG - version: " +
+			Ogre::StringConverter::toString(mVorbisInfo->version) + ", " +
+			Ogre::StringConverter::toString(mVorbisInfo->channels) + " channels, " +
+			Ogre::StringConverter::toString(mVorbisInfo->rate) + " Hz, " +
+			Ogre::StringConverter::toString(mVorbisInfo->bitrate_nominal) + " bps");
+
 		// Get total playtime in seconds
 		mPlayTime = static_cast<float>(ov_time_total(&mOggStream, -1));
 
