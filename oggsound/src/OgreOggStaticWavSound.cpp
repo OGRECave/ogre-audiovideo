@@ -86,6 +86,11 @@ namespace OgreOggSound
 		// Read in "RIFF" chunk descriptor (4 bytes)
 		mAudioStream->read(mFormatData.mFormat, sizeof(WaveHeader));
 
+		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioName + "': Loading WAV with " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mChannels) + " channels, " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mSamplesPerSec) + " Hz, " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mBitsPerSample) + " bps PCM format.");
+
 		// Valid 'RIFF'?
 		if ( strncmp(mFormatData.mFormat->mRIFF, "RIFF", 4) != 0 )
 		{
@@ -105,7 +110,7 @@ namespace OgreOggSound
 		}
 
 		// mFormatData.mFormat: Should be 16 unless compressed ( compressed NOT supported )
-		if ( !mFormatData.mFormat->mHeaderSize>=16 )
+		if ( !mFormatData.mFormat->mHeaderSize >= 16 )
 		{
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, mAudioName + " - Compressed WAV NOT supported!", "OgreOggStaticWavSound::_openImpl()");
 		}
@@ -193,15 +198,16 @@ namespace OgreOggSound
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Format NOT supported.", "OgreOggStaticWavSound::_openImpl()");
 
 		// Calculate length in seconds
-		mPlayTime = static_cast<float>(((mAudioEnd-mAudioOffset)*8.f) / static_cast<float>((mFormatData.mFormat->mSamplesPerSec * mFormatData.mFormat->mChannels * mFormatData.mFormat->mBitsPerSample)));
+		mPlayTime = static_cast<float>(((mAudioEnd-mAudioOffset) * 8.f) / static_cast<float>((mFormatData.mFormat->mSamplesPerSec * mFormatData.mFormat->mChannels * mFormatData.mFormat->mBitsPerSample)));
 
 		alGetError();
 		alBufferData((*mBuffers)[0], mFormat, sound_buffer, static_cast<ALsizei>(bytesRead), mFormatData.mFormat->mSamplesPerSec);
-		if ( alGetError()!=AL_NO_ERROR )
+		if ( alGetError() != AL_NO_ERROR )
 		{
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Unable to load audio data into buffer!", "OgreOggStaticWavSound::_openImpl()");
 			return;
 		}
+
 		OGRE_FREE(sound_buffer, Ogre::MEMCATEGORY_GENERAL);
 
 		// Register shared buffer
@@ -240,7 +246,7 @@ namespace OgreOggSound
 		{
 		case 1:
 			{
-				if ( mFormatData.mFormat->mBitsPerSample==8 )
+				if ( mFormatData.mFormat->mBitsPerSample == 8 )
 				{
 					// 8-bit mono
 					mFormat = AL_FORMAT_MONO8;
@@ -263,7 +269,7 @@ namespace OgreOggSound
 			break;
 		case 2:
 			{
-				if ( mFormatData.mFormat->mBitsPerSample==8 )
+				if ( mFormatData.mFormat->mBitsPerSample == 8 )
 				{
 					// 8-bit stereo
 					mFormat = AL_FORMAT_STEREO8;
@@ -377,7 +383,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStaticWavSound::setSource(ALuint& src)
 	{
-		if (src!=AL_NONE)
+		if (src != AL_NONE)
 		{
 			// Attach new source
 			mSource=src;
@@ -391,7 +397,7 @@ namespace OgreOggSound
 		else
 		{
 			// Validity check
-			if ( mSource!=AL_NONE )
+			if ( mSource != AL_NONE )
 			{
 				// Need to stop sound BEFORE unqueuing
 				alSourceStop(mSource);
@@ -452,7 +458,7 @@ namespace OgreOggSound
 		alSourceStop(mSource);
 		alSourceRewind(mSource);
 		mState = SS_STOPPED;
-		mPreviousOffset=0;
+		mPreviousOffset = 0;
 
 		if (mTemporary)
 		{

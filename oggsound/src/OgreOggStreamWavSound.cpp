@@ -80,6 +80,11 @@ namespace OgreOggSound
 		// Read in "RIFF" chunk descriptor (4 bytes)
 		mAudioStream->read(mFormatData.mFormat, sizeof(WaveHeader));
 
+		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioStream->getName() + "': Loading WAV with " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mChannels) + " channels, " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mSamplesPerSec) + " Hz, " +
+			Ogre::StringConverter::toString(mFormatData.mFormat->mBitsPerSample) + " bps PCM format.");
+
 		// Valid 'RIFF'?
 		if ( strncmp(mFormatData.mFormat->mRIFF, "RIFF", 4) != 0 )
 		{

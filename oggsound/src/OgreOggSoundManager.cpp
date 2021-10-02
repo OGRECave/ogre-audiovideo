@@ -547,6 +547,8 @@ namespace OgreOggSound
 		}
 		catch (Ogre::Exception& e)
 		{
+			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::createSound() - There was an error when trying to create sound: " + name);
+
 			// If the sound creation generated an exception, then erase the sound from the soundmap
 			SoundMap::iterator i = mSoundMap.find(name);
 			mSoundMap.erase(i);
