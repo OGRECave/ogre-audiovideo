@@ -224,7 +224,18 @@ namespace OgreOggSound
 		inline bool isTemporary() const { return mTemporary; }
 		/** Returns whether this sound is mono
 		 */
-		virtual bool isMono()=0;  
+		virtual bool isMono()=0;
+		/** Returns the buffer sample rate
+		 */
+		virtual unsigned int getSampleRate()=0;
+		/** Returns the buffer number of channels
+		 */
+		virtual unsigned short getChannels()=0;
+		/** Returns the buffer bits per sample
+		@note
+			In the case of OGG files this is the sample rate divided by the bitrate
+		 */
+		virtual unsigned int getBitsPerSample()=0;
 		/** Marks sound as temporary
 		@remarks
 			Auto-destroys itself after finishing playing.
@@ -486,6 +497,9 @@ namespace OgreOggSound
 		/** Gets the sounds direction
 		 */
 		inline const Ogre::Vector3& getDirection() const {return mDirection;}
+		/** Gets the sounds velocity
+		 */
+		inline const Ogre::Vector3& getVelocity() const {return mVelocity;}
 		/** Returns fade status.
 		 */
 		inline bool isFading() const { return mFade; }

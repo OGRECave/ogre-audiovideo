@@ -66,6 +66,15 @@ namespace OgreOggSound
 		/** Returns whether sound is mono
 		*/
 		bool isMono();
+		/** Returns the buffer sample rate
+		 */
+		unsigned int getSampleRate() { return mFormatData.mFormat->mSamplesPerSec; };
+		/** Returns the buffer number of channels
+		 */
+		unsigned short getChannels()  { return mFormatData.mFormat->mChannels; };
+		/** Returns the buffer bits per sample
+		 */
+		unsigned int getBitsPerSample() { return mFormatData.mFormat->mBitsPerSample; };
 		/** Gets the sounds file name
 		 */
 		virtual const Ogre::String& getFileName( void ) const { return mAudioName; }
@@ -94,7 +103,7 @@ namespace OgreOggSound
 		@remarks
 			Cleans up and releases OpenAL buffer objects.
 		 */
-		void release();	
+		void release();
 		/** Opens audio file.
 		@remarks
 			Opens a specified file and checks validity.

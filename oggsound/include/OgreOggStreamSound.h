@@ -87,6 +87,15 @@ namespace OgreOggSound
 		/** Returns whether sound is mono
 		*/
 		bool isMono();
+		/** Returns the buffer sample rate
+		 */
+		unsigned int getSampleRate() { return mVorbisInfo->rate; };
+		/** Returns the buffer number of channels
+		 */
+		unsigned short getChannels()  { return mVorbisInfo->channels; };
+		/** Returns the buffer bits per sample
+		 */
+		unsigned int getBitsPerSample() { return mVorbisInfo->bitrate_nominal / mVorbisInfo->rate; };
 
 	protected:	
 		/** Constructor

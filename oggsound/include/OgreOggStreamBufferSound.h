@@ -68,7 +68,16 @@ namespace OgreOggSound
 		/** Returns whether sound is mono
 		*/
 		bool isMono();
-		/** Set format and sampling frenquency
+		/** Returns the buffer sample rate
+		 */
+		unsigned int getSampleRate() { return 0; };
+		/** Returns the buffer number of channels
+		 */
+		unsigned short getChannels()  { return 0; };
+		/** Returns the buffer bits per sample
+		 */
+		unsigned int getBitsPerSample() { return 0; };
+		/** Set format and sampling frequency
 		 */
 		void setFormat(ALenum format, int freq);
 		/** Insert sound data buffor

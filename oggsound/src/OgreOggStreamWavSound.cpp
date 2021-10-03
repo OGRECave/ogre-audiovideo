@@ -80,10 +80,31 @@ namespace OgreOggSound
 		// Read in "RIFF" chunk descriptor (4 bytes)
 		mAudioStream->read(mFormatData.mFormat, sizeof(WaveHeader));
 
+		Ogre::String format;
+		switch(mFormatData.mFormat->mFormatTag)
+		{
+			case 0x0001:
+				format = "PCM";
+				break;
+			case 0x0003:
+				format = "IEEE float (unsupported)";
+				break;
+			case 0x0006:
+				format = "8-bit ITU-T G.711 A-law (unsupported)";
+				break;
+			case 0x0007:
+				format = "8-bit ITU-T G.711 µ-law (unsupported)";
+				break;
+			default:
+				format = "*unknown* (unsupported)";
+				break;
+		}
+
 		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioStream->getName() + "': Loading WAV with " +
 			Ogre::StringConverter::toString(mFormatData.mFormat->mChannels) + " channels, " +
 			Ogre::StringConverter::toString(mFormatData.mFormat->mSamplesPerSec) + " Hz, " +
-			Ogre::StringConverter::toString(mFormatData.mFormat->mBitsPerSample) + " bps PCM format.");
+			Ogre::StringConverter::toString(mFormatData.mFormat->mBitsPerSample) + " bps " +
+			format + " format.");
 
 		// Valid 'RIFF'?
 		if ( strncmp(mFormatData.mFormat->mRIFF, "RIFF", 4) != 0 )
