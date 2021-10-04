@@ -41,10 +41,12 @@
 namespace OgreOggSound
 {
 	typedef std::map<Ogre::String, OgreOggISound*> SoundMap;
+	typedef std::map<Ogre::String, ALuint> FilterList;
 	typedef std::map<Ogre::String, ALuint> EffectList;
 	typedef std::map<ALenum, bool> FeatureList;
 	typedef std::list<OgreOggISound*> ActiveList;
 	typedef std::deque<ALuint> SourceList;
+	typedef std::deque<ALuint> EffectSlotList;
 	typedef std::multimap<ALuint, ALuint> SlotMultiMap;
 	typedef std::vector<Ogre::String> RecordDeviceList;
 	
@@ -1100,9 +1102,9 @@ namespace OgreOggSound
 
 		bool mXRamSupport;
 
-		EffectList mFilterList;					// List of EFX filters
+		FilterList mFilterList;					// List of EFX filters
 		EffectList mEffectList;					// List of EFX effects
-		SourceList mEffectSlotList;				// List of EFX effect slots
+		EffectSlotList mEffectSlotList;				// List of EFX effect slots
 		SlotMultiMap mEffectSlotMultiMap;		// Multi Map of EFX effect slots (used for effect slot concatenation)
 
 		ALint mNumEffectSlots;					// Number of effect slots available
