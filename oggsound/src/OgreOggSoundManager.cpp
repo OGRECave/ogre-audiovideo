@@ -2265,7 +2265,7 @@ namespace OgreOggSound
 		alDeleteAuxiliaryEffectSlots(1, &slot);
 
 		// Find slot in mEffectSlotList and remove it
-		for (SourceList::iterator it = mEffectSlotList.begin(); it != mEffectSlotList.end(); ++it)
+		for (EffectSlotList::iterator it = mEffectSlotList.begin(); it != mEffectSlotList.end(); ++it)
 		{
 			if(*it == slot) {
 				mEffectSlotList.erase(it);
@@ -2394,7 +2394,7 @@ namespace OgreOggSound
 			return AL_FILTER_NULL;
 		}
 
-		EffectList::iterator filter=mFilterList.find(fName);
+		FilterList::iterator filter=mFilterList.find(fName);
 		if ( filter==mFilterList.end() )
 		{
 			Ogre::LogManager::getSingleton().logError("OgreOggSoundManager::_getEFXFilter() - Filter with name \"" + fName + "\" not found!");
@@ -3109,7 +3109,7 @@ namespace OgreOggSound
 		// clear EFX effect lists
 		if ( !mFilterList.empty() )
 		{
-			EffectList::iterator iter=mFilterList.begin();
+			FilterList::iterator iter=mFilterList.begin();
 			for ( ; iter!=mFilterList.end(); ++iter )
 			    alDeleteFilters( 1, &iter->second);
 			mFilterList.clear();
@@ -3149,7 +3149,7 @@ namespace OgreOggSound
 
 		if ( !mEffectSlotList.empty() )
 		{
-			SourceList::iterator iter=mEffectSlotList.begin();
+			EffectSlotList::iterator iter=mEffectSlotList.begin();
 			for ( ; iter!=mEffectSlotList.end(); ++iter )
 			    alDeleteAuxiliaryEffectSlots( 1, &(*iter));
 			mEffectSlotList.clear();
