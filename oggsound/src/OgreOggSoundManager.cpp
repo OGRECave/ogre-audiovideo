@@ -33,6 +33,10 @@
 
 #include <string>
 
+#ifndef AL_EFFECTSLOT_TARGET_SOFT
+#define AL_EFFECTSLOT_TARGET_SOFT 0x199C
+#endif
+
 #if OGGSOUND_THREADED
 	bool OgreOggSound::OgreOggSoundManager::mShuttingDown = false;
 #endif
