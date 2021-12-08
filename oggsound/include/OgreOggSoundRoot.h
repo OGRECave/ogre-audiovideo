@@ -24,36 +24,30 @@
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.  
+* THE SOFTWARE. 
 *
 */
 
-#include <OgreRoot.h>
+#ifndef __OGREOGGSOUNDPlugin_H__
+#define __OGREOGGSOUNDPlugin_H__
 
 #include "OgreOggSound.h"
-#include "OgreOggSoundPlugin.h"
+#include "OgreOggSoundFactory.h"
 
 namespace OgreOggSound
 {
-	OgreOggSoundPlugin* mOgreOggSoundPlugin;
-
-	//----------------------------------------------------------------------------------
-	// register SecureArchive with Archive Manager
-	//----------------------------------------------------------------------------------
-	extern "C" void _OGGSOUND_EXPORT dllStartPlugin( void )
+	class Root
 	{
-		// Create new plugin
-		mOgreOggSoundPlugin = OGRE_NEW_T(OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL)();
+	public:
+		Root();
 
-		// Register
-		Ogre::Root::getSingleton().installPlugin(mOgreOggSoundPlugin);
-	}
+		void initialise();
+		void shutdown();
 
-	extern "C" void _OGGSOUND_EXPORT dllStopPlugin( void )
-	{
-		Ogre::Root::getSingleton().uninstallPlugin(mOgreOggSoundPlugin);
-
-		OGRE_DELETE_T(mOgreOggSoundPlugin, OgreOggSoundPlugin, Ogre::MEMCATEGORY_GENERAL);
-		mOgreOggSoundPlugin = 0;
-	}
+	protected:
+		OgreOggSoundFactory* mOgreOggSoundFactory;
+		OgreOggSoundManager* mOgreOggSoundManager;
+	};
 }
+
+#endif

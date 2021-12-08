@@ -7,7 +7,7 @@ set (HEADER_FILES
     include/OgreOggSoundFactory.h
     include/OgreOggSound.h
     include/OgreOggSoundManager.h
-    include/OgreOggSoundPlugin.h
+    include/OgreOggSoundRoot.h
     include/OgreOggSoundPrereqs.h
     include/OgreOggSoundRecord.h
     include/OgreOggStaticSound.h
@@ -22,8 +22,7 @@ set (SOURCE_FILES
     src/OgreOggListener.cpp
     src/OgreOggSoundFactory.cpp
     src/OgreOggSoundManager.cpp
-    src/OgreOggSoundPlugin.cpp
-    src/OgreOggSoundPluginDllStart.cpp
+    src/OgreOggSoundRoot.cpp
     src/OgreOggSoundRecord.cpp
     src/OgreOggStaticSound.cpp
     src/OgreOggStaticWavSound.cpp
@@ -104,15 +103,13 @@ link_libraries(${OGRE_LIBRARIES}
 
 # Configure library
 if(OGRE_STATIC)
-    add_library(Plugin_OggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(OgreOggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
 else()
-    add_library(Plugin_OggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(OgreOggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
 endif()
-target_include_directories(Plugin_OggSound PUBLIC include)
-# Disable "lib" prefix and add a suffix with OGRE version
-set_target_properties(Plugin_OggSound PROPERTIES PREFIX "" VERSION ${OGRE_VERSION} SOVERSION ${OGRE_VERSION})
-target_compile_definitions(Plugin_OggSound PRIVATE OGGSOUND_EXPORT)
+target_include_directories(OgreOggSound PUBLIC include)
+target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
 
-install(FILES ${HEADER_FILES} DESTINATION include/OGRE/Plugins/OggSound)
-install(TARGETS Plugin_OggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/OGRE/ ARCHIVE DESTINATION lib/OGRE/)
-set_property(TARGET Plugin_OggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
+install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
+install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
+set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
