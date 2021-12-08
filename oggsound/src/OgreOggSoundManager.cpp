@@ -212,10 +212,9 @@ namespace OgreOggSound
 	{
 		if (mDevice) return true;
 
-		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*** --- Initialising OgreOggSound --- ***", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*** ---     " + OGREOGGSOUND_VERSION_STRING + "    --- ***", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
+		Ogre::LogManager::getSingleton().logMessage("*******************************************");
+		Ogre::LogManager::getSingleton().logMessage("*** --- Starting " + OGREOGGSOUND_VERSION_STRING + " --- ***");
+		Ogre::LogManager::getSingleton().logMessage("*******************************************");
 
 		// Set source limit
 		mMaxSources = maxSources;
@@ -317,8 +316,6 @@ namespace OgreOggSound
 		else
 			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(deviceName) + "\"");
 
-		Ogre::LogManager::getSingleton().logMessage("OpenAL Device successfully created");
-
 #if HAVE_EFX
         ALint attribs[2] = {ALC_MAX_AUXILIARY_SENDS, 4};
 #else
@@ -332,17 +329,15 @@ namespace OgreOggSound
 			return false;
 		}
 
-		Ogre::LogManager::getSingleton().logMessage("OpenAL Context successfully created");
-
 		if (!alcMakeContextCurrent(mContext))
 		{
 			Ogre::LogManager::getSingletonPtr()->logError("OgreOggSoundManager::init() - Unable to set context");
 			return false;
 		}
 
-		Ogre::LogManager::getSingleton().logMessage("OpenAL vendor string: \"" + Ogre::String(alGetString(AL_VENDOR)) + "\"");
-		Ogre::LogManager::getSingleton().logMessage("OpenAL renderer string: \"" + Ogre::String(alGetString(AL_RENDERER)) + "\"");
-		Ogre::LogManager::getSingleton().logMessage("OpenAL version string: \"" + Ogre::String(alGetString(AL_VERSION)) + "\"");
+		Ogre::LogManager::getSingleton().logMessage("AL_VENDOR = " + Ogre::String(alGetString(AL_VENDOR)));
+		Ogre::LogManager::getSingleton().logMessage("AL_RENDERER = " + Ogre::String(alGetString(AL_RENDERER)));
+		Ogre::LogManager::getSingleton().logMessage("AL_VERSION = " + Ogre::String(alGetString(AL_VERSION)));
 
 		_checkExtensionSupport();
 
@@ -396,10 +391,6 @@ namespace OgreOggSound
 			for(auto recordDevice : getCaptureDeviceList())
 				Ogre::LogManager::getSingleton().logMessage(" * '" + recordDevice + "'", Ogre::LML_NORMAL);
 		}
-
-		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*** ---  OgreOggSound Initialised --- ***", Ogre::LML_NORMAL);
-		Ogre::LogManager::getSingleton().logMessage("*****************************************", Ogre::LML_NORMAL);
 
 		return true;
 	}
@@ -2483,84 +2474,40 @@ namespace OgreOggSound
 		alGenEffects(1, &uiEffects[0]);
 		if (alGetError() == AL_NO_ERROR)
 		{
+			int effects[] = {AL_EFFECT_REVERB,
+							AL_EFFECT_EAXREVERB,
+							AL_EFFECT_CHORUS,
+							AL_EFFECT_DISTORTION,
+							AL_EFFECT_ECHO,
+							AL_EFFECT_FLANGER,
+							AL_EFFECT_FREQUENCY_SHIFTER,
+							AL_EFFECT_VOCAL_MORPHER,
+							AL_EFFECT_PITCH_SHIFTER,
+							AL_EFFECT_RING_MODULATOR,
+							AL_EFFECT_AUTOWAH,
+							AL_EFFECT_COMPRESSOR,
+							AL_EFFECT_EQUALIZER};
+			const char* effVals[] = {"AL_EFFECT_REVERB",
+									"AL_EFFECT_EAXREVERB",
+									"AL_EFFECT_CHORUS",
+									"AL_EFFECT_DISTORTION",
+									"AL_EFFECT_ECHO",
+									"AL_EFFECT_FLANGER",
+									"AL_EFFECT_FREQUENCY_SHIFTER",
+									"AL_EFFECT_VOCAL_MORPHER",
+									"AL_EFFECT_PITCH_SHIFTER",
+									"AL_EFFECT_RING_MODULATOR",
+									"AL_EFFECT_AUTOWAH",
+									"AL_EFFECT_COMPRESSOR",
+									"AL_EFFECT_EQUALIZER"};
 			// Try setting Effect Type to known Effects
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_REVERB);
-			if ( mEFXSupportList[AL_EFFECT_REVERB] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Reverb' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Reverb' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
-			if ( mEFXSupportList[AL_EFFECT_EAXREVERB] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'EAX Reverb' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'EAX Reverb' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_CHORUS);
-			if ( mEFXSupportList[AL_EFFECT_CHORUS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Chorus' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Chorus' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_DISTORTION);
-			if ( mEFXSupportList[AL_EFFECT_DISTORTION] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Distortion' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Distortion' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_ECHO);
-			if ( mEFXSupportList[AL_EFFECT_ECHO] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Echo' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Echo' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_FLANGER);
-			if ( mEFXSupportList[AL_EFFECT_FLANGER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Flanger' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Flanger' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_FREQUENCY_SHIFTER);
-			if ( mEFXSupportList[AL_EFFECT_FREQUENCY_SHIFTER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Frequency shifter' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Frequency shifter' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_VOCAL_MORPHER);
-			if ( mEFXSupportList[AL_EFFECT_VOCAL_MORPHER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Vocal Morpher' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Vocal Morpher' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_PITCH_SHIFTER);
-			if ( mEFXSupportList[AL_EFFECT_PITCH_SHIFTER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Pitch shifter' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Pitch shifter' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_RING_MODULATOR);
-			if ( mEFXSupportList[AL_EFFECT_RING_MODULATOR] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Ring modulator' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Ring modulator' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_AUTOWAH);
-			if ( mEFXSupportList[AL_EFFECT_AUTOWAH] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Autowah' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Autowah' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_COMPRESSOR);
-			if ( mEFXSupportList[AL_EFFECT_COMPRESSOR] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Compressor' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Compressor' Support: NO");
-
-			alEffecti(uiEffects[0], AL_EFFECT_TYPE, AL_EFFECT_EQUALIZER);
-			if ( mEFXSupportList[AL_EFFECT_EQUALIZER] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Equalizer' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Equalizer' Support: NO");
+			for(int i = 0; i < sizeof(effects)/sizeof(int); i++)
+			{
+				alEffecti(uiEffects[0], AL_EFFECT_TYPE, effects[i]);
+				mEFXSupportList[effects[i]] = (alGetError() == AL_NO_ERROR);
+				auto strVal = Ogre::StringConverter::toString(mEFXSupportList[AL_EFFECT_REVERB], true);
+				Ogre::LogManager::getSingleton().logMessage(" * " + Ogre::String(effVals[i])+": "+strVal);
+			}
 		}
 
 
@@ -2572,24 +2519,17 @@ namespace OgreOggSound
 		alGenFilters(1, &uiFilters[0]);
 		if (alGetError() == AL_NO_ERROR)
 		{
+			int filters[] = {AL_FILTER_LOWPASS, AL_FILTER_HIGHPASS, AL_FILTER_BANDPASS};
+			const char* filtStrs[] = {"AL_FILTER_LOWPASS", "AL_FILTER_HIGHPASS", "AL_FILTER_BANDPASS"};
+
 			// Try setting the Filter type to known Filters
-			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_LOWPASS);
-			if ( mEFXSupportList[AL_FILTER_LOWPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Low Pass' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Low Pass' Support: NO");
-
-			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_HIGHPASS);
-			if ( mEFXSupportList[AL_FILTER_HIGHPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'High Pass' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'High Pass' Support: NO");
-
-			alFilteri(uiFilters[0], AL_FILTER_TYPE, AL_FILTER_BANDPASS);
-			if ( mEFXSupportList[AL_FILTER_BANDPASS] = (alGetError() == AL_NO_ERROR) )
-				Ogre::LogManager::getSingleton().logMessage(" * 'Band Pass' Support: YES");
-			else
-				Ogre::LogManager::getSingleton().logMessage(" * 'Band Pass' Support: NO");
+			for(int i = 0; i < sizeof(filters)/sizeof(int); i++)
+			{
+				alFilteri(uiFilters[0], AL_FILTER_TYPE, filters[i]);
+				mEFXSupportList[filters[i]] = (alGetError() == AL_NO_ERROR);
+				auto strVal = Ogre::StringConverter::toString(mEFXSupportList[AL_EFFECT_REVERB], true);
+				Ogre::LogManager::getSingleton().logMessage(" * " + Ogre::String(filtStrs[i])+": "+strVal);
+			}
 		}
 
 		// Delete Filter
@@ -3059,7 +2999,7 @@ namespace OgreOggSound
 		}
 
 		// Supported Extensions Info
-		Ogre::LogManager::getSingleton().logMessage("Supported Extensions: " + ss.str());
+		Ogre::LogManager::getSingleton().logMessage("ALC_EXTENSIONS = " + ss.str());
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
