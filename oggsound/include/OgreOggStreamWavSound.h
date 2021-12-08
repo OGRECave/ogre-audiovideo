@@ -37,7 +37,7 @@
 #include "vorbis/codec.h"
 #include "vorbis/vorbisfile.h"
 
-#include "OgreOggISound.h"
+#include "OgreOggStaticWavSound.h"
 
 namespace OgreOggSound
 {

@@ -42,6 +42,43 @@
 
 namespace OgreOggSound
 {
+	//! CHUNK header information
+	// Chunk section within a wav file ('data'/'fact'/'cue' etc..)
+	typedef struct
+	{
+		char chunkID[4];	// 'data' or 'fact'
+		int length;
+	} ChunkHeader;
+  
+	//! WAVEFORMATEX header information
+	/** Structure defining a WAVE sounds format.
+	*/
+	typedef struct
+	{
+		char mRIFF[4];					// 'RIFF'
+		unsigned int mLength;
+		char mWAVE[4];					// 'WAVE'
+		char mFMT[4];					// 'fmt '
+		unsigned int mHeaderSize;		// varies...
+		unsigned short mFormatTag;
+		unsigned short mChannels;		// 1,2 for stereo data is (l,r) pairs
+		unsigned int mSamplesPerSec;
+		unsigned int mAvgBytesPerSec;
+		unsigned short mBlockAlign;      
+		unsigned short mBitsPerSample;
+	} WaveHeader;
+
+	//! WAVEFORMATEXTENSIBLE sound information
+	/** Structure defining a WAVE sounds format.
+	*/
+	typedef struct
+	{
+		WaveHeader*	mFormat;
+		unsigned short mSamples;
+		unsigned int mChannelMask;
+		char mSubFormat[16];	
+	} WavFormatData;
+
 	//! A single static buffer sound (WAV)
 	/** Handles playing a sound from memory.
 	 */
