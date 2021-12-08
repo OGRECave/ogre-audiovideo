@@ -34,6 +34,8 @@ set (SOURCE_FILES
 # Threading support
 option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
+option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
+
 if(OGGSOUND_THREADED)
     add_definitions(-DOGGSOUND_THREADED=1)
 else()
@@ -113,3 +115,7 @@ target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
 install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
 install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
 set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
+
+if(OGGSOUND_PYTHON)
+    add_subdirectory(python)
+endif()
