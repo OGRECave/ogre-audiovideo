@@ -274,13 +274,7 @@ namespace OgreOggSound
 				Sound to destroy.
 		 */
 		void destroySound(OgreOggISound* sound);
-		/** Destroys a temporary sound implementation
-		@remarks
-			Internal use only.
-			@param sound
-				Sound to destroy.
-		 */
-		void _destroyTemporarySoundImpl(OgreOggISound* sound);
+
 		/** Destroys a temporary sound.
 		@remarks
 			Internal use only.
@@ -730,9 +724,7 @@ namespace OgreOggSound
 		/** Gets recording class created to manage device recording
 		 */
 		OgreOggSoundRecord* getRecorder() { return mRecorder; }
-		/** Returns whether a capture device is available
-		 */
-		bool isRecordingAvailable() const;
+
 		/** Gets a list of strings with the names of the available capture devices
 		*/
 		const RecordDeviceList& getCaptureDeviceList();
