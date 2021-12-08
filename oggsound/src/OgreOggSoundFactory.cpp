@@ -43,9 +43,7 @@ namespace OgreOggSound
 		return FACTORY_TYPE_NAME;
 	}
 	//-----------------------------------------------------------------------
-	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR == 0
-	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, const Ogre::NameValuePairList* params)
-	#elif OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
 	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, Ogre::SceneManager* manager, const Ogre::NameValuePairList* params)
 	#else
 	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params)

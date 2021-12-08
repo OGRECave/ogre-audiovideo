@@ -78,9 +78,7 @@ namespace OgreOggSound
 		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : 
-	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR == 0
-	MovableObject(id, objMemMgr, renderQueueId),
-	#elif OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
 	MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 	#endif
 	 mName(name)
@@ -818,7 +816,7 @@ namespace OgreOggSound
 	void OgreOggISound::_updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {
 	}
 	#endif
-	#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
+	#if OGRE_VERSION_MAJOR != 2
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 	{

@@ -685,7 +685,7 @@ namespace OgreOggSound
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
 		#endif
-		#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
+		#if OGRE_VERSION_MAJOR != 2
 		/** Renderable callback
 		@remarks
 			Overridden function from MovableObject.

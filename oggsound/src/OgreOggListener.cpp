@@ -170,7 +170,7 @@ namespace OgreOggSound
 	{
 		return;
 	}
-	#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
+	#if OGRE_VERSION_MAJOR != 2
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 	{

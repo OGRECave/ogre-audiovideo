@@ -56,9 +56,7 @@ namespace OgreOggSound
 			Ogre::SceneManager* scnMgr = NULL
 			#endif
 		): 
-			#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR == 0
-				MovableObject(id, objMemMgr, renderQueueId),
-			#elif OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+			#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
 				MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 			#endif
 			  mPosition(Ogre::Vector3::ZERO)
@@ -159,7 +157,7 @@ namespace OgreOggSound
 			Overridden function from MovableObject.
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue);
-		#if OGRE_VERSION_MAJOR != 2 || OGRE_VERSION_MINOR == 0
+		#if OGRE_VERSION_MAJOR != 2
 		/** Renderable callback
 		@remarks
 			Overridden function from MovableObject.
