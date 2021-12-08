@@ -51,6 +51,17 @@ namespace OgreOggSound
 {
 	const Ogre::String OgreOggSoundManager::OGREOGGSOUND_VERSION_STRING = "OgreOggSound v1.29";
 
+	OgreOggSoundManager& OgreOggSoundManager::getSingleton()
+	{
+		assert( msSingleton );  return *msSingleton;
+	}
+
+	/// @copydoc Ogre::Singleton::getSingletonPtr()
+	OgreOggSoundManager* OgreOggSoundManager::getSingletonPtr()
+	{
+		return msSingleton;
+	}
+
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggSoundManager::OgreOggSoundManager() :
 		mOrigVolume(1.f)

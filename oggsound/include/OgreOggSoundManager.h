@@ -729,6 +729,12 @@ namespace OgreOggSound
 		*/
 		const RecordDeviceList& getCaptureDeviceList();
 
+		/// @copydoc Ogre::Singleton::getSingleton()
+		static OgreOggSoundManager& getSingleton(); 
+
+		/// @copydoc Ogre::Singleton::getSingletonPtr()
+		static OgreOggSoundManager* getSingletonPtr();
+
 #if OGGSOUND_THREADED
 		OGRE_WQ_MUTEX(mMutex);
 		OGRE_WQ_MUTEX(mSoundMutex);
