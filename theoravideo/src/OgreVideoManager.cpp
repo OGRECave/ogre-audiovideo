@@ -37,7 +37,7 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "TheoraTimer.h"
 #include <vector>
 
-#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
 #include <OgreHlmsManager.h>
 #include <Hlms/Unlit/OgreHlmsUnlit.h>
 #include <Hlms/Unlit/OgreHlmsUnlitDatablock.h>
@@ -111,7 +111,7 @@ namespace Ogre
 		t->getBuffer()->unlock();
 		mClipsTextures[name]={clip,t};
 
-#if OGRE_VERSION_MAJOR >= 2 && OGRE_VERSION_MINOR >= 1
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
 		// set it in a datablock
 		HlmsUnlitDatablock* ogreDatablock = static_cast<Ogre::HlmsUnlitDatablock*>(
 			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
