@@ -59,8 +59,7 @@ namespace OgreOggSound
 			#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
 				MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 			#endif
-			  mPosition(Ogre::Vector3::ZERO)
-			, mVelocity(Ogre::Vector3::ZERO)
+			  mVelocity(Ogre::Vector3::ZERO)
 			#if OGRE_VERSION_MAJOR != 2
 			, mLocalTransformDirty(false)
 			#endif
@@ -73,55 +72,11 @@ namespace OgreOggSound
 			setQueryFlags(0);
 			#endif
 		};
-		/** Sets the position of the listener.
-		@remarks
-			Sets the 3D position of the listener. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param
-				x/y/z position.
-		*/
-		void setPosition(ALfloat x,ALfloat y, ALfloat z);
-		/** Sets the position of the listener.
-		@remarks
-			Sets the 3D position of the listener. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param pos
-				Vector position.
-		*/
-		void setPosition(const Ogre::Vector3 &pos);
-		/** Gets the position of the listener.
-		*/
-		Ogre::Vector3 getPosition() const;
-		/** Sets the orientation of the listener.
-		@remarks
-			Sets the 3D orientation of the listener. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param
-				x/y/z direction.
-			@param
-				upx/upy/upz up.
-		 */
-		void setOrientation(ALfloat x, ALfloat y, ALfloat z, ALfloat upx, ALfloat upy, ALfloat upz);
-		/** Sets the orientation of the listener.
-		@remarks
-			Sets the 3D orientation of the listener. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param q
-				Orientation quaternion.
-		 */
-		void setOrientation(const Ogre::Quaternion &q);
-		/** Gets the orientation of the listener.
-		*/
-		Ogre::Vector3 getOrientation() const;
 		/** Sets sounds velocity.
 		@param
 			velx/vely/velz componentes of 3D vector velocity
 		 */
-		void setVelocity(float velx, float vely, float velz);
+		void setVelocity(float velx, float vely, float velz) { setVelocity(Ogre::Vector3(velx,vely,velz)); }
 		/** Sets sounds velocity.
 		@param vel
 			3D vector velocity
@@ -152,17 +107,9 @@ namespace OgreOggSound
 			bounding radius for this object.
 		 */
 		virtual float getBoundingRadius(void) const;
-		/** Updates the RenderQueue for this object
-		@remarks
-			Overridden function from MovableObject.
-		 */
-		virtual void _updateRenderQueue(Ogre::RenderQueue *queue);
+		void _updateRenderQueue(Ogre::RenderQueue *queue) override {}
 		#if OGRE_VERSION_MAJOR != 2
-		/** Renderable callback
-		@remarks
-			Overridden function from MovableObject.
-		 */
-		virtual void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
+		void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables) override {}
 		#endif
 		/** Attach callback
 		@remarks
@@ -183,7 +130,7 @@ namespace OgreOggSound
 		#else
 		/** Does nothing but is need for being derived from MovableObject
 		 */
-		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
+		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {}
 		#endif
 		/** Returns scenemanager which created this listener.
 		 */
@@ -202,10 +149,10 @@ namespace OgreOggSound
 		/**
 		 * Positional variables
 		 */
-		Ogre::Vector3 mPosition;		// 3D position
 		Ogre::Vector3 mVelocity;		// 3D velocity
 		float mOrientation[6];			// 3D orientation
 		#if OGRE_VERSION_MAJOR == 2
+		Ogre::Vector3 mPosition;		// 3D position
 		Ogre::Quaternion mOrient;		// 3D orientation as Quaternion
 		#else
 		bool mLocalTransformDirty;		// Dirty transforms flag

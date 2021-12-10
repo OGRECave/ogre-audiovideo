@@ -197,7 +197,6 @@ namespace Ogre
 			{
 				auto sound = static_cast<OgreOggSoundInterface*>(clip->getAudioInterface())->ogreOggSoundObj;
 				node->attachObject(sound);
-				sound->setPosition(Ogre::Vector3::ZERO);
 
 				sound->disable3D(true);
 			}

@@ -35,97 +35,10 @@
 namespace OgreOggSound
 {
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::setPosition(ALfloat x, ALfloat y, ALfloat z)
-	{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		mPosition.x = x;
-		mPosition.y = y;
-		mPosition.z = z;
-		alListener3f(AL_POSITION,x,y,z);
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::setPosition(const Ogre::Vector3 &pos)
-	{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		mPosition = pos;
-		alListener3f(AL_POSITION,pos.x,pos.y,pos.z);
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	Ogre::Vector3 OgreOggListener::getPosition() const
-	{
-		Ogre::Vector3 result;
-		{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		result = mPosition;
-		}
-
-		return result;
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::setVelocity(float velx, float vely, float velz)
-	{
-		mVelocity.x = velx;
-		mVelocity.y = vely;
-		mVelocity.z = velz;
-		alListener3f(AL_VELOCITY, velx, vely, velz);
-	}
-	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::setVelocity(const Ogre::Vector3 &vel)
 	{
 		mVelocity = vel;	
 		alListener3f(AL_VELOCITY, vel.x, vel.y, vel.z);
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::setOrientation(ALfloat x,ALfloat y,ALfloat z,ALfloat upx,ALfloat upy,ALfloat upz)
-	{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		mOrientation[0] = x;
-		mOrientation[1] = y;
-		mOrientation[2] = z;
-		mOrientation[3] = upx;
-		mOrientation[4] = upy;
-		mOrientation[5] = upz;	
-		alListenerfv(AL_ORIENTATION,mOrientation);
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::setOrientation(const Ogre::Quaternion &q)
-	{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		#if OGRE_VERSION_MAJOR == 2
-		mOrient = q;
-		#endif
-		Ogre::Vector3 vDirection = q.zAxis();
-		Ogre::Vector3 vUp = q.yAxis();
-
-		mOrientation[0] = -vDirection.x;
-		mOrientation[1] = -vDirection.y;
-		mOrientation[2] = -vDirection.z;
-		mOrientation[3] = vUp.x;
-		mOrientation[4] = vUp.y;
-		mOrientation[5] = vUp.z;	
-		alListenerfv(AL_ORIENTATION,mOrientation);	
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	Ogre::Vector3 OgreOggListener::getOrientation() const
-	{
-		Ogre::Vector3 result;
-		{
-#if OGGSOUND_THREADED
-		OGRE_WQ_LOCK_MUTEX(mMutex);
-#endif
-		result = Ogre::Vector3(mOrientation[0],mOrientation[1],mOrientation[2]);
-		}
-		return result;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::update()
@@ -135,21 +48,46 @@ namespace OgreOggSound
 		{
 			if ( mParentNode )
 			{
-				setPosition(mParentNode->_getDerivedPosition());
-				setOrientation(mParentNode->_getDerivedOrientation());
+			#if OGGSOUND_THREADED
+				OGRE_WQ_LOCK_MUTEX(mMutex);
+			#endif
+				auto pos = mParentNode->_getDerivedPosition();
+
+				auto q = mParentNode->_getDerivedOrientation();
+				auto vDirection = q.zAxis();
+				auto vUp = q.yAxis();
+				mOrientation[0] = -vDirection.x;
+				mOrientation[1] = -vDirection.y;
+				mOrientation[2] = -vDirection.z;
+				mOrientation[3] = vUp.x;
+				mOrientation[4] = vUp.y;
+				mOrientation[5] = vUp.z;
+
+				alListenerfv(AL_ORIENTATION,mOrientation);
+				alListener3f(AL_POSITION,pos.x,pos.y,pos.z);
 			}
 			mLocalTransformDirty=false;
 		}
 		#else
 		if (mParentNode) {
-			Ogre::Vector3    newPos    = mParentNode->_getDerivedPosition();
-			if (newPos != mPosition) {
-				setPosition(newPos);
+			Ogre::Vector3    pos    = mParentNode->_getDerivedPosition();
+			if (pos != mPosition) {
+				alListener3f(AL_POSITION,pos.x,pos.y,pos.z);
+				mPosition = pos;
 			}
 			
-			Ogre::Quaternion newOrient = mParentNode->_getDerivedOrientation();
-			if (newOrient != mOrient) {
-				setOrientation(newOrient);
+			Ogre::Quaternion q = mParentNode->_getDerivedOrientation();
+			if (q != mOrient) {
+				auto vDirection = q.zAxis();
+				auto vUp = q.yAxis();
+				mOrientation[0] = -vDirection.x;
+				mOrientation[1] = -vDirection.y;
+				mOrientation[2] = -vDirection.z;
+				mOrientation[3] = vUp.x;
+				mOrientation[4] = vUp.y;
+				mOrientation[5] = vUp.z;
+				alListenerfv(AL_ORIENTATION,mOrientation);
+				mOrient = q;
 			}
 		}
 		#endif
@@ -165,18 +103,6 @@ namespace OgreOggSound
 	{
 		return 0;
 	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::_updateRenderQueue(Ogre::RenderQueue *queue)
-	{
-		return;
-	}
-	#if OGRE_VERSION_MAJOR != 2
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggListener::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
-	{
-		return;
-	}
-	#endif
 	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::String& OgreOggListener::getMovableType(void) const
 	{
@@ -201,12 +127,8 @@ namespace OgreOggSound
 		// Immediately set position/orientation when attached
 		if (mParentNode)
 		{
-			#if OGRE_VERSION_MAJOR != 2
-			setPosition(mParentNode->_getDerivedPosition());
-			#else
-			setPosition(mParentNode->_getDerivedPositionUpdated());
-			#endif
-			setOrientation(mParentNode->_getDerivedOrientation());
+			mLocalTransformDirty = true;
+			update();
 		}
 
 		return;
@@ -219,9 +141,6 @@ namespace OgreOggSound
 		Ogre::MovableObject::_notifyMoved();
 
 		mLocalTransformDirty=true; 
-	}
-	#else
-	void OgreOggListener::_updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {
 	}
 	#endif
 }

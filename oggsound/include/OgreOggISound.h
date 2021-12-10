@@ -259,50 +259,6 @@ namespace OgreOggSound
 				If true, releases source immediately (default: false)
 		 */
 		inline void setGiveUpSourceOnStop(bool giveup=false) { mGiveUpSource=giveup; }
-		/** Sets the sounds position.
-		@remarks
-			Sets the 3D position of the sound. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param posx
-				x position
-			@param posy
-				y position
-			@param posz
-				z position
-		 */
-		void setPosition(float posx,float posy, float posz);
-		/** Sets the sounds position.
-		@remarks
-			Sets the 3D position of the sound. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param pos
-				3D vector position
-		 */
-		void setPosition(const Ogre::Vector3 &pos);
-		/** Sets the sounds direction.
-		@remarks
-			Sets the 3D direction of the sound. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param dirx
-				x coord
-			@param diry
-				y coord
-			@param dirz
-				z coord
-		 */
-		void setDirection(float dirx, float diry, float dirz);
-		/** Sets the sounds direction.
-		@remarks
-			Sets the 3D direction of the sound. This is a manual method,
-			if attached to a SceneNode this will automatically be handled 
-			for you.
-			@param dir
-				3D vector direction
-		 */
-		void setDirection(const Ogre::Vector3 &dir);
 		/** Sets the sounds velocity.
 		@remarks
 			Sets the 3D velocity of the sound.
@@ -316,7 +272,7 @@ namespace OgreOggSound
 			@param velz
 				z velocity
 		 */
-		void setVelocity(float velx, float vely, float velz);
+		void setVelocity(float velx, float vely, float velz) { setVelocity(Ogre::Vector3(velx,vely,velz)); }
 		/** Sets the sounds velocity.
 		@remarks
 			Sets the 3D velocity of the sound.
@@ -454,12 +410,6 @@ namespace OgreOggSound
 				Boolean yes/no.
 		*/
 		void setRelativeToListener(bool relative);
-		/** Gets the sounds position
-		*/
-		inline const Ogre::Vector3& getPosition() const {return mPosition;}
-		/** Gets the sounds direction
-		 */
-		inline const Ogre::Vector3& getDirection() const {return mDirection;}
 		/** Gets the sounds velocity
 		 */
 		inline const Ogre::Vector3& getVelocity() const {return mVelocity;}
@@ -718,8 +668,6 @@ namespace OgreOggSound
 		ALuint mSource;					// OpenAL Source
 		Ogre::SceneManager* mScnMgr;	// SceneManager pointer for plugin registered sounds
 		Ogre::uint8 mPriority;			// Priority assigned to source 
-		Ogre::Vector3 mPosition;		// 3D position
-		Ogre::Vector3 mDirection;		// 3D direction
 		Ogre::Vector3 mVelocity;		// 3D velocity
 		float mGain;					// Current volume
 		float mMaxGain;					// Minimum volume
@@ -741,6 +689,9 @@ namespace OgreOggSound
 		bool mSourceRelative;			// Relative position flag
 		#if OGRE_VERSION_MAJOR != 2
 		bool mLocalTransformDirty;		// Transformation update flag
+		#else
+		Ogre::Vector3 mPosition;		// 3D position
+		Ogre::Vector3 mDirection;		// 3D direction
 		#endif
 		bool mPlayPosChanged;			// Flag indicating playback position has changed
 		bool mSeekable;					// Flag indicating seeking available

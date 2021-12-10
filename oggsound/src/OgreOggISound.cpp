@@ -80,14 +80,14 @@ namespace OgreOggSound
 	) : 
 	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
 	MovableObject(id, objMemMgr, scnMgr, renderQueueId),
+	mPosition(0,0,0),
+	mDirection(0,0,0),
 	#endif
 	 mName(name)
 	,mSource(0) 
 	,mLoop(false) 
 	,mState(SS_NONE) 
-	,mPosition(0,0,0) 
 	,mReferenceDistance(1.0f) 
-	,mDirection(0,0,0) 
 	,mVelocity(0,0,0) 
 	,mGain(1.0f) 
 	,mMaxDistance(1E10) 
@@ -220,13 +220,12 @@ namespace OgreOggSound
 		if ( mDisable3D )
 		{
 			mSourceRelative = true;
-			mPosition = Ogre::Vector3::ZERO;
 
 			if ( mSource!=AL_NONE ) 
 			{
 				alSourcei(mSource, AL_SOURCE_RELATIVE, mSourceRelative);
-				alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-				alSource3f(mSource, AL_VELOCITY, mPosition.x, mPosition.y, mPosition.z);
+				alSource3f(mSource, AL_POSITION, 0, 0, 0);
+				alSource3f(mSource, AL_VELOCITY, 0, 0, 0);
 			}
 		}
 		/** Enable 3D
@@ -251,62 +250,6 @@ namespace OgreOggSound
 	bool OgreOggISound::is3Ddisabled()
 	{
 		return mDisable3D;
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggISound::setPosition(float posx,float posy, float posz)
-	{
-		mPosition.x = posx;
-		mPosition.y = posy;
-		mPosition.z = posz;	
-		#if OGRE_VERSION_MAJOR != 2
-		mLocalTransformDirty = true;
-		#else
-		alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-		#endif
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggISound::setPosition(const Ogre::Vector3 &pos)
-	{
-		mPosition = pos;   
-		#if OGRE_VERSION_MAJOR != 2
-		mLocalTransformDirty = true;
-		#else
-		alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-		#endif
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggISound::setDirection(float dirx, float diry, float dirz)
-	{
-		mDirection.x = dirx;
-		mDirection.y = diry;
-		mDirection.z = dirz;
-		#if OGRE_VERSION_MAJOR != 2
-		mLocalTransformDirty = true;
-		#else
-		alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
-		#endif
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggISound::setDirection(const Ogre::Vector3 &dir)
-	{
-		mDirection = dir;  
-		#if OGRE_VERSION_MAJOR != 2
-		mLocalTransformDirty = true;
-		#else
-		alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
-		#endif
-	}
-	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggISound::setVelocity(float velx, float vely, float velz)
-	{
-		mVelocity.x = velx;
-		mVelocity.y = vely;
-		mVelocity.z = velz;
-
-		if(mSource != AL_NONE)
-		{
-			alSource3f(mSource, AL_VELOCITY, velx, vely, velz);
-		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setVelocity(const Ogre::Vector3 &vel)
@@ -510,8 +453,8 @@ namespace OgreOggSound
 			alSourcef (mSource, AL_CONE_OUTER_GAIN, mOuterConeGain);
 			alSourcef (mSource, AL_CONE_INNER_ANGLE,	mInnerConeAngle);
 			alSourcef (mSource, AL_CONE_OUTER_ANGLE,	mOuterConeAngle);
-			alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-			alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
+			alSource3f(mSource, AL_POSITION, 0, 0, 0);
+			alSource3f(mSource, AL_DIRECTION, 0, 0, -1);
 			alSource3f(mSource, AL_VELOCITY, mVelocity.x, mVelocity.y, mVelocity.z);
 			alSourcef (mSource, AL_PITCH, mPitch);
 			alSourcei (mSource, AL_SOURCE_RELATIVE, mSourceRelative);
@@ -715,16 +658,18 @@ namespace OgreOggSound
 		#if OGRE_VERSION_MAJOR != 2
 		if (mLocalTransformDirty)
 		{
+			Ogre::Vector3 position(0, 0, 0);
+			Ogre::Vector3 direction(0, 0, -1);
 			if (!mDisable3D && mParentNode)
 			{
-				mPosition = mParentNode->_getDerivedPosition();
-				mDirection = -mParentNode->_getDerivedOrientation().zAxis();
+				position = mParentNode->_getDerivedPosition();
+				direction = -mParentNode->_getDerivedOrientation().zAxis();
 			}
 
 			if(mSource != AL_NONE)
 			{
-				alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-				alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
+				alSource3f(mSource, AL_POSITION, position.x, position.y, position.z);
+				alSource3f(mSource, AL_DIRECTION, direction.x, direction.y, direction.z);
 				mLocalTransformDirty = false;
 			}
 		}
@@ -784,22 +729,8 @@ namespace OgreOggSound
 		);
 
 		// Immediately set position/orientation when attached
-		if (mParentNode)
-		{
-			#if OGRE_VERSION_MAJOR != 2
-			mPosition = mParentNode->_getDerivedPosition();
-			#else
-			mPosition = mParentNode->_getDerivedPositionUpdated();
-			#endif
-			mDirection = -mParentNode->_getDerivedOrientation().zAxis();
-		}
-
-		// Set tarnsform immediately if possible
-		if(mSource != AL_NONE)
-		{
-			alSource3f(mSource, AL_POSITION, mPosition.x, mPosition.y, mPosition.z);
-			alSource3f(mSource, AL_DIRECTION, mDirection.x, mDirection.y, mDirection.z);
-		}
+		mLocalTransformDirty = true;
+		update(0);
 
 		return;
 	}

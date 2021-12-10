@@ -1160,9 +1160,9 @@ namespace OgreOggSound
 					++iter;
 			}
 
-			if (mListener)
+			if (mListener && mListener->getParentSceneNode())
 			{
-				const Ogre::Vector3 listenerPos(mListener->getPosition());
+				const Ogre::Vector3 listenerPos(mListener->getParentSceneNode()->getPosition());
 
 				// Sort list by distance
 				mActiveSounds.sort(_sortFarToNear(listenerPos));
@@ -2916,7 +2916,8 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	Ogre::Real OgreOggSoundManager::_calculateDistanceToListener(OgreOggISound * sound, const Ogre::Vector3 & listenerPos)
 	{
-		return sound->isRelativeToListener() ? sound->getPosition().length() : sound->getPosition().distance(listenerPos);
+		const auto& pos = sound->getParentSceneNode()->_getDerivedPosition();
+		return sound->isRelativeToListener() ? pos.length() : pos.distance(listenerPos);
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -3174,9 +3175,9 @@ namespace OgreOggSound
 		// Any sounds to re-activate?
 		if (mSoundsToReactivate.empty()) return;
 
-		if (mListener)
+		if (mListener && mListener->getParentSceneNode())
 		{
-			const Ogre::Vector3 listenerPos(mListener->getPosition());
+			const Ogre::Vector3 listenerPos(mListener->getParentSceneNode()->getPosition());
 
 			// Sort list by distance
 			mActiveSounds.sort(_sortNearToFar(listenerPos));
