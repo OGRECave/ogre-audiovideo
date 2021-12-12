@@ -824,8 +824,6 @@ namespace OgreOggSound
 			Creates and inits a single sound object, depending on passed
 			parameters this function will create a static/streamed sound.\n
 			Each sound must have a unique name within the manager.
-			@param scnMgr
-				Pointer to creator
 			@param name 
 				Unique name of sound
 			@param file 
@@ -842,7 +840,6 @@ namespace OgreOggSound
 		 */
 		
 		OgreOggISound* _createSoundImpl(
-			Ogre::SceneManager* scnMgr,
 			const Ogre::String& name,
 			#if OGRE_VERSION_MAJOR == 2
 			Ogre::IdType id,

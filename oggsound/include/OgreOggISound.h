@@ -490,11 +490,6 @@ namespace OgreOggSound
 			Overridden from MovableObject.
 		 */
 		virtual float getBoundingRadius(void) const;
-		/** Gets the SceneManager pointer registered at creation.
-		@remarks
-			This will only be set if the sound was created through the plugin method createMovableobject().
-		*/
-		inline Ogre::SceneManager* getSceneManager() const { return mScnMgr; }
 
 		/** Sets a listener object to be notified of events.
 		@remarks
@@ -533,7 +528,7 @@ namespace OgreOggSound
 			SceneManager which created this sound (if the sound was created through the plugin method createMovableobject()).
 		 */
 		OgreOggISound(
-			const Ogre::String& name, Ogre::SceneManager* scnMgr
+			const Ogre::String& name
 			#if OGRE_VERSION_MAJOR == 2
 			, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 			#endif
@@ -666,7 +661,6 @@ namespace OgreOggSound
 		/** Sound properties 
 		 */
 		ALuint mSource;					// OpenAL Source
-		Ogre::SceneManager* mScnMgr;	// SceneManager pointer for plugin registered sounds
 		Ogre::uint8 mPriority;			// Priority assigned to source 
 		Ogre::Vector3 mVelocity;		// 3D velocity
 		float mGain;					// Current volume

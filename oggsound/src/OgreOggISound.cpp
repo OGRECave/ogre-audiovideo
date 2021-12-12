@@ -73,7 +73,7 @@ namespace OgreOggSound
 
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggISound::OgreOggISound(
-		const Ogre::String& name, Ogre::SceneManager* scnMgr
+		const Ogre::String& name
 		#if OGRE_VERSION_MAJOR == 2
 		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
@@ -110,7 +110,6 @@ namespace OgreOggSound
 	,mPlayPosChanged(false)  
 	,mPlayPos(0.f) 
 	,mPriority(0)
-	,mScnMgr(scnMgr)
 	,mAudioOffset(0)
 	,mAudioEnd(0)
 	,mLoopOffset(0)

@@ -90,7 +90,7 @@ namespace OgreOggSound
 				SceneManager which created this sound (if the sound was created through the plugin method createMovableobject()).
 		 */
 		OgreOggStaticSound(
-			const Ogre::String& name, Ogre::SceneManager* scnMgr
+			const Ogre::String& name
 			#if OGRE_VERSION_MAJOR == 2
 			, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 			#endif
