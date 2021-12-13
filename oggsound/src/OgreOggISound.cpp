@@ -553,34 +553,29 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::setPlayPosition(float seconds)
 	{
+		if (mSource == AL_NONE)
+		{
+			// Mark it so it can be applied when sound receives a source
+			mPlayPosChanged = true;
+			mPlayPos = seconds;
+			return;
+		}
+
+		// Reset flag
+		mPlayPosChanged = false;
+
 		// Invalid time - exit
 		if ( !mSeekable || mPlayTime<=0.f || seconds<0.f ) 
 			return;
 
 		// Wrap time
-		if ( seconds > mPlayTime ) 
-		{
-			do		{ seconds-=mPlayTime; }
-			while	( seconds>mPlayTime );
-		}
+		seconds = std::fmod(seconds, mPlayTime);
 
-		// Set offset if source available
-		if ( mSource!=AL_NONE )
+		alGetError();
+		alSourcef(mSource, AL_SEC_OFFSET, seconds);
+		if (alGetError())
 		{
-			alGetError();
-			alSourcef(mSource, AL_SEC_OFFSET, seconds);
-			if (alGetError())
-			{
-				Ogre::LogManager::getSingleton().logError("OgreOggISound::setPlayPosition() - Error setting play position");
-			}
-			// Reset flag
-			mPlayPosChanged = false;
-		}
-		// Mark it so it can be applied when sound receives a source
-		else
-		{
-			mPlayPosChanged = true;
-			mPlayPos = seconds;
+			Ogre::LogManager::getSingleton().logError("OgreOggISound::setPlayPosition() - Error setting play position");
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
