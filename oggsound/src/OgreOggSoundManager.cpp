@@ -3339,7 +3339,7 @@ namespace OgreOggSound
 		static float rTime=0.f;
 
 		// Get frame time
-		cTime = timer.getMillisecondsCPU();
+		cTime = timer.getMilliseconds();
 		float fTime = (cTime-pTime) * 0.001f;
 
 		// update Listener
