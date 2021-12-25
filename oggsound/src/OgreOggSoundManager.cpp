@@ -1104,9 +1104,8 @@ namespace OgreOggSound
 				if ( (*iter)->isStopped() )
 				{
 					ALuint src = (*iter)->getSource();
-					ALuint nullSrc = AL_NONE;
 					// Remove source
-					(*iter)->setSource(nullSrc);
+					(*iter)->setSource(AL_NONE);
 					// Attach source to new sound
 					sound->setSource(src);
 					// Add new sound to active list
@@ -1131,7 +1130,6 @@ namespace OgreOggSound
 				if ( (*iter)->getPriority()<sound->getPriority() )
 				{
 					ALuint src = (*iter)->getSource();
-					ALuint nullSrc = AL_NONE;
 
 					if ((*iter)->getState() != SS_DESTROYED)
 					{
@@ -1140,7 +1138,7 @@ namespace OgreOggSound
 					}
 
 					// Remove source
-					(*iter)->setSource(nullSrc);
+					(*iter)->setSource(AL_NONE);
 					// Attach source to new sound
 					sound->setSource(src);
 
@@ -1180,7 +1178,6 @@ namespace OgreOggSound
 				if ( d1>d2 )
 				{
 					ALuint src = snd1->getSource();
-					ALuint nullSrc = AL_NONE;
 
 					if (snd1->getState() != SS_DESTROYED)
 					{
@@ -1190,7 +1187,7 @@ namespace OgreOggSound
 					}
 
 					// Remove source
-					snd1->setSource(nullSrc);
+					snd1->setSource(AL_NONE);
 					// Attach source to new sound
 					sound->setSource(src);
 					sound->_recoverPlayPosition();
@@ -1240,10 +1237,8 @@ namespace OgreOggSound
 		// Valid source?
 		if(src != AL_NONE)
 		{
-			ALuint source = AL_NONE;
-
 			// Detach source from sound
-			sound->setSource(source);
+			sound->setSource(AL_NONE);
 
 			// Make source available
 			mSourcePool.push_back(src);

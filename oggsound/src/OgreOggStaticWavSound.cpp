@@ -387,8 +387,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStaticWavSound::_release()
 	{
-		ALuint src=AL_NONE;
-		setSource(src);
+		setSource(AL_NONE);
 		OgreOggSoundManager::getSingleton()._releaseSharedBuffer(mAudioName, (*mBuffers)[0]);
 		mPlayPosChanged = false;
 		mPlayPos = 0.f;
@@ -402,7 +401,7 @@ namespace OgreOggSound
 		alSourcei(mSource, AL_BUFFER, (*mBuffers)[0]);
 	}					
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggStaticWavSound::setSource(ALuint& src)
+	void OgreOggStaticWavSound::setSource(ALuint src)
 	{
 		if (src != AL_NONE)
 		{

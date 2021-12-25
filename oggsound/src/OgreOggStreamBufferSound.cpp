@@ -63,12 +63,11 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStreamBufferSound::_release()
 	{
-		ALuint src=AL_NONE;
-		setSource(src);
+		setSource(AL_NONE);
 		mPlayPos = 0.f;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggStreamBufferSound::setSource(ALuint& src)
+	void OgreOggStreamBufferSound::setSource(ALuint src)
 	{
 		if (src!=AL_NONE)
 		{

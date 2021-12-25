@@ -167,7 +167,7 @@ namespace OgreOggSound
 		@remarks
 			Abstract function
 		 */
-		virtual void setSource(ALuint& src) = 0;
+		virtual void setSource(ALuint src) = 0;
 		/** Starts a fade in/out of the sound volume
 		@remarks
 			Triggers a fade in/out of the sounds volume over time. 

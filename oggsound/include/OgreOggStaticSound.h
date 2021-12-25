@@ -62,7 +62,7 @@ namespace OgreOggSound
 			@param src
 				OpenAL Source ID.
 		 */
-		void setSource(ALuint& src);	
+		void setSource(ALuint src);	
 		/** Returns whether sound is mono
 		*/
 		bool isMono();

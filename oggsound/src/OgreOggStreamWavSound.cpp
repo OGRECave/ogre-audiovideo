@@ -364,8 +364,7 @@ namespace OgreOggSound
 	{
 		if ( mSource!=AL_NONE )
 		{
-			ALuint src=AL_NONE;
-			setSource(src);
+			setSource(AL_NONE);
 		}
 		for (int i=0; i<NUM_BUFFERS; i++)
 		{													
@@ -390,7 +389,7 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggStreamWavSound::setSource(ALuint& src)
+	void OgreOggStreamWavSound::setSource(ALuint src)
 	{
 		if (src!=AL_NONE)
 		{

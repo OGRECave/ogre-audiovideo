@@ -125,8 +125,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStreamSound::_release()
 	{
-		ALuint src=AL_NONE;
-		setSource(src);
+		setSource(AL_NONE);
 		for (int i=0; i<NUM_BUFFERS; i++)
 		{										   
 			if ((*mBuffers)[i]!=AL_NONE)
@@ -255,7 +254,7 @@ namespace OgreOggSound
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	void OgreOggStreamSound::setSource(ALuint& src)
+	void OgreOggStreamSound::setSource(ALuint src)
 	{
 		if (src!=AL_NONE)
 		{
