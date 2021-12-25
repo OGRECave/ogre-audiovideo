@@ -131,7 +131,7 @@ namespace OgreOggSound
 			if ((*mBuffers)[i]!=AL_NONE)
 				alDeleteBuffers(1, &(*mBuffers)[i]);
 		}
-		if ( !mAudioStream ) ov_clear(&mOggStream);
+		if ( !mAudioStream && mVorbisInfo ) ov_clear(&mOggStream);
 		mPlayPosChanged = false;
 		mPlayPos = 0.f;
 	}
