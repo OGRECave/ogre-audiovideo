@@ -32,6 +32,8 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include <Ogre/OgreHardwarePixelBuffer.h>
 #endif
 
+#include "OgreBitwise.h"
+
 #include "OgreExternalTextureSourceManager.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraTimer.h"
@@ -98,7 +100,11 @@ namespace Ogre
 		}
 		
 		TheoraVideoClip* clip=createVideoClip(new OgreTheoraDataStream(video_file_name,video_group_name),TH_RGBA,0,1);
-		int w=nextPow2(clip->getWidth()), h=nextPow2(clip->getHeight());
+		int w=Bitwise::firstPO2From(clip->getWidth()), h=Bitwise::firstPO2From(clip->getHeight());
+
+		// scale tex coords to fit the 0-1 uv range
+		Matrix4 mat=Matrix4::IDENTITY;
+		mat.setScale(Vector3((float) clip->getWidth()/(w + 0.5), (float) clip->getHeight()/(h + 0.5),1));
 
 		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_BYTE_RGBA,TU_DYNAMIC_WRITE_ONLY);
 		
@@ -117,10 +123,6 @@ namespace Ogre
 			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
 		);
 		ogreDatablock->setTexture( 0, 0, t );
-		
-		// scale tex coords to fit the 0-1 uv range
-		Matrix4 mat = Matrix4::IDENTITY;
-		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
 		ogreDatablock->setAnimationMatrix( 0, mat );
 		ogreDatablock->setEnableAnimationMatrix( 0, true );
 #else
@@ -130,12 +132,6 @@ namespace Ogre
 
 		//Now, attach the texture to the material texture unit (single layer) and setup properties
 		ts->setTextureName(name,TEX_TYPE_2D);
-		ts->setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_NONE);
-		ts->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
-
-		// scale tex coords to fit the 0-1 uv range
-		Matrix4 mat=Matrix4::IDENTITY;
-		mat.setScale(Vector3((float) clip->getWidth()/w, (float) clip->getHeight()/h,1));
 		ts->setTextureTransform(mat);
 #endif
 		return clip;
