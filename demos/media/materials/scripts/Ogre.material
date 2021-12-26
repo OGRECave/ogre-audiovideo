@@ -4,34 +4,15 @@ material video_material
 	{
 		pass
 		{
-			cull_software none
-			cull_hardware none
+			cull_hardware anticlockwise
 			lighting off
-			ambient 0 0 0
-			diffuse 1 1 1
 			texture_unit
 			{
-
-			}
-
-		}
-	}
-}
-
-material video_material_1
-{
-	technique
-	{
-		pass
-		{
-			cull_software none
-			cull_hardware none
-			lighting off
-			ambient 0 0 0
-			diffuse 1 1 1
-			texture_unit
-			{
-
+				tex_address_mode clamp
+				texture_source ogg_video
+				{
+					filename konqi.ogg
+				}
 			}
 
 		}

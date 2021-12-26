@@ -15,13 +15,10 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "TheoraVideoClip.h"
 
 #include "OgreOggSoundRoot.h"
-
 #include "OgreOggSoundInterface.h"
-#include "OgreRectangle2D.h"
 
-#include <iostream>
 
-#define VIDEO_FILE "konqi.ogg"
+#define VIDEO_FILE "konqi.ogg" // must match with video_material
 
 namespace Ogre
 {
@@ -149,6 +146,9 @@ namespace Ogre
 		    OgreBites::ApplicationContext::createRoot();
 			mAudioPlugin.initialise();
 			mRoot->installPlugin(&mVideoPlugin);
+
+			auto mgr = OgreVideoManager::getSingletonPtr();
+			mgr->setAudioInterfaceFactory(OgreOggSoundInterfaceFactory::getSingletonPtr());
 		}
 
 		void shutdown()
@@ -159,37 +159,32 @@ namespace Ogre
 
 		void setup()
 		{
+			// OggSound peculiarity: need to register scene manager before calling parent setup()
+			// this will trigger loading .material scripts and
+			// we create sounds alongside the video defined in those, which currently need the scnMgr
+			SceneManager* scnMgr = getRoot()->createSceneManager();
+			OgreOggSound::OgreOggSoundManager::getSingleton().init();
+			OgreOggSound::OgreOggSoundManager::getSingleton().setSceneManager(scnMgr);
+			
 		    OgreBites::ApplicationContext::setup();
 
             addInputListener(this);
 
-		    Root* root = getRoot();
-		    SceneManager* scnMgr = root->createSceneManager();
 
 		    RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
 		    shadergen->addSceneManager(scnMgr);
 
 			Camera* cam = scnMgr->createCamera("myCam");
 			getRenderWindow()->addViewport(cam);
-            cam->getViewport()->setBackgroundColour(ColourValue(0.3,0.3,0.3));
+			auto camnode = scnMgr->getRootSceneNode()->createChildSceneNode(Vector3(0, 0, 150));
+			camnode->attachObject(cam);
 
-            auto rect = new Rectangle2D("video_quad", true, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-            rect->setCorners(-0.5,1,1,-0.94);
-            rect->setBoundingBox(AxisAlignedBox::BOX_INFINITE);
-            rect->setMaterial(MaterialManager::getSingleton().getByName("video_material"));
+			auto ent = scnMgr->createEntity(SceneManager::PT_CUBE);
+			ent->setMaterial(MaterialManager::getSingleton().getByName("video_material"));
 
-            // and atach it to the root node
             SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
-            node->attachObject(rect);
+            node->attachObject(ent);
 
-			OgreVideoManager* mgr=(OgreVideoManager*) OgreVideoManager::getSingletonPtr();
-
-			mgr->setAudioInterfaceFactory(OgreOggSoundInterfaceFactory::getSingletonPtr());
-			OgreOggSound::OgreOggSoundManager::getSingleton().init();
-			OgreOggSound::OgreOggSoundManager::getSingleton().setSceneManager(scnMgr);
-
-			mgr->setInputName(VIDEO_FILE);
-			mgr->createDefinedTexture("video_material");
 			auto clip = getClip(VIDEO_FILE);
 			clip->setAutoRestart(1);
 
@@ -226,8 +221,7 @@ int main(int argc, char *argv[])
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-		std::cerr << "An exception has occured: " <<
-			e.getFullDescription().c_str() << std::endl;
+		Ogre::LogManager::getSingleton().logError(e.getFullDescription());
 #endif
 	}
 
