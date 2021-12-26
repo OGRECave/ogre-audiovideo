@@ -212,11 +212,11 @@ namespace Ogre
 		static String name = "TheoraVideoPlugin";
 		return name;
 	}
-	void OgreVideoPlugin::initialise()
+	void OgreVideoPlugin::install()
 	{
 		if (mVideoMgr) {
-			Ogre::LogManager::getSingleton().logMessage(
-				"WARNING: OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
+			Ogre::LogManager::getSingleton().logWarning(
+				"OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
 			);
 			return;
 		}

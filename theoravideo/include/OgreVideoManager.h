@@ -114,9 +114,9 @@ namespace Ogre
 		static OgreVideoManager* mVideoMgr;
 	public:
 		const String& getName() const;
-		void install() {}
+		void install();
 		void uninstall() {}
-		void initialise();
+		void initialise() {}
 		void shutdown();
 	};
 }
