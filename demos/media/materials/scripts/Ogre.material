@@ -12,6 +12,7 @@ material video_material
 				texture_source ogg_video
 				{
 					filename konqi.ogg
+					play_mode loop
 				}
 			}
 

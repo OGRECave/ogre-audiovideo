@@ -134,6 +134,12 @@ namespace Ogre
 		ts->setTextureName(name,TEX_TYPE_2D);
 		ts->setTextureTransform(mat);
 #endif
+
+		if(mMode == TextureEffectPause)
+			clip->pause();
+		else if(mMode == TextureEffectPlay_Looping)
+			clip->setAutoRestart(true);
+
 		return clip;
 	}
 

@@ -186,8 +186,6 @@ namespace Ogre
             node->attachObject(ent);
 
 			auto clip = getClip(VIDEO_FILE);
-			clip->setAutoRestart(1);
-
 			if (clip->getAudioInterface())
 			{
 				auto sound = static_cast<OgreOggSoundInterface*>(clip->getAudioInterface())->ogreOggSoundObj;
