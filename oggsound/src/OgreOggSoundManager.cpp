@@ -1120,7 +1120,6 @@ namespace OgreOggSound
 			}
 
 			// Check priority...
-			Ogre::uint8 priority = sound->getPriority();
 			iter = mActiveSounds.begin();
 
 			// Search for a lower priority sound
@@ -1336,10 +1335,8 @@ namespace OgreOggSound
 			return false;
 		}
 
-		ALuint effect;
-
 		// Get effect id's
-		if ( (effect = _getEFXEffect(eName) ) != AL_EFFECT_NULL )
+		if ( _getEFXEffect(eName) != AL_EFFECT_NULL )
 		{
 			alGetError();
 			alEffecti(effectType, attrib, static_cast<ALint>(param));
@@ -1374,10 +1371,8 @@ namespace OgreOggSound
 			return false;
 		}
 
-		ALuint effect;
-
 		// Get effect id's
-		if ( (effect = _getEFXEffect(eName) ) != AL_EFFECT_NULL )
+		if ( _getEFXEffect(eName) != AL_EFFECT_NULL )
 		{
 			alGetError();
 
@@ -1408,10 +1403,8 @@ namespace OgreOggSound
 			return false;
 		}
 
-		ALuint effect;
-
 		// Get effect id's
-		if ( (effect = _getEFXEffect(eName) ) != AL_EFFECT_NULL )
+		if ( _getEFXEffect(eName) != AL_EFFECT_NULL )
 		{
 			alGetError();
 
@@ -1448,10 +1441,8 @@ namespace OgreOggSound
 			return false;
 		}
 
-		ALuint effect;
-
 		// Get effect id's
-		if ( (effect = _getEFXEffect(eName) ) != AL_EFFECT_NULL )
+		if ( _getEFXEffect(eName) != AL_EFFECT_NULL )
 		{
 			alGetError();
 
