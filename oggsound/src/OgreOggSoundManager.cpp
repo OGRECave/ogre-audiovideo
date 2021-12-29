@@ -235,60 +235,22 @@ namespace OgreOggSound
 
 		int majorVersion;
 		int minorVersion;
-#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
-		ALCdevice* device = alcOpenDevice(NULL);
-#endif
+
 		// Version Info
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        ALenum error = 0;
-		alcGetError(NULL);
-	    alcGetIntegerv(NULL, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
-        if ((error = alcGetError(NULL))!=AL_NO_ERROR)
-		{
-			switch (error)
-			{
-			case AL_INVALID_NAME:		{ Ogre::LogManager::getSingleton().logError("Invalid Name when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_ENUM:		{ Ogre::LogManager::getSingleton().logError("Invalid Enum when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_VALUE:		{ Ogre::LogManager::getSingleton().logError("Invalid Value when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_OPERATION:	{ Ogre::LogManager::getSingleton().logError("Invalid Operation when attempting: OpenAL Minor Version number"); } break;
-			case AL_OUT_OF_MEMORY:		{ Ogre::LogManager::getSingleton().logError("Out of memory when attempting: OpenAL Minor Version number"); }	break;
-			}
-			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Minor Version number", Ogre::LML_CRITICAL);
-			return false;
-		}
-		alcGetError(NULL);
-		alcGetIntegerv(NULL, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
-        if ((error = alcGetError(NULL))!=AL_NO_ERROR)
-		{
-			switch (error)
-			{
-			case AL_INVALID_NAME:		{ Ogre::LogManager::getSingleton().logError("Invalid Name when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_ENUM:		{ Ogre::LogManager::getSingleton().logError("Invalid Enum when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_VALUE:		{ Ogre::LogManager::getSingleton().logError("Invalid Value when attempting: OpenAL Minor Version number"); } break;
-			case AL_INVALID_OPERATION:	{ Ogre::LogManager::getSingleton().logError("Invalid Operation when attempting: OpenAL Minor Version number"); } break;
-			case AL_OUT_OF_MEMORY:		{ Ogre::LogManager::getSingleton().logError("Out of memory when attempting: OpenAL Minor Version number"); } break;
-			}
-			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Major Version number");
-			return false;
-		}
-#else
-        alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
-        ALCenum error = alcGetError(device);
+        alcGetIntegerv(NULL, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
+        ALCenum error = alcGetError(NULL);
         if (error != ALC_NO_ERROR)
 		{
 			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Minor Version number");
 			return false;
 		}
-		alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
-		error = alcGetError(device);
+		alcGetIntegerv(NULL, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
+		error = alcGetError(NULL);
         if (error != ALC_NO_ERROR)
 		{
 			Ogre::LogManager::getSingleton().logError("Unable to get OpenAL Major Version number");
 			return false;
 		}
-		alcCloseDevice(device);
-#endif
-		//Ogre::LogManager::getSingleton().logMessage(Ogre::String("OpenAL version " + Ogre::StringConverter::toString(majorVersion) + "." + Ogre::StringConverter::toString(minorVersion)));
 
 		/*
 		** OpenAL versions prior to 1.0 DO NOT support device enumeration, so we
