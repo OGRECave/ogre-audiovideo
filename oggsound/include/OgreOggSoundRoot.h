@@ -36,7 +36,7 @@
 
 namespace OgreOggSound
 {
-	class Root
+	class _OGGSOUND_EXPORT Root
 	{
 	public:
 		Root();
