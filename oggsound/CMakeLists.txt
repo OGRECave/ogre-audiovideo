@@ -43,18 +43,8 @@ else()
 endif()
 
 # OpenAL Soft Extensions
-#option(HAVE_ALEXT "Enable OpenAL Soft Extensions (alext.h)" OFF)
-
-#if(HAVE_ALEXT)
-#    add_definitions(-DHAVE_ALEXT=1)
-#else()
-#    add_definitions(-DHAVE_ALEXT=0)
-#endif()
-
 INCLUDE (CheckIncludeFiles)
-
 CHECK_INCLUDE_FILES (alext.h HAVE_ALEXT)
-
 
 # Type of EFX backend support
 set(USE_EFX 0 CACHE STRING
@@ -73,12 +63,9 @@ elseif(USE_EFX EQUAL "2")
 	add_definitions(-DHAVE_EFX=2)
 endif()
 
+find_package(OpenAL REQUIRED)
+
 find_package(PkgConfig QUIET)
-
-pkg_check_modules(PC_OPENAL QUIET openal)
-find_path(OPENAL_INCLUDE_DIRS NAMES al.h HINTS ${PC_OPENAL_INCLUDE_DIRS} PATH_SUFFIXES openal)
-find_library(OPENAL_LIBRARIES NAMES openal HINTS ${PC_OPENAL_LIBRARY_DIRS})
-
 pkg_check_modules(PC_OGG QUIET ogg)
 find_path(OGG_INCLUDE_DIRS NAMES ogg/ogg.h HINTS ${PC_OGG_INCLUDE_DIRS} PATH_SUFFIXES ogg)
 find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
@@ -86,22 +73,6 @@ find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_OGG_LIBRARY_DIRS})
 pkg_check_modules(PC_VORBISFILE QUIET vorbisfile)
 find_path(VORBIS_INCLUDE_DIRS NAMES vorbis/vorbisfile.h HINTS ${PC_VORBISFILE_INCLUDE_DIRS} PATH_SUFFIXES vorbisfile)
 find_library(VORBISFILE_LIBRARIES NAMES vorbisfile HINTS ${PC_VORBISFILE_LIBRARY_DIRS})
-
-include_directories(include
-                    ${OGRE_INCLUDE_DIRS}
-                    ${OPENAL_INCLUDE_DIRS}
-                    ${OGG_INCLUDE_DIRS}
-                    ${VORBIS_INCLUDE_DIRS})
-
-link_directories(${OGRE_LIBRARY_DIRS}
-                 ${OPENAL_LIBRARY_DIRS}
-                 ${OGG_LIBRARY_DIRS}
-                 ${VORBISFILE_LIBRARIES})
-
-link_libraries(${OGRE_LIBRARIES}
-               ${OPENAL_LIBRARIES}
-               ${OGG_LIBRARIES}
-               ${VORBISFILE_LIBRARIES})
 
 # Configure library
 if(OGRE_STATIC)
@@ -111,6 +82,8 @@ else()
 endif()
 target_include_directories(OgreOggSound PUBLIC include)
 target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
+target_include_directories(OgreOggSound PUBLIC include ${OPENAL_INCLUDE_DIR} PRIVATE ${OGG_INCLUDE_DIRS} ${VORBIS_INCLUDE_DIRS})
+target_link_libraries(OgreOggSound PUBLIC OgreMain ${OPENAL_LIBRARY} PRIVATE ${OGG_LIBRARIES} ${VORBISFILE_LIBRARIES})
 
 install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
 install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
