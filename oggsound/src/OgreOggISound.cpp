@@ -82,8 +82,9 @@ namespace OgreOggSound
 	MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 	mPosition(0,0,0),
 	mDirection(0,0,0),
+	#else
+	MovableObject(name)
 	#endif
-	 mName(name)
 	,mSource(0) 
 	,mLoop(false) 
 	,mState(SS_NONE) 

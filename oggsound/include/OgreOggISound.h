@@ -426,9 +426,6 @@ namespace OgreOggSound
 		/** Gets the sounds source
 		 */
 		inline ALuint getSource() const { return mSource; }
-		/** Gets the sounds name
-		 */
-		inline const Ogre::String& getName( void ) const { return mName; }
 		/** Gets the sounds file name
 		 */
 		virtual const Ogre::String& getFileName( void ) const { return mAudioStream ? Ogre::BLANKSTRING : mAudioStream->getName(); }
@@ -674,7 +671,6 @@ namespace OgreOggSound
 		float mInnerConeAngle;			// Inner cone angle
 		float mOuterConeAngle;			// outer cone angle
 		float mPlayTime;				// Time in seconds of sound file
-		Ogre::String mName;				// Sound name
 		SoundState mState;				// Sound state
 		bool mLoop;						// Loop status
 		bool mDisable3D;				// 3D status
