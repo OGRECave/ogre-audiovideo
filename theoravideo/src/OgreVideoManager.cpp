@@ -6,35 +6,22 @@ Copyright (c) 2008-2010 Kresimir Spes (kreso@cateia.com)
 This program is free software; you can redistribute it and/or modify it under
 the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 *************************************************************************************/
-#ifndef OGRE_MAC_FRAMEWORK
-  #include "OgreRoot.h"
-#else
-  #include <Ogre/OgreRoot.h>
-#endif
+
+#include <OgreRoot.h>
+
 #include "OgreVideoManager.h"
 #include "OgreTheoraDataStream.h"
 
-#ifndef OGRE_MAC_FRAMEWORK
-#include "OgreTextureManager.h"
-#include "OgreMaterialManager.h"
-#include "OgreMaterial.h"
-#include "OgreTechnique.h"
-#include "OgreStringConverter.h"
-#include "OgreLogManager.h"
-#include "OgreHardwarePixelBuffer.h"
-#else
-#include <Ogre/OgreTextureManager.h>
-#include <Ogre/OgreMaterialManager.h>
-#include <Ogre/OgreMaterial.h>
-#include <Ogre/OgreTechnique.h>
-#include <Ogre/OgreStringConverter.h>
-#include <Ogre/OgreLogManager.h>
-#include <Ogre/OgreHardwarePixelBuffer.h>
-#endif
+#include <OgreTextureManager.h>
+#include <OgreMaterialManager.h>
+#include <OgreMaterial.h>
+#include <OgreTechnique.h>
+#include <OgreStringConverter.h>
+#include <OgreLogManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreBitwise.h>
+#include <OgreExternalTextureSourceManager.h>
 
-#include "OgreBitwise.h"
-
-#include "OgreExternalTextureSourceManager.h"
 #include "TheoraVideoFrame.h"
 #include "TheoraTimer.h"
 #include <vector>
