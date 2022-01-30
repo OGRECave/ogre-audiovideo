@@ -208,9 +208,15 @@ namespace Ogre
 	void OgreVideoPlugin::install()
 	{
 		if (mVideoMgr) {
+			#if OGRE_VERSION_MAJOR == 2
+			Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,
+				"OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
+			);
+			#else
 			Ogre::LogManager::getSingleton().logWarning(
 				"OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
 			);
+			#endif
 			return;
 		}
 		

@@ -127,7 +127,9 @@ namespace OgreOggSound
 		// Immediately set position/orientation when attached
 		if (mParentNode)
 		{
+			#if OGRE_VERSION_MAJOR != 2
 			mLocalTransformDirty = true;
+			#endif
 			update();
 		}
 

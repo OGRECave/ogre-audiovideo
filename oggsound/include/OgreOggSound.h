@@ -41,3 +41,11 @@
 #include "OgreOggSoundRecord.h"
 #include "OgreOggSoundFactory.h"
 #include "OgreOggSoundManager.h"
+
+#ifndef OGRE_LOG_ERROR
+#if OGRE_VERSION_MAJOR == 2
+#define OGRE_LOG_ERROR(a) Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL, a)
+#else
+#define OGRE_LOG_ERROR(a) Ogre::LogManager::getSingleton().logError(a)
+#endif
+#endif

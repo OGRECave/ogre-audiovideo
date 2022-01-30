@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-		Ogre::LogManager::getSingleton().logError(e.getFullDescription());
+		OGRE_LOG_ERROR(e.getFullDescription());
 #endif
 	}
 

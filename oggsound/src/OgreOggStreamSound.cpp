@@ -39,12 +39,12 @@ namespace OgreOggSound
 	OgreOggStreamSound::OgreOggStreamSound(
 		const Ogre::String& name
 		#if OGRE_VERSION_MAJOR == 2
-		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
+		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : OgreOggISound(
 		name
 		#if OGRE_VERSION_MAJOR == 2
-		, id, objMemMgr, renderQueueId
+		, scnMgr, id, objMemMgr, renderQueueId
 		#endif
 	)
 	,mVorbisInfo(0)
@@ -114,7 +114,7 @@ namespace OgreOggSound
 		{
 			if ( mLoopOffset>=mPlayTime )
 			{
-				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::open() - Loop time invalid!");
+				OGRE_LOG_ERROR("OgreOggStreamSound::open() - Loop time invalid!");
 				mLoopOffset=0.f;
 			}
 		}
@@ -145,7 +145,7 @@ namespace OgreOggSound
 		if ( !mAudioStream )
 			if ( mLoopOffset>=mPlayTime ) 
 			{
-				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::setLoopOffset() - Loop time invalid!");
+				OGRE_LOG_ERROR("OgreOggStreamSound::setLoopOffset() - Loop time invalid!");
 				// Invalid - cancel loop point
 				mLoopOffset=0.f;
 			}
@@ -380,7 +380,7 @@ namespace OgreOggSound
 				{
 					if ( ov_time_seek(&mOggStream, 0 + mLoopOffset)!= 0 )
 					{
-						Ogre::LogManager::getSingleton().logError("OgreOggStream::_stream() - Looping stream, ogg file NOT seekable!");
+						OGRE_LOG_ERROR("OgreOggStream::_stream() - Looping stream, ogg file NOT seekable!");
 						break;
 					}
 				}
@@ -449,7 +449,7 @@ namespace OgreOggSound
 
 			// Any problems?
 			if ( alGetError() != AL_NO_ERROR )
-				Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
+				OGRE_LOG_ERROR("OgreOggStreamSound::_dequeue() - Unable to unqueue buffers");
 		}
 	}		 
 	/*/////////////////////////////////////////////////////////////////*/
@@ -545,7 +545,7 @@ namespace OgreOggSound
 		alSourcePlay(mSource);
 		if ( alGetError() )
 		{
-			Ogre::LogManager::getSingleton().logError("OgreOggStreamSound::_playImpl() - Unable to play sound");
+			OGRE_LOG_ERROR("OgreOggStreamSound::_playImpl() - Unable to play sound");
 			return;
 		}
 		// Set play flag
