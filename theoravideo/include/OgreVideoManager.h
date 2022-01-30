@@ -10,13 +10,9 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #ifndef _OgreVideoManager_h
 #define _OgreVideoManager_h
 
-#ifndef OGRE_MAC_FRAMEWORK
-  #include "OgreExternalTextureSource.h"
-  #include "OgreFrameListener.h"
-#else
-  #include <Ogre/OgreExternalTextureSource.h>
-  #include <Ogre/OgreFrameListener.h>
-#endif
+#include <OgreExternalTextureSource.h>
+#include <OgreFrameListener.h>
+
 #include "OgreVideoExport.h"
 #include "TheoraVideoManager.h"
 #include "OgrePlugin.h"

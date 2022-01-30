@@ -11,11 +11,7 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #define _OgreTheoraDataStream_h
 
 #include "TheoraDataSource.h"
-#ifndef OGRE_MAC_FRAMEWORK
-#include "OgreDataStream.h"
-#else
-#include <Ogre/OgreDataStream.h>
-#endif
+#include <OgreDataStream.h>
 
 namespace Ogre
 {

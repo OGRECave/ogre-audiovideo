@@ -9,11 +9,8 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #ifndef _OgreVideoExport_H
 #define _OgreVideoExport_H
 
-#ifndef OGRE_MAC_FRAMEWORK
-  #include "OgrePrerequisites.h"
-#else
-  #include <Ogre/OgrePrerequisites.h>
-#endif
+#include <OgrePrerequisites.h>
+
 //-----------------------------------------------------------------------
 // Windows Settings
 //-----------------------------------------------------------------------
