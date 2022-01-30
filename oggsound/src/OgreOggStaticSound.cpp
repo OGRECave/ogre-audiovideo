@@ -39,12 +39,12 @@ namespace OgreOggSound
 	OgreOggStaticSound::OgreOggStaticSound(
 		const Ogre::String& name
 		#if OGRE_VERSION_MAJOR == 2
-		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
+		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : OgreOggISound(
 		name
 		#if OGRE_VERSION_MAJOR == 2
-		, id, objMemMgr, renderQueueId
+		, scnMgr, id, objMemMgr, renderQueueId
 		#endif
 	)
 	,mVorbisInfo(0)
@@ -364,7 +364,7 @@ namespace OgreOggSound
 			alSourcei(mSource, AL_LOOPING, loop);
 
 			if ( alGetError() != AL_NO_ERROR )
-				Ogre::LogManager::getSingleton().logError("OgreOggStaticSound::loop() - Unable to set looping status!");
+				OGRE_LOG_ERROR("OgreOggStaticSound::loop() - Unable to set looping status!");
 		}
 		else
 			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() - No source attached to sound!");

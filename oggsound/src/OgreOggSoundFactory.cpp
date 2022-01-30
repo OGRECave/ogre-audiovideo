@@ -44,14 +44,14 @@ namespace OgreOggSound
 	}
 	//-----------------------------------------------------------------------
 	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
-	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, Ogre::SceneManager* manager, const Ogre::NameValuePairList* params)
+	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(Ogre::IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, Ogre::SceneManager* manager, const Ogre::NameValuePairList* params)
 	#else
 	Ogre::MovableObject* OgreOggSoundFactory::createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params)
 	#endif
 	{
 		Ogre::String fileName;
 		#if OGRE_VERSION_MAJOR == 2
-		Ogre::String reName = BLANKSTRING;
+		Ogre::String reName = Ogre::BLANKSTRING;
 		#else
 		Ogre::String reName = name;
 		#endif
@@ -122,4 +122,16 @@ namespace OgreOggSound
 
 		return 0;
 	}
+
+#if OGRE_VERSION_MAJOR == 2
+	void OgreOggSoundFactory::destroyInstance( Ogre::MovableObject* obj)
+	{
+		if ( dynamic_cast<OgreOggListener*>(obj) )
+			// destroy the listener
+			OgreOggSoundManager::getSingletonPtr()->_destroyListener();
+		else
+			// destroy the sound
+			OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(static_cast<OgreOggISound*>(obj));
+	}
+#endif
 }

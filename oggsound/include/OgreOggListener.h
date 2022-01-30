@@ -107,9 +107,11 @@ namespace OgreOggSound
 			bounding radius for this object.
 		 */
 		virtual float getBoundingRadius(void) const;
-		void _updateRenderQueue(Ogre::RenderQueue *queue) override {}
 		#if OGRE_VERSION_MAJOR != 2
+		void _updateRenderQueue(Ogre::RenderQueue *queue) override {}
 		void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables) override {}
+		#else
+		void _updateRenderQueue(Ogre::RenderQueue *queue) {}
 		#endif
 		/** Attach callback
 		@remarks

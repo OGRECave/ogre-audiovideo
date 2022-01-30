@@ -75,7 +75,7 @@ namespace OgreOggSound
 	OgreOggISound::OgreOggISound(
 		const Ogre::String& name
 		#if OGRE_VERSION_MAJOR == 2
-		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
+		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : 
 	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
@@ -83,9 +83,9 @@ namespace OgreOggSound
 	mPosition(0,0,0),
 	mDirection(0,0,0),
 	#else
-	MovableObject(name)
+	MovableObject(name),
 	#endif
-	,mSource(0) 
+	mSource(0) 
 	,mLoop(false) 
 	,mState(SS_NONE) 
 	,mReferenceDistance(1.0f) 
@@ -548,7 +548,7 @@ namespace OgreOggSound
 		alSourcef(mSource, AL_SEC_OFFSET, mPlayPos);
 		if (alGetError())
 		{
-			Ogre::LogManager::getSingleton().logError("OgreOggISound::_recoverPlayPosition() - Unable to set play position");
+			OGRE_LOG_ERROR("OgreOggISound::_recoverPlayPosition() - Unable to set play position");
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -576,7 +576,7 @@ namespace OgreOggSound
 		alSourcef(mSource, AL_SEC_OFFSET, seconds);
 		if (alGetError())
 		{
-			Ogre::LogManager::getSingleton().logError("OgreOggISound::setPlayPosition() - Error setting play position");
+			OGRE_LOG_ERROR("OgreOggISound::setPlayPosition() - Error setting play position");
 		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -592,7 +592,7 @@ namespace OgreOggSound
 		alGetSourcef(mSource, AL_SEC_OFFSET, &offset);
 		if (alGetError())
 		{
-			Ogre::LogManager::getSingleton().logError("OgreOggISound::setPlayPosition() - Error getting play position");
+			OGRE_LOG_ERROR("OgreOggISound::setPlayPosition() - Error getting play position");
 			return -1.f;
 		}
 			
@@ -723,8 +723,11 @@ namespace OgreOggSound
 			#endif
 		);
 
+		#if OGRE_VERSION_MAJOR != 2
 		// Immediately set position/orientation when attached
 		mLocalTransformDirty = true;
+		#endif
+		
 		update(0);
 
 		return;

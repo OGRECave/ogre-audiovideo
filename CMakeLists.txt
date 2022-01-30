@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project(OgreVideoAudio)
 
-find_package(OGRE REQUIRED OPTIONAL_COMPONENTS Bites CONFIG)
+find_package(OGRE REQUIRED OPTIONAL_COMPONENTS Bites)
 
 option(BUILD_DEMOS "Build demo (requires Ogre Bites and both Audio and Video)" ON)
 option(BUILD_VIDEOPLUGIN "Build the Theora Video plugin" ON)

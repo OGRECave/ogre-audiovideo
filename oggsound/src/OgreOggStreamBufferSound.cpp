@@ -40,12 +40,12 @@ namespace OgreOggSound
 	OgreOggStreamBufferSound::OgreOggStreamBufferSound(
 		const Ogre::String& name
 		#if OGRE_VERSION_MAJOR == 2
-		, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
+		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : OgreOggISound(
 		name
 		#if OGRE_VERSION_MAJOR == 2
-		, id, objMemMgr, renderQueueId
+		, scnMgr, id, objMemMgr, renderQueueId
 		#endif
 	)
 		,mFreq(0)
