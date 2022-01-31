@@ -34,15 +34,28 @@
 #include "OgreOggSound.h"
 #include "OgreOggSoundFactory.h"
 
+#if OGRE_VERSION_MAJOR == 2
+#include <OgrePlugin.h>
+#endif
+
 namespace OgreOggSound
 {
 	class _OGGSOUND_EXPORT Root
+	#if OGRE_VERSION_MAJOR == 2
+		: public Ogre::Plugin
+	#endif
 	{
 	public:
 		Root();
 
 		void initialise();
 		void shutdown();
+		
+		#if OGRE_VERSION_MAJOR == 2
+		const Ogre::String& getName() const;
+		void install();
+		void uninstall();
+		#endif
 
 	protected:
 		OgreOggSoundFactory* mOgreOggSoundFactory;

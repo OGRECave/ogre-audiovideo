@@ -30,6 +30,30 @@
 
 #include "OgreOggSoundRoot.h"
 
+#if OGRE_VERSION_MAJOR == 2
+OgreOggSound::Root* mOgreOggSoundPlugin;
+const Ogre::String sPluginName = "OgreOggSound";
+
+using namespace OgreOggSound;
+
+extern "C" void _OGGSOUND_EXPORT dllStartPlugin( void )
+{
+	// Create new plugin
+	mOgreOggSoundPlugin = OGRE_NEW_T(Root, Ogre::MEMCATEGORY_GENERAL)();
+
+	// Register
+	Ogre::Root::getSingleton().installPlugin(mOgreOggSoundPlugin);
+}
+
+extern "C" void _OGGSOUND_EXPORT dllStopPlugin( void )
+{
+	Ogre::Root::getSingleton().uninstallPlugin(mOgreOggSoundPlugin);
+
+	OGRE_DELETE_T(mOgreOggSoundPlugin, Root, Ogre::MEMCATEGORY_GENERAL);
+	mOgreOggSoundPlugin = 0;
+}
+#endif
+
 namespace OgreOggSound
 {
 	//---------------------------------------------------------------------
@@ -39,6 +63,52 @@ namespace OgreOggSound
 	{
 
 	}
+	
+	#if OGRE_VERSION_MAJOR == 2
+	const Ogre::String& Root::getName() const
+	{
+		return sPluginName;
+	}
+	//---------------------------------------------------------------------
+	void Root::install()
+	{
+		if ( mOgreOggSoundFactory ) return;
+
+		// Create new factory
+		mOgreOggSoundFactory = OGRE_NEW_T(OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL)();
+
+		// Register
+		Ogre::Root::getSingleton().addMovableObjectFactory(mOgreOggSoundFactory, true);
+	}
+	//---------------------------------------------------------------------
+	void Root::initialise()
+	{
+		if ( mOgreOggSoundManager ) return;
+
+		//initialise OgreOggSoundManager here
+		mOgreOggSoundManager = OGRE_NEW_T(OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL)();
+	}
+	//---------------------------------------------------------------------
+	void Root::shutdown()
+	{
+		if ( !mOgreOggSoundManager ) return;
+
+		// shutdown OgreOggSoundManager here
+		OGRE_DELETE_T(mOgreOggSoundManager, OgreOggSoundManager, Ogre::MEMCATEGORY_GENERAL);
+		mOgreOggSoundManager = 0;
+	}
+	//---------------------------------------------------------------------
+	void Root::uninstall()
+	{
+		if ( !mOgreOggSoundFactory ) return;
+
+		// unregister
+		Ogre::Root::getSingleton().removeMovableObjectFactory(mOgreOggSoundFactory);
+
+		OGRE_DELETE_T(mOgreOggSoundFactory, OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL);
+		mOgreOggSoundFactory = 0;
+	}
+	#else
 	//---------------------------------------------------------------------
 	void Root::initialise()
 	{
@@ -68,4 +138,5 @@ namespace OgreOggSound
 		OGRE_DELETE_T(mOgreOggSoundFactory, OgreOggSoundFactory, Ogre::MEMCATEGORY_GENERAL);
 		mOgreOggSoundFactory = 0;
 	}
+	#endif
 }
