@@ -12,13 +12,19 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "OgreVideoManager.h"
 #include "OgreTheoraDataStream.h"
 
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 2
+#include <OgreTextureGpuManager.h>
+#include <OgreTextureBox.h>
+#include <OgreStagingTexture.h>
+#else
 #include <OgreTextureManager.h>
+#include <OgreHardwarePixelBuffer.h>
+#endif
 #include <OgreMaterialManager.h>
 #include <OgreMaterial.h>
 #include <OgreTechnique.h>
 #include <OgreStringConverter.h>
 #include <OgreLogManager.h>
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreBitwise.h>
 #include <OgreExternalTextureSourceManager.h>
 
@@ -75,6 +81,21 @@ namespace Ogre
 		createVideoTexture(mInputFileName, material_name, group_name, group_name);
 	}
 	
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+	static void fillTexture(TextureGpu* texture, const uint8* data, int xSize, int ySize) {
+		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
+		StagingTexture *stagingTexture = textureMgr->getStagingTexture( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
+		
+		stagingTexture->startMapRegion();
+		TextureBox texBox = stagingTexture->mapRegion( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
+		texBox.copyFrom( data, xSize, ySize, 4 * xSize );
+		stagingTexture->stopMapRegion();
+		
+		stagingTexture->upload( texBox, texture, 0, 0, 0, true );
+		textureMgr->removeStagingTexture( stagingTexture );
+	}
+#endif
+
 	TheoraVideoClip* OgreVideoManager::createVideoTexture(
 		const String& video_file_name, const String& material_name,
 		const String& video_group_name, const String& group_name
@@ -93,6 +114,30 @@ namespace Ogre
 		Matrix4 mat=Matrix4::IDENTITY;
 		mat.setScale(Vector3((float) clip->getWidth()/(w + 0.5), (float) clip->getHeight()/(h + 0.5),1));
 
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 2
+		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
+		TextureGpu* t = textureMgr->createTexture(
+			name,
+			GpuPageOutStrategy::Discard,
+			TextureFlags::ManualTexture,
+			TextureTypes::Type2D,
+			group_name
+		);
+		t->setPixelFormat(PFG_RGBA8_UNORM);
+		t->setNumMipmaps(1u);
+		t->setResolution(w, h);
+		
+		size_t dataSize = 4 * w * h;
+		uint8* data = reinterpret_cast<uint8*>(OGRE_MALLOC_SIMD( dataSize, MEMCATEGORY_RENDERSYS ));
+		memset( data, 0, dataSize );
+		t->_transitionTo( GpuResidency::Resident, reinterpret_cast<uint8*>(data) );
+		t->_setNextResidencyStatus( GpuResidency::Resident );
+		
+		fillTexture(t, data, w, h);
+		
+		OGRE_FREE_SIMD(data, MEMCATEGORY_RENDERSYS);
+		t->notifyDataIsReady();
+#else
 		TexturePtr t = TextureManager::getSingleton().createManual(name,group_name,TEX_TYPE_2D,w,h,1,0,PF_BYTE_RGBA,TU_DYNAMIC_WRITE_ONLY);
 		
 		if (t->getFormat() != PF_BYTE_RGBA) logMessage("ERROR: Pixel format is not BYTE_RGBA which is what was requested!");
@@ -102,6 +147,8 @@ namespace Ogre
 
 		memset(texData,0,w*h*4);
 		t->getBuffer()->unlock();
+#endif
+
 		mClipsTextures[name]={clip,t};
 
 #if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
@@ -109,7 +156,11 @@ namespace Ogre
 		HlmsUnlitDatablock* ogreDatablock = static_cast<Ogre::HlmsUnlitDatablock*>(
 			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
 		);
+	#if OGRE_VERSION_MINOR >= 2
+		ogreDatablock->setTexture( 0, name );
+	#else
 		ogreDatablock->setTexture( 0, 0, t );
+	#endif
 		ogreDatablock->setAnimationMatrix( 0, mat );
 		ogreDatablock->setEnableAnimationMatrix( 0, true );
 #else
@@ -165,18 +216,22 @@ namespace Ogre
 			{
 				int w=f->getStride(),h=f->getHeight();
 				
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+				fillTexture(it->second.texture, reinterpret_cast<const uint8*>(f->getBuffer()), w, h);
+#else
 				unsigned char *texData=(unsigned char*) it->second.texture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
 				unsigned char *videoData=f->getBuffer();
 				
 				memcpy(texData,videoData,w*h*4);
 				
 				it->second.texture->getBuffer()->unlock();
+#endif
 				it->second.clip->popFrame();
 			}
 		}
 		return true;
 	}
-
+	
 	void OgreVideoManager::pauseAllVideoClips() {
 		mbPaused = true;
 	}

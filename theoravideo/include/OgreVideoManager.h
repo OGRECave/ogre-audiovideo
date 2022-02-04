@@ -91,7 +91,11 @@ namespace Ogre
 	private:
 		struct ClipTexture {
 			TheoraVideoClip*  clip;
+			#if OGRE_VERSION_MAJOR == 2 and OGRE_VERSION_MINOR >= 2
+			TextureGpu*       texture;
+			#else
 			TexturePtr        texture;
+			#endif
 		};
 		std::map<String,ClipTexture> mClipsTextures;
 		bool mbInit;
