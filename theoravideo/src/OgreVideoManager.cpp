@@ -81,6 +81,21 @@ namespace Ogre
 		createVideoTexture(mInputFileName, material_name, group_name, group_name);
 	}
 	
+#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+	static void fillTexture(TextureGpu* texture, const uint8* data, int xSize, int ySize) {
+		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
+		StagingTexture *stagingTexture = textureMgr->getStagingTexture( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
+		
+		stagingTexture->startMapRegion();
+		TextureBox texBox = stagingTexture->mapRegion( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
+		texBox.copyFrom( data, xSize, ySize, 4 * xSize );
+		stagingTexture->stopMapRegion();
+		
+		stagingTexture->upload( texBox, texture, 0, 0, 0, true );
+		textureMgr->removeStagingTexture( stagingTexture );
+	}
+#endif
+
 	TheoraVideoClip* OgreVideoManager::createVideoTexture(
 		const String& video_file_name, const String& material_name,
 		const String& video_group_name, const String& group_name
@@ -217,21 +232,6 @@ namespace Ogre
 		return true;
 	}
 	
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
-	void OgreVideoManager::fillTexture(TextureGpu* texture, const uint8* data, int xSize, int ySize) {
-		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
-		StagingTexture *stagingTexture = textureMgr->getStagingTexture( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
-		
-		stagingTexture->startMapRegion();
-		TextureBox texBox = stagingTexture->mapRegion( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
-		texBox.copyFrom( data, xSize, ySize, 4 * xSize );
-		stagingTexture->stopMapRegion();
-		
-		stagingTexture->upload( texBox, texture, 0, 0, 0, true );
-		textureMgr->removeStagingTexture( stagingTexture );
-	}
-#endif
-
 	void OgreVideoManager::pauseAllVideoClips() {
 		mbPaused = true;
 	}
