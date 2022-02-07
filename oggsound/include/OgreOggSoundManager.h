@@ -407,8 +407,8 @@ namespace OgreOggSound
 		/** Returns user defined search group name
 		 */
 		Ogre::String getResourceGroupName() const;
-#if HAVE_EFX
-#	if HAVE_EFX == 1
+#if OGGSOUND_HAVE_EFX
+#	if OGGSOUND_HAVE_EFX == 1
 		/** Returns XRAM support status.
 		 */
 		bool hasXRamSupport() { return mXRamSupport; }
@@ -419,7 +419,7 @@ namespace OgreOggSound
 		/** Returns EAX support status.
 		 */
 		bool hasEAXSupport() { return mEAXSupport; }
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 		/** Sets XRam buffers.
 		@remarks
 			Currently defaults to AL_STORAGE_AUTO.
@@ -465,9 +465,9 @@ namespace OgreOggSound
 			@param props
 				Legacy structure describing a preset reverb effect.
 		 */
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 		bool createEFXEffect(const Ogre::String& eName, ALint type, EAXREVERBPROPERTIES* props=0);
-#	elif HAVE_EFX == 2
+#	elif OGGSOUND_HAVE_EFX == 2
 		bool createEFXEffect(const Ogre::String& eName, ALint type, EFXEAXREVERBPROPERTIES* props=0);
 #	endif
 		/** Sets extended properties on a specified sounds source
@@ -934,11 +934,11 @@ namespace OgreOggSound
 			Queries OpenAL for the supported extentions and lists them with the LogManager.
 		 */
 		void _checkExtensionSupport();
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		/** Checks for EFX hardware support
 		 */
 		bool _checkEFXSupport();
-#if HAVE_EFX == 1
+#if OGGSOUND_HAVE_EFX == 1
 		/** Checks for XRAM hardware support
 		 */
 		bool _checkXRAMSupport();
@@ -1036,7 +1036,7 @@ namespace OgreOggSound
 		//! sorts sound list by distance
 		struct _sortFarToNear;
 
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		/**	EFX Support
 		*/
 		bool mEFXSupport;						// EFX present flag
@@ -1080,7 +1080,7 @@ namespace OgreOggSound
 		LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf;
 		LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
 
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 		/**	XRAM Support
 		*/
 		typedef ALboolean (__cdecl *LPEAXSETBUFFERMODE)(ALsizei n, ALuint *buffers, ALint value);

@@ -34,14 +34,6 @@ option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
 option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
 
-if(OGGSOUND_THREADED)
-    add_definitions(-DOGGSOUND_THREADED=1)
-    set(OGGSOUND_THREADE_INT 1)
-else()
-    add_definitions(-DOGGSOUND_THREADED=0)
-    set(OGGSOUND_THREADE_INT 0)
-endif()
-
 # OpenAL Soft Extensions
 INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES (alext.h HAVE_ALEXT)
@@ -54,14 +46,6 @@ set(USE_EFX 0 CACHE STRING
        2 - Enable EFX support with OpenAL Soft SDK"
 )
 set_property(CACHE USE_EFX PROPERTY STRINGS "0" "1" "2")
-
-if(USE_EFX EQUAL "0")
-	add_definitions(-DHAVE_EFX=0)
-elseif(USE_EFX EQUAL "1")
-	add_definitions(-DHAVE_EFX=1)
-elseif(USE_EFX EQUAL "2")
-	add_definitions(-DHAVE_EFX=2)
-endif()
 
 configure_file(include/OgreOggSoundPrereqs.h.in ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h @ONLY)
 include_directories(${PROJECT_BINARY_DIR}/include)
@@ -79,9 +63,9 @@ find_library(VORBISFILE_LIBRARIES NAMES vorbisfile HINTS ${PC_VORBISFILE_LIBRARY
 
 # Configure library
 if(OGRE_STATIC)
-    add_library(OgreOggSound STATIC ${SOURCE_FILES})
+    add_library(OgreOggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
 else()
-    add_library(OgreOggSound SHARED ${SOURCE_FILES})
+    add_library(OgreOggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
 endif()
 target_include_directories(OgreOggSound PUBLIC include)
 target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
