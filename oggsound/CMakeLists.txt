@@ -8,7 +8,6 @@ set (HEADER_FILES
     include/OgreOggSound.h
     include/OgreOggSoundManager.h
     include/OgreOggSoundRoot.h
-    include/OgreOggSoundPrereqs.h
     include/OgreOggSoundRecord.h
     include/OgreOggStaticSound.h
     include/OgreOggStaticWavSound.h
@@ -16,7 +15,6 @@ set (HEADER_FILES
     include/OgreOggStreamSound.h
     include/OgreOggStreamWavSound.h
 )
-
 set (SOURCE_FILES
 	src/OgreOggISound.cpp
     src/OgreOggListener.cpp
@@ -38,8 +36,10 @@ option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
 
 if(OGGSOUND_THREADED)
     add_definitions(-DOGGSOUND_THREADED=1)
+    set(OGGSOUND_THREADE_INT 1)
 else()
     add_definitions(-DOGGSOUND_THREADED=0)
+    set(OGGSOUND_THREADE_INT 0)
 endif()
 
 # OpenAL Soft Extensions
@@ -63,6 +63,9 @@ elseif(USE_EFX EQUAL "2")
 	add_definitions(-DHAVE_EFX=2)
 endif()
 
+configure_file(include/OgreOggSoundPrereqs.h.in ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h @ONLY)
+include_directories(${PROJECT_BINARY_DIR}/include)
+
 find_package(OpenAL REQUIRED)
 
 find_package(PkgConfig QUIET)
@@ -76,9 +79,9 @@ find_library(VORBISFILE_LIBRARIES NAMES vorbisfile HINTS ${PC_VORBISFILE_LIBRARY
 
 # Configure library
 if(OGRE_STATIC)
-    add_library(OgreOggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(OgreOggSound STATIC ${SOURCE_FILES})
 else()
-    add_library(OgreOggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
+    add_library(OgreOggSound SHARED ${SOURCE_FILES})
 endif()
 target_include_directories(OgreOggSound PUBLIC include)
 target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
@@ -86,6 +89,7 @@ target_include_directories(OgreOggSound PUBLIC include ${OPENAL_INCLUDE_DIR} PRI
 target_link_libraries(OgreOggSound PUBLIC OgreMain ${OPENAL_LIBRARY} PRIVATE ${OGG_LIBRARIES} ${VORBISFILE_LIBRARIES})
 
 install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
+install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h DESTINATION include/OGRE/OggSound)
 install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
 set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
 

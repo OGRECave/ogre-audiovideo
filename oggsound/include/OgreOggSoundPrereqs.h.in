@@ -41,7 +41,11 @@
  * 1 - OGRE-native multithreading
  */
 #ifndef OGGSOUND_THREADED
-	#define OGGSOUND_THREADED 0
+	#define OGGSOUND_THREADED @OGGSOUND_THREADE_INT@
+#else
+#	if OGGSOUND_THREADED != @OGGSOUND_THREADE_INT@
+#		warning "Using different value OGGSOUND_THREADED, than in build time (@OGGSOUND_THREADE_INT@) is not supported!"
+#	endif
 #endif
 
 /**
@@ -60,7 +64,11 @@
  * 2 - Enable EFX support with OpenAL Soft SDK
  */
 #ifndef HAVE_EFX
-#	define HAVE_EFX 2
+#	define HAVE_EFX @USE_EFX@
+#else
+#	if HAVE_EFX != @USE_EFX@
+#		warning "Using different value HAVE_EFX, than in build time (@USE_EFX@) is not supported!"
+#	endif
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
