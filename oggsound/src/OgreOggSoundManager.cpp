@@ -69,7 +69,7 @@ namespace OgreOggSound
 		,mDevice(0)
 		,mContext(0)
 		,mListener(0)
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		,mEAXSupport(false)
 		,mEFXSupport(false)
 		,mXRamSupport(false)
@@ -96,7 +96,7 @@ namespace OgreOggSound
 		,mForceMutex(false)
 #endif
 		{
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 			// Effect objects
 			alGenEffects = NULL;
 			alDeleteEffects = NULL;
@@ -294,7 +294,7 @@ namespace OgreOggSound
 		else
 			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(deviceName) + "\"");
 
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
         ALint attribs[2] = {ALC_MAX_AUXILIARY_SENDS, 4};
 #else
         ALint attribs[1] = {4};
@@ -1260,7 +1260,7 @@ namespace OgreOggSound
 		return mRecordDeviceList;
 	}
 
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggSoundManager::isEffectSupported(ALint effectID)
 	{
@@ -1273,7 +1273,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 	void OgreOggSoundManager::setXRamBuffer(ALsizei numBuffers, ALuint* buffer)
 	{
 		if ( buffer && mEAXSetBufferMode )
@@ -1818,9 +1818,9 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 	bool OgreOggSoundManager::createEFXEffect(const Ogre::String& eName, ALint effectType, EAXREVERBPROPERTIES* props)
-#	elif HAVE_EFX == 2
+#	elif OGGSOUND_HAVE_EFX == 2
 	bool OgreOggSoundManager::createEFXEffect(const Ogre::String& eName, ALint effectType, EFXEAXREVERBPROPERTIES* props)
 #	endif
 	{
@@ -1873,11 +1873,11 @@ namespace OgreOggSound
 				// Apply some preset reverb properties
 				if ( effectType==AL_EFFECT_EAXREVERB && props )
 				{
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 					EFXEAXREVERBPROPERTIES eaxProps;
 					ConvertReverbParameters(props, &eaxProps);
 					_setEAXReverbProperties(&eaxProps, effect);
-#	elif HAVE_EFX == 2
+#	elif OGGSOUND_HAVE_EFX == 2
 					_setEAXReverbProperties(props, effect);
 #	endif
 				}
@@ -2565,7 +2565,7 @@ namespace OgreOggSound
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 	bool OgreOggSoundManager::_checkXRAMSupport()
 	{
 		// Check for X-RAM extension
@@ -2596,7 +2596,7 @@ namespace OgreOggSound
 	}
 #	endif
 
-#endif	// HAVE_EFX
+#endif	// OGGSOUND_HAVE_EFX
 
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggSoundManager::_destroyTemporarySound(OgreOggISound* sound)
@@ -2908,7 +2908,7 @@ namespace OgreOggSound
 		if(eBufferFormat)
 			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_71CHN16 -- 7.1 Surround Sound");
 
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		// EFX
 		mEFXSupport = _checkEFXSupport();
 		if (mEFXSupport)
@@ -2919,7 +2919,7 @@ namespace OgreOggSound
 		else
 			Ogre::LogManager::getSingleton().logMessage("EFX NOT Detected");
 
-#	if HAVE_EFX == 1
+#	if OGGSOUND_HAVE_EFX == 1
 		// XRAM
 		mXRamSupport = _checkXRAMSupport();
 		if (mXRamSupport)
@@ -3004,7 +3004,7 @@ namespace OgreOggSound
 		SourceList::iterator it = mSources.begin();
 		while (it != mSources.end())
 		{
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 			if ( hasEFXSupport() )
 			{
 				// Remove filters/effects
@@ -3018,7 +3018,7 @@ namespace OgreOggSound
 
 		mSources.clear();
 
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		// clear EFX effect lists
 		if ( !mFilterList.empty() )
 		{
@@ -3391,7 +3391,7 @@ namespace OgreOggSound
 				OGRE_DELETE_T(c, cSound, Ogre::MEMCATEGORY_GENERAL);
 			}
 			break;
-#if HAVE_EFX
+#if OGGSOUND_HAVE_EFX
 		case LQ_ATTACH_EFX:
 			{
 				efxProperty* e = static_cast<efxProperty*>(act.mParams);

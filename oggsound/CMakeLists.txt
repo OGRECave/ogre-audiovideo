@@ -8,7 +8,6 @@ set (HEADER_FILES
     include/OgreOggSound.h
     include/OgreOggSoundManager.h
     include/OgreOggSoundRoot.h
-    include/OgreOggSoundPrereqs.h
     include/OgreOggSoundRecord.h
     include/OgreOggStaticSound.h
     include/OgreOggStaticWavSound.h
@@ -16,7 +15,6 @@ set (HEADER_FILES
     include/OgreOggStreamSound.h
     include/OgreOggStreamWavSound.h
 )
-
 set (SOURCE_FILES
 	src/OgreOggISound.cpp
     src/OgreOggListener.cpp
@@ -36,12 +34,6 @@ option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
 option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
 
-if(OGGSOUND_THREADED)
-    add_definitions(-DOGGSOUND_THREADED=1)
-else()
-    add_definitions(-DOGGSOUND_THREADED=0)
-endif()
-
 # OpenAL Soft Extensions
 INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES (alext.h HAVE_ALEXT)
@@ -55,13 +47,8 @@ set(USE_EFX 0 CACHE STRING
 )
 set_property(CACHE USE_EFX PROPERTY STRINGS "0" "1" "2")
 
-if(USE_EFX EQUAL "0")
-	add_definitions(-DHAVE_EFX=0)
-elseif(USE_EFX EQUAL "1")
-	add_definitions(-DHAVE_EFX=1)
-elseif(USE_EFX EQUAL "2")
-	add_definitions(-DHAVE_EFX=2)
-endif()
+configure_file(include/OgreOggSoundPrereqs.h.in ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h @ONLY)
+include_directories(${PROJECT_BINARY_DIR}/include)
 
 find_package(OpenAL REQUIRED)
 
@@ -86,6 +73,7 @@ target_include_directories(OgreOggSound PUBLIC include ${OPENAL_INCLUDE_DIR} PRI
 target_link_libraries(OgreOggSound PUBLIC OgreMain ${OPENAL_LIBRARY} PRIVATE ${OGG_LIBRARIES} ${VORBISFILE_LIBRARIES})
 
 install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
+install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h DESTINATION include/OGRE/OggSound)
 install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
 set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
 

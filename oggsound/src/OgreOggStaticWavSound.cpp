@@ -208,7 +208,7 @@ namespace OgreOggSound
 			return;
 		}
 
-#if HAVE_EFX == 1
+#if OGGSOUND_HAVE_EFX == 1
 		// Upload to XRAM buffers if available
 		if ( OgreOggSoundManager::getSingleton().hasXRamSupport() )
 			OgreOggSoundManager::getSingleton().setXRamBuffer(1, &(*mBuffers)[0]);
