@@ -128,10 +128,10 @@ namespace OgreOggSound
 			if ( mFile.is_open() )
 			{
 				// Prepare a WAVE file header for the captured data
-				sprintf(mWaveHeader.cRIFF, "RIFF");
+				memcpy(mWaveHeader.cRIFF, "RIFF", 4);
 				mWaveHeader.dwRIFFSize = 0;
-				sprintf(mWaveHeader.cWave, "WAVE");
-				sprintf(mWaveHeader.cFmt, "fmt ");
+				memcpy(mWaveHeader.cWave, "WAVE", 4);
+				memcpy(mWaveHeader.cFmt, "fmt ", 4);
 				mWaveHeader.dwFmtSize = sizeof(mWaveHeader.wfex);
 #if HAVE_ALEXT == 1
 				mWaveHeader.wfex.wFormatTag = (mBitsPerSample == 32 ? WAVE_FORMAT_IEEE_FLOAT : WAVE_FORMAT_PCM);
@@ -143,7 +143,7 @@ namespace OgreOggSound
 				mWaveHeader.wfex.wBitsPerSample = mBitsPerSample;
 				mWaveHeader.wfex.wBlockAlign = mWaveHeader.wfex.wChannels * mWaveHeader.wfex.wBitsPerSample / 8;
 				mWaveHeader.wfex.dwAvgBytesPerSec = mWaveHeader.wfex.dwSamplesPerSec * mWaveHeader.wfex.wBlockAlign;
-				sprintf(mWaveHeader.cData, "data");
+				memcpy(mWaveHeader.cData, "data", 4);
 				mWaveHeader.dwDataSize = 0;
 
 				mFile.write(reinterpret_cast<char*>(&mWaveHeader), sizeof(WAVEHEADER));
