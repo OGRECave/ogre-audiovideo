@@ -19,11 +19,6 @@ namespace Ogre
 
 	OgreTheoraDataStream::~OgreTheoraDataStream()
 	{
-		if (!(mStream))
-		{
-			mStream->close();
-			mStream.reset();
-		}
 	}
 
 	int OgreTheoraDataStream::read(void* output,int nBytes)
