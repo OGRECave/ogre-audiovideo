@@ -116,7 +116,7 @@ namespace Ogre
 
 #if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 2
 		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
-		TextureGpu* t = textureMgr->createTexture(
+		TextureGpu* t = textureMgr->createOrRetrieveTexture(
 			name,
 			GpuPageOutStrategy::Discard,
 			TextureFlags::ManualTexture,
