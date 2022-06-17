@@ -82,6 +82,7 @@ namespace OgreOggSound
 	MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 	mPosition(0,0,0),
 	mDirection(0,0,0),
+	mName(name),
 	#else
 	MovableObject(name),
 	#endif
@@ -141,6 +142,12 @@ namespace OgreOggSound
 	{
 		OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(this);
 	}
+	/*/////////////////////////////////////////////////////////////////*/
+	#if OGRE_VERSION_MAJOR == 2
+	Ogre::String OgreOggISound::getName() {
+		return mName;
+	}
+	#endif
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::_getSharedProperties(BufferListPtr& buffers, float& length, ALenum& format) 
 	{
