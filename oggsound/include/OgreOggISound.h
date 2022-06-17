@@ -516,6 +516,12 @@ namespace OgreOggSound
 		*/
 		void _getSharedProperties(BufferListPtr& buffers, float& length, ALenum& format); 
 	
+		#if OGRE_VERSION_MAJOR == 2
+		/** Gets name
+		 */
+		virtual Ogre::String getName();
+		#endif
+
 	protected:
 
 		/** Superclass describing a single sound object.
@@ -637,7 +643,7 @@ namespace OgreOggSound
 			sound properties.
 		 */
 		virtual bool _queryBufferInfo() = 0;		
-
+		
 		/**
 		 * Variables used to fade sound
 		 */
@@ -682,6 +688,7 @@ namespace OgreOggSound
 		#else
 		Ogre::Vector3 mPosition;		// 3D position
 		Ogre::Vector3 mDirection;		// 3D direction
+		Ogre::String mName;				// Sound Name (Ogre-Next don't internal store real name for movable objects)
 		#endif
 		bool mPlayPosChanged;			// Flag indicating playback position has changed
 		bool mSeekable;					// Flag indicating seeking available
