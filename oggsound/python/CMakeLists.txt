@@ -9,7 +9,11 @@ endif()
 include(${SWIG_USE_FILE})
 include_directories(${PYTHON_INCLUDE_PATH} ${OGRE_INCLUDE_DIRS})
 
-set(CMAKE_SWIG_FLAGS -w401,314 -builtin -Dfinal)
+set(CMAKE_SWIG_FLAGS -w401,314 -builtin)
+
+if(SWIG_VERSION VERSION_LESS "4.1")
+    list(APPEND CMAKE_SWIG_FLAGS -Dfinal)
+endif()
 
 set_source_files_properties(${CMAKE_SOURCE_DIR}/oggsound/include/OgreOggSound.i PROPERTIES CPLUSPLUS ON)
 
