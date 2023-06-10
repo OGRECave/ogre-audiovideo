@@ -2,7 +2,9 @@
 %module(directors="1") OgreOggSound
 %{
 #include "Ogre.h"
+#if !OGRE_MIN_VERSION(14, 0, 0)
 #include "OgreUnifiedHighLevelGpuProgram.h"
+#endif
 
 #include "OgreOggSoundRoot.h"
 #include "OgreOggSound.h"
