@@ -42,7 +42,7 @@ namespace OgreOggSound
 	{
 
 	protected:
-		#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+		#if AV_OGRE_NEXT_VERSION >= 0x20100
 			Ogre::MovableObject* createInstanceImpl(Ogre::IdType id, Ogre::ObjectMemoryManager *objectMemoryManager, Ogre::SceneManager* manager, const Ogre::NameValuePairList* params = 0);
 		#else
 			Ogre::MovableObject* createInstanceImpl(const Ogre::String& name, const Ogre::NameValuePairList* params);
@@ -55,7 +55,7 @@ namespace OgreOggSound
 
 		const Ogre::String& getType(void) const;
 		
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		void destroyInstance( Ogre::MovableObject* obj);
 		#endif
 	};

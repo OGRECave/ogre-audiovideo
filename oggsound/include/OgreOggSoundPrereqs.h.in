@@ -35,6 +35,19 @@
 #include <OgreMovableObject.h>
 #include <OgreLogManager.h>
 
+// set AV_OGRE_NEXT_VERSION to easy check Ogre version
+// using separate define to avoid issue with `#define OGRE_NEXT_VERSION 0`
+// and code using `#ifndef OGRE_NEXT_VERSION` to detect Ogre1
+#ifdef OGRE_NEXT_VERSION
+    #define AV_OGRE_NEXT_VERSION OGRE_NEXT_VERSION
+#else
+  #if OGRE_VERSION_MAJOR == 2
+    #define AV_OGRE_NEXT_VERSION OGRE_VERSION
+  #else
+    #define AV_OGRE_NEXT_VERSION 0
+  #endif
+#endif
+
 /**
  * OGGSOUND_THREADED: Specifies whether to use threads for streaming
  * 0 - No multithreading

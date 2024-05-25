@@ -12,7 +12,7 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "OgreVideoManager.h"
 #include "OgreTheoraDataStream.h"
 
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 2
+#if AV_OGRE_NEXT_VERSION >= 0x20200
 #include <OgreTextureGpuManager.h>
 #include <OgreTextureBox.h>
 #include <OgreStagingTexture.h>
@@ -32,11 +32,15 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #include "TheoraTimer.h"
 #include <vector>
 
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+#if AV_OGRE_NEXT_VERSION >= 0x20100
 #include <OgreHlmsManager.h>
 #include <Hlms/Unlit/OgreHlmsUnlit.h>
 #include <Hlms/Unlit/OgreHlmsUnlitDatablock.h>
 using namespace Ogre::v1;
+#endif
+
+#if AV_OGRE_NEXT_VERSION > 0x30000
+#include <OgreAbiUtils.h>
 #endif
 
 namespace Ogre
@@ -81,7 +85,7 @@ namespace Ogre
 		createVideoTexture(mInputFileName, material_name, group_name, group_name);
 	}
 	
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+#if AV_OGRE_NEXT_VERSION >= 0x20100
 	static void fillTexture(TextureGpu* texture, const uint8* data, int xSize, int ySize) {
 		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
 		StagingTexture *stagingTexture = textureMgr->getStagingTexture( xSize, ySize, 1, 1, PFG_RGBA8_UNORM );
@@ -114,7 +118,7 @@ namespace Ogre
 		Matrix4 mat=Matrix4::IDENTITY;
 		mat.setScale(Vector3((float) clip->getWidth()/(w + 0.5), (float) clip->getHeight()/(h + 0.5),1));
 
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 2
+#if AV_OGRE_NEXT_VERSION >= 0x20200
 		TextureGpuManager *textureMgr = Root::getSingletonPtr()->getRenderSystem()->getTextureGpuManager();
 		TextureGpu* t = textureMgr->createOrRetrieveTexture(
 			name,
@@ -151,12 +155,12 @@ namespace Ogre
 
 		mClipsTextures[name]={clip,t};
 
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+#if AV_OGRE_NEXT_VERSION >= 0x20100
 		// set it in a datablock
 		HlmsUnlitDatablock* ogreDatablock = static_cast<Ogre::HlmsUnlitDatablock*>(
 			Root::getSingletonPtr()->getHlmsManager()->getHlms(HLMS_UNLIT)->getDatablock(material_name)
 		);
-	#if OGRE_VERSION_MINOR >= 2
+	#if AV_OGRE_NEXT_VERSION >= 0x20200
 		ogreDatablock->setTexture( 0, name );
 	#else
 		ogreDatablock->setTexture( 0, 0, t );
@@ -216,7 +220,7 @@ namespace Ogre
 			{
 				int w=f->getStride(),h=f->getHeight();
 				
-#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR >= 1
+#if AV_OGRE_NEXT_VERSION >= 0x20100
 				fillTexture(it->second.texture, reinterpret_cast<const uint8*>(f->getBuffer()), w, h);
 #else
 				unsigned char *texData=(unsigned char*) it->second.texture->getBuffer()->lock(HardwareBuffer::HBL_DISCARD);
@@ -260,10 +264,15 @@ namespace Ogre
 		static String name = "TheoraVideoPlugin";
 		return name;
 	}
-	void OgreVideoPlugin::install()
+	void OgreVideoPlugin::install
+	(
+		#if AV_OGRE_NEXT_VERSION > 0x30000
+		const NameValuePairList *options
+		#endif
+	)
 	{
 		if (mVideoMgr) {
-			#if OGRE_VERSION_MAJOR == 2
+			#if AV_OGRE_NEXT_VERSION >= 0x20000
 			Ogre::LogManager::getSingleton().logMessage(Ogre::LML_CRITICAL,
 				"OgreVideoPlugin was already been initialized ... ignoring next initialise of plugin"
 			);
@@ -289,5 +298,11 @@ namespace Ogre
 		delete mVideoMgr;
 		mVideoMgr = 0;
 	}
+	#if AV_OGRE_NEXT_VERSION > 0x30000
+	void OgreVideoPlugin::getAbiCookie(AbiCookie &outAbiCookie)
+	{
+		outAbiCookie = generateAbiCookie();
+	}
+	#endif
 
 } // end namespace Ogre

@@ -19,7 +19,9 @@ namespace Ogre
 	extern "C" void _OgreTheoraExport dllStartPlugin()
 	{
 	    theoraVideoPlugin = new OgreVideoPlugin();
-	    Root::getSingleton().installPlugin(theoraVideoPlugin);
+		#if AV_OGRE_NEXT_VERSION > 0x30000
+	    Root::getSingleton().installPlugin(theoraVideoPlugin, nullptr);
+		#endif
 	}
 
 	extern "C" void _OgreTheoraExport dllStopPlugin()

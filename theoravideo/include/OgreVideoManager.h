@@ -10,6 +10,20 @@ the terms of the BSD license: http://www.opensource.org/licenses/bsd-license.php
 #ifndef _OgreVideoManager_h
 #define _OgreVideoManager_h
 
+#include <OgrePrerequisites.h>
+// set AV_OGRE_NEXT_VERSION to easy check Ogre version
+// using separate define to avoid issue with `#define OGRE_NEXT_VERSION 0`
+// and code using `#ifndef OGRE_NEXT_VERSION` to detect Ogre1
+#ifdef OGRE_NEXT_VERSION
+    #define AV_OGRE_NEXT_VERSION OGRE_NEXT_VERSION
+#else
+  #if OGRE_VERSION_MAJOR == 2
+    #define AV_OGRE_NEXT_VERSION OGRE_VERSION
+  #else
+    #define AV_OGRE_NEXT_VERSION 0
+  #endif
+#endif
+
 #include <OgreExternalTextureSource.h>
 #include <OgreFrameListener.h>
 
@@ -91,7 +105,7 @@ namespace Ogre
 	private:
 		struct ClipTexture {
 			TheoraVideoClip*  clip;
-			#if OGRE_VERSION_MAJOR == 2 and OGRE_VERSION_MINOR >= 2
+			#if AV_OGRE_NEXT_VERSION >= 0x20200
 			TextureGpu*       texture;
 			#else
 			TexturePtr        texture;
@@ -114,7 +128,12 @@ namespace Ogre
 		static OgreVideoManager* mVideoMgr;
 	public:
 		const String& getName() const;
+		#if AV_OGRE_NEXT_VERSION > 0x30000
+		void getAbiCookie(AbiCookie &outAbiCookie);
+		void install(const NameValuePairList *options);
+		#else
 		void install();
+		#endif
 		void uninstall() {}
 		void initialise() {}
 		void shutdown();
