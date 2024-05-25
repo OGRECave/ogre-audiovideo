@@ -516,7 +516,7 @@ namespace OgreOggSound
 		*/
 		void _getSharedProperties(BufferListPtr& buffers, float& length, ALenum& format); 
 	
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		/** Gets name
 		 */
 		virtual Ogre::String getName();
@@ -532,7 +532,7 @@ namespace OgreOggSound
 		 */
 		OgreOggISound(
 			const Ogre::String& name
-			#if OGRE_VERSION_MAJOR == 2
+			#if AV_OGRE_NEXT_VERSION >= 0x20000
 			, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 			#endif
 		);
@@ -581,11 +581,11 @@ namespace OgreOggSound
 		 */
 		virtual void _notifyAttached(
 			Ogre::Node* node
-			#if OGRE_VERSION_MAJOR != 2
+			#if !AV_OGRE_NEXT_VERSION
 			, bool isTagPoint = false
 			#endif
 		);
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		/** Notifys object its been moved
 		@remarks
 			Overridden from MovableObject.
@@ -596,7 +596,7 @@ namespace OgreOggSound
 		 */
 		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera);
 		#endif
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		/** Renderable callback
 		@remarks
 			Overridden function from MovableObject.
@@ -683,7 +683,7 @@ namespace OgreOggSound
 		bool mGiveUpSource;				// Flag to indicate whether sound should release its source when stopped
 		bool mStream;					// Stream flag
 		bool mSourceRelative;			// Relative position flag
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		bool mLocalTransformDirty;		// Transformation update flag
 		#else
 		Ogre::Vector3 mPosition;		// 3D position

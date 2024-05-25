@@ -74,11 +74,11 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggISound::OgreOggISound(
 		const Ogre::String& name
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : 
-	#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+	#if AV_OGRE_NEXT_VERSION >= 0x20100
 	MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 	mPosition(0,0,0),
 	mDirection(0,0,0),
@@ -115,7 +115,7 @@ namespace OgreOggSound
 	,mAudioOffset(0)
 	,mAudioEnd(0)
 	,mLoopOffset(0)
-	#if OGRE_VERSION_MAJOR != 2
+	#if !AV_OGRE_NEXT_VERSION
 	,mLocalTransformDirty(true)
 	#endif
 	,mDisable3D(false)
@@ -132,7 +132,7 @@ namespace OgreOggSound
 		mOggCallbacks.seek_func	= OOSStreamSeek;
 		mOggCallbacks.tell_func	= OOSStreamTell;
 		mBuffers.reset();
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		setLocalAabb(Ogre::Aabb::BOX_NULL);
 		setQueryFlags(0);
 		#endif
@@ -143,7 +143,7 @@ namespace OgreOggSound
 		OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	#if OGRE_VERSION_MAJOR == 2
+	#if AV_OGRE_NEXT_VERSION >= 0x20000
 	Ogre::String OgreOggISound::getName() {
 		return mName;
 	}
@@ -657,7 +657,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::update(float fTime)
 	{
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		if (mLocalTransformDirty)
 		{
 			Ogre::Vector3 position(0, 0, 0);
@@ -717,7 +717,7 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::_notifyAttached(
 		Ogre::Node* node
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		, bool isTagPoint
 		#endif
 	)
@@ -725,12 +725,12 @@ namespace OgreOggSound
 		// Call base class notify
 		Ogre::MovableObject::_notifyAttached(
 			node
-			#if OGRE_VERSION_MAJOR != 2
+			#if !AV_OGRE_NEXT_VERSION
 			, isTagPoint
 			#endif
 		);
 
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		// Immediately set position/orientation when attached
 		mLocalTransformDirty = true;
 		#endif
@@ -740,7 +740,7 @@ namespace OgreOggSound
 		return;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
-	#if OGRE_VERSION_MAJOR != 2
+	#if !AV_OGRE_NEXT_VERSION
 	void OgreOggISound::_notifyMoved(void) 
 	{ 
 		// Call base class notify
@@ -752,7 +752,7 @@ namespace OgreOggSound
 	void OgreOggISound::_updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {
 	}
 	#endif
-	#if OGRE_VERSION_MAJOR != 2
+	#if !AV_OGRE_NEXT_VERSION
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggISound::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 	{

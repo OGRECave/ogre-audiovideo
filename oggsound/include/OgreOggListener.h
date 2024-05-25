@@ -50,24 +50,24 @@ namespace OgreOggSound
 			Creates a listener object to act as the ears of the user. 
 		 */
 		OgreOggListener(
-			#if OGRE_VERSION_MAJOR == 2
+			#if AV_OGRE_NEXT_VERSION >= 0x20000
 			Ogre::IdType id, Ogre::SceneManager *scnMgr, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 			#else
 			Ogre::SceneManager* scnMgr = NULL
 			#endif
 		): 
-			#if OGRE_VERSION_MAJOR == 2 && OGRE_VERSION_MINOR > 0
+			#if AV_OGRE_NEXT_VERSION >= 0x20100
 				MovableObject(id, objMemMgr, scnMgr, renderQueueId),
 			#endif
 			  mVelocity(Ogre::Vector3::ZERO)
-			#if OGRE_VERSION_MAJOR != 2
+			#if !AV_OGRE_NEXT_VERSION
 			, mLocalTransformDirty(false)
 			#endif
 			, mSceneMgr(scnMgr)
 		{
 			for (int i=0; i<6; ++i ) mOrientation[i]=0.f;
 			mName = "OgreOggListener";
-			#if OGRE_VERSION_MAJOR == 2
+			#if AV_OGRE_NEXT_VERSION >= 0x20000
 			setLocalAabb(Ogre::Aabb::BOX_NULL);
 			setQueryFlags(0);
 			#endif
@@ -107,7 +107,7 @@ namespace OgreOggSound
 			bounding radius for this object.
 		 */
 		virtual float getBoundingRadius(void) const;
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		void _updateRenderQueue(Ogre::RenderQueue *queue) override {}
 		void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables) override {}
 		#else
@@ -119,11 +119,11 @@ namespace OgreOggSound
 		 */
 		virtual void _notifyAttached(
 			Ogre::Node* node
-			#if OGRE_VERSION_MAJOR != 2
+			#if !AV_OGRE_NEXT_VERSION
 			, bool isTagPoint = false
 			#endif
 		);
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		/** Moved callback
 		@remarks
 			Overridden function from MovableObject.
@@ -137,7 +137,7 @@ namespace OgreOggSound
 		/** Returns scenemanager which created this listener.
 		 */
 		Ogre::SceneManager* getSceneManager() { return mSceneMgr; }
-		#if OGRE_VERSION_MAJOR != 2
+		#if !AV_OGRE_NEXT_VERSION
 		/** Sets scenemanager which created this listener.
 		 */
 		void setSceneManager(Ogre::SceneManager& m) { mSceneMgr=&m; }
@@ -153,7 +153,7 @@ namespace OgreOggSound
 		 */
 		Ogre::Vector3 mVelocity;		// 3D velocity
 		float mOrientation[6];			// 3D orientation
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		Ogre::Vector3 mPosition;		// 3D position
 		Ogre::Quaternion mOrient;		// 3D orientation as Quaternion
 		#else

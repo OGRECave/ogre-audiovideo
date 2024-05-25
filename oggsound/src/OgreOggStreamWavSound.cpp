@@ -39,12 +39,12 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggStreamWavSound::OgreOggStreamWavSound(
 		const Ogre::String& name
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		, Ogre::SceneManager* scnMgr, Ogre::IdType id, Ogre::ObjectMemoryManager *objMemMgr, Ogre::uint8 renderQueueId
 		#endif
 	) : OgreOggISound(
 		name
-		#if OGRE_VERSION_MAJOR == 2
+		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		, scnMgr, id, objMemMgr, renderQueueId
 		#endif
 	)
