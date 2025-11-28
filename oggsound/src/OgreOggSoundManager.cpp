@@ -215,7 +215,7 @@ namespace OgreOggSound
 		#endif
 		{
 			Ogre::SceneManager* s = mListener->getSceneManager();
-			s->destroyAllMovableObjectsByType("OgreOggISound");
+			s->destroyAllMovableObjectsByType(OgreOggSoundFactory::FACTORY_TYPE_NAME);
 		}
 		_destroyListener();
 	}
