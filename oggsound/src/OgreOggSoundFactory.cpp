@@ -35,7 +35,7 @@
 
 namespace OgreOggSound
 {
-	Ogre::String OgreOggSoundFactory::FACTORY_TYPE_NAME = "OgreOggISound";
+	const Ogre::String OgreOggSoundFactory::FACTORY_TYPE_NAME = "OgreOggISound";
 
 	//-----------------------------------------------------------------------
 	const Ogre::String& OgreOggSoundFactory::getType(void) const
