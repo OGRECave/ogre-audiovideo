@@ -242,20 +242,29 @@ namespace OgreOggSound
 		int minorVersion;
 
 		// Version Info
-        alcGetIntegerv(NULL, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
-        ALCenum error = alcGetError(NULL);
+		ALCdevice* device;
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+		device = NULL;
+#else
+		device = alcOpenDevice(NULL);
+#endif
+        alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
+        ALCenum error = alcGetError(device);
         if (error != ALC_NO_ERROR)
 		{
 			OGRE_LOG_ERROR("Unable to get OpenAL Minor Version number");
 			return false;
 		}
-		alcGetIntegerv(NULL, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
-		error = alcGetError(NULL);
+		alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(majorVersion), &majorVersion);
+		error = alcGetError(device);
         if (error != ALC_NO_ERROR)
 		{
 			OGRE_LOG_ERROR("Unable to get OpenAL Major Version number");
 			return false;
 		}
+#if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
+		alcCloseDevice(device);
+#endif
 
 		/*
 		** OpenAL versions prior to 1.0 DO NOT support device enumeration, so we
