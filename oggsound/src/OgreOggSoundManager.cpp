@@ -592,7 +592,7 @@ namespace OgreOggSound
 
 			return sound;
 		}
-		else if	( file.find(".ogg") != file.npos || file.find(".OGG") != file.npos )
+		else if	( Ogre::StringUtil::endsWith(file, ".ogg", true) )
 		{
 			if(stream)
 				sound = OGRE_NEW_T(OgreOggStreamSound, Ogre::MEMCATEGORY_GENERAL)(
@@ -642,7 +642,7 @@ namespace OgreOggSound
 #endif
 			return sound;
 		}
-		else if	( file.find(".wav") != file.npos || file.find(".WAV") != file.npos )
+		else if	( Ogre::StringUtil::endsWith(file, ".wav", true) )
 		{
 			if(stream)
 				sound = OGRE_NEW_T(OgreOggStreamWavSound, Ogre::MEMCATEGORY_GENERAL)(
