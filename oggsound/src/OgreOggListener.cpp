@@ -104,9 +104,11 @@ namespace OgreOggSound
 		return 0;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	const Ogre::String MOT_OGG_LISTENER = "OgreOggListener";
+	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::String& OgreOggListener::getMovableType(void) const
 	{
-		return OgreOggSoundFactory::FACTORY_TYPE_NAME;
+		return MOT_OGG_LISTENER;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggListener::_notifyAttached(
