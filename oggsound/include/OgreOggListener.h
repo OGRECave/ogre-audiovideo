@@ -94,19 +94,19 @@ namespace OgreOggSound
 			Overridden function from MovableObject, returns a 
 			Sound object string for identification.
 		 */
-		virtual const Ogre::String& getMovableType(void) const;
+		const Ogre::String& getMovableType(void) const override;
 		/** Gets the bounding box of this object.
 		@remarks
 			Overridden function from MovableObject, provides a
 			bounding box for this object.
 		 */
-		virtual const Ogre::AxisAlignedBox& getBoundingBox(void) const;
+		const Ogre::AxisAlignedBox& getBoundingBox(void) const override;
 		/** Gets the bounding radius of this object.
 		@remarks
 			Overridden function from MovableObject, provides the
 			bounding radius for this object.
 		 */
-		virtual float getBoundingRadius(void) const;
+		float getBoundingRadius(void) const override;
 		#if !AV_OGRE_NEXT_VERSION
 		void _updateRenderQueue(Ogre::RenderQueue *queue) override {}
 		void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables) override {}
@@ -117,22 +117,22 @@ namespace OgreOggSound
 		@remarks
 			Overridden function from MovableObject.
 		 */
-		virtual void _notifyAttached(
+		void _notifyAttached(
 			Ogre::Node* node
 			#if !AV_OGRE_NEXT_VERSION
 			, bool isTagPoint = false
 			#endif
-		);
+		) override;
 		#if !AV_OGRE_NEXT_VERSION
 		/** Moved callback
 		@remarks
 			Overridden function from MovableObject.
 		 */
-		virtual void _notifyMoved(void);
+		void _notifyMoved(void) override;
 		#else
 		/** Does nothing but is need for being derived from MovableObject
 		 */
-		virtual void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) {}
+		void _updateRenderQueue(Ogre::RenderQueue *queue, Ogre::Camera *camera, const Ogre::Camera *lodCamera) override {}
 		#endif
 		/** Returns scenemanager which created this listener.
 		 */
