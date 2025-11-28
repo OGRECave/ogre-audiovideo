@@ -215,7 +215,7 @@ namespace OgreOggSound
 		#endif
 		{
 			Ogre::SceneManager* s = mListener->getSceneManager();
-			s->destroyAllMovableObjectsByType(OgreOggSoundFactory::FACTORY_TYPE_NAME);
+			s->destroyAllMovableObjectsByType(MOT_OGG_ISOUND);
 		}
 		_destroyListener();
 	}
@@ -525,9 +525,9 @@ namespace OgreOggSound
 		{
 			sound = static_cast<OgreOggISound*>(
 			#if AV_OGRE_NEXT_VERSION >= 0x20000
-				scnMgr->createMovableObject( OgreOggSoundFactory::FACTORY_TYPE_NAME, &(scnMgr->_getEntityMemoryManager(Ogre::SCENE_DYNAMIC)), &params )
+				scnMgr->createMovableObject( MOT_OGG_ISOUND, &(scnMgr->_getEntityMemoryManager(Ogre::SCENE_DYNAMIC)), &params )
 			#else
-				scnMgr->createMovableObject( name, OgreOggSoundFactory::FACTORY_TYPE_NAME, &params )
+				scnMgr->createMovableObject( name, MOT_OGG_ISOUND, &params )
 			#endif
 			);
 		}

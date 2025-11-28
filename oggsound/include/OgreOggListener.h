@@ -37,6 +37,8 @@
 
 namespace OgreOggSound
 {
+	extern const Ogre::String MOT_OGG_LISTENER;
+
 	//! Listener object (Users ears)
 	/** Handles properties associated with the listener.
 	*/
@@ -91,8 +93,7 @@ namespace OgreOggSound
 		void update();
 		/** Gets the movable type string for this object.
 		@remarks
-			Overridden function from MovableObject, returns a 
-			Sound object string for identification.
+			Overridden function from MovableObject.
 		 */
 		const Ogre::String& getMovableType(void) const override;
 		/** Gets the bounding box of this object.

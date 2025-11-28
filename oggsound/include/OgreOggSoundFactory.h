@@ -51,8 +51,6 @@ namespace OgreOggSound
 		OgreOggSoundFactory() {}
 		~OgreOggSoundFactory() {}
 
-		static const Ogre::String FACTORY_TYPE_NAME;
-
 		const Ogre::String& getType(void) const;
 		
 		#if AV_OGRE_NEXT_VERSION >= 0x20000

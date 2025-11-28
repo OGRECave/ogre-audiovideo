@@ -694,9 +694,11 @@ namespace OgreOggSound
 		_updateFade(fTime);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	const Ogre::String MOT_OGG_ISOUND = "OgreOggISound";
+	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::String& OgreOggISound::getMovableType(void) const
 	{
-		return OgreOggSoundFactory::FACTORY_TYPE_NAME;
+		return MOT_OGG_ISOUND;
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::AxisAlignedBox& OgreOggISound::getBoundingBox(void) const

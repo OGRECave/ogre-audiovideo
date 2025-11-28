@@ -35,12 +35,10 @@
 
 namespace OgreOggSound
 {
-	const Ogre::String OgreOggSoundFactory::FACTORY_TYPE_NAME = "OgreOggISound";
-
 	//-----------------------------------------------------------------------
 	const Ogre::String& OgreOggSoundFactory::getType(void) const
 	{
-		return FACTORY_TYPE_NAME;
+		return MOT_OGG_ISOUND;
 	}
 	//-----------------------------------------------------------------------
 	#if AV_OGRE_NEXT_VERSION >= 0x20100

@@ -43,6 +43,8 @@
 
 namespace OgreOggSound
 {
+	extern const Ogre::String MOT_OGG_ISOUND;
+
 	//! Action to perform after a fade has completed.
 	/** 
 	@remarks
