@@ -1071,7 +1071,7 @@ namespace OgreOggSound
 		// All sources in use
 		// Re-use an active source
 		// Use either a non-playing source or a lower priority source
-		else
+		else if (!mActiveSounds.empty())
 		{
 			// Get iterator for list
 			ActiveList::iterator iter = mActiveSounds.begin();
