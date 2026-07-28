@@ -83,8 +83,19 @@ namespace OgreOggSound
 		// Allocate format structure
 		mFormatData.mFormat = OGRE_NEW_T(WaveHeader, Ogre::MEMCATEGORY_GENERAL);
 
-		// Read in "RIFF" chunk descriptor (4 bytes)
-		mAudioStream->read(mFormatData.mFormat, sizeof(WaveHeader));
+		// Read in "RIFF" chunk descriptor, size, and "WAVE" chunk descriptor (12 bytes)
+		mAudioStream->read(mFormatData.mFormat, 12);
+
+		// Find "fmt " chunk descriptor and size (8 bytes)
+		mAudioStream->read(mFormatData.mFormat->mFMT, 8);
+		while (strncmp(mFormatData.mFormat->mFMT, "fmt ", 4) != 0 && !mAudioStream->eof())
+		{
+			mAudioStream->skip(mFormatData.mFormat->mHeaderSize);
+			mAudioStream->read(mFormatData.mFormat->mFMT, 8);
+		}
+
+		// Read rest of WaveHeader
+		mAudioStream->read(&mFormatData.mFormat->mFormatTag, 16);
 
 		Ogre::String format;
 		switch(mFormatData.mFormat->mFormatTag)
@@ -125,7 +136,7 @@ namespace OgreOggSound
 		}
 
 		// Valid 'fmt '?
-		if ( strncmp(mFormatData.mFormat->mFMT, "fmt", 3) != 0 )
+		if ( strncmp(mFormatData.mFormat->mFMT, "fmt ", 4) != 0 )
 		{
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, mAudioName + " - Invalid Format!", "OgreOggStaticWavSound::_openImpl()");
 		}
