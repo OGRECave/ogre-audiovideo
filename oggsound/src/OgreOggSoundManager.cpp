@@ -2965,18 +2965,9 @@ namespace OgreOggSound
 		// Unofficial OpenAL extension repository: https://github.com/openalext/openalext
 		// OpenAL Soft extensions: https://openal-soft.org/openal-extensions/
 
-		// List of extensions in log
-		std::stringstream ss;
-
-		while(*extensionList != 0)
-		{
-			ss << extensionList;
-
-			extensionList += strlen(extensionList) + 1;
-		}
-
-		// Supported Extensions Info
-		Ogre::LogManager::getSingleton().logMessage("ALC_EXTENSIONS = " + ss.str());
+		// ALC_EXTENSIONS is a single space-separated string, not a
+		// double-NUL terminated list.
+		Ogre::LogManager::getSingleton().logMessage("ALC_EXTENSIONS = " + Ogre::String(extensionList ? extensionList : ""));
 	}
 
 	/*/////////////////////////////////////////////////////////////////*/
