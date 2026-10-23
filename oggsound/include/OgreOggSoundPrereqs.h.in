@@ -101,6 +101,9 @@
 #	include <efx-presets.h>
 #endif
 
+// Ogg Vorbis decoder handle, defined in thirdparty/stb/stb_vorbis.c
+struct stb_vorbis;
+
 namespace OgreOggSound
 {
 	typedef std::vector<ALuint> BufferList; // A list of the IDs of all OpenAL buffers being used by a sound. This is a vector so that it can be passed around as an array to the various OpenAL functions.

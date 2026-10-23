@@ -34,43 +34,6 @@
 
 namespace OgreOggSound
 {
-	/*
-	** These next four methods are custom accessor functions to allow the Ogg Vorbis
-	** libraries to be able to stream audio data directly from an Ogre::DataStreamPtr
-	*/
-	size_t	OOSStreamRead(void *ptr, size_t size, size_t nmemb, void *datasource)
-	{
-		Ogre::DataStreamPtr dataStream = *reinterpret_cast<Ogre::DataStreamPtr*>(datasource);
-		return dataStream->read(ptr, size * nmemb);
-	}
-	int		OOSStreamSeek(void *datasource, ogg_int64_t offset, int whence)
-	{
-		Ogre::DataStreamPtr dataStream = *reinterpret_cast<Ogre::DataStreamPtr*>(datasource);
-		switch(whence)
-		{
-		case SEEK_SET:
-			dataStream->seek(offset);
-			break;
-		case SEEK_END:
-			dataStream->seek(dataStream->size());
-			// Falling through purposefully here
-		case SEEK_CUR:
-			dataStream->skip(offset);
-			break;
-		}
-
-		return 0;
-	}
-	int		OOSStreamClose(void *datasource)
-	{
-		return 0;
-	}
-	long	OOSStreamTell(void *datasource)
-	{
-		Ogre::DataStreamPtr dataStream = *reinterpret_cast<Ogre::DataStreamPtr*>(datasource);
-		return static_cast<long>(dataStream->tell());
-	}
-
 	/*/////////////////////////////////////////////////////////////////*/
 	OgreOggISound::OgreOggISound(
 		const Ogre::String& name
@@ -126,11 +89,6 @@ namespace OgreOggSound
 	,mAwaitingDestruction(0)
 	,mSoundListener(0)
 	{
-		// Init some oggVorbis callbacks
-		mOggCallbacks.read_func	= OOSStreamRead;
-		mOggCallbacks.close_func= OOSStreamClose;
-		mOggCallbacks.seek_func	= OOSStreamSeek;
-		mOggCallbacks.tell_func	= OOSStreamTell;
 		mBuffers.reset();
 		#if AV_OGRE_NEXT_VERSION >= 0x20000
 		setLocalAabb(Ogre::Aabb::BOX_NULL);
@@ -141,6 +99,37 @@ namespace OgreOggSound
 	OgreOggISound::~OgreOggISound() 
 	{
 		OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(this);
+	}
+	/*/////////////////////////////////////////////////////////////////*/
+	void OgreOggISound::_readAll(const Ogre::DataStreamPtr& stream, std::vector<unsigned char>& out)
+	{
+		out.clear();
+		if (!stream) return;
+
+		const size_t streamSize = stream->size();
+		if (streamSize > 0)
+		{
+			stream->seek(0);
+			out.resize(streamSize);
+			size_t total = 0;
+			while (total < streamSize)
+			{
+				const size_t bytesRead = stream->read(&out[total], streamSize - total);
+				if (bytesRead == 0) break;
+				total += bytesRead;
+			}
+			out.resize(total);
+			return;
+		}
+
+		// Non-seekable stream: read until EOF.
+		char buffer[64 * 1024];
+		while (!stream->eof())
+		{
+			const size_t bytesRead = stream->read(buffer, sizeof(buffer));
+			if (bytesRead == 0) break;
+			out.insert(out.end(), buffer, buffer + bytesRead);
+		}
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	ALenum OgreOggISound::_queryFormat(const char* name)

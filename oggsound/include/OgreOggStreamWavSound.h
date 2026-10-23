@@ -33,9 +33,6 @@
 
 #include "OgreOggSoundPrereqs.h"
 #include <string>
-#include "ogg/ogg.h"
-#include "vorbis/codec.h"
-#include "vorbis/vorbisfile.h"
 
 #include "OgreOggStaticWavSound.h"
 

@@ -34,9 +34,6 @@
 #include "OgreOggSoundPrereqs.h"
 #include <string>
 #include <vector>
-#include "ogg/ogg.h"
-#include "vorbis/codec.h"
-#include "vorbis/vorbisfile.h"
 
 #include "OgreOggISound.h"
 
