@@ -34,9 +34,7 @@ option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
 option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
 
-# OpenAL Soft Extensions
-INCLUDE (CheckIncludeFiles)
-CHECK_INCLUDE_FILES (alext.h HAVE_ALEXT)
+option(OGGSOUND_USE_MOJOAL "Use the bundled mojoAL instead of the system OpenAL" ON)
 
 # Type of EFX backend support
 set(USE_EFX 0 CACHE STRING
@@ -47,10 +45,43 @@ set(USE_EFX 0 CACHE STRING
 )
 set_property(CACHE USE_EFX PROPERTY STRINGS "0" "1" "2")
 
+if(OGGSOUND_USE_MOJOAL)
+    # mojoAL is a single-file OpenAL 1.1 implementation built on SDL2.
+    find_package(SDL2 REQUIRED)
+    set(MOJOAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/mojoAL)
+    add_library(mojoal STATIC ${MOJOAL_DIR}/mojoal.c)
+    target_include_directories(mojoal PUBLIC ${MOJOAL_DIR}/AL)
+    target_include_directories(mojoal PRIVATE ${SDL2_INCLUDE_DIRS})
+    if(TARGET SDL2::SDL2)
+        target_link_libraries(mojoal PUBLIC SDL2::SDL2)
+    else()
+        target_link_libraries(mojoal PUBLIC ${SDL2_LIBRARIES})
+    endif()
+    set_target_properties(mojoal PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+    set(OGGSOUND_OPENAL_LIBRARIES mojoal)
+    set(OGGSOUND_OPENAL_INCLUDE_DIRS "")
+    # mojoAL ships no alext.h and has no EFX support.
+    set(HAVE_ALEXT 0)
+    if(USE_EFX)
+        message(WARNING "mojoAL does not support EFX - forcing USE_EFX=0")
+        set(USE_EFX 0 CACHE STRING "" FORCE)
+    endif()
+else()
+    find_package(OpenAL REQUIRED)
+
+    # OpenAL Soft Extensions
+    include(CheckIncludeFiles)
+    set(CMAKE_REQUIRED_INCLUDES ${OPENAL_INCLUDE_DIR})
+    check_include_files(alext.h HAVE_ALEXT)
+    unset(CMAKE_REQUIRED_INCLUDES)
+
+    set(OGGSOUND_OPENAL_LIBRARIES ${OPENAL_LIBRARY})
+    set(OGGSOUND_OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR})
+endif()
+
 configure_file(include/OgreOggSoundPrereqs.h.in ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h @ONLY)
 include_directories(${PROJECT_BINARY_DIR}/include)
-
-find_package(OpenAL REQUIRED)
 
 find_package(PkgConfig QUIET)
 pkg_check_modules(PC_OGG QUIET ogg)
@@ -69,8 +100,8 @@ else()
 endif()
 target_include_directories(OgreOggSound PUBLIC include)
 target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
-target_include_directories(OgreOggSound PUBLIC include ${OPENAL_INCLUDE_DIR} PRIVATE ${OGG_INCLUDE_DIRS} ${VORBIS_INCLUDE_DIRS})
-target_link_libraries(OgreOggSound PUBLIC OgreMain ${OPENAL_LIBRARY} PRIVATE ${OGG_LIBRARIES} ${VORBISFILE_LIBRARIES})
+target_include_directories(OgreOggSound PUBLIC include ${OGGSOUND_OPENAL_INCLUDE_DIRS} PRIVATE ${OGG_INCLUDE_DIRS} ${VORBIS_INCLUDE_DIRS})
+target_link_libraries(OgreOggSound PUBLIC OgreMain ${OGGSOUND_OPENAL_LIBRARIES} PRIVATE ${OGG_LIBRARIES} ${VORBISFILE_LIBRARIES})
 
 install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
 install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h DESTINATION include/OGRE/OggSound)

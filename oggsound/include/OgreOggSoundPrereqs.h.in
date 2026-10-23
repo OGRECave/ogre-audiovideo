@@ -60,9 +60,7 @@
  * 0 - Not using OpenAL Soft
  * 1 - using OpenAL Soft (alext.h available)
  */
-#ifndef HAVE_ALEXT
-#	define HAVE_ALEXT 1
-#endif
+#cmakedefine01 HAVE_ALEXT
 
 /**
  * OGGSOUND_HAVE_EFX: Specifies whether EFX enhancements are supported

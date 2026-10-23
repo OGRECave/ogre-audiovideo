@@ -39,7 +39,6 @@ endif (NOT BUILD_VIDEOPLUGIN OR NOT BUILD_AUDIOPLUGIN)
 if (BUILD_DEMOS)
 	add_executable(player demos/player/player.cpp)
 	target_link_libraries(player OgreBites Plugin_TheoraVideoSystem OgreOggSound)
-	target_include_directories(player PUBLIC ${OPENAL_INCLUDE_DIRS})
 
 	file(COPY demos/resources.cfg DESTINATION ${CMAKE_BINARY_DIR})
 endif (BUILD_DEMOS)
