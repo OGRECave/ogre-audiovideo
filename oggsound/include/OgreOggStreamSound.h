@@ -33,9 +33,7 @@
 
 #include "OgreOggSoundPrereqs.h"
 #include <string>
-#include "ogg/ogg.h"
-#include "vorbis/codec.h"
-#include "vorbis/vorbisfile.h"
+#include <vector>
 
 #include "OgreOggISound.h"
 
@@ -89,13 +87,13 @@ namespace OgreOggSound
 		bool isMono();
 		/** Returns the buffer sample rate
 		 */
-		unsigned int getSampleRate() { return mVorbisInfo->rate; };
+		unsigned int getSampleRate() { return mSampleRate; };
 		/** Returns the buffer number of channels
 		 */
-		unsigned short getChannels()  { return mVorbisInfo->channels; };
+		unsigned short getChannels()  { return mChannels; };
 		/** Returns the buffer bits per sample
 		 */
-		unsigned int getBitsPerSample() { return mVorbisInfo->bitrate_nominal / mVorbisInfo->rate; };
+		unsigned int getBitsPerSample() { return 16; };
 
 	protected:	
 		/** Constructor
@@ -194,9 +192,10 @@ namespace OgreOggSound
 		/**
 		 * Ogg file variables
 		 */
-		OggVorbis_File mOggStream;			// OggVorbis file structure
-		vorbis_info* mVorbisInfo;			// Vorbis info
-		vorbis_comment* mVorbisComment;		// Vorbis comments
+		stb_vorbis*		mOggStream;			// Ogg Vorbis decoder
+		unsigned int	mSampleRate;		// Sample rate of the Ogg stream
+		int				mChannels;			// Number of channels of the Ogg stream
+		std::vector<unsigned char> mOggData;	// Compressed Ogg data (owned by the decoder)
 		bool mStreamEOF;					// EOF flag
 		float mLastOffset;					// Offset time in seconds
 

@@ -33,7 +33,7 @@
 #include "OgreOggSoundPrereqs.h"
 #include <string>
 #include <deque>
-#include <vorbis/vorbisfile.h>
+#include <vector>
 #include "OgreOggSoundCallback.h"
 	
 /**
@@ -653,6 +653,14 @@ namespace OgreOggSound
 			a failure of a later OpenAL call.
 		 */
 		static ALenum _queryFormat(const char* name);
+
+		/** Reads an entire data stream into memory.
+		@remarks
+			stb_vorbis needs the whole Ogg stream in memory and does not
+			provide custom IO callbacks. The data must be kept alive for as
+			long as the decoder is open.
+		 */
+		static void _readAll(const Ogre::DataStreamPtr& stream, std::vector<unsigned char>& out);
 		/**
 		 * Variables used to fade sound
 		 */
@@ -665,7 +673,6 @@ namespace OgreOggSound
 
 		// Ogre resource stream pointer
 		Ogre::DataStreamPtr mAudioStream;
-		ov_callbacks mOggCallbacks;
 
 		SoundListener* mSoundListener;	// Callback object
 		size_t mBufferSize;				// Size of audio buffer (250ms)

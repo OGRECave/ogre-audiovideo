@@ -32,6 +32,7 @@
 #include <string>
 #include <iostream>
 #include "OgreOggSound.h"
+#include "stb_vorbis.h"
 
 namespace OgreOggSound
 {
@@ -47,8 +48,9 @@ namespace OgreOggSound
 		, scnMgr, id, objMemMgr, renderQueueId
 		#endif
 	)
-	,mVorbisInfo(0)
-	,mVorbisComment(0)
+	,mOggStream(nullptr)
+	,mSampleRate(0)
+	,mChannels(0)
 	,mPreviousOffset(0)
 	,mAudioName("")
 	{
@@ -62,8 +64,6 @@ namespace OgreOggSound
 		if ( mSoundListener ) mSoundListener->soundDestroyed(this);
 
 		_release();
-		mVorbisInfo=0;
-		mVorbisComment=0;
 		mBufferData.clear();
 	}
 	/*/////////////////////////////////////////////////////////////////*/
@@ -75,49 +75,65 @@ namespace OgreOggSound
 		// Store file name
 		mAudioName = mAudioStream->getName();
 
-		if( ov_open_callbacks(&mAudioStream, &mOggStream, NULL, 0, mOggCallbacks) < 0 )
+		// stb_vorbis has no custom IO callbacks; give it the whole stream.
+		_readAll(mAudioStream, mOggData);
+		int error = 0;
+		mOggStream = stb_vorbis_open_memory(mOggData.data(), static_cast<int>(mOggData.size()), &error, nullptr);
+		if ( !mOggStream )
 		{
-			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Could not open Ogg stream.", "OgreOggStaticSound::_openImpl()");
+			mOggData.clear();
+			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND, "Could not open Ogg stream (stb_vorbis error " +
+				Ogre::StringConverter::toString(error) + ").", "OgreOggStaticSound::_openImpl()");
 			return;
-		}  
-
-		// Seekable file?
-		if(ov_seekable(&mOggStream)==0)
-		{
-			// Disable seeking
-			mSeekable = false;
 		}
 
-		mVorbisInfo = ov_info(&mOggStream, -1);
-		mVorbisComment = ov_comment(&mOggStream, -1);
-
-		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioName + "': Loading OGG - version: " +
-			Ogre::StringConverter::toString(mVorbisInfo->version) + ", " +
-			Ogre::StringConverter::toString(mVorbisInfo->channels) + " channels, " +
-			Ogre::StringConverter::toString(mVorbisInfo->rate) + " Hz, " +
-			Ogre::StringConverter::toString(mVorbisInfo->bitrate_nominal) + " bps");
+		const stb_vorbis_info info = stb_vorbis_get_info(mOggStream);
+		mSampleRate = info.sample_rate;
+		mChannels = info.channels;
 
 		// Get playtime in secs
-		mPlayTime = static_cast<float>(ov_time_total(&mOggStream, -1));
+		mPlayTime = static_cast<float>(stb_vorbis_stream_length_in_seconds(mOggStream));
+
+		const unsigned int bitrate = mPlayTime > 0.f
+			? static_cast<unsigned int>((mOggData.size() * 8.f) / mPlayTime)
+			: 0;
+
+		Ogre::LogManager::getSingleton().logMessage("Sound '" + mAudioName + "': Loading OGG - " +
+			Ogre::StringConverter::toString(mChannels) + " channels, " +
+			Ogre::StringConverter::toString(mSampleRate) + " Hz, " +
+			Ogre::StringConverter::toString(bitrate) + " bps");
 
 		// Check format support
 		if (!_queryBufferInfo())
+		{
+			stb_vorbis_close(mOggStream);
+			mOggStream = nullptr;
+			mOggData.clear();
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Format NOT supported!", "OgreOggStaticSound::_openImpl()");
+		}
 
 		alGenBuffers(1, &(*mBuffers)[0]);
 
 		char* data;
 		int sizeRead = 0;
-		int bitStream;
 
 		data = OGRE_ALLOC_T(char, mBufferSize, Ogre::MEMCATEGORY_GENERAL);
 		do
 		{
-			sizeRead = ov_read(&mOggStream, data, static_cast<int>(mBufferSize), 0, 2, 1, &bitStream);
-			mBufferData.insert(mBufferData.end(), data, data + sizeRead);
+			const int frames = stb_vorbis_get_samples_short_interleaved(
+				mOggStream, mChannels, reinterpret_cast<short*>(data),
+				static_cast<int>(mBufferSize / sizeof(short)));
+			sizeRead = frames * mChannels * static_cast<int>(sizeof(short));
+			if (sizeRead > 0)
+				mBufferData.insert(mBufferData.end(), data, data + sizeRead);
 		}
 		while(sizeRead > 0);
 		OGRE_FREE(data, Ogre::MEMCATEGORY_GENERAL);
+
+		// Static sounds keep the decoded PCM only.
+		stb_vorbis_close(mOggStream);
+		mOggStream = nullptr;
+		mOggData.clear();
 
 #if OGGSOUND_HAVE_EFX == 1
 		// Upload to XRAM buffers if available
@@ -126,7 +142,7 @@ namespace OgreOggSound
 #endif
 
 		alGetError();
-		alBufferData((*mBuffers)[0], mFormat, &mBufferData[0], static_cast<ALsizei>(mBufferData.size()), mVorbisInfo->rate);
+		alBufferData((*mBuffers)[0], mFormat, &mBufferData[0], static_cast<ALsizei>(mBufferData.size()), mSampleRate);
 		if ( alGetError()!=AL_NO_ERROR )
 		{
 			OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, "Unable to load audio data into buffer.", "OgreOggStaticSound::_openImpl()");
@@ -158,7 +174,12 @@ namespace OgreOggSound
 	{
 		setSource(AL_NONE);
 		OgreOggSoundManager::getSingleton()._releaseSharedBuffer(mAudioName, (*mBuffers)[0]);
-		if ( !mAudioStream && mVorbisInfo ) ov_clear(&mOggStream);
+		if ( mOggStream )
+		{
+			stb_vorbis_close(mOggStream);
+			mOggStream = nullptr;
+		}
+		mOggData.clear();
 		mPlayPosChanged = false;
 		mPlayPos = 0.f;
 	}
@@ -180,19 +201,19 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	bool OgreOggStaticSound::_queryBufferInfo()
 	{
-		if (!mVorbisInfo)
+		if (mChannels <= 0)
 		{
 			Ogre::LogManager::getSingleton().logMessage("No vorbis info!");
 			return false;
 		}
 
-		switch(mVorbisInfo->channels)
+		switch(mChannels)
 		{
 		case 1:
 			{
 				mFormat = AL_FORMAT_MONO16;
 				// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate >> 1;
+				mBufferSize = mSampleRate >> 1;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 2);
 			}
@@ -201,7 +222,7 @@ namespace OgreOggSound
 			{
 				mFormat = AL_FORMAT_STEREO16;
 				// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate;
+				mBufferSize = mSampleRate;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 4);
 			}
@@ -211,7 +232,7 @@ namespace OgreOggSound
 				mFormat = _queryFormat("AL_FORMAT_QUAD16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate * 2;
+				mBufferSize = mSampleRate * 2;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 8);
 			}
@@ -221,7 +242,7 @@ namespace OgreOggSound
 				mFormat = _queryFormat("AL_FORMAT_51CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate * 3;
+				mBufferSize = mSampleRate * 3;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 12);
 			}
@@ -231,7 +252,7 @@ namespace OgreOggSound
 				mFormat = _queryFormat("AL_FORMAT_61CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 16 (16bit 7-channel) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate * 4;
+				mBufferSize = mSampleRate * 4;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 16);
 			}
@@ -241,7 +262,7 @@ namespace OgreOggSound
 				mFormat = _queryFormat("AL_FORMAT_71CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 20 (16bit 8-channel) divided by 4 (quarter of a second))
-				mBufferSize = mVorbisInfo->rate * 5;
+				mBufferSize = mSampleRate * 5;
 				// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 				mBufferSize -= (mBufferSize % 20);
 			}
@@ -252,7 +273,7 @@ namespace OgreOggSound
 
 			mFormat = AL_FORMAT_MONO16;
 			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
-			mBufferSize = mVorbisInfo->rate >> 1;
+			mBufferSize = mSampleRate >> 1;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 			mBufferSize -= (mBufferSize % 2);
 			break;
