@@ -16,6 +16,12 @@ Pass `-DOGGSOUND_USE_MOJOAL=OFF` to link against a system OpenAL implementation
 instead. mojoAL does not support EFX or multichannel (4/5.1/6.1/7.1) buffer
 formats.
 
+Standalone Ogg Vorbis playback is decoded with the bundled
+[stb_vorbis](https://github.com/nothings/stb). stb_vorbis has no streaming IO
+callbacks, so streamed `.ogg` sounds keep the compressed file in memory. The
+Theora video plugin still uses libogg/libvorbis for audio multiplexed into
+video files.
+
 # OggSound 
 
 The %OgreOggSound library is designed to provide a simple, quick and easy method
