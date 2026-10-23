@@ -56,14 +56,16 @@ struct OgreOggSoundInterface : public TheoraAudioInterface {
 	int    dataBufSize;
 	int    dataBufPos;
 
-	int    inserCounter;
+	int    insertCounter;
 
 	OgreOggSoundInterface(TheoraVideoClip *owner, int nChannels, int freq) :
 		TheoraAudioInterface(owner, nChannels, freq),
+		ogreOggSoundObj(nullptr),
 		numOfOutputChannels( (nChannels == 1) ? 1 : 2 ),
+		dataBuf(nullptr),
 		dataBufSize(numOfOutputChannels * freq / 20),
 		dataBufPos(0),
-		inserCounter(0)
+		insertCounter(0)
 	{
 		DEBUG_LOG_STREAM("OgreOggSoundInterface for " << owner->getName() <<
 		                 " inputChannels=" << mNumChannels << "outputChannels " << numOfOutputChannels <<
@@ -73,20 +75,32 @@ struct OgreOggSoundInterface : public TheoraAudioInterface {
 		ogreOggSoundObj = static_cast<OgreOggSound::OgreOggStreamBufferSound*>(
 			OgreOggSound::OgreOggSoundManager::getSingletonPtr()->createSound( owner->getName(), "BUFFER" )
 		);
-		ogreOggSoundObj->setFormat( (nChannels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, mFreq/nChannels ); // FIXME: why mFreq/nChannels instefd of mFreq
+		if (ogreOggSoundObj) {
+			ogreOggSoundObj->setFormat( (numOfOutputChannels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, mFreq );
+		} else {
+			Ogre::LogManager::getSingleton().logMessage(
+				"OgreOggSoundInterface: unable to create sound for '" + owner->getName() + "'");
+		}
 
-		dataBuf = new short[dataBufSize + 32];
+		dataBuf = new short[dataBufSize + 32]();
+	}
+
+	~OgreOggSoundInterface() override {
+		delete[] dataBuf;
 	}
 
 	void insertData(float **data, int nSamples) override final {
-		int nSamplePacks = nSamples / mNumChannels;
-		for (int i=0, inIdx=0; i<nSamplePacks; ++i) {
+		if (!data || !ogreOggSoundObj) return;
+
+		// nSamples is the number of sample frames per channel.
+		for (int i=0; i<nSamples; ++i) {
 			for (int j=0; j<numOfOutputChannels; ++j)
-				dataBuf[dataBufPos++]   = static_cast<short>(Ogre::Math::Clamp((*data)[inIdx+j], -1.0f, 1.0f) * 32767);
-			inIdx  += mNumChannels;
+				dataBuf[dataBufPos++] = static_cast<short>(
+					Ogre::Math::Clamp(data[j][i], -1.0f, 1.0f) * 32767);
 
 			if (dataBufPos >= dataBufSize) {
-				ogreOggSoundObj->insertData(reinterpret_cast<char*>(dataBuf), dataBufPos * 2, (++inserCounter) > 2);
+				ogreOggSoundObj->insertData(reinterpret_cast<char*>(dataBuf),
+					dataBufPos * sizeof(short), (++insertCounter) > 2);
 				dataBufPos = 0;
 			}
 		}
