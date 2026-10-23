@@ -304,12 +304,11 @@ namespace OgreOggSound
 			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(deviceName) + "\"");
 
 #if OGGSOUND_HAVE_EFX
-        ALint attribs[2] = {ALC_MAX_AUXILIARY_SENDS, 4};
-#else
-        ALint attribs[1] = {4};
-#endif
-
+		ALint attribs[3] = {ALC_MAX_AUXILIARY_SENDS, 4, 0};
 		mContext = alcCreateContext(mDevice, attribs);
+#else
+		mContext = alcCreateContext(mDevice, nullptr);
+#endif
 		if (!mContext)
 		{
 			OGRE_LOG_ERROR("OgreOggSoundManager::init() - Unable to create a context");
