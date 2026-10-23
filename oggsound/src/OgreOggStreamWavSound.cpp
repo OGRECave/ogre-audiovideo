@@ -292,7 +292,7 @@ namespace OgreOggSound
 		case 4:
 			{
 				// 16-bit Quad surround
-				mFormat = alGetEnumValue("AL_FORMAT_QUAD16");
+				mFormat = _queryFormat("AL_FORMAT_QUAD16");
 				if (!mFormat) return false;
 
 				// Queue 250ms of audio data
@@ -305,7 +305,7 @@ namespace OgreOggSound
 		case 6:
 			{
 				// 16-bit 5.1 surround
-				mFormat = alGetEnumValue("AL_FORMAT_51CHN16");
+				mFormat = _queryFormat("AL_FORMAT_51CHN16");
 				if (!mFormat) return false;
 
 				// Queue 250ms of audio data
@@ -318,7 +318,7 @@ namespace OgreOggSound
 		case 7:
 			{
 				// 16-bit 7.1 surround
-				mFormat = alGetEnumValue("AL_FORMAT_61CHN16");
+				mFormat = _queryFormat("AL_FORMAT_61CHN16");
 				if (!mFormat) return false;
 
 				// Queue 250ms of audio data
@@ -331,7 +331,7 @@ namespace OgreOggSound
 		case 8:
 			{
 				// 16-bit 8.1 surround
-				mFormat = alGetEnumValue("AL_FORMAT_71CHN16");
+				mFormat = _queryFormat("AL_FORMAT_71CHN16");
 				if (!mFormat) return false;
 
 				// Queue 250ms of audio data

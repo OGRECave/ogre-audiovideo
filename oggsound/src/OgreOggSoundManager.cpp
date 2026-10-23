@@ -2890,31 +2890,23 @@ namespace OgreOggSound
 	{
 		// Supported Formats Info
 		Ogre::LogManager::getSingleton().logMessage("Supported formats:");
-		ALenum eBufferFormat = 0;
 
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_MONO16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_MONO16 -- Monophonic Sound");
+		const auto logFormat = [](const char* name, const char* description)
+		{
+			// alGetEnumValue() raises AL_INVALID_VALUE for unknown names;
+			// clear it so a failed probe is not mistaken for a later failure.
+			alGetError();
+			const ALenum format = alGetEnumValue(name);
+			if (format != AL_NONE && alGetError() == AL_NO_ERROR)
+				Ogre::LogManager::getSingleton().logMessage(Ogre::String(" * ") + name + " -- " + description);
+		};
 
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_STEREO16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_STEREO16 -- Stereo Sound");
-
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_QUAD16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_QUAD16 -- 4 Channel Sound");
-
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_51CHN16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_51CHN16 -- 5.1 Surround Sound");
-
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_61CHN16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_61CHN16 -- 6.1 Surround Sound");
-
-		eBufferFormat = alcGetEnumValue(mDevice, "AL_FORMAT_71CHN16");
-		if(eBufferFormat)
-			Ogre::LogManager::getSingleton().logMessage(" * AL_FORMAT_71CHN16 -- 7.1 Surround Sound");
+		logFormat("AL_FORMAT_MONO16", "Monophonic Sound");
+		logFormat("AL_FORMAT_STEREO16", "Stereo Sound");
+		logFormat("AL_FORMAT_QUAD16", "4 Channel Sound");
+		logFormat("AL_FORMAT_51CHN16", "5.1 Surround Sound");
+		logFormat("AL_FORMAT_61CHN16", "6.1 Surround Sound");
+		logFormat("AL_FORMAT_71CHN16", "7.1 Surround Sound");
 
 #if OGGSOUND_HAVE_EFX
 		// EFX
