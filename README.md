@@ -4,6 +4,18 @@ This is the API reference for the Ogre Video and Audio plugins; contained within
 specifications for each class and the methods on those classes which you can 
 refer to when using the library in your code. 
 
+# Building
+
+The audio plugin builds against the bundled [mojoAL](https://github.com/icculus/mojoAL)
+OpenAL 1.1 implementation by default, which requires SDL2:
+
+    cmake -B build .
+    cmake --build build
+
+Pass `-DOGGSOUND_USE_MOJOAL=OFF` to link against a system OpenAL implementation
+instead. mojoAL does not support EFX or multichannel (4/5.1/6.1/7.1) buffer
+formats.
+
 # OggSound 
 
 The %OgreOggSound library is designed to provide a simple, quick and easy method
