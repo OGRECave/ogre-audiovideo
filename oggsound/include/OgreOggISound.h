@@ -646,6 +646,13 @@ namespace OgreOggSound
 		 */
 		virtual bool _queryBufferInfo() = 0;		
 		
+		/** Returns the OpenAL enum value for a format name.
+		@remarks
+			Returns AL_NONE if the format is not supported and clears any
+			error raised by the failed query, so it cannot be mistaken for
+			a failure of a later OpenAL call.
+		 */
+		static ALenum _queryFormat(const char* name);
 		/**
 		 * Variables used to fade sound
 		 */

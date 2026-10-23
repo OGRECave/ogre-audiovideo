@@ -188,7 +188,7 @@ namespace OgreOggSound
 			break;
 		case 4:
 			{
-				mFormat = alGetEnumValue("AL_FORMAT_QUAD16");
+				mFormat = _queryFormat("AL_FORMAT_QUAD16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
 				mBufferSize = mVorbisInfo->rate * 2;
@@ -198,7 +198,7 @@ namespace OgreOggSound
 			break;
 		case 6:
 			{
-				mFormat = alGetEnumValue("AL_FORMAT_51CHN16");
+				mFormat = _queryFormat("AL_FORMAT_51CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
 				mBufferSize = mVorbisInfo->rate * 3;
@@ -208,7 +208,7 @@ namespace OgreOggSound
 			break;
 		case 7:
 			{
-				mFormat = alGetEnumValue("AL_FORMAT_61CHN16");
+				mFormat = _queryFormat("AL_FORMAT_61CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 16 (16bit 7-channel) divided by 4 (quarter of a second))
 				mBufferSize = mVorbisInfo->rate * 4;
@@ -218,7 +218,7 @@ namespace OgreOggSound
 			break;
 		case 8:
 			{
-				mFormat = alGetEnumValue("AL_FORMAT_71CHN16");
+				mFormat = _queryFormat("AL_FORMAT_71CHN16");
 				if (!mFormat) return false;
 				// Set BufferSize to 250ms (Frequency * 20 (16bit 8-channel) divided by 4 (quarter of a second))
 				mBufferSize = mVorbisInfo->rate * 5;

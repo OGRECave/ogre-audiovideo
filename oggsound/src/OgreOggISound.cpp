@@ -143,6 +143,13 @@ namespace OgreOggSound
 		OgreOggSoundManager::getSingletonPtr()->_releaseSoundImpl(this);
 	}
 	/*/////////////////////////////////////////////////////////////////*/
+	ALenum OgreOggISound::_queryFormat(const char* name)
+	{
+		alGetError();
+		const ALenum format = alGetEnumValue(name);
+		return alGetError() == AL_NO_ERROR ? format : AL_NONE;
+	}
+	/*/////////////////////////////////////////////////////////////////*/
 	#if AV_OGRE_NEXT_VERSION >= 0x20000
 	Ogre::String OgreOggISound::getName() {
 		return mName;
