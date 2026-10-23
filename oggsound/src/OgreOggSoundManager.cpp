@@ -2897,7 +2897,8 @@ namespace OgreOggSound
 			// clear it so a failed probe is not mistaken for a later failure.
 			alGetError();
 			const ALenum format = alGetEnumValue(name);
-			if (format != AL_NONE && alGetError() == AL_NO_ERROR)
+			const ALenum error = alGetError();
+			if (format != AL_NONE && error == AL_NO_ERROR)
 				Ogre::LogManager::getSingleton().logMessage(Ogre::String(" * ") + name + " -- " + description);
 		};
 
