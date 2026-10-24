@@ -34,6 +34,10 @@ option(OGGSOUND_THREADED "Enable multi-threaded streamed sounds" OFF)
 
 option(OGGSOUND_PYTHON "Build python bindings for oggsound" ON)
 
+option(OGGSOUND_STATIC "Build OgreOggSound as a static library (used by the python wheel)" OFF)
+
+option(OGGSOUND_INSTALL_DEVEL "Install the C++ headers and library" ON)
+
 option(OGGSOUND_USE_MOJOAL "Use the bundled mojoAL instead of the system OpenAL" ON)
 
 # Type of EFX backend support
@@ -91,20 +95,23 @@ target_compile_definitions(stb_vorbis PUBLIC STB_VORBIS_NO_STDIO STB_VORBIS_NO_P
 set_target_properties(stb_vorbis PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Configure library
-if(OGRE_STATIC)
+if(OGGSOUND_STATIC OR OGRE_STATIC)
     add_library(OgreOggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
+    set_target_properties(OgreOggSound PROPERTIES POSITION_INDEPENDENT_CODE ON)
 else()
     add_library(OgreOggSound SHARED ${SOURCE_FILES} ${HEADER_FILES})
+    target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
 endif()
 target_include_directories(OgreOggSound PUBLIC include)
-target_compile_definitions(OgreOggSound PRIVATE OGGSOUND_EXPORT)
 target_include_directories(OgreOggSound PUBLIC include ${OGGSOUND_OPENAL_INCLUDE_DIRS})
 target_link_libraries(OgreOggSound PUBLIC OgreMain ${OGGSOUND_OPENAL_LIBRARIES} PRIVATE stb_vorbis)
 
-install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
-install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h DESTINATION include/OGRE/OggSound)
-install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
-set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
+if(OGGSOUND_INSTALL_DEVEL)
+    install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
+    install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h DESTINATION include/OGRE/OggSound)
+    install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
+    set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
+endif()
 
 if(OGGSOUND_PYTHON)
     add_subdirectory(python)
