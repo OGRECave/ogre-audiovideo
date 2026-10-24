@@ -1,5 +1,5 @@
 
-%module(directors="1") OgreOggSound
+%module(package="Ogre", directors="1") OggSound
 %{
 #include "Ogre.h"
 #if !OGRE_MIN_VERSION(14, 0, 0)
