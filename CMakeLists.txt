@@ -8,6 +8,12 @@ if(NOT DEFINED CMAKE_CXX_STANDARD)
 	set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
+# scikit-build-core overwrites CMAKE_PREFIX_PATH with the build environment
+# paths, so re-add the one from the environment for the wheel toolchain.
+if(DEFINED ENV{CMAKE_PREFIX_PATH})
+	list(APPEND CMAKE_PREFIX_PATH "$ENV{CMAKE_PREFIX_PATH}")
+endif()
+
 find_package(OGRE REQUIRED OPTIONAL_COMPONENTS Bites)
 include_directories(${OGRE_INCLUDE_DIRS})
 
