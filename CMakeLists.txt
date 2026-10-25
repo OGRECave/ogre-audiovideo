@@ -1,11 +1,15 @@
 cmake_minimum_required (VERSION 3.10)
 project(OgreVideoAudio)
 
+# OGRE 14 requires C++14. Do not rely on the compiler default: AppleClang
+# defaults to a pre-C++11 dialect, which cannot even parse the OGRE headers.
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+	set(CMAKE_CXX_STANDARD 14)
+	set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+
 find_package(OGRE REQUIRED OPTIONAL_COMPONENTS Bites)
-include_directories(
-	${OGRE_INCLUDE_DIRS}
-	${OGRE_INCLUDE_DIR}/Hlms/Common/
-)
+include_directories(${OGRE_INCLUDE_DIRS})
 
 option(BUILD_DEMOS "Build demo (requires Ogre Bites and both Audio and Video)" ON)
 option(BUILD_VIDEOPLUGIN "Build the Theora Video plugin" ON)
