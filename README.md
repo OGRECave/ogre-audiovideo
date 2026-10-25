@@ -22,6 +22,17 @@ callbacks, so streamed `.ogg` sounds keep the compressed file in memory. The
 Theora video plugin still uses libogg/libvorbis for audio multiplexed into
 video files.
 
+## Licensing
+
+The default audio build is entirely permissively licensed: OgreOggSound is
+BSD-3-Clause, the bundled [mojoAL](https://github.com/icculus/mojoAL) OpenAL
+implementation is zlib, stb_vorbis is public domain/MIT, and SDL2 is zlib.
+This allows static linking into closed-source applications without LGPL
+obligations.
+
+Building with `-DOGGSOUND_USE_MOJOAL=OFF` links against OpenAL Soft instead,
+which is LGPL-2.1-or-later and must be redistributed according to its license.
+
 # OggSound 
 
 The %OgreOggSound library is designed to provide a simple, quick and easy method
