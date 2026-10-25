@@ -1,0 +1,11 @@
+.git
+build
+build-*
+.ogre
+.ogre-build
+.ogre-wheels
+dist
+wheelhouse
+__pycache__
+*.pyc
+Ogre.log

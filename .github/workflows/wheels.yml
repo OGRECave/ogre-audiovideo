@@ -1,0 +1,99 @@
+name: Python Wheels
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  # Single source of truth for the upstream OGRE version.
+  OGRE_TAG: v14.6.2
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        pyver: [cp314-cp314, cp312-cp312]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Docker image
+        run: docker build -f SDK/Dockerfile --build-arg OGRE_TAG="${OGRE_TAG}" -t pypi .
+      - name: Build wheel
+        run: |
+          docker run --rm -e PYVER=${{ matrix.pyver }} -v "$PWD:/workspace" pypi
+          f=$(ls ogre_oggsound-*.whl)
+          mv "$f" "${f/linux/manylinux_2_28}"
+      - name: Test wheel
+        run: |
+          docker run --rm \
+            -e PYVER=${{ matrix.pyver }} \
+            -e OGRE_TAG="${OGRE_TAG}" \
+            -v "$PWD:/workspace" \
+            pypi bash -c '
+              PATH="/opt/python/$PYVER/bin:$PATH"
+              pip install "ogre-python==${OGRE_TAG#v}"
+              pip install --no-deps /workspace/*.whl
+              python /workspace/scripts/test-wheel.py
+            '
+  macos:
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+      matrix:
+        pyver: ["3.14", "3.12"]
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "14.0"
+      OGRE_PREFIX: ${{ github.workspace }}/.ogre
+      OGRE_BUILD_DIR: ${{ github.workspace }}/.ogre-build
+      CMAKE_PREFIX_PATH: ${{ github.workspace }}/.ogre;${{ github.workspace }}/.ogre/deps
+      JOBS: 3
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.pyver }}
+      - name: Build OGRE
+        run: cmake -P ci/build-ogre.cmake
+      - name: Build wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m pip wheel . --no-deps --verbose
+      - name: Test wheel
+        run: |
+          python -m pip install "ogre-python==${OGRE_TAG#v}"
+          python -m pip install --no-deps ./*.whl
+          python scripts/test-wheel.py
+  windows:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        pyver: ["3.14", "3.12"]
+    env:
+      OGRE_PREFIX: ${{ github.workspace }}/.ogre
+      OGRE_BUILD_DIR: ${{ github.workspace }}/.ogre-build
+      CMAKE_PREFIX_PATH: ${{ github.workspace }}/.ogre;${{ github.workspace }}/.ogre/deps
+      JOBS: 4
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          # Match the toolset used to build the ogre-python wheel.
+          toolset: 14.2
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.pyver }}
+      - name: Build OGRE
+        run: cmake -P ci/build-ogre.cmake
+      - name: Build wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m pip wheel . --no-deps --verbose
+      - name: Test wheel
+        shell: pwsh
+        run: |
+          $version = $env:OGRE_TAG.TrimStart('v')
+          python -m pip install "ogre-python==$version"
+          python -m pip install --no-deps (Get-ChildItem *.whl).FullName
+          python scripts/test-wheel.py
