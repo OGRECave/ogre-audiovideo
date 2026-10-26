@@ -114,7 +114,10 @@ jobs:
           python -m pip install --no-deps (Get-ChildItem *.whl).FullName
           python scripts/test-wheel.py
       - name: Upload to PyPI
+        shell: bash
         run: |
           pip install setuptools wheel twine pypi-attestations
           pypi-attestations sign *.whl
           python -m twine upload --attestations --repository pypi *.whl *.attestation
+        env:
+          PYTHONUTF8: "1"  # pypi-attestations writes UTF-8 JSON via Path.write_text
