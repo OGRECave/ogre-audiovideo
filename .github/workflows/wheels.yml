@@ -2,7 +2,9 @@ name: Python Wheels
 
 on:
   push:
+    branches: [wheels-windows-retry]
     tags: ["*"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -41,6 +43,7 @@ jobs:
               python /workspace/scripts/test-wheel.py
             '
       - name: Upload to PyPI
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           pip3 install twine pypi-attestations
           pypi-attestations sign *.whl
@@ -74,6 +77,7 @@ jobs:
           python -m pip install --no-deps ./*.whl
           python scripts/test-wheel.py
       - name: Upload to PyPI
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           pip install setuptools wheel twine pypi-attestations
           pypi-attestations sign *.whl
