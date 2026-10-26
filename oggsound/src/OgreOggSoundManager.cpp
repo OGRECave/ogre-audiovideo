@@ -237,6 +237,8 @@ namespace OgreOggSound
 
 		// Get an internal list of audio device strings
 		_enumDevices();
+		if (!mDeviceStrings)
+			Ogre::LogManager::getSingleton().logMessage("OgreOggSoundManager::init() - Audio device enumeration not available");
 
 		int majorVersion;
 		int minorVersion;
@@ -247,6 +249,11 @@ namespace OgreOggSound
 		device = NULL;
 #else
 		device = alcOpenDevice(NULL);
+		if (!device)
+		{
+			OGRE_LOG_ERROR("OgreOggSoundManager::init() - Unable to open audio device");
+			return false;
+		}
 #endif
         alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(minorVersion), &minorVersion);
         ALCenum error = alcGetError(device);
@@ -299,7 +306,7 @@ namespace OgreOggSound
 		}
 		
 		if (!deviceInList)
-			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(mDeviceStrings) + "\" (Default device)");
+			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(mDeviceStrings ? mDeviceStrings : "default") + "\" (Default device)");
 		else
 			Ogre::LogManager::getSingleton().logMessage("Choosing: \"" + Ogre::String(deviceName) + "\"");
 
@@ -429,9 +436,14 @@ namespace OgreOggSound
 	/*/////////////////////////////////////////////////////////////////*/
 	const Ogre::StringVector OgreOggSoundManager::getDeviceList() const
 	{
-		const ALCchar* deviceList = mDeviceStrings;
-
 		Ogre::StringVector deviceVector;
+
+		// alcGetString() returns NULL when no device string is available,
+		// which is the case on headless systems without an audio device.
+		if (!mDeviceStrings)
+			return deviceVector;
+
+		const ALCchar* deviceList = mDeviceStrings;
 		/*
 		** The list returned by the call to alcGetString has the names of the
 		** devices seperated by NULL characters and the list is terminated by
