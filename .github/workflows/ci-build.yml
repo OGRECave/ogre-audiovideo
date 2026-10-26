@@ -13,6 +13,12 @@ jobs:
         sudo apt update
         sudo apt install -y cmake g++ libogre-1.12-dev libsdl2-dev libtheora-dev libogg-dev libvorbis-dev
     - uses: actions/checkout@v2
+    # The bindings need SWIG 4.1+; Ubuntu 22.04 only ships 4.0.
+    - uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+    - name: Install SWIG
+      run: python -m pip install swig==4.5.1
     - name: Test
       run: |
         cmake -Bbuild .
