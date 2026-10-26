@@ -2,7 +2,11 @@ name: Python Wheels
 
 on:
   push:
-  workflow_dispatch:
+    tags: ["*"]
+
+permissions:
+  contents: read
+  id-token: write  # Trusted Publishing + PEP 740 attestations via GitHub OIDC
 
 env:
   # Single source of truth for the upstream OGRE version.
@@ -36,6 +40,11 @@ jobs:
               pip install --no-deps /workspace/*.whl
               python /workspace/scripts/test-wheel.py
             '
+      - name: Upload to PyPI
+        run: |
+          pip3 install twine pypi-attestations
+          pypi-attestations sign *.whl
+          python -m twine upload --attestations --repository pypi *.whl *.attestation
   macos:
     runs-on: macos-14
     strategy:
@@ -64,6 +73,11 @@ jobs:
           python -m pip install "ogre-python==${OGRE_TAG#v}"
           python -m pip install --no-deps ./*.whl
           python scripts/test-wheel.py
+      - name: Upload to PyPI
+        run: |
+          pip install setuptools wheel twine pypi-attestations
+          pypi-attestations sign *.whl
+          python -m twine upload --attestations --repository pypi *.whl *.attestation
   windows:
     runs-on: windows-2022
     strategy:
@@ -71,6 +85,8 @@ jobs:
       matrix:
         pyver: ["3.14", "3.12"]
     env:
+      # TODO: Remove once ilammy/msvc-dev-cmd is updated to support Node.js 24
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
       OGRE_PREFIX: ${{ github.workspace }}/.ogre
       OGRE_BUILD_DIR: ${{ github.workspace }}/.ogre-build
       CMAKE_PREFIX_PATH: ${{ github.workspace }}/.ogre;${{ github.workspace }}/.ogre/deps
@@ -97,3 +113,8 @@ jobs:
           python -m pip install "ogre-python==$version"
           python -m pip install --no-deps (Get-ChildItem *.whl).FullName
           python scripts/test-wheel.py
+      - name: Upload to PyPI
+        run: |
+          pip install setuptools wheel twine pypi-attestations
+          pypi-attestations sign *.whl
+          python -m twine upload --attestations --repository pypi *.whl *.attestation
