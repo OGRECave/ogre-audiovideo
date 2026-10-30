@@ -1,6 +1,7 @@
 find_path(THEORA_INCLUDE_DIRS NAMES theora/theoradec.h HINTS ${PC_THEORA_INCLUDE_DIRS} PATH_SUFFIXES theora)
 find_library(THEORADEC_LIBRARIES NAMES theoradec HINTS ${PC_THEORA_LIBRARY_DIRS})
 find_library(VORBIS_LIBRARIES NAMES vorbis HINTS ${PC_VORBIS_LIBRARY_DIRS})
+find_library(OGG_LIBRARIES NAMES ogg HINTS ${PC_VORBIS_LIBRARY_DIRS})
 
 file(GLOB PLAYER_SRC theoraplayer/src/*cpp)
 file(GLOB PLAYER_H theoraplayer/include/*h)
