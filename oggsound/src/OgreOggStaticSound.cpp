@@ -380,6 +380,7 @@ namespace OgreOggSound
 	{
 		mLoop = loop;
 
+		// mLoop is applied when a source is attached; no need to warn here.
 		if(mSource != AL_NONE)
 		{
 			alSourcei(mSource, AL_LOOPING, loop);
@@ -387,8 +388,6 @@ namespace OgreOggSound
 			if ( alGetError() != AL_NO_ERROR )
 				OGRE_LOG_ERROR("OgreOggStaticSound::loop() - Unable to set looping status!");
 		}
-		else
-			Ogre::LogManager::getSingleton().logMessage("OgreOggStaticSound::loop() - No source attached to sound!");
 	}
 	/*/////////////////////////////////////////////////////////////////*/
 	void OgreOggStaticSound::_updateAudioBuffers()
