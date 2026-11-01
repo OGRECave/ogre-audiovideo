@@ -127,6 +127,10 @@ if(OGGSOUND_INSTALL_DEVEL)
     install(FILES ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundPrereqs.h
                   ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundExport.h
             DESTINATION include/OGRE/OggSound)
+    if(OGGSOUND_USE_MOJOAL)
+        install(FILES ${MOJOAL_DIR}/AL/al.h ${MOJOAL_DIR}/AL/alc.h
+                DESTINATION include/OGRE/OggSound)
+    endif()
     install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
     if(OGGSOUND_BUILD_STATIC)
         # A static OgreOggSound does not contain its decoder or OpenAL
