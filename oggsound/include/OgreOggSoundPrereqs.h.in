@@ -63,6 +63,13 @@
 #cmakedefine01 HAVE_ALEXT
 
 /**
+ * OGGSOUND_USE_MOJOAL: Specifies whether the bundled mojoAL is used
+ * 0 - Using the system OpenAL
+ * 1 - Using the bundled mojoAL
+ */
+#cmakedefine01 OGGSOUND_USE_MOJOAL
+
+/**
  * OGGSOUND_HAVE_EFX: Specifies whether EFX enhancements are supported
  * 0 - EFX not supported
  * 1 - Enable EFX support with Creative OpenAL SDK 1.1
@@ -77,6 +84,10 @@
 #	pragma warning( disable : 4244 )
 #endif
 
+#if OGGSOUND_USE_MOJOAL
+// mojoAL is always linked statically, so do not declare dllimport on Windows.
+#	define AL_LIBTYPE_STATIC 1
+#endif
 #include <al.h>
 #include <alc.h>
 #if HAVE_ALEXT == 1
