@@ -102,6 +102,7 @@ set_target_properties(stb_vorbis PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # Configure library
 if(OGGSOUND_STATIC OR OGRE_STATIC)
+    set(OGGSOUND_BUILD_STATIC ON)
     add_library(OgreOggSound STATIC ${SOURCE_FILES} ${HEADER_FILES})
     set_target_properties(OgreOggSound PROPERTIES POSITION_INDEPENDENT_CODE ON)
     # A static library must not decorate its symbols with dllexport/dllimport.
@@ -125,6 +126,14 @@ if(OGGSOUND_INSTALL_DEVEL)
                   ${PROJECT_BINARY_DIR}/include/OgreOggSoundExport.h
             DESTINATION include/OGRE/OggSound)
     install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
+    if(OGGSOUND_BUILD_STATIC)
+        # A static OgreOggSound does not contain its decoder or OpenAL
+        # implementation, so consumers need these archives as well.
+        install(TARGETS stb_vorbis ARCHIVE DESTINATION lib/)
+        if(OGGSOUND_USE_MOJOAL)
+            install(TARGETS mojoal ARCHIVE DESTINATION lib/)
+        endif()
+    endif()
     set_property(TARGET OgreOggSound PROPERTY INSTALL_RPATH ${OGRE_LIBRARY_DIRS})
 endif()
 
