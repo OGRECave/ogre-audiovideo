@@ -90,8 +90,8 @@ else()
     set(OGGSOUND_OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR})
 endif()
 
-configure_file(include/OgreOggSoundPrereqs.h.in ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h @ONLY)
-include_directories(${PROJECT_BINARY_DIR}/include)
+set(OGGSOUND_GENERATED_INCLUDE_DIR ${PROJECT_BINARY_DIR}/include)
+configure_file(include/OgreOggSoundPrereqs.h.in ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundPrereqs.h @ONLY)
 
 # stb_vorbis (Ogg Vorbis decoding)
 set(STB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/stb)
@@ -113,17 +113,19 @@ endif()
 
 generate_export_header(OgreOggSound
     EXPORT_MACRO_NAME _OGGSOUND_EXPORT
-    EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/OgreOggSoundExport.h
+    EXPORT_FILE_NAME ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundExport.h
     STATIC_DEFINE OGGSOUND_STATIC_DEFINE)
 
-target_include_directories(OgreOggSound PUBLIC include)
-target_include_directories(OgreOggSound PUBLIC include ${OGGSOUND_OPENAL_INCLUDE_DIRS})
+target_include_directories(OgreOggSound PUBLIC
+    include
+    ${OGGSOUND_GENERATED_INCLUDE_DIR}
+    ${OGGSOUND_OPENAL_INCLUDE_DIRS})
 target_link_libraries(OgreOggSound PUBLIC OgreMain ${OGGSOUND_OPENAL_LIBRARIES} PRIVATE stb_vorbis)
 
 if(OGGSOUND_INSTALL_DEVEL)
     install(FILES ${HEADER_FILES} DESTINATION include/OGRE/OggSound)
-    install(FILES ${PROJECT_BINARY_DIR}/include/OgreOggSoundPrereqs.h
-                  ${PROJECT_BINARY_DIR}/include/OgreOggSoundExport.h
+    install(FILES ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundPrereqs.h
+                  ${OGGSOUND_GENERATED_INCLUDE_DIR}/OgreOggSoundExport.h
             DESTINATION include/OGRE/OggSound)
     install(TARGETS OgreOggSound RUNTIME DESTINATION bin/ LIBRARY DESTINATION lib/ ARCHIVE DESTINATION lib/)
     if(OGGSOUND_BUILD_STATIC)
