@@ -1,3 +1,5 @@
+include(GenerateExportHeader)
+
 # define header and source files for the library
 set (HEADER_FILES
 	include/LocklessQueue.h
